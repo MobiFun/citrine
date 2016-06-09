@@ -1,0 +1,14 @@
+syntax: regexp
+
+\.[oa]$
+\.elf$
+\.bin$
+\.srec$
+
+^L1/cfile/l1_.*_intram
+^build\.conf$
+^config\.stamp$
+^finlink/.*\.ld$
+^finlink/.*\.map$
+^include/config\.
+^services/ffs/ffs_target
