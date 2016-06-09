@@ -1,0 +1,2699 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">PSI</DocName>
+        <DocNum Number="" Project=""/>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The base of the Protocol Stack rests on the physical layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The SAP PSI - Protocol Stack Interface - provides the interface for data and command flow between hardware driver and protocol stack .</XHTMLElement>
+            </DocElement>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="01"/>
+            <Date Day="09" Month="02" Year="2004"/>
+            <Author>RM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all constants that are defined for the PSI SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Constant>
+            <Alias>PSI_PEER_ENTITY_NAME_LENGTH</Alias>
+            <Value ValueType="DEC">6</Value>
+            <Comment>Length ofentity name for data exchange</Comment>
+        </Constant>
+        <History>
+            <Date Day="26" Month="10" Year="2005"/>
+            <Author>RM</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="29">
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all primitives that are defined for the PSI SAP. </XHTMLElement>
+            </DocElement>
+        </Description>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_CONN_IND sent to ACI indicates a device wants to establish a connection. The connection parameters are device identifier, device capability and device data mode. The structure DIO_CAP is defined in the DIO SAP. Casting is necessary for access to the device specific capabilities structures (DIO_CAP_SER, DIO_CAP_SER_MUX, DIO_CAP_PKT). </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_CONN_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>Device Identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CAP</Name>
+                </ItemLink>
+                <Control>PTR</Control>
+                <Comment>Device Capability</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>psi_data_mode</Name>
+                </ItemLink>
+                <Comment>Device data mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">PSI Testprimitive PSI_CONN_IND_TEST sent to ACI  is used for testcases instead of PSI_CONN_IND. The reason: TDC is not able to handle casting requirements.The testprimitive  contains the structure  DIO_CAP_UN - a union  of structures DIO_CAP_SER, DIO_CAP_SER_MUX, DIO_CAP_PKT</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_CONN_IND_TEST</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>Device Identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>DIO_CAP_UN</Name>
+                </ItemLink>
+                <Comment>device capability test structure</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>psi_data_mode</Name>
+                </ItemLink>
+                <Comment>device data mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="09" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_CONN_RES sent to PSI confirms the successful device registration in ACI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_CONN_RES</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">ACI sends the primitive PSI_CONN_REJ  to PSI for  rejection of the device registration request.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_CONN_REJ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DISCONN_IND sent by PSI  informs ACI that the device is not available anymore. The cause is included. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DISCONN_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>cause value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_CLOSE_REQ sent by ACI  informs PSI that the protocol stack is not be able the use the device and the PSI instance any longer.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_CLOSE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_CLOSE_CNF sent by PSI confirms ACI that the device is closed and PSI instance is shut down.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_CLOSE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The DTI manager (ACI) starts with the primitive PSI_DTI_OPEN_REQ the set up procedure of a new DTI connection between PSI and the peer entity. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DTI_OPEN_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>peer</Name>
+                </ItemLink>
+                <Comment>peer name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>dti link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>direction of DTI link</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="10" Year="2005"/>
+                <Author>RM</Author>
+                <Comment>peer name struct instead of U32 </Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DTI_CLOSE_REQ sent by DTI manager (ACI) stopps  the DTI connection between PSI and the peer entity.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DTI_CLOSE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>dti link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The  primitive PSI_DTI_OPEN_CNF sent to ACI confirms the successful opened DTI connection. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DTI_OPEN_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>cause value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>dti link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The  primitive PSI_DTI_CLOSE_CNF sent to ACI confirms the successful closed DTI connection. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DTI_CLOSE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>dti link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DTI_CLOSE_IND sent to ACI serves to close the DTI connection because of  the disconnected device.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DTI_CLOSE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>dti link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The  primitive PSI_SETCONF_CNF provides ACI the result of a requested device re-configuration .  </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_SETCONF_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>cause value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The user can set device configuration parameter anytime. For this reason ACI sends the primitive PSI_SETCONF_REQ. The structure DIO_DCB  is defined in the DIO SAP. Casting is necessary for access to the device specific configuration parameter ( DIO_DCB_SER, DIO_DCB_SER_MUX, DIO_DCB_PKT).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_SETCONF_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_DCB</Name>
+                </ItemLink>
+                <Control>PTR</Control>
+                <Comment>configuration structure</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">PSI Testprimitive PSI_SETCONF_REQ_TEST sent to PSI  is used for testcases instead of PSI_SETCONF_REQ. The reason: TDC is not able to handle casting requirements.The testprimitive  contains the structure DIO_DCB_UN  - a union of structures DIO_DCB_SER, DIO_DCB_SER_MUX, DIO_DCB_PKT.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_SETCONF_REQ_TEST</Name>
+                <PrimID Direction="UPLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>DIO_DCB_UN</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="09" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_LINE_STATE_REQ sent to PSI handles set or reset of certain serial  line states. The user can set or reset  RING and DCD (Data Carrier Detect) for serial connections.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_LINE_STATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>line_state</Name>
+                </ItemLink>
+                <Comment>line state information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_LINE_STATE_CNF sent to ACI confirms the sending of changed line state information to the device</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_LINE_STATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The  primitive PSI_LINE_STATE_IND  indicats ACI detected escape sequence detection and/or DTR line drops.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_LINE_STATE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>line_state</Name>
+                </ItemLink>
+                <Comment>line state information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">PSI_SIG_CLEAR_IND is not a primitive  but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal. It is used to transfer the device number. The PSI entity sends this signal to itself after the device has called the respective callback function with the parameter DRV_SIGTYPE_CLEAR. It informs PSI that the hardware send buffers are empty.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_SIG_CLEAR_IND</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">PSI_SIG_FLUSH_IND is not a primitive  but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal. It  is used to transfer the device number. The PSI entity sends this signal to itself after the device has called the respective callback function with the parameter DRV_SIGTYPE_FLUSH. It informs PSI that the driver sent all written data to the hardware.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_SIG_FLUSH_IND</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">PSI_SIG_READ_IND is not a primitive but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal. It is used to transfer the device number. The PSI entity sends this signal to itself after the device has called the respective callback function with the parameter DRV_SIGTYPE_READ. It informs PSI that the driver has started to write data in the receive buffer of PSI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_SIG_READ_IND</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">PSI_SIG_WRITE_IND is not a primitive but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal. It  is used to transfer the device number. The PSI entity sends this signal to itself after the device has called the respective callback function with the parameter DRV_SIGTYPE_WRITE. It informs PSI that the hardware sent the first filled buffer to the hardware.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_SIG_WRITE_IND</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">PSI_SIG_CONNECT_IND  is not a primitive  but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal. It is used to transfer the device number. The PSI entity sends this signal to itself after the device has called the respective callback function with the parameter DRV_SIGTYPE_CONNECT. It informs PSI that a new device wants to connect with the protocol stack.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_SIG_CONNECT_IND</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">PSI_SIG_DISCONNECT_IND is not a primitive but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal. It is used to transfer the device number. The PSI entity sends this signal to itself after the device has called the respective callback function with the parameter DRV_SIGTYPE_DISCONNECT. It informs PSI that the device is closed.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_SIG_DISCONNECT_IND</Name>
+                <PrimID Direction="UPLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_INIT_REQ primitive is a test primitive, only used in simulation environment. It is sent by the PSI entity instead of performing a function call to dio_user_init() to register PSI as user of DIO interface layer.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name> PSI_DIOSIM_INIT_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="32"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>drv_handle</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_INIT_CNF primitive is a test primitive, only used in simulation environment. It is sent as a confirmation of PSI_DIOSIM_INIT_REQ primitive and provides the return value.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_INIT_CNF </Name>
+                <PrimID Direction="UPLINK" Number="32"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_GET_CAP_REQ  primitive is a test primitive, only used in simulation environment. It is sent by the PSI entity instead of performing a function call of dio_get_capabilities() to request the device capabilities.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_GET_CAP_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="33"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_GET_CAP_SER_CNF primitive is a test primitive, only used in simulation environment of serial data. It is sent as a confirmation of PSI_DIOSIM_GET_CAP_REQ to provide the serial  device capabilities.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_GET_CAP_SER_CNF</Name>
+                <PrimID Direction="UPLINK" Number="33"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CAP_SER</Name>
+                </ItemLink>
+                <Comment>serial device capability structure</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>change name and param DIO_CAP to DIO_CAP_SER</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_GET_CAP_PKT_CNF primitive is a test primitive, only used in simulation environment of packet data. It is sent as a confirmation of PSI_DIOSIM_GET_CAP_REQ to provide the packet device capabilities.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_GET_CAP_PKT_CNF</Name>
+                <PrimID Direction="UPLINK" Number="44"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CAP_PKT</Name>
+                </ItemLink>
+                <Comment>packet device capability structure</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="25" Month="02" Year="2005"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_SET_CONF_SER_REQ  primitive is a test primitive, only used in simulation environment of serial data. It is sent by the PSI entity instead of performing a function call of dio_set_config() to set the serial device configuration parameter.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_SET_CONF_SER_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="34"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device Identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_DCB_SER</Name>
+                </ItemLink>
+                <Comment>serial configuration parameter structure</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>change name and DIO_DCB to DIO_DCB_SER</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_SET_CONF_PKT_REQ  primitive is a test primitive, only used in simulation environment of serial data. It is sent by the PSI entity instead of performing a function call of dio_set_config() to set the packet device configuration parameter.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_SET_CONF_PKT_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="44"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_DCB_PKT</Name>
+                </ItemLink>
+                <Comment>configuration params</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="01" Month="03" Year="2005"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_SET_CONF_CNF primitive is a test primitive, only used in simulation environment. It is sent as a confirmation of PSI_DIOSIM_SET_CONF_SER_REQ to set the device configuration parameter.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_SET_CONF_CNF</Name>
+                <PrimID Direction="UPLINK" Number="34"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_GET_CONF_SER_REQ  primitive is a test primitive, only used in simulation environment of serial data. It is sent by the PSI entity instead of performing a function call of dio_get_config() to get the serial device configuration parameter. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_GET_CONF_SER_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="35"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_DCB_SER</Name>
+                </ItemLink>
+                <Comment>serial device configuration parameter</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>change name and DIO_DCB to DIO_DCB_SER</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_GET_CONF_CNF primitive is a test primitive, only used in simulation environment. It is sent as a confirmation of PSI_DIOSIM_GET_CONF_SER_REQ to get the device configuration parameter.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_GET_CONF_CNF</Name>
+                <PrimID Direction="UPLINK" Number="35"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_CLOSE_DEV_REQ  primitive is a test primitive, only used in simulation environment. It is sent by the PSI entity instead of performing a function call of dio_close_config() to close the device.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_CLOSE_DEV_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="36"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_CLOSE_DEV_CNF primitive is a test primitive, only used in simulation environment. It is sent as a confirmation of PSI_DIOSIM_CLOSE_DEV_REQ to close the device. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_CLOSE_DEV_CNF</Name>
+                <PrimID Direction="UPLINK" Number="36"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_FLUSH_REQ  primitive is a test primitive, only used in simulation environment. It is sent by the PSI entity instead of performing a function call of dio_flush() to flush the hardware send buffer of the device.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_FLUSH_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="37"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_FLUSH_CNF primitive is a test primitive, only used in simulation environment. It is sent as a confirmation of PSI_DIOSIM_FLUSH_REQ to flush the hardware send buffer of the device. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_FLUSH_CNF</Name>
+                <PrimID Direction="UPLINK" Number="37"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_CLEAR_REQ  primitive is a test primitive, only used in simulation environment. It is sent by the PSI entity instead of performing a function call of dio_clear() to clear the hardware send buffer of the device.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_CLEAR_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="38"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_CLEAR_CNF primitive is a test primitive, only used in simulation environment. It is sent as a confirmation of PSI_DIOSIM_CLEAR_REQ to clear the hardware send buffer of the device.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_CLEAR_CNF</Name>
+                <PrimID Direction="UPLINK" Number="38"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_GET_TXB_REQ  primitive is a test primitive, only used in simulation environment. It is sent by the PSI entity instead of performing a function call of dio_get_tx_buffer() to get  the send buffer provided via dio_write(). </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_GET_TXB_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="39"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_GET_TXB_CNF primitive is a test primitive, only used in simulation environment. It is sent as a confirmation of PSI_DIOSIM_GET_TXB_REQ to get  the send buffer provided via dio_write().</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_GET_TXB_CNF</Name>
+                <PrimID Direction="UPLINK" Number="39"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_SET_RXB_REQ  primitive is a test primitive, only used in simulation environment. It is sent by the PSI entity instead of performing a function call of dio_set_rx_buffer() to provide a receive buffer to the driver.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_SET_RXB_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="40"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="25" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_SET_RXB_CNF primitive is a test primitive, only used in simulation environment. It is sent as a confirmation of PSI_DIOSIM_SET_RXB_REQ to provide a receive buffer to the driver. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_SET_RXB_CNF</Name>
+                <PrimID Direction="UPLINK" Number="40"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="25" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_READ_REQ  primitive is a test primitive, only used in simulation environment. It is sent by the PSI entity instead of performing a function call of dio_read() to get a receive buffer and control information from the driver.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_READ_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="41"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_READ_SER_CNF primitive is a test primitive, only used in simulation environment for serial data. It is sent as a confirmation of PSI_DIOSIM_READ_REQ to get  a receive buffer and control information (serial line states) from the driver.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_READ_SER_CNF</Name>
+                <PrimID Direction="UPLINK" Number="41"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>control_type</Name>
+                </ItemLink>
+                <Comment>control info type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>length</Name>
+                </ItemLink>
+                <Comment>control info len</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>state</Name>
+                </ItemLink>
+                <Comment>control info state</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>change name and DIO_CTRL to DIO_CTRL_LINES</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_READ_PKT_CNF primitive is a test primitive, only used in simulation environment for packetdata. It is sent as a confirmation of PSI_DIOSIM_READ_REQ to get  a receive buffer from the driver.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_READ_PKT_CNF</Name>
+                <PrimID Direction="UPLINK" Number="45"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="25" Month="02" Year="2005"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_WRITE_SER_REQ  primitive is a test primitive, only used in simulation environment for serial data. It is sent by the PSI entity instead of performing a function call of dio_write() to provide  a send buffer and control information (serial line states)  to the serial driver. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_WRITE_SER_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="42"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CTRL_LINES</Name>
+                </ItemLink>
+                <Comment>serial control info strucrture</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>change name and DIO_CTRL to DIO_CTRL_LINES</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_WRITE_PKT_REQ  primitive is a test primitive, only used in simulation environment for packet data. It is sent by the PSI entity instead of performing a function call of dio_write() to provide a send buffer  to the packet driver. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_WRITE_PKT_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="46"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="25" Month="02" Year="2005"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive PSI_DIOSIM_WRITE_CNF primitive is a test primitive, only used in simulation environment. It is sent as a confirmation of PSI_DIOSIM_WRITE_SER_REQ to provide  a send buffer and control information to the driver. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_WRITE_CNF</Name>
+                <PrimID Direction="UPLINK" Number="42"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>retValue</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PSI_DIOSIM_EXIT_REQ  primitive is a test primitive, only used in simulation environment. It is sent by the PSI entity instead of performing a function call of dio_user_exit() to deregister the user PSI  in the DIO interface layer.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_EXIT_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="43"/>
+                <PrimUsage>
+                    <Sender>PSI</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">In the simulation environment, the  primitive PSI_DIOSIM_SIGN_IND is sent to the PSI entity to simulate the occurance of a signal. In the target environment, this is done by calling the PSI callback function.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>PSI_DIOSIM_SIGN_IND</Name>
+                <PrimID Direction="UPLINK" Number="43"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>PSI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>signal_type</Name>
+                </ItemLink>
+                <Comment>signal information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION"/>
+            </DocElement>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The union DIO_CAP_UN contains the structures DIO_CAP_SER, DIO_CAP_SER_MUX , DIO_CAP_PKT and serves only test purposes.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="UNION">
+                <Name>DIO_CAP_UN</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CAP_SER</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>ser_cap</Name>
+                </UnionTag>
+                <Comment>capabilities of serial driver</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CAP_PKT</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>pkt_cap</Name>
+                </UnionTag>
+                <Comment>capabilities of packet driver</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CAP_SER_MUX</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>mux_cap</Name>
+                </UnionTag>
+                <Comment>capabilities of mux driver</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="09" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The union DIO_DCB_UN contains the structures  DIO_DCB_SER, DIO_DCB_SER_MUX, DIO_DCB_PKT and serves only test purposes.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="UNION">
+                <Name>DIO_DCB_UN</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_DCB_SER</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>ser_dcb</Name>
+                </UnionTag>
+                <Comment>configuration of serial driver</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_DCB_PKT</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>pkt_dcb</Name>
+                </UnionTag>
+                <Comment>configuration of packet driver</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_DCB_SER_MUX</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>mux_dcb</Name>
+                </UnionTag>
+                <Comment>configuration of mux driver</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="09" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This struct contains the zero-terminated string which is the name of the entity for data exchange</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>peer</Name>
+                <Comment>communication entity name</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">PSI</DocName>
+                    <Name>name</Name>
+                </ItemLink>
+                <Control>[PSI_PEER_ENTITY_NAME_LENGTH]</Control>
+                <Comment>communication peer name</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="26" Month="10" Year="2005"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter indicates the outcome of any operation. The cause values given here are error codes indicating internally recognized problems.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>cause value</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">PSI</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter devId informs about the common driver characteristic. It contains the kind of device, the kind of transported data and the device number chosen by driver.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>devId</Name>
+                <Type>U32</Type>
+                <Comment>device identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_device</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This parameter controls if PSI uses DTI in the normal way or if the primitives are inverted. In the normal way data is sent as DTI_DATA_IND and received as DTI_DATA_REQ. In the inverted mode data is send as DTI_DATA_REQ and received as DTI_DATA_IND (relay functionality). The appropriate constants are are already defined in dti.h.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_direction</Name>
+                <Type>U8</Type>
+                <Comment>link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the unique handle for this driver. Assigned by the frame.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>drv_handle</Name>
+                <Type>U16</Type>
+                <Comment>driver handle</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter line_state contains information both about set/reset of serial line states and about the escape sequence detection.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>line_state</Name>
+                <Type>U16</Type>
+                <Comment>line state information</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">PSI</DocName>
+                <Name>VAL_psi_line_states</Name>
+            </ValuesLink>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_line_states</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The link identifier for DTI. This parameter is used to identify the affected channel.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>link_id</Name>
+                <Type>U32</Type>
+                <Comment>link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="09" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This parameter describes the used data mode of the device.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>psi_data_mode</Name>
+                <Type>U8</Type>
+                <Comment>TE will use the device to transmit AT commands or data or both</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">PSI</DocName>
+                <Name>VAL_psi_data_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="15" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the return value address of a callback function for the simulation environment. The possible return values are DRV_OK, DRV_BUFFER_FULL, DRV_INITFAILURE, DRV_NOTCONFIGURED, DRV_INITIALIZED, DRV_INTERNAL_ERROR, DRV_INPROCESS, DRV_INVALID_PARAMS and DRV_NOTCONFIGURED. The appropriate values for these constants are defined in gdi.h.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>retValue</Name>
+                <Type>U16</Type>
+                <Comment>return value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This parameter of devices contains the sent driver signal_type</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>signal_type</Name>
+                <Type>U16</Type>
+                <Comment>signal information</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">name of peer entity for data exchange</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>name</Name>
+                <Type>U8</Type>
+                <Comment>entity name</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="26" Month="10" Year="2005"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all sets of values that are defined for the PSI SAP </XHTMLElement>
+            </DocElement>
+        </Description>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains cause values that are defined for the PSI SAP</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>cause values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">D300</Value>
+                <Alias>PSICS_SUCCESS</Alias>
+                <Comment>0b11010011 00000000 no error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D301</Value>
+                <Alias>PSICS_INVALID_PARAMS</Alias>
+                <Comment>0b11010011 00000001 device number invalid or parameter invalid </Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D302</Value>
+                <Alias>PSICS_INTERNAL_DRV_ERROR</Alias>
+                <Comment>0b11010011 00000010 A driver function returned DRV_INTERNAL_ERROR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D303</Value>
+                <Alias>PSICS_DISCONNECT</Alias>
+                <Comment>0b11010011 00000011 The driver signalled a DRV_SIGTYPE_DISCONNECT</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains line state values for serial connection that are defined for the PSI SAP</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_line_states</Name>
+                <Comment>line state values of serial devices</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>PSI_LINE_STD_NOT_VALID</Alias>
+                <Comment>b00000000 no line state request is given</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="10" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains baud rate values for serial devices which can be automatically detected (appropriated  bit is set to 1 ) or set by user (only the appropriated bit can be set to 1)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_baud_rate</Name>
+                <Comment>baudrate values detected automatically resp.set by user</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">ffffffff</Value>
+                <Alias>DIO4_BAUD_NOT_VALID</Alias>
+                <Comment>baudrate is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of supported character framing (appropriated bit is set to 1). </XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_char_frame</Name>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>DIO_CF_NOT_VALID</Alias>
+                <Comment>char frame values are not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of supported modes of flow control  (appropriated bit is set  to 1). </XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_flow_control</Name>
+                <Comment>supported flow control modes of device</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">ffffffff</Value>
+                <Alias>DIO_FLOW_NOT_VALID</Alias>
+                <Comment>flow control value are not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of the supported multiplexer mode of the 27.010 multiplexer. The parameter is a bitfield, the appropriat bit is set to 1. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_mux_mode</Name>
+                <Comment>mux mode values for mux devices</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">ffffffff</Value>
+                <Alias>DIO_MUX_MODE_NOT_VALID</Alias>
+                <Comment>mux mode is unchanged</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of supported packet device capabilities. The parameter is a bitfield, the appropriat bit is set to 1. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pkt_flag</Name>
+                <Comment>supported packet device capabilities</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">80000000</Value>
+                <Alias>DIO_FLAG_PKT_PROTOCOL</Alias>
+                <Comment>device can transfer information to identify the packet protocol</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">ffffffff</Value>
+                <Alias>DIO_FLAG_PKT_PROT_NOT_VALID</Alias>
+                <Comment>packet flag is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains information about sleep mode support of device. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_sleep_mode</Name>
+                <Comment>sleep mode support</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>DIO_SLEEP_NOT_VALID</Alias>
+                <Comment>value is not valid</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">ff</Value>
+                <Alias>DIO_SLEEP_NOT_CHAN</Alias>
+                <Comment>value is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of guarding periods for escape sequence detection </XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_guard_per</Name>
+                <Comment>guarding periods values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">ff</Value>
+                <Alias>DIO_GUARD_PER_NOT_VALID</Alias>
+                <Comment>guard period is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of device work mode. This parameter is a bitfield. To select a work mode (one at one time ) the appropriat bit is set to 1.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_dev_mode</Name>
+                <Comment>device work mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>DEV_MODE_NOT_VALID</Alias>
+                <Comment>device mode is unchanged</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of escape character values</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_esc_char</Name>
+                <Comment>escape character values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>ESC_CHAR_NOT_VALID</Alias>
+                <Comment>escape character is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of packet types </XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pkt_type</Name>
+                <Comment>packet types</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0021</Value>
+                <Alias>DIO_PACKET_IPV4</Alias>
+                <Comment>IP packet version 4</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002D</Value>
+                <Alias>DIO_PACKET_VJ_CTCP</Alias>
+                <Comment>IPv4 packet with Van Jacobson compressed TCP/IP header</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002F</Value>
+                <Alias>DIO_PACKET_VJ_UTCP</Alias>
+                <Comment>IPv4 packet with Van Jacobson uncompressed TCP/IP header</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0057</Value>
+                <Alias>DIO_PACKET_IPV6</Alias>
+                <Comment>IP packet version 6</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="12" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of xon (flow control mode)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_xon</Name>
+                <Comment>xon values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>XON_NOT_VALID</Alias>
+                <Comment>xon value is unchanged</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of xoff(flow control mode)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_xoff</Name>
+                <Comment>xoff values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>XOFF_NOT_VALID</Alias>
+                <Comment>xoff value is unchanged</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of supported multiplexer max frame size</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_n1</Name>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>PSI_MUX_N1_NOT_VALID</Alias>
+                <Comment>mux max frame size is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of supported multiplexer: max number of retransmission</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_n2</Name>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>PSI_MUX_N2_NOT_VALID</Alias>
+                <Comment>number of retransmission is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="02" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of supported multiplexer:  acknowledgement timer</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_t1</Name>
+                <Comment>values for acknowledgement timer</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>PSI_MUX_T1_NOT_VALID</Alias>
+                <Comment>acknowledgement timer is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of supported multiplexer:  response timer</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_t2</Name>
+                <Comment>values for response timer</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>PSI_MUX_T2_NOT_VALID</Alias>
+                <Comment>response timer is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of supported multiplexer:  wake up response timer</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_t3</Name>
+                <Comment>values for wake up response timer</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>PSI_MUX_T3_NOT_VALID</Alias>
+                <Comment>wake up response timer is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values of supported multiplexer:  windows size for advanced option with error recoveryr</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_k</Name>
+                <Comment>windows size value for mux</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>PSI_K_NOT_VALID</Alias>
+                <Comment>windows size  is not changed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="17" Month="02" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This section contains values for driver data modes</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_psi_data_mode</Name>
+                <Comment>values for data_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DRIVER_MODE_AT</Alias>
+                <Comment>The driver will transmit AT commands.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>DRIVER_MODE_DATA</Alias>
+                <Comment>The driver  will transmit data.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">03</Value>
+                <Alias>DRIVER_MODE_AT_DATA</Alias>
+                <Comment>The driver will transmit AT commands and data</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="15" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

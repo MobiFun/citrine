@@ -1,0 +1,305 @@
+;********************************************************************************
+;*** File           : rr_short_pd.mdf
+;*** Creation       : Thu Jun 19 15:32:12 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : rr_short_pd
+;*** Document No.   : 8010.602.03.001
+;*** Document Date  : 2003-11-06
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: LG
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:21:00 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-11-06"
+PRAGMA 	ID_AND_VERSION 	"8010.602.03.001"
+PRAGMA 	CCDNAME 	RR_SHORT 	; CCD name tag
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	NO 	; Adds enumerations in the .val file.
+
+
+
+CONST 	L3MAX_ACK 	251 	; GSM 4.06, section 5.8.5
+CONST 	L3MAX 	251 	; 
+CONST 	MAX_NNC 	96 	; Maximum number of cells in Neighbour cell list for Enhanced Measurements
+CONST 	MAX_BSICI 	8 	; Maximum invalid BSIC information IE's (21*8-14) / (17+1) = 8
+CONST 	MAX_2GEXT 	132 	; Maximum length of MI 2G Extension (21*8-36) = 132
+
+
+
+VALTAB 	VAL_bsic_seen
+VAL 	0 	NO_INV_BSIC_SEEN 	"No cell with invalid BSIC and allowed NCC part of BSIC is seen."
+VAL 	1 	INV_BSIC_SEEN 	"One cell or more with invalid BSIC and allowed NCC part of BSIC is seen."
+
+VALTAB 	VAL_cv_bep
+VAL 	0 	CV_BEP_0 	"2.00 > std(BEP)/mean(BEP) > 1.75"
+VAL 	1 	CV_BEP_1 	"1.75 > std(BEP)/mean(BEP) > 1.50"
+VAL 	2 	CV_BEP_2 	"1.50 > std(BEP)/mean(BEP) > 1.25"
+VAL 	3 	CV_BEP_3 	"1.25 > std(BEP)/mean(BEP) > 1.00"
+VAL 	4 	CV_BEP_4 	"1.00 > std(BEP)/mean(BEP) > 0.75"
+VAL 	5 	CV_BEP_5 	"0.75 > std(BEP)/mean(BEP) > 0.50"
+VAL 	6 	CV_BEP_6 	"0.50 > std(BEP)/mean(BEP) > 0.25"
+VAL 	7 	CV_BEP_7 	"0.25 > std(BEP)/mean(BEP) > 0.00"
+
+VALTAB 	VAL_dtx_used
+VAL 	0 	DTX_USED_NO 	"DTX was not used"
+VAL 	1 	DTX_USED_YES 	"DTX was used"
+
+VALTAB 	VAL_inv_bsic_rep
+VAL 	0 	NO_REPORT 	"Indicates that GSM cells with invalid BSIC and allowed NCC part should not be reported"
+VAL 	1 	YES_REPORT 	"Indicates that GSM cells with invalid BSIC and allowed NCC part should be reported"
+
+VALTAB 	VAL_pow_ctrl
+VAL 	0 	POW_CTRL_NO 	"PWRC is not set"
+VAL 	1 	POW_CTRL_YES 	"PWRC is set"
+
+VALTAB 	VAL_rep_rate
+VAL 	0 	NORMAL_RATE 	"SACCH rate reporting."
+VAL 	1 	REDUCED_RATE 	"Reduced reporting rate allowed."
+
+VALTAB 	VAL_report_type
+VAL 	0 	RT_EMR 	"MS shall use the Enhanced Measurement Report message, if at least one BSIC is allocated to each BA frequency, otherwise the Measurement Report message."
+VAL 	1 	RT_MR 	"The MS shall use the Measurement Report message for reporting."
+
+VALTAB 	VAL_scale
+VAL 	0 	SCALE_ZERO_DB 	"0 dB offset is used for the reported RXLEV values"
+VAL 	1 	SCALE_TEN_DB 	"+10 dB offset is used for the reported RXLEV values"
+
+VALTAB 	VAL_scale_ord
+VAL 	0 	SC_ORD_ZERO_DB 	"0 dB offset, which shall be used for the reported RXLEV values"
+VAL 	1 	SC_ORD_TEN_DB 	"+10 dB offset, which shall be used for the reported RXLEV values"
+VAL 	2 	SC_ORD_AUTOMATIC 	"automatic offset, which shall be used for the reported RXLEV values"
+
+VALTAB 	VAL_sl2h
+VAL 	DEF 	 	"reserved"
+VAL 	0 	SL2H_0 	"Short Layer 2 header: UI command frame"
+
+
+
+
+VAR 	ba_start_bsic 	"BA Index Start BSIC" 	
+ 	5
+
+
+VAR 	ba_ind 	"BA Sequence Number indication" 	
+ 	1
+
+
+VAR 	ba_ind_3g 	"3G BA Sequence Number indication" 	
+ 	1
+
+
+VAR 	bsic 	"BSIC" 	
+ 	6
+
+
+VAR 	bsic_seen 	"BSIC Seen" 	
+ 	1
+
+VAL 	@m_rr_short_pd - VAL_bsic_seen@ 	
+
+VAR 	cv_bep 	"Coefficient of Variation of BEP" 	
+ 	3
+
+VAL 	@m_rr_short_pd - VAL_cv_bep@ 	
+
+VAR 	dtx_used 	"DTX USED" 	
+ 	1
+
+VAL 	@m_rr_short_pd - VAL_dtx_used@ 	
+
+VAR 	extens 	"Extension" 	
+ 	1
+
+
+VAR 	e_len 	"Extension Length" 	
+ 	8
+
+
+VAR 	inv_bsic_rep 	"Invalid BSIC reporting" 	
+ 	1
+
+VAL 	@m_rr_short_pd - VAL_inv_bsic_rep@ 	
+
+VAR 	mean_bep 	"Mean BEP" 	
+ 	5
+
+
+VAR 	mp_cm 	"Measurement parameters change mark" 	
+ 	1
+
+
+VAR 	msg_type 	"Message Type" 	
+ 	6
+
+
+VAR 	mi_idx 	"MI Index" 	
+ 	4
+
+
+VAR 	mi_c 	"MI Counter" 	
+ 	4
+
+
+VAR 	mr 	"Multiband Reporting" 	
+ 	2
+
+
+VAR 	nr_rcvd_bl 	"Number Of Received Blocks" 	
+ 	5
+
+
+VAR 	pow_ctrl 	"Power Control Indicator" 	
+ 	1
+
+VAL 	@m_rr_short_pd - VAL_pow_ctrl@ 	
+
+VAR 	rep_rate 	"Reporting Rate" 	
+ 	1
+
+VAL 	@m_rr_short_pd - VAL_rep_rate@ 	
+
+VAR 	report_type 	"Report Type" 	
+ 	1
+
+VAL 	@m_rr_short_pd - VAL_report_type@ 	
+
+VAR 	rxlev 	"RX Level" 	
+ 	6
+
+
+VAR 	rep_q 	"Reporting Quantity" 	
+ 	6
+
+
+VAR 	rxqual_full 	"RX Quality Full Serving Cell" 	
+ 	3
+
+
+VAR 	scale 	"Scale" 	
+ 	1
+
+VAL 	@m_rr_short_pd - VAL_scale@ 	
+
+VAR 	scale_ord 	"Scale ord" 	
+ 	2
+
+VAL 	@m_rr_short_pd - VAL_scale_ord@ 	
+
+VAR 	serv_band_rep 	"Serving band reporting" 	
+ 	2
+
+
+VAR 	sl2h 	"Short Layer 2 Header" 	
+ 	2
+
+VAL 	@m_rr_short_pd - VAL_sl2h@ 	
+
+
+
+
+COMP 	emp 	"EM MEASUREMENT Parameters Description"
+{
+ 	CSN1_S1  	mr 	 ; Multiband Reporting
+ 	CSN1_S1  	serv_band_rep 	 ; Serving band reporting
+ 	 	scale_ord 	 ; Scale ord
+ 	CSN1_S1 EXTERN @m_rr_com - report_900@ 	 	report_900 	 ; Reporting 900
+ 	CSN1_S1 EXTERN @m_rr_com - report_1800@ 	 	report_1800 	 ; Reporting 1800
+ 	CSN1_S1 EXTERN @m_rr_com - report_400@ 	 	report_400 	 ; Reporting 400
+ 	CSN1_S1 EXTERN @m_rr_com - report_1900@ 	 	report_1900 	 ; Reporting 1900
+ 	CSN1_S1 EXTERN @m_rr_com - report_850@ 	 	report_850 	 ; Reporting 850
+}
+
+
+
+COMP 	i_bsic_i 	"Invalid BSIC Information"
+{
+ 	 	ba_start_bsic 	 ; BA List Index
+ 	 	bsic 	 ; BSIC
+ 	 	rxlev 	 ; GSM Reporting Quantity
+}
+
+
+
+COMP 	mi_ext 	"MI 2G Extension"
+{
+ 	 	e_len 	 ; Extension Length
+ 	 	extens 	[e_len..MAX_2GEXT] 	 ; Extension
+}
+
+
+
+COMP 	scdata 	"Serving Cell Data"
+{
+ 	 	dtx_used 	 ; DTX Used
+ 	 	rxlev 	 ; RX Level
+ 	 	rxqual_full 	 ; RX Quality Full
+ 	 	mean_bep 	 ; Mean BEP
+ 	 	cv_bep 	 ; Coefficient of Variation of BEP
+ 	 	nr_rcvd_bl 	 ; Number Of Received Blocks
+}
+
+
+
+COMP 	rep_q_arr 	"Structured Element"
+{
+ 	CSN1_S1  	rep_q 	 ; reported quantity, present only if reported
+}
+
+
+
+COMP 	em_rep 	"EM Bitmap Type Reporting"
+{
+ 	 	rep_q_arr 	[0..MAX_NNC] 	 ; Reporting Quantities
+}
+
+
+
+
+
+
+MSG 	u_emr 	uplink 	0b000100 ; Enhanced Measurement Report
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	sl2h 	 ; Short Layer 2 Header
+ 	GSM3_V  	ba_ind 	 ; BA Sequence Number indication
+ 	GSM3_V  	ba_ind_3g 	 ; 3G BA Sequence Number indication
+ 	GSM3_V  	bsic_seen 	 ; BSIC Seen
+ 	GSM3_V  	scale 	 ; Scale
+ 	CSN1_S1  	scdata 	 ; Serving Cell Data
+ 	CSN1_S1  	i_bsic_i 	[0..MAX_BSICI] 	 ; Invalid BSIC Information
+ 	CSN1_S1  	em_rep 	 ; EM Bitmap Type Reporting
+ 	S_PADDING .00101011 (21) ; Spare Padding
+}
+
+
+
+MSG 	d_meas_inf 	downlink 	0b000101 ; Measurement Information
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	sl2h 	 ; Short Layer 2 Header
+ 	GSM3_V  	ba_ind 	 ; BA Sequence Number indication
+ 	GSM3_V  	ba_ind_3g 	 ; 3G BA Sequence Number indication
+ 	GSM3_V  	mp_cm 	 ; Measurement parameters change mark
+ 	GSM3_V  	mi_idx 	 ; MI Index
+ 	GSM3_V  	mi_c 	 ; MI Counter
+ 	GSM3_V  	pow_ctrl 	 ; Power Control Indicator
+ 	GSM3_V  	report_type 	 ; Report Type
+ 	GSM3_V  	rep_rate 	 ; Reporting Rate
+ 	GSM3_V  	inv_bsic_rep 	 ; Invalid BSIC Reporting
+ 	CSN1_S1 EXTERN @m_rr_com - rtdd@ 	 	rtdd 	 ; GPRS Real Time Difference Description
+ 	CSN1_S1 EXTERN @m_rr_com - gprs_bsic@ 	 	gprs_bsic 	 ; GPRS BSIC Description
+ 	CSN1_S1 EXTERN @m_rr_com - gprs_rep_prio@ 	 	gprs_rep_prio 	 ; Report Priority
+ 	CSN1_S1  	emp 	 ; EM Measurement Parameters Description
+ 	CSN1_S1  	mi_ext 	 ; MI 2G Extension
+ 	S_PADDING .00101011 (21) ; Spare Padding
+}
+
+
+
+
+
+

@@ -1,0 +1,45 @@
+# feature mokoffs is applicable only when building gsm-fw for the Openmoko
+# GTA0x GSM modem.  This feature directs our fw to use the original FFS
+# which contains the factory IMEI + RF calibration data and which the
+# original mokoN firmware treats as writable.
+#
+# There are 3 different ways in which we can use MokoFFS:
+#
+# feature mokoffs rw	-- treat MokoFFS as R/W like the original fw does
+# feature mokoffs ro	-- use MokoFFS in flash, but disable flash write ops
+# feature mokoffs copy	-- copy MokoFFS into RAM on boot, then R/W in RAM only
+
+check_target_feature "$1"
+
+CONFIG_MOKOFFS=1
+export_to_c	CONFIG_MOKOFFS
+
+if [ $# != 2 ]
+then
+	echo "feature mokoffs: extra argument required" 1>&2
+	exit 1
+fi
+
+case "$2" in
+	rw)
+		FFS_IN_RAM=0
+		CONFIG_FLASH_WRITE=1
+		export_to_c CONFIG_FLASH_WRITE
+		;;
+	ro)
+		FFS_IN_RAM=0
+		CONFIG_FLASH_WRITE=0
+		export_to_c CONFIG_FLASH_WRITE
+		;;
+	copy)
+		FFS_IN_RAM=1
+		RAMFFS_BLKSIZE_LOG2=16
+		RAMFFS_NBLOCKS=7
+		CONFIG_MOKOFFS_COPY=1
+		export_to_c CONFIG_MOKOFFS_COPY
+		;;
+	*)
+		echo "feature mokoffs: argument must be rw, ro or copy" 1>&2
+		exit 1
+		;;
+esac

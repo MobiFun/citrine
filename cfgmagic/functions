@@ -1,0 +1,112 @@
+target() {
+	if [ $# -lt 1 ]
+	then
+		echo "target setting: required argument missing" 1>&2
+		exit 1
+	fi
+	if [ -n "$TARGET" ]
+	then
+		echo "Error: target specified more than once" 1>&2
+		exit 1
+	fi
+	if [ ! -f "cfgmagic/target.$1" ]
+	then
+		echo "Error: target $1 not known" 1>&2
+		exit 1
+	fi
+	# looks good, proceed
+	TARGET="$1"
+	. "cfgmagic/target.$1"
+	. cfgmagic/post-target
+}
+
+feature() {
+	if [ $# -lt 1 ]
+	then
+		echo "feature setting: required argument missing" 1>&2
+		exit 1
+	fi
+	if [ -z "$TARGET" ]
+	then
+		echo "Please specify the target before any features" 1>&2
+		exit 1
+	fi
+	if [ ! -f "cfgmagic/feature.$1" ]
+	then
+		echo "Error: feature $1 not known" 1>&2
+		exit 1
+	fi
+	# looks good, proceed
+	. "cfgmagic/feature.$1"
+}
+
+allow_target_feature() {
+	while [ $# != 0 ]
+	do
+		case "$target_feature_list" in
+			*" $1 "* | *" $1")
+				;;
+			*)
+				target_feature_list="$target_feature_list $1"
+				;;
+		esac
+		shift
+	done
+}
+
+check_target_feature() {
+    while [ $# != 0 ]
+    do
+	case "$target_feature_list" in
+	    *" $1 "* | *" $1" | *" OVERRIDE "* | *" OVERRIDE")
+		;;
+	    *)
+		echo "Error: feature $1 not supported on target $TARGET" 1>&2
+		exit 1
+		;;
+	esac
+	shift
+    done
+}
+
+export_to_c() {
+	while [ $# != 0 ]
+	do
+		case "$c_export_list" in
+			*" $1 "* | *" $1")
+				;;
+			*)
+				c_export_list="$c_export_list $1"
+				;;
+		esac
+		shift
+	done
+}
+
+export_to_mk() {
+	while [ $# != 0 ]
+	do
+		case "$mk_export_list" in
+			*" $1 "* | *" $1")
+				;;
+			*)
+				mk_export_list="$mk_export_list $1"
+				;;
+		esac
+		shift
+	done
+}
+
+export_to_m4() {
+	while [ $# != 0 ]
+	do
+		case "$m4_export_list" in
+			*" $1 "* | *" $1")
+				;;
+			*)
+				m4_export_list="$m4_export_list $1"
+				;;
+		esac
+		shift
+	done
+}

@@ -1,0 +1,109 @@
+;********************************************************************************
+;*** File           : tst.mdf
+;*** Creation       : Thu Jun 19 15:32:14 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : tst
+;*** Document No.   : 8441.603.99.005
+;*** Document Date  : 2000-10-23
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: ANS
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:21:30 2007"
+PRAGMA 	LAST_MODIFIED 	"2000-10-23"
+PRAGMA 	ID_AND_VERSION 	"8441.603.99.005"
+
+
+
+CONST 	L3MAX 	251 	; maximum size of a L3 buffer
+CONST 	MAX_N_PDU_NUMBER_LIST 	11 	; maximum size of N-PDU number list
+
+
+
+VALTAB 	VAL_no_of_pdus
+VAL 	DEF 	 	"Number of PDUs to transmit"
+VAL 	0 	TEST_INFINITIVE_NO 	"ciphering not used"
+
+VALTAB 	VAL_dl_timeslot_offset
+VAL 	0 	TEST_TN0 	"downlink timeslot offsett 0"
+VAL 	1 	TEST_TN1 	"downlink timeslot offsett 1"
+VAL 	2 	TEST_TN2 	"downlink timeslot offsett 2"
+VAL 	3 	TEST_TN3 	"downlink timeslot offsett 3"
+VAL 	4 	TEST_TN4 	"downlink timeslot offsett 4"
+VAL 	5 	TEST_TN5 	"downlink timeslot offsett 5"
+VAL 	6 	TEST_TN6 	"downlink timeslot offsett 6"
+VAL 	7 	TEST_TN7 	"downlink timeslot offsett 7"
+
+VALTAB 	VAL_mode_flag_val
+VAL 	0 	TEST_RANDOM 	"pseudorandom data"
+VAL 	1 	TEST_LOOP 	"loop back"
+
+
+
+
+VAR 	msg_type 	"Message Type" 	
+ 	8
+
+
+VAR 	no_of_pdus 	"Number of PDUs" 	
+ 	12
+
+VAL 	@m_tst - VAL_no_of_pdus@ 	
+
+VAR 	dl_timeslot_offset 	"Downlink Timeslot Offset" 	
+ 	3
+
+VAL 	@m_tst - VAL_dl_timeslot_offset@ 	
+
+VAR 	mode_flag_val 	"Mode Flag Value" 	
+ 	1
+
+VAL 	@m_tst - VAL_mode_flag_val@ 	
+
+
+
+
+COMP 	pdu_description 	"PDU Description"
+{
+ 	.000  ; spare
+ 	 	no_of_pdus 	 ; Number
+}
+
+
+
+COMP 	pdu_description_ie 	"PDU Description IE"
+{
+ 	CSN1_S1  	pdu_description 	 ; PDU Description
+}
+
+
+
+COMP 	mode_flag 	"Mode Flag"
+{
+ 	.0000  ; spare
+ 	 	dl_timeslot_offset 	 ; Downlink Timeslot Offset
+ 	 	mode_flag_val 	 ; Mode Flag Value
+}
+
+
+
+
+
+
+MSG 	gprs_test_mode_cmd 	downlink 	36 ; gprs_test_mode_cmd
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	pdu_description_ie 	 ; PDU description
+ 	GSM3_V  	mode_flag 	 ; Mode Flag
+}
+
+
+
+
+
+

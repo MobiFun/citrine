@@ -1,0 +1,622 @@
+;********************************************************************************
+;*** File           : tcpip.pdf
+;*** Creation       : Wed Mar 11 09:57:43 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : tcpip
+;*** Document No.   : 8462.000.03.005
+;*** Document Date  : 2003-09-05
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: NI
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:55:14 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-09-05"
+PRAGMA 	ID_AND_VERSION 	"8462.000.03.005"
+
+
+
+CONST 	TCPIP_HNAMELEN 	256 	; Maximum length of the full-qualified domain name of an Internet host (as defined in [RFC 1034]) plus one byte for the zero termination.
+CONST 	TCPIP_DEFAULT_MTU_SIZE 	1500 	; Default size of the maximum transfer unit of the network connection. To be used if no other information is available.
+CONST 	TCPIP_UNSPECIFIED_IPADDR 	0 	; The unspecified IP address (0.0.0.0)
+CONST 	TCPIP_UNSPECIFIED_PORT 	0 	; The unspecified port number.
+
+
+
+VALTAB 	VAL_ipproto
+VAL 	6 	TCPIP_IPPROTO_TCP 	"Value for TCP"
+VAL 	17 	TCPIP_IPPROTO_UDP 	"Value for UDP"
+
+VALTAB 	VAL_event_type
+VAL 	1 	TCPIP_EVT_CREATE_CNF 	"Result of TCPIP_CREATE_REQ"
+VAL 	2 	TCPIP_EVT_CLOSE_CNF 	"Result of TCPIP_CLOSE_REQ"
+VAL 	3 	TCPIP_EVT_BIND_CNF 	"Result of TCPIP_BIND_REQ"
+VAL 	4 	TCPIP_EVT_LISTEN_CNF 	"Result of TCPIP_LISTEN_REQ"
+VAL 	5 	TCPIP_EVT_CONNECT_CNF 	"Result of TCPIP_CONNECT_REQ"
+VAL 	6 	TCPIP_EVT_SOCKNAME_CNF 	"Result of TCPIP_SOCKNAME_REQ"
+VAL 	7 	TCPIP_EVT_PEERNAME_CNF 	"Result of TCPIP_PEERNAME_REQ"
+VAL 	8 	TCPIP_EVT_HOSTINFO_CNF 	"Result of TCPIP_HOSTINFO_REQ"
+VAL 	9 	TCPIP_EVT_MTU_SIZE_CNF 	"Result of TCPIP_MTU_SIZE_REQ"
+VAL 	10 	TCPIP_EVT_RECV_IND 	"Indication of incoming data"
+VAL 	11 	TCPIP_EVT_CONNECT_IND 	"Indication of incoming connection"
+VAL 	12 	TCPIP_EVT_CONN_CLOSED_IND 	"Indication of remotely closed connection"
+VAL 	13 	TCPIP_EVT_ERROR_IND 	"Indication of asynchronous error"
+VAL 	14 	TCPIP_EVT_FLOW_READY_IND 	"Flow Control: application can send again (not used by a TCPIP primitive!)"
+
+VALTAB 	VAL_result
+VAL 	0 	TCPIP_RESULT_OK 	"Operation was successful."
+VAL 	1 	TCPIP_RESULT_INVALID_PARAMETER 	"A parameter was invalid."
+VAL 	2 	TCPIP_RESULT_INTERNAL_ERROR 	"An internal error has happened."
+VAL 	3 	TCPIP_RESULT_ADDR_IN_USE 	"The address or port is already in use."
+VAL 	4 	TCPIP_RESULT_OUT_OF_MEMORY 	"There is not enough memory to fulfill the request."
+VAL 	5 	TCPIP_RESULT_NOT_SUPPORTED 	"The socket is not of a type that can support this operation."
+VAL 	6 	TCPIP_RESULT_UNREACHABLE 	"The specified host cannot be reached."
+VAL 	7 	TCPIP_RESULT_CONN_REFUSED 	"The connection to the specified address was refused by the remote host."
+VAL 	8 	TCPIP_RESULT_TIMEOUT 	"The connection attempt timed out without establishing a connection."
+VAL 	9 	TCPIP_RESULT_IS_CONNECTED 	"The request could not be fulfilled because the socket is already connected."
+VAL 	10 	TCPIP_RESULT_HOST_NOT_FOUND 	"The specified host could not be found in the DNS."
+VAL 	11 	TCPIP_RESULT_DNS_TEMP_ERROR 	"A temporary DNS error has occurred. Retrying the query may be successful."
+VAL 	12 	TCPIP_RESULT_DNS_PERM_ERROR 	"A permanent DNS error has occurred."
+VAL 	13 	TCPIP_RESULT_NO_IPADDR 	"The specified name has been found in the DNS, but no IP address is available."
+VAL 	14 	TCPIP_RESULT_NOT_CONNECTED 	"The socket has not been connected yet."
+VAL 	15 	TCPIP_RESULT_MSG_TOO_BIG 	"The size of the data buffer is too large for a UDP socket."
+VAL 	16 	TCPIP_RESULT_CONN_RESET 	"The connection has been reset by the remote peer."
+VAL 	17 	TCPIP_RESULT_CONN_ABORTED 	"The connection was aborted due to timeout or some other error condition."
+VAL 	18 	TCPIP_RESULT_NO_BUFSPACE 	"Sending failed temporarily because the space to buffer the message was exhausted. The application should wait for a TCPIP_FLOW_READY_IND event to retry the operation."
+VAL 	19 	TCPIP_RESULT_NETWORK_LOST 	"The operation failed because TCP/IP's network connection has been disconnected."
+VAL 	20 	TCPIP_RESULT_NOT_READY 	"The operation failed because the TCP/IP entity was not yet initialised."
+
+VALTAB 	VAL_if_up
+VAL 	0 	TCPIP_IFCONFIG_DOWN 	"Interface going down"
+VAL 	1 	TCPIP_IFCONFIG_UP 	"Interface coming up"
+
+VALTAB 	VAL_dti_direction
+VAL 	0 	TCPIP_DTI_TO_HIGHER_LAYER 	"Connect to higher layer, i. e. an application"
+VAL 	1 	TCPIP_DTI_TO_LOWER_LAYER 	"Connect to lower layer, i. e. to protocol stack"
+
+VALTAB 	VAL_dti_conn
+VAL 	0 	TCPIP_CONNECT_DTI 	"Connect the DTI link"
+VAL 	1 	TCPIP_DISCONNECT_DTI 	"Disconnect the DTI link"
+
+
+
+
+VAR 	app_handle 	"Application communication handle" 	L
+
+
+VAR 	ipproto 	"IP protocol identifier" 	B
+
+VAL 	@p_tcpip - VAL_ipproto@ 	
+
+VAR 	request_id 	"Request ID" 	L
+
+
+VAR 	event_type 	"Type of the event" 	L
+
+VAL 	@p_tcpip - VAL_event_type@ 	
+
+VAR 	result 	"Result code" 	B
+
+VAL 	@p_tcpip - VAL_result@ 	
+
+VAR 	socket 	"Socket descriptor" 	L
+
+
+VAR 	port 	"Port number" 	S
+
+
+VAR 	ipaddr 	"IP address" 	L
+
+
+VAR 	hostname 	"Name of the host" 	B
+
+
+VAR 	new_socket 	"Socket descriptor" 	L
+
+
+VAR 	mtu_size 	"MTU size" 	S
+
+
+VAR 	if_up 	"Interface Configuration direction" 	B
+
+VAL 	@p_tcpip - VAL_if_up@ 	
+
+VAR 	dnsaddr1 	"IP address of first DNS server" 	L
+
+
+VAR 	dnsaddr2 	"IP address of second DNS server" 	L
+
+
+VAR 	link_id 	"DTI link identifier" 	L
+
+
+VAR 	entity_name 	"DTI neighbor entity name" 	L
+
+
+VAR 	dti_direction 	"Direction of DTI connection" 	B
+
+VAL 	@p_tcpip - VAL_dti_direction@ 	
+
+VAR 	dti_conn 	"Indicates to connect or disconnect DTI link" 	B
+
+VAL 	@p_tcpip - VAL_dti_conn@ 	
+
+VAR 	data 	"Address of payload data" 	L
+
+
+VAR 	window 	"Flow control window size" 	L
+
+
+VAR 	buflen 	"Data buffer length" 	S
+
+
+VAR 	msg_p 	"Message pointer" 	L
+
+
+VAR 	msg_id 	"Message ID" 	L
+
+
+
+
+
+
+
+
+; TCPIP_INITIALIZE_REQ 	0x80000048
+; TCPIP_INITIALIZE_CNF 	0x80004048
+; TCPIP_SHUTDOWN_REQ 	0x80010048
+; TCPIP_SHUTDOWN_CNF 	0x80014048
+; TCPIP_IFCONFIG_REQ 	0x80020048
+; TCPIP_IFCONFIG_CNF 	0x80024048
+; TCPIP_DTI_REQ 	0x80030048
+; TCPIP_DTI_CNF 	0x80034048
+; TCPIP_CREATE_REQ 	0x80040048
+; TCPIP_CREATE_CNF 	0x80044048
+; TCPIP_CLOSE_REQ 	0x80050048
+; TCPIP_CLOSE_CNF 	0x80054048
+; TCPIP_BIND_REQ 	0x80060048
+; TCPIP_BIND_CNF 	0x80064048
+; TCPIP_LISTEN_REQ 	0x80070048
+; TCPIP_LISTEN_CNF 	0x80074048
+; TCPIP_CONNECT_REQ 	0x80080048
+; TCPIP_CONNECT_CNF 	0x80084048
+; TCPIP_DATA_REQ 	0x80090048
+; TCPIP_DATA_CNF 	0x80094048
+; TCPIP_DATA_IND 	0x800A4048
+; TCPIP_DATA_RES 	0x800A0048
+; TCPIP_SOCKNAME_REQ 	0x800B0048
+; TCPIP_SOCKNAME_CNF 	0x800B4048
+; TCPIP_PEERNAME_REQ 	0x800C0048
+; TCPIP_PEERNAME_CNF 	0x800C4048
+; TCPIP_HOSTINFO_REQ 	0x800D0048
+; TCPIP_HOSTINFO_CNF 	0x800D4048
+; TCPIP_MTU_SIZE_REQ 	0x800E0048
+; TCPIP_MTU_SIZE_CNF 	0x800E4048
+; TCPIP_CONNECT_IND 	0x800F4048
+; TCPIP_CONN_CLOSED_IND 	0x80104048
+; TCPIP_ERROR_IND 	0x80114048
+; TCPIP_INTERNAL_IND 	0x800F0048
+
+
+
+PRIM 	TCPIP_INITIALIZE_REQ 	0x80000048
+{
+}
+
+
+
+
+
+
+PRIM 	TCPIP_INITIALIZE_CNF 	0x80004048
+{
+ 	result 	 ; Result code
+}
+
+
+
+
+
+
+PRIM 	TCPIP_SHUTDOWN_REQ 	0x80010048
+{
+}
+
+
+
+
+
+
+PRIM 	TCPIP_SHUTDOWN_CNF 	0x80014048
+{
+ 	result 	 ; Result code
+}
+
+
+
+
+
+
+PRIM 	TCPIP_IFCONFIG_REQ 	0x80020048
+{
+ 	if_up 	 ; Direction of interface transition (coming up or going down)
+ 	mtu_size 	 ; MTU size of interface (unused when interface goes down)
+ 	ipaddr 	 ; IP address of interface (unused when interface goes down)
+ 	dnsaddr1 	 ; First DNS address (unused when interface goes down)
+ 	dnsaddr2 	 ; Second DNS address (unused when interface goes down)
+}
+
+
+
+
+
+
+PRIM 	TCPIP_IFCONFIG_CNF 	0x80024048
+{
+ 	result 	 ; Result code
+}
+
+
+
+
+
+
+PRIM 	TCPIP_DTI_REQ 	0x80030048
+{
+ 	dti_conn 	 ; DTI connect
+ 	entity_name 	 ; Neighbor entity name
+ 	link_id 	 ; DTI link identifier
+ 	dti_direction 	 ; DTI link direction
+}
+
+
+
+
+
+
+PRIM 	TCPIP_DTI_CNF 	0x80034048
+{
+ 	dti_conn 	 ; DTI connect
+ 	link_id 	 ; DTI link identifier
+}
+
+
+
+
+
+
+PRIM 	TCPIP_CREATE_REQ 	0x80040048
+{
+ 	app_handle 	 ; Application communication handle
+ 	ipproto 	 ; IP protocol type
+ 	request_id 	 ; Request ID (arbitrary value chosen by the application)
+}
+
+
+
+
+
+
+PRIM 	TCPIP_CREATE_CNF 	0x80044048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_CREATE_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Descriptor of new socket (if result is TCPIP_RESULT_OK)
+ 	request_id 	 ; Request ID as passed in TCPIP_CREATE_REQ
+}
+
+
+
+
+
+
+PRIM 	TCPIP_CLOSE_REQ 	0x80050048
+{
+ 	app_handle 	 ; Application communication handle
+ 	socket 	 ; Socket descriptor
+}
+
+
+
+
+
+
+PRIM 	TCPIP_CLOSE_CNF 	0x80054048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_CLOSE_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor
+}
+
+
+
+
+
+
+PRIM 	TCPIP_BIND_REQ 	0x80060048
+{
+ 	app_handle 	 ; Application communication handle
+ 	socket 	 ; Socket descriptor
+ 	port 	 ; Port number to bind the socket to
+}
+
+
+
+
+
+
+PRIM 	TCPIP_BIND_CNF 	0x80064048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_BIND_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor
+}
+
+
+
+
+
+
+PRIM 	TCPIP_LISTEN_REQ 	0x80070048
+{
+ 	app_handle 	 ; Application communication handle
+ 	socket 	 ; Socket descriptor
+}
+
+
+
+
+
+
+PRIM 	TCPIP_LISTEN_CNF 	0x80074048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_LISTEN_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor
+}
+
+
+
+
+
+
+PRIM 	TCPIP_CONNECT_REQ 	0x80080048
+{
+ 	app_handle 	 ; Application communication handle
+ 	socket 	 ; Socket descriptor
+ 	ipaddr 	 ; IP address of remote peer to connect to
+ 	port 	 ; Port number of remote peer to connect to
+}
+
+
+
+
+
+
+PRIM 	TCPIP_CONNECT_CNF 	0x80084048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_CONNECT_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor
+}
+
+
+
+
+
+
+PRIM 	TCPIP_DATA_REQ 	0x80090048
+{
+ 	app_handle 	 ; Application communication handle
+ 	socket 	 ; Socket descriptor
+ 	ipaddr 	 ; Destination IP address
+ 	port 	 ; Destination port number
+ 	buflen 	 ; Data buffer length
+ 	data 	 ; Payload data
+}
+
+
+
+
+
+
+PRIM 	TCPIP_DATA_CNF 	0x80094048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_DATA_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor
+ 	window 	 ; Flow control window size
+}
+
+
+
+
+
+
+PRIM 	TCPIP_DATA_IND 	0x800A4048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_DATA_IND)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor
+ 	ipaddr 	 ; Source IP address
+ 	port 	 ; Source port number
+ 	buflen 	 ; Data buffer length
+ 	data 	 ; Payload data
+}
+
+
+
+
+
+
+PRIM 	TCPIP_DATA_RES 	0x800A0048
+{
+ 	app_handle 	 ; Application communication handle
+ 	socket 	 ; Socket descriptor
+ 	window 	 ; Flow control window size
+}
+
+
+
+
+
+
+PRIM 	TCPIP_SOCKNAME_REQ 	0x800B0048
+{
+ 	app_handle 	 ; Application communication handle
+ 	socket 	 ; Socket descriptor
+}
+
+
+
+
+
+
+PRIM 	TCPIP_SOCKNAME_CNF 	0x800B4048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_SOCKNAME_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor
+ 	ipaddr 	 ; IP address of socket
+ 	port 	 ; Port number of socket
+}
+
+
+
+
+
+
+PRIM 	TCPIP_PEERNAME_REQ 	0x800C0048
+{
+ 	app_handle 	 ; Application communication handle
+ 	socket 	 ; Socket descriptor
+}
+
+
+
+
+
+
+PRIM 	TCPIP_PEERNAME_CNF 	0x800C4048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_PEERNAME_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor
+ 	ipaddr 	 ; IP address of  remote peer
+ 	port 	 ; Port number of remote peer
+}
+
+
+
+
+
+
+PRIM 	TCPIP_HOSTINFO_REQ 	0x800D0048
+{
+ 	app_handle 	 ; Application communication handle
+ 	ipaddr 	 ; IP address of the host
+ 	hostname 	[TCPIP_HNAMELEN] 	 ; Full-qualified domain name of the host
+ 	request_id 	 ; Request ID (arbitrary value chosen by the application)
+}
+
+
+
+
+
+
+PRIM 	TCPIP_HOSTINFO_CNF 	0x800D4048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_SOCKNAME_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor (unused)
+ 	hostname 	[TCPIP_HNAMELEN] 	 ; Full-qualified domain name of the host
+ 	ipaddr 	 ; IP address of the host
+ 	request_id 	 ; Request ID as passed by in TCPIP_HOSTINFO_REQ
+}
+
+
+
+
+
+
+PRIM 	TCPIP_MTU_SIZE_REQ 	0x800E0048
+{
+ 	app_handle 	 ; Application communication handle
+ 	socket 	 ; Socket descriptor
+}
+
+
+
+
+
+
+PRIM 	TCPIP_MTU_SIZE_CNF 	0x800E4048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_MTU_SIZE_CNF)
+ 	result 	 ; Result code
+ 	socket 	 ; Socket descriptor
+ 	mtu_size 	 ; MTU size
+}
+
+
+
+
+
+
+PRIM 	TCPIP_CONNECT_IND 	0x800F4048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_CONNECT_IND)
+ 	result 	 ; Result code (TCPIP_RESULT_OK)
+ 	socket 	 ; Socket on which the connection has been accepted
+ 	new_socket 	 ; New socket allocated for the connection
+ 	ipaddr 	 ; IP address of the remote peer
+ 	port 	 ; Port number on the remote side
+}
+
+
+
+
+
+
+PRIM 	TCPIP_CONN_CLOSED_IND 	0x80104048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_CONN_CLOSED_IND)
+ 	result 	 ; Result code (TCPIP_RESULT_OK)
+ 	socket 	 ; Socket of the connection that has been closed
+}
+
+
+
+
+
+
+PRIM 	TCPIP_ERROR_IND 	0x80114048
+{
+ 	event_type 	 ; Type of the event as passed to the application (TCPIP_ERROR_IND)
+ 	result 	 ; Result code (one of TCPIP_RESULT_CONN_RESET, TCPIP_RESULT_CONN_ABORTED, or TCPIP_RESULT_UNREACHABLE)
+ 	socket 	 ; Socket for which the error occured
+}
+
+
+
+
+
+
+PRIM 	TCPIP_INTERNAL_IND 	0x800F0048
+{
+ 	msg_p 	 ; Message pointer
+ 	msg_id 	 ; Message ID
+}
+
+
+
+
+
+
+
+
+

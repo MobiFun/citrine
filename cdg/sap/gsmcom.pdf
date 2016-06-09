@@ -1,0 +1,78 @@
+;********************************************************************************
+;*** File           : gsmcom.pdf
+;*** Creation       : Wed Mar 11 09:58:11 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : gsmcom
+;*** Document No.   : 8443.100.02.008
+;*** Document Date  : 2002-10-04
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:43:26 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-10-04"
+PRAGMA 	ID_AND_VERSION 	"8443.100.02.008"
+
+
+
+CONST 	SIM_ORIGINATING_ENTITY 	0b000000 	; mask for indicating the originating entity of a cause is SIM
+CONST 	ACI_ORIGINATING_ENTITY 	0b000001 	; mask for indicating the originating entity of a cause is ACI
+CONST 	RLP_ORIGINATING_ENTITY 	0b000010 	; mask for indicating the originating entity of a cause is RLP
+CONST 	RR_ORIGINATING_ENTITY 	0b000011 	; mask for indicating the originating entity of a cause is RR
+CONST 	MM_ORIGINATING_ENTITY 	0b000100 	; mask for indicating the originating entity of a cause is MM
+CONST 	CC_ORIGINATING_ENTITY 	0b000101 	; mask for indicating the originating entity of a cause is CC
+CONST 	SS_ORIGINATING_ENTITY 	0b000110 	; mask for indicating the originating entity of a cause is SS
+CONST 	SMSCP_ORIGINATING_ENTITY 	0b000111 	; mask for indicating the originating entity of a cause is SMS-CP
+CONST 	SMSRP_ORIGINATING_ENTITY 	0b001000 	; mask for indicating the originating entity of a cause is SMS-RP
+CONST 	SMSTP_ORIGINATING_ENTITY 	0b001001 	; mask for indicating the originating entity of a cause is SMS-TP
+CONST 	GMM_ORIGINATING_ENTITY 	0b001010 	; mask for indicating the originating entity of a cause is GMM
+CONST 	SM_ORIGINATING_ENTITY 	0b001011 	; mask for indicating the originating entity of a cause is SM
+CONST 	FAD_ORIGINATING_ENTITY 	0b001100 	; mask for indicating the originating entity of a cause is FAD
+CONST 	T30_ORIGINATING_ENTITY 	0b001101 	; mask for indicating the originating entity of a cause is T30
+CONST 	GRR_ORIGINATING_ENTITY 	0b001110 	; mask for indicating the originating entity of a cause is GRR
+CONST 	PPP_ORIGINATING_ENTITY 	0b001111 	; mask for indicating the originating entity of a cause is PPP
+CONST 	LLC_ORIGINATING_ENTITY 	0b010000 	; mask for indicating the originating entity of a cause is LLC
+CONST 	SNDCP_ORIGINATING_ENTITY 	0b010001 	; mask for indicating the originating entity of a cause is SNDCP
+CONST 	PKTIO_ORIGINATING_ENTITY 	0b010010 	; mask for indicating the originating entity of a cause is PKTIO
+CONST 	PSI_ORIGINATING_ENTITY 	0b010011 	; mask for  indicating the originating entity of a cause is PSI
+
+
+
+VALTAB 	VAL_gsmcom_dummy
+VAL 	0 - 6 	"ms originated identifier"
+
+
+
+
+VAR 	gsmcom_dummy 	"dummy, not used" 	B
+
+VAL 	@p_gsmcom - VAL_gsmcom_dummy@ 	
+
+
+
+
+
+
+
+; GSMCOM_DUMMY_REQ 	0x80000000
+
+
+
+PRIM 	GSMCOM_DUMMY_REQ 	0x80000000
+{
+ 	gsmcom_dummy 	 ; dummy
+}
+
+
+
+
+
+
+
+
+

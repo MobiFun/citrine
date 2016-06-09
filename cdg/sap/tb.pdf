@@ -1,0 +1,94 @@
+;********************************************************************************
+;*** File           : tb.pdf
+;*** Creation       : Wed Mar 11 09:58:52 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : tb
+;*** Document No.   : 8441.112.01.002
+;*** Document Date  : 2001-07-17
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SAB
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:54:48 2007"
+PRAGMA 	LAST_MODIFIED 	"2001-07-17"
+PRAGMA 	ID_AND_VERSION 	"8441.112.01.002"
+
+
+
+CONST 	TB_BA_LIST_SIZE 	33 	; BA list size
+
+
+
+VALTAB 	VAL_arfcn
+VAL 	1 - 124 	"GSM 900 without extension band"
+VAL 	1 - 174 	"GSM 900 with extension band"
+VAL 	512 - 810 	"PCS 1900"
+VAL 	512 - 885 	"DCS 1800"
+VAL 	1 - 498 	"Dual band(GSM/DCS)"
+VAL 	1 - 548 	"Dual band(EGSM/DCS)"
+VAL 	0xFFFF 	TB_INVALID_ARFCN 	"Used to mark a channel number entry as invalid."
+
+
+
+
+VAR 	num_meas 	"number" 	B
+
+
+VAR 	rxlev 	"measurement value" 	S
+
+
+VAR 	arfcn 	"channel number" 	S
+
+VAL 	@p_tb - VAL_arfcn@ 	
+
+VAR 	sc_rxlev 	"RXLEV value of the serving cell." 	B
+
+
+
+
+
+COMP 	tb_meas_result 	 ""
+{
+ 	arfcn 	 ; Channel Number
+ 	rxlev 	 ; ACC Level
+ 	num_meas 	 ; ACC nbr
+}
+
+
+
+
+
+
+; TB_MEAS_IND 	0x1800
+; TB_RXLEV_SC_REQ 	0x5800
+
+
+
+PRIM 	TB_MEAS_IND 	0x1800
+{
+ 	tb_meas_result 	[TB_BA_LIST_SIZE] 	 ; Measurement result
+}
+
+
+
+
+
+
+PRIM 	TB_RXLEV_SC_REQ 	0x5800
+{
+ 	sc_rxlev 	 ; RXLEV Serving Cell
+}
+
+
+
+
+
+
+
+
+

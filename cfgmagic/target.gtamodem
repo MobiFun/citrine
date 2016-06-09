@@ -1,0 +1,26 @@
+CONFIG_TARGET_GTAMODEM=1
+export_to_c	CONFIG_TARGET_GTAMODEM
+
+CONFIG_IRAM_SIZE=0x80000
+CONFIG_XRAM_SIZE=0x100000
+CONFIG_FWFLASH_SIZE=0x300000
+# the post-target fragment exports these
+
+# RAMFFS: default to 32 KiB x 4
+RAMFFS_BLKSIZE_LOG2=15
+RAMFFS_NBLOCKS=4
+
+# select the correct flash driver
+Flash_type=AMD-multibank
+
+DBB_type=751992A
+ABB_type=Iota3025
+RF_type=Rita
+# the post-target fragment will turn these into TI's voodoo numbers
+
+# For the RF PA we have to set TI's voodoo number directly. :-(
+RF_PA=2
+# We know this setting is correct for the RF3166 PA thanks to the Sotovik find.
+
+allow_target_feature	at-modem
+allow_target_feature	mokoffs

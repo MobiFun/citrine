@@ -1,0 +1,114 @@
+;********************************************************************************
+;*** File           : rrrrlp.pdf
+;*** Creation       : Wed Mar 11 09:58:48 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : rrrrlp
+;*** Document No.   : 0000.000.00.002
+;*** Document Date  : 2002-09-10
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: VK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:53:22 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-09-10"
+PRAGMA 	ID_AND_VERSION 	"0000.000.00.002"
+
+
+
+CONST 	MAX_SDU_LEN 	1 	; 
+CONST 	MAX_NCELL_L1 	12 	; Max no. of NC layer 1 is able to measure
+CONST 	MAX_NCELL_EOTD 	15 	; Max no. of NC reported in the Measurement Assistance Data Element (3GPP 04.31)
+CONST 	MAX_NCELL_EOTD_SI 	32 	; Max no. of NC reported in the Measurement Assistance Data SI List Element (3GPP 04.31)
+
+
+
+
+
+
+VAR 	dummy 	"Dummy" 	B
+
+
+VAR 	l_buf 	"length in bits" 	S
+
+
+VAR 	o_buf 	"offset in bits" 	S
+
+
+VAR 	buf 	"bit buffer" 	B
+
+
+VAR 	cr 	"Command or Response" 	B
+
+
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length in bits
+ 	o_buf 	 ; offset in bits
+ 	buf 	[MAX_SDU_LEN] 	 ; bit buffer
+}
+
+
+
+
+
+
+; RRRRLP_DATA_IND 	0x80004041
+; RRRRLP_DATA_REQ 	0x80000041
+; RRRRLP_DATA_CNF 	0x80014041
+; RRRRLP_ERROR_IND 	0x80024041
+
+
+
+PRIM 	RRRRLP_DATA_IND 	0x80004041
+{
+ 	cr 	 ; Command / Response
+ 	sdu 	 ; APDU_IND
+}
+
+
+
+
+
+
+PRIM 	RRRRLP_DATA_REQ 	0x80000041
+{
+ 	cr 	 ; Command / Response
+ 	sdu 	 ; APDU_REQ
+}
+
+
+
+
+
+
+PRIM 	RRRRLP_DATA_CNF 	0x80014041
+{
+ 	dummy 	 ; Dummy
+}
+
+
+
+
+
+
+PRIM 	RRRRLP_ERROR_IND 	0x80024041
+{
+ 	dummy 	 ; Dummy
+}
+
+
+
+
+
+
+
+
+

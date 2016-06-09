@@ -1,0 +1,81 @@
+;********************************************************************************
+;*** File           : gmmsms.pdf
+;*** Creation       : Wed Mar 11 09:58:06 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : gmmsms
+;*** Document No.   : 8441.105.99.001
+;*** Document Date  : 1999-06-22
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: ANS
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:42:44 2007"
+PRAGMA 	LAST_MODIFIED 	"1999-06-22"
+PRAGMA 	ID_AND_VERSION 	"8441.105.99.001"
+
+
+
+
+
+
+VALTAB 	VAL_reg_state
+VAL 	0 	SMS_RS_DEREGISTERED 	"GMM context for SMS is removed"
+VAL 	1 	SMS_RS_REGISTERED 	"GMM context for SMS is built"
+
+VALTAB 	VAL_radio_priority_level
+VAL 	DEF 	 	"priority level 4"
+VAL 	1 	SMS_RP_LEVEL_1 	"priority level 1"
+VAL 	2 	SMS_RP_LEVEL_2 	"priority level 2??????????"
+VAL 	3 	SMS_RP_LEVEL_3 	"priority level 3"
+VAL 	4 	SMS_RP_LEVEL_4 	"priority level 4"
+
+
+
+
+VAR 	reg_state 	"Registration state" 	B
+
+VAL 	@p_gmmsms - VAL_reg_state@ 	
+
+VAR 	radio_priority_level 	"Radio priority level" 	B
+
+VAL 	@p_gmmsms - VAL_radio_priority_level@ 	
+
+
+
+
+
+
+
+; GMMSMS_REG_STATE_REQ 	0x2300
+; GMMSMS_REG_STATE_CNF 	0x6300
+
+
+
+PRIM 	GMMSMS_REG_STATE_REQ 	0x2300
+{
+}
+
+
+
+
+
+
+PRIM 	GMMSMS_REG_STATE_CNF 	0x6300
+{
+ 	reg_state 	 ; Registration state
+ 	radio_priority_level 	 ; Radio priority level
+}
+
+
+
+
+
+
+
+
+

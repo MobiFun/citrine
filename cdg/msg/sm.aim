@@ -1,0 +1,4269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<AIM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aim.xsd">
+    <DocInfoSection>
+        <DocName DocType="AIM">sm</DocName>
+        <DocNum Number="605" Project="8010"/>
+        <Description>
+            <Section>This document is part of the High Level Design (HLD) for the Condat G23-UMTS/GPRS protocol stack. The document describes the air interface messages between the Session Management (SM) entity and the network. These air interface messages will be carried in UNITDATA messages delivered by MM.</Section>
+            <Section>The document has been extended to cover 3G Release 99 as well as UMTS.</Section>
+            <Section>This document is based on the functionality and services described in the specifications [3G 24.007], [3G 24.008], the SAP documents [TI 8010.142 SMREG SAP], [TI 8010.128 SM SAP], as well as the requirements in [TI 8010.968 SM REQ].</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="03"/>
+            <Date Day="9" Month="1" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="03"/>
+            <Date Day="26" Month="6" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added PRAGMA section for tool compatibility.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="03"/>
+            <Date Day="2" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Removed ENUMS_IN_VAL pragma, caused redefinition problems.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="03"/>
+            <Date Day="19" Month="8" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Split QoS types into R97 and R99 and created new qos type with optional R99 element. Updated TFT elements, so CCD now codes TFTs.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="03"/>
+            <Date Day="28" Month="8" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Corrected "tlv_len" element to NO_CODE in qos element. Corrected tft_filter to GSM type 4.</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the SM AIM</Section>
+        </Description>
+        <Pragma>
+            <Name>CCDNAME</Name>
+            <Value ValueType="ALPHA">SM</Value>
+            <Comment>CCD name tag</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">M_SM</Value>
+            <Comment>Document prefix</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Adds enumerations in the .val file.</Comment>
+        </Pragma>
+        <History>
+            <Date Day="9" Month="1" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="28" Month="6" Year="2003"/>
+            <Author>CLA</Author>
+            <Comment>Added PRAGMA section</Comment>
+        </History>
+        <History>
+            <Date Day="2" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <Comment>Removed ENUMS_IN_VAL pragma, caused redefinition problems.</Comment>
+        </History>
+        <History>
+            <Date Day="12" Month="8" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Added PREFIX pragma, removed L3MAX constant (unused).</Comment>
+        </History>
+        <History>
+            <Date Day="14" Month="8" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Added SIZE_R9*_QOS constants.</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the SM AIM</Section>
+        </Description>
+        <Constant>
+            <Alias>SIZE_R97_QOS</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment>Size of R97 QoS IE (V-part only)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_R99_QOS</Alias>
+            <Value ValueType="DEC">11</Value>
+            <Comment>Size of R99 QoS IE (V-part only)</Comment>
+        </Constant>
+        <History>
+            <Date Day="9" Month="1" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="28" Month="6" Year="2003"/>
+            <Author>CLA</Author>
+            <Comment>Added PRAGMA section</Comment>
+        </History>
+        <History>
+            <Date Day="2" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <Comment>Removed ENUMS_IN_VAL pragma, caused redefinition problems.</Comment>
+        </History>
+        <History>
+            <Date Day="12" Month="8" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Added PREFIX pragma, removed L3MAX constant (unused).</Comment>
+        </History>
+        <History>
+            <Date Day="14" Month="8" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Added SIZE_R9*_QOS constants.</Comment>
+        </History>
+    </ConstantsSection>
+    <MessagesSection>
+        <Description>
+            <Section>This section contains all messages that are defined for the SM AIM</Section>
+        </Description>
+        <Message>
+            <Description>
+                <Section>This message is sent by the MS to the network to request activation of a PDP context.</Section>
+                <Section>Access point name is included when the MS selects a specific external network to be connected to.</Section>
+                <Section>Protocol configuration options are included when the MS provides protocol configuration options for the external PDN.</Section>
+                <Section>Reference : [3G 24.008, 9.5.1]</Section>
+            </Description>
+            <MsgDef>
+                <Name>activate_pdp_context_request</Name>
+                <MsgID Direction="UPLINK" IDType="DEC">65</MsgID>
+                <Comment>activate PDP context request</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.2]</SpecRef>
+                <Comment>requested NSAPI</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>llc_sapi</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.9]</SpecRef>
+                <Comment>requested LLC sapi</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>[3G 24.008, 10.5.6.5]</SpecRef>
+                <Comment>requested QoS</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>address</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>[3G 24.008, 10.5.6.4]</SpecRef>
+                <Comment>requested PDP address</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>apn</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">28</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.1]</SpecRef>
+                <Comment>access point name</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pco</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">27</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.3]</SpecRef>
+                <Comment>protocol configuration options</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to activate_pdp_context_request</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the MS to acknowledge activation of a PDP context.</Section>
+                <Section>If the MS did not request a static address in the corresponding ACTIVATE PDP CONTEXT REQUEST message, the network shall include the PDP address IE in this message, otherwise not. Protocol configuration options are included in the message when the network wishes to transmit protocol configuration options for the external PDN. Likewise for the packet flow identifier (PFI); PFI is a GSM parameter included in this message by the network (informational only).</Section>
+                <Section>Reference : [3G 24.008, 9.5.2]</Section>
+            </Description>
+            <MsgDef>
+                <Name>activate_pdp_context_accept</Name>
+                <MsgID Direction="DOWNLINK" IDType="DEC">66</MsgID>
+                <Comment>activate PDP context accept</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>llc_sapi</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.9]</SpecRef>
+                <Comment>negotiated LLC SAPI</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>[3G 24.008, 10.5.6.5]</SpecRef>
+                <Comment>negotiated QoS</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>[3G 24.008, 10.5.7.2]</SpecRef>
+                <Comment>radio priority</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>[3G 24.008, 10.5.1.8]</SpecRef>
+                <Comment>spare half octet</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>address</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">2B</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.4]</SpecRef>
+                <Comment>packet data protocol address</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pco</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">27</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.3]</SpecRef>
+                <Comment>protocol configuration options</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pfi</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">34</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.11]</SpecRef>
+                <Comment>packet flow identifier</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to activate_pdp_context_accept</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the MS to reject activation of a PDP context.</Section>
+                <Section>The protocol configuration options IE may only be inserted by the network (see [GSM 09.60], [3G 29.060]) if the SM cause indicates "activation rejected by GGSN".</Section>
+                <Section>Reference : [3G 24.008, 9.5.3]</Section>
+            </Description>
+            <MsgDef>
+                <Name>activate_pdp_context_reject</Name>
+                <MsgID Direction="DOWNLINK" IDType="DEC">67</MsgID>
+                <Comment>activate PDP context reject</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>sm_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.6]</SpecRef>
+                <Comment>SM cause</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pco</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">27</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.3]</SpecRef>
+                <Comment>protocol configuration options</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to activate_pdp_context_reject</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the MS to the network to request activation of a secondary PDP context. The secondary PDP context inherits PDP address, APN, and PDP type from a primary PDP context, identified by the linked TI parameter.</Section>
+                <Section>Reference : [3G 24.008, 9.5.4]</Section>
+            </Description>
+            <MsgDef>
+                <Name>activate_secondary_pdp_context_request</Name>
+                <MsgID Direction="UPLINK" IDType="DEC">77</MsgID>
+                <Comment>activate secondary PDP context request</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.2]</SpecRef>
+                <Comment>requested NSAPI</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>llc_sapi</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.9]</SpecRef>
+                <Comment>requested LLC sapi</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>[3G 24.008, 10.5.6.5]</SpecRef>
+                <Comment>requested QoS</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>linked_ti</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>[3G 24.008, 10.5.6.7]</SpecRef>
+                <Comment>linked TI</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">36</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.12]</SpecRef>
+                <Comment>traffic flow template</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to activate_secondary_pdp_context_request</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the MS to acknowledge activation of a secondary PDP context. The packet flow identifier (GSM only) may be included by the network if it wants to indicate the PFI associated with the PDP context.</Section>
+                <Section>Reference : [3G 24.008, 9.5.5]</Section>
+            </Description>
+            <MsgDef>
+                <Name>activate_secondary_pdp_context_accept</Name>
+                <MsgID Direction="DOWNLINK" IDType="DEC">78</MsgID>
+                <Comment>activate secondary PDP context accept</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>llc_sapi</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.9]</SpecRef>
+                <Comment>negotiated LLC SAPI</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>[3G 24.008, 10.5.6.5]</SpecRef>
+                <Comment>negotiated QoS</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>[3G 24.008, 10.5.7.2]</SpecRef>
+                <Comment>radio priority</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>[3G 24.008, 10.5.1.8]</SpecRef>
+                <Comment>spare half octet</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pfi</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">34</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.11]</SpecRef>
+                <Comment>packet flow identifier</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to activate_secondary_pdp_context_accept</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the MS to reject activation of a secondary PDP context.</Section>
+                <Section>Reference : [3G 24.008, 9.5.6]</Section>
+            </Description>
+            <MsgDef>
+                <Name>activate_secondary_pdp_context_reject</Name>
+                <MsgID Direction="DOWNLINK" IDType="DEC">79</MsgID>
+                <Comment>activate secondary PDP context reject</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>sm_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.6]</SpecRef>
+                <Comment>SM cause</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to activate_secondary_pdp_context_request</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the MS to initiate activation of a PDP context.</Section>
+                <Section>Reference : [3G 24.008, 9.5.7]</Section>
+            </Description>
+            <MsgDef>
+                <Name>request_pdp_context_activation</Name>
+                <MsgID Direction="DOWNLINK" IDType="DEC">68</MsgID>
+                <Comment>request PDP context activation</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>address</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>[3G 24.008, 10.5.6.4]</SpecRef>
+                <Comment>offered PDP address</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>apn</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">28</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.1]</SpecRef>
+                <Comment>access point name</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to request_pdp_context_activation</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the MS to the network to reject initiation of a PDP context activation.</Section>
+                <Section>Reference : [3G 24.008, 9.5.8]</Section>
+            </Description>
+            <MsgDef>
+                <Name>request_pdp_context_activation_reject</Name>
+                <MsgID Direction="UPLINK" IDType="DEC">69</MsgID>
+                <Comment>request PDP context activation reject</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>sm_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.6]</SpecRef>
+                <Comment>SM cause</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to request_pdp_context_activation_reject</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the MS to request the modification of an active PDP context.</Section>
+                <Section>Reference : [3G 24.008, 9.5.9]</Section>
+            </Description>
+            <MsgDef>
+                <Name>D_modify_pdp_context_request</Name>
+                <MsgID Direction="DOWNLINK" IDType="DEC">72</MsgID>
+                <Comment>Modify PDP context request</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>[3G 24.008, 10.5.7.2]</SpecRef>
+                <Comment>radio priority</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>[3G 24.008, 10.5.1.8]</SpecRef>
+                <Comment>spare half octet</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>llc_sapi</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.9]</SpecRef>
+                <Comment>requested LLC sapi</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>[3G 24.008, 10.5.6.5]</SpecRef>
+                <Comment>new QoS</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>address</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">2b</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.4]</SpecRef>
+                <Comment>PDP address</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pfi</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">34</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.11]</SpecRef>
+                <Comment>packet flow identifier</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to D_modify_pdp_context_request</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the MS to the network to request modification of an active PDP context.</Section>
+                <Section>Reference : [3G 24.008, 9.5.10]</Section>
+            </Description>
+            <MsgDef>
+                <Name>U_modify_pdp_context_request</Name>
+                <MsgID Direction="UPLINK" IDType="DEC">74</MsgID>
+                <Comment>Modify PDP context request (MO)</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>llc_sapi</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">32</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.9]</SpecRef>
+                <Comment>requested LLC sapi</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">30</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.5]</SpecRef>
+                <Comment>requested QoS</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">31</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.12]</SpecRef>
+                <Comment>new traffic flow template</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to U_modify_pdp_context_request</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the MS to the network to acknowledge the modification of an active PDP context.</Section>
+                <Section>Reference : [3G 24.008, 9.5.11]</Section>
+            </Description>
+            <MsgDef>
+                <Name>U_modify_pdp_context_accept</Name>
+                <MsgID Direction="UPLINK" IDType="DEC">73</MsgID>
+                <Comment>Modify PDP context accept</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>Message type</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to U_modify_pdp_context_accept</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the MS to acknowledge the modification of an active PDP context.</Section>
+                <Section>Reference : [3G 24.008, 9.5.12]</Section>
+            </Description>
+            <MsgDef>
+                <Name>D_modify_pdp_context_accept</Name>
+                <MsgID Direction="DOWNLINK" IDType="DEC">75</MsgID>
+                <Comment>Modify PDP context accept (MO)</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">30</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.5]</SpecRef>
+                <Comment>negotiated QoS</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>llc_sapi</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">32</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.9]</SpecRef>
+                <Comment>negotiated LLC SAPI</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Type>GSM1_TV</Type>
+                <ItemTag TagType="HEX">8</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.7.2]</SpecRef>
+                <Comment>radio priority</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pfi</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">34</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.11]</SpecRef>
+                <Comment>packet flow identifier</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to D_modify_pdp_context_accept</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the MS to reject the requested modification of the TFT. The network should not send this message only if the requested QoS is not available. Only if a unavailable TFT was requested, the network should reject the modification.</Section>
+                <Section>Reference : [3G 24.008, 9.5.13]</Section>
+            </Description>
+            <MsgDef>
+                <Name>modify_pdp_context_reject</Name>
+                <MsgID Direction="DOWNLINK" IDType="DEC">76</MsgID>
+                <Comment>modify PDP context reject</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>sm_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.6]</SpecRef>
+                <Comment>SM cause</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to modify_pdp_context_reject</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent  to request deactivation of an active PDP context.</Section>
+                <Section>Reference : [3G 24.008, 9.5.14]</Section>
+            </Description>
+            <MsgDef>
+                <Name>deactivate_pdp_context_request</Name>
+                <MsgID Direction="BOTH" IDType="DEC">70</MsgID>
+                <Comment>deactivate PDP context request</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>Message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>sm_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.6]</SpecRef>
+                <Comment>SM cause</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tear_down</Name>
+                </ItemLink>
+                <Type>GSM1_TV</Type>
+                <ItemTag TagType="HEX">9</ItemTag>
+                <SpecRef>[3G 24.008, 10.5.6.10]</SpecRef>
+                <Comment>Tear down indicator</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to deactivate_pdp_context_request</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent to acknowledge deactivation of the PDP context requested in the corresponding Deactivate PDP context request message.</Section>
+                <Section>Reference : [3G 24.008, 9.5.15]</Section>
+            </Description>
+            <MsgDef>
+                <Name>deactivate_pdp_context_accept</Name>
+                <MsgID Direction="BOTH" IDType="DEC">71</MsgID>
+                <Comment>deactivate PDP context accept</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed to deactivate_pdp_context_accept</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network or the MS to pass information on the status of the indicated context and report certain error conditions.</Section>
+                <Section>Reference : [3G 24.008, 9.5.21]</Section>
+            </Description>
+            <MsgDef>
+                <Name>sm_status</Name>
+                <MsgID Direction="BOTH" IDType="DEC">85</MsgID>
+                <Comment>SM status</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.4]</SpecRef>
+                <Comment>message type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>sm_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>[3G 24.008, 10.5.6.6]</SpecRef>
+                <Comment>SM cause</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+    </MessagesSection>
+    <MsgStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the SM AIM</Section>
+        </Description>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the NSAPI is to identify the service access point that is used for the data transfer at layer 3.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.2]</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>nsapi</Name>
+                <Comment>network service access point identifier</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>nsapi_val</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>NSAPI value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>This element is used in GSM only. The purpose of the LLC service access point identifier information element is to identify the service access point that is used for the GPRS data transfer at LLC layer.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.9]</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>llc_sapi</Name>
+                <Comment>LLC service access point identifier</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>LLC SAPI value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the quality of service information element is to specify the QoS parameters for a PDP context. This element specifies the R97-related part of a QoS IE.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.5]</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>qos_r97</Name>
+                <Comment>quality of service R97</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>00</Pattern>
+                    <BitLen>2</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>delay</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>delay class</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>reliability</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>reliability class</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>peak</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>peak throughput</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0</Pattern>
+                    <BitLen>1</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>precedence</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>precedence class</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>000</Pattern>
+                    <BitLen>3</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>mean</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>mean throughput</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="12" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the quality of service information element is to specify the QoS parameters for a PDP context. This element specifies the R99-related part of a QoS IE.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.5]</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>qos_r99</Name>
+                <Comment>quality of service R99</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tc</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>traffic class</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>order</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>delivery order</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>del_err_sdu</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>delivery of erroneous SDU</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>max_sdu</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>maximum SDU size</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>max_br_ul</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>maximum uplink bit-rate</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>max_br_dl</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>maximum downlink bit-rate</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>ber</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>residual BER</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>sdu_err_ratio</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>SDU error ratio</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>xfer_delay</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>transfer delay</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>handling_pri</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>traffic handling priority</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>guar_br_ul</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>guaranteed upink bit-rate</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>guar_br_dl</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>guaranteed downlink bit-rate</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="12" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the quality of service information element is to specify the QoS parameters for a PDP context.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.5]</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>qos</Name>
+                <Comment>quality of service</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tlv_len</Name>
+                </ItemLink>
+                <Type>NO_CODE</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Length of IE</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>qos_r97</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>QoS R97</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>qos_r99</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <Control>
+                    <Condition>tlv_len &gt; SIZE_R99_QOS - 1</Condition>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>QoS R99</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="12" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the packet data protocol address information element is to identify an address associated with a PDP.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.4]</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>address</Name>
+                <Comment>packet data protocol address</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pdp_type_org</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>PDP type organisation</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pdp_type_no</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>PDP type number</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>add_info</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[0..16]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>address information</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the access point name information element is to identify the packet data network to which the GPRS user wishes to connect. The Access Point Name is a label or a full qualified domain name according to DNS naming conventions (see [RFC 1035], [3G 23.003]).</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.1].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>apn</Name>
+                <Comment>access point name</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>apn_value</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[3..102]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>access point name value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the protocol configuration options information element is to transfer external network protocol options associated with a PDP context activation.</Section>
+                <Section>Reference :  [3G 24.008, 10.5.6.3].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>pco</Name>
+                <Comment>protocol information options</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pco_value</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[2..253]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>options</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>This element is used in GSM only. The purpose of the radio priority information element is to specify the priority level that the MS shall use at the lower layers for transmission of data related to a PDP context or for mobile originated SMS transmission.</Section>
+                <Section>Reference : [3G 24.008, 10.5.7.2].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>radio_prio</Name>
+                <Comment>radio priority</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0</Pattern>
+                    <BitLen>1</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>radio_prio_val</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>radio priority value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the linked TI information element is to specify the active (primary) PDP context from which the PDP address for the new (secondary) PDP context should be derived from the network.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.7].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>linked_ti</Name>
+                <Comment>linked TI</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>ti_flag</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>TI flag</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>ti_val</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>TI value</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>ti_ext_flag</Name>
+                </ItemLink>
+                <Control>
+                    <Condition>ti_val=7</Condition>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>TI ext flag</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>ti_ext_val</Name>
+                </ItemLink>
+                <Control>
+                    <Condition>ti_val=7</Condition>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>extended TI value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the tear down indicator information element is to indicate whether only the PDP context associated with this specific TI or all active PDP contexts sharing the same PDP address as the PDP context associated with this TI shall be deactivated.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.10].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tear_down</Name>
+                <Comment>tear down indicator</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>000</Pattern>
+                    <BitLen>3</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tear_down_flag</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>TDI flag</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the SM cause information element is to indicate the reason why a session management request is rejected.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.6].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>sm_cause</Name>
+                <Comment>SM cause</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>sm_cause_val</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>SM cause value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>This element is used in GSM only. It is used when the network wants to include a packet flow identifier for the MS to use on the affected PDP context.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.11].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>pfi</Name>
+                <Comment>packet flow identifier</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0</Pattern>
+                    <BitLen>1</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>pfi_val</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>packet  flow identifier value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the Traffic Flow Template information element is to create (or delete or replace) a set of Internet Protocol (IPv4/IPv6) traffic filters, used by the GGSN to differentiate downlink traffic through the GPRS backbone network.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft</Name>
+                <Comment>traffic flow template</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_opcode</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>TFT operation code</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0</Pattern>
+                    <BitLen>1</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_filter_count</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>packet filters count</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_filter_id</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[tft_filter_count..8]</TypeModifier>
+                    <Condition>tft_opcode=TFT_OPCODE_DELETE_FILTERS</Condition>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>packet filter identifiers</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_filter</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <Control>
+                    <TypeModifier>[tft_filter_count..8]</TypeModifier>
+                    <Condition>tft_opcode=TFT_OPCODE_CREATE_TFT OR tft_opcode=TFT_OPCODE_ADD_FILTERS OR tft_opcode=TFT_OPCODE_REPLACE_FILTERS</Condition>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>packet filter list</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>tft_filter_list changed from byte-array to proper LV array.</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The packet filter information element defines an IP traffic flow filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_filter</Name>
+                <Comment>traffic flow template packet filter</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_filter_id</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>packet filter identifier</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_filter_prio</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>evaluation precedence</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_filter_entry</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>packet filters entry</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The packet filter information element defines the contents of an IP traffic flow filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_filter_entry</Name>
+                <Comment>traffic flow template</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_ipv4_addr_mask</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">10</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>IPv4 src addr/mask</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_ipv6_addr_mask</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">20</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>IPv6 src addr/mask</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_protocol</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">30</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>protocol/next hdr</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_dest_port_range</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">40</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>destination port range</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_dest_port</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">41</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>single destination port</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_src_port_range</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">50</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>source port range</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_src_port</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">51</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>single source port</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_ipsec_spi</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">60</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>IPSec SPI</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_tos_and_mask</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">70</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>Type of Service/mask</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_flow_label</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">80</ItemTag>
+                <SpecRef>-</SpecRef>
+                <Comment>IPv6 flow label</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The IPv4 Source Address and Mask defines a set of IPv4 addresses to filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_ipv4_addr_mask</Name>
+                <Comment>IPv4 Source Address and Mask</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>src_addr</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[4]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>source address</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>addr_mask</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[4]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>address mask</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The IPv4 Source Address and Mask defines a set of IPv6 addresses to filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_ipv6_addr_mask</Name>
+                <Comment>IPv6 Source Address and Mask</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>src_addr</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[16]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>source address</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>addr_mask</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[16]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>address mask</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The IPv4 protocol / IPv6 next header defines a the protocol type to filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_protocol</Name>
+                <Comment>IPv4 Protocol / IPv6 Next Header</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tft_protocol_val</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>IPv4 Protocol / IPv6 Next Header</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The port range defines a range of transport layer (TCP/UDP) ports to filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_dest_port_range</Name>
+                <Comment>destination port range</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_src_port_range</Name>
+                <Comment>source port range</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>low_limit</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>low limit</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>high_limit</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>high limit</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The port range defines a single transport layer (TCP/UDP) port to filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_dest_port</Name>
+                <Comment>single destination port</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_src_port</Name>
+                <Comment>single source port</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>low_limit</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>low limit</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The IPSec SPI defines an IPSec SPI to filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_ipsec_spi</Name>
+                <Comment>IPSec SPI</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>ipsec_spi_value</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>IPSec SPI value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The Type of Service(IPv4)/Traffic Class(IPv6) and Mask defines a set of service points to filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_tos_and_mask</Name>
+                <Comment>Type of service/mask</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tos_value</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>type of service</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>tos_mask</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>mask</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The flow label defines an IPv6 flow label to filter.</Section>
+                <Section>Reference : [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>tft_flow_label</Name>
+                <Comment>flow label</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sm</DocName>
+                    <Name>flow_label_value</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>flow label value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+    </MsgStructElementsSection>
+    <MsgBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the SM AIM</Section>
+        </Description>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.2] (NSAPI)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>nsapi_val</Name>
+                <BitLen>4</BitLen>
+                <Comment>NSAPI value</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_nsapi_val</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>delay</Name>
+                <BitLen>3</BitLen>
+                <Comment>delay class</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_delay</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>reliability</Name>
+                <BitLen>3</BitLen>
+                <Comment>reliability class</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_reliability</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3G 24.008, 10.4]</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>msg_type</Name>
+                <BitLen>8</BitLen>
+                <Comment>message type</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.9].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>sapi</Name>
+                <BitLen>4</BitLen>
+                <Comment>SAPI</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_sapi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>peak</Name>
+                <BitLen>4</BitLen>
+                <Comment>peak throughput</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_peak</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3G 24.008, 10.5.6.5] (Quality of service)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>precedence</Name>
+                <BitLen>3</BitLen>
+                <Comment>Precedence class</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_precedence</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>mean</Name>
+                <BitLen>5</BitLen>
+                <Comment>Mean throughput</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_mean</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tc</Name>
+                <BitLen>3</BitLen>
+                <Comment>traffic class</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_tc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>order</Name>
+                <BitLen>2</BitLen>
+                <Comment>delivery order</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_order</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>del_err_sdu</Name>
+                <BitLen>3</BitLen>
+                <Comment>deliver erroneous SDUs</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_del_err_sdu</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>This information element contains the maximum SDU size allowed. The MS must treat all values outside [0;153] as reserved. The values [1;150] correspond to SDU sizes 10 to 1500 octets (effectively multiply element value by 10). The values 151, 152, and 153 correspond to 1502, 1510, 1520, respectively (as shown in the table below).</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>max_sdu</Name>
+                <BitLen>8</BitLen>
+                <Comment>maximum SDU size</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_max_sdu</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The four bit-rate elements are coded according to the following rule:</Section>
+                <Section>0 is subscribed;</Section>
+                <Section>1-63 map to 1-63kbps, 1 kbps granularity;</Section>
+                <Section>64-127 map to 64-568kbps ((value - 56) * 8kbps), granularity 8kbps;</Section>
+                <Section>128-254 map to 576-8640kbps ((value - 119) * 64kbps), granularity 64kbps;</Section>
+                <Section>255 maps to 0kbps.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>max_br_ul</Name>
+                <BitLen>8</BitLen>
+                <Comment>maximum uplink bit-rate</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_max_br_ul</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>For encoding rules see 6.13.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>max_br_dl</Name>
+                <BitLen>8</BitLen>
+                <Comment>maximum downlink bit-rate</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_max_br_dl</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ber</Name>
+                <BitLen>4</BitLen>
+                <Comment>residual BER</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_ber</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>sdu_err_ratio</Name>
+                <BitLen>4</BitLen>
+                <Comment>SDU error ratio</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_sdu_err_ratio</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Transfer delay is coded according to the following rule:</Section>
+                <Section>0 is subscribed;</Section>
+                <Section>1-15 maps to 10-150ms (value * 10ms);</Section>
+                <Section>16-31 maps to 200-950ms ((value - 12) * 50ms);</Section>
+                <Section>32-62 maps to 1000-4000ms ((value - 22) * 100ms);</Section>
+                <Section>63 is reserved.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>xfer_delay</Name>
+                <BitLen>6</BitLen>
+                <Comment>transfer delay</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_xfer_delay</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>handling_pri</Name>
+                <BitLen>2</BitLen>
+                <Comment>Traffic handling priority</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_handling_pri</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>For encoding rules see 6.13. Value 255 (0kbps) not supported.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>guar_br_ul</Name>
+                <BitLen>8</BitLen>
+                <Comment>guaranteed bit-rate uplink</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_guar_br_ul</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>For encoding rules see 6.13. Value 255 (0kbps) not supported.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.5] (Quality of service, R99)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>guar_br_dl</Name>
+                <BitLen>8</BitLen>
+                <Comment>guaranteed bit-rate downlink</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_guar_br_dl</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The bit len field is in reality 24-824.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.1]</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>apn_value</Name>
+                <BitLen>8</BitLen>
+                <Comment>access point name value</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The packet flow identifier can use the values below, or dynamic values can be assigned in the range 16-127. Values 3-7 are reserved.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.11]</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>pfi_val</Name>
+                <BitLen>7</BitLen>
+                <Comment>packet flow identifier value</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_pfi_val</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The organisation by which the address was allocated.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.4] (Protocol configuration options)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>pdp_type_org</Name>
+                <BitLen>4</BitLen>
+                <Comment>PDP type organisation</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_pdp_type_org</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The type of the PDP address. PPP address type will only be present if the pdp_type_org was ETSI_ORG. IPv4 and IPv6 address type will only be given if the pdp_type_org was IEFT_ORG.</Section>
+                <Section>digit 2  digit 1</Section>
+                <Section>digit 4  digit 3</Section>
+                <Section>digit m + 1 digit m</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.4] (Protocol configuration options)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>pdp_type_no</Name>
+                <BitLen>8</BitLen>
+                <Comment>PDP type number</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_pdp_type_no</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>This value is used in GSM only. Value of the radio priority.</Section>
+                <Section>Reference: [3G 24.008, 10.5.7.2] (Radio priority)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>radio_prio_val</Name>
+                <BitLen>3</BitLen>
+                <Comment>Radio priority value</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_radio_prio_val</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The purpose of the SM cause information element is to indicate the reason why a session management request is rejected.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.6] (SM cause)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>sm_cause_val</Name>
+                <BitLen>8</BitLen>
+                <Comment>SM cause value</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_sm_cause_val</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Changed to better naming and added CAUSE_ prefix.</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>If PDP type number indicates IPv4, the Address information in octet 5 to octet 8 contains the IPv4 address. Bit 8 of octet 5 represents the most significant bit of the IP address and bit 1 of octet 8 the least significant bit.</Section>
+                <Section>If PDP type number indivates IPv6, the Address information in octet 5 to octet 20 contains the IPv6 address. Bit 8 of octet 5 represents the most sgnificant bit of the IP address and bit 1 of octet 20 the least significant bit.</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>add_info</Name>
+                <BitLen>8</BitLen>
+                <Comment>adress information</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed X.121 references - obsoleted in R99.</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Flag for specifying whether only the designated PDP context should be deactivated, or all PDP contexts sharing the same PDP address as this context should be deactivated.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.10].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tear_down_flag</Name>
+                <BitLen>1</BitLen>
+                <Comment>tear down flag</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Transaction identifier flag. Indicates transaction origin.</Section>
+                <Section>Reference: [3G 24.007, 11.2.3.1.3].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ti_flag</Name>
+                <BitLen>1</BitLen>
+                <Comment>TI flag</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Extended transaction identifier field. Included when the ordinary TI value is 7.</Section>
+                <Section>Reference: [3G 24.007, 11.2.3.1.3].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ti_val</Name>
+                <BitLen>3</BitLen>
+                <Comment>Extended TI value</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Extended transaction identifier flag. Not used in 3G R99 specification, but may signal a TI extension field in a later revision.</Section>
+                <Section>Reference: [3G 24.007, 11.2.3.1.3].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ti_ext_flag</Name>
+                <BitLen>1</BitLen>
+                <Comment>Extended TI flag</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Extended transaction identifier field. Included when the ordinary TI value is 7.</Section>
+                <Section>Reference: [3G 24.007, 11.2.3.1.3].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ti_ext_val</Name>
+                <BitLen>7</BitLen>
+                <Comment>Extended TI value</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The bit len field is in reality 2-253.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.3].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>pco_value</Name>
+                <BitLen>8</BitLen>
+                <Comment>protocol config value</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The parameter contains the length information (L) of a TLV type. This IE is not part of the air message. It is set by the calling entity before encoding, and set by CCD while decoding.</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tlv_len</Name>
+                <BitLen>8</BitLen>
+                <Comment>TLV length information</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="12" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Operation code for TFT operation.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tft_opcode</Name>
+                <BitLen>3</BitLen>
+                <Comment>TFT operation code</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">sm</DocName>
+                <Name>VAL_tft_opcode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Number of filters in the current TFT filter operation.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tft_filter_count</Name>
+                <BitLen>4</BitLen>
+                <Comment>TFT filter count</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Packet filter identifier.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tft_filter_id</Name>
+                <BitLen>8</BitLen>
+                <Comment>TFT packet filter ID</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Packet filter precedence.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tft_filter_prio</Name>
+                <BitLen>8</BitLen>
+                <Comment>TFT packet filter precedence/prioroty</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Entries in an IP address.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>src_addr</Name>
+                <BitLen>8</BitLen>
+                <Comment>IP address</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Entries in an IP address mask.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>addr_mask</Name>
+                <BitLen>8</BitLen>
+                <Comment>IP address</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Packet filter: IPv4 protocol number/IPv6 Next Header (depending on protocol revision in use).</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tft_protocol_val</Name>
+                <BitLen>8</BitLen>
+                <Comment>IPv4 protocol/IPv6 next header</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Packet filter: Lower limit of port range.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>low_limit</Name>
+                <BitLen>16</BitLen>
+                <Comment>low limit</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Packet filter: Upper limit of port range.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>high_limit</Name>
+                <BitLen>16</BitLen>
+                <Comment>high limit</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Packet filter: IPSec SPI.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ipsec_spi_value</Name>
+                <BitLen>32</BitLen>
+                <Comment>IPSec SPI value</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Type of service value.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tos_value</Name>
+                <BitLen>8</BitLen>
+                <Comment>type of service value</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Type of service mask.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tos_mask</Name>
+                <BitLen>8</BitLen>
+                <Comment>type of service mask</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Packet filter: IPv6 Flow Label.</Section>
+                <Section>Reference: [3G 24.008, 10.5.6.12].</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>flow_label_value</Name>
+                <BitLen>24</BitLen>
+                <Comment>IPv6 flow label</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+    </MsgBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the SM AIM</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nsapi_val</Name>
+                <Comment>values for nsapi_val</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>NSAPI_5</Alias>
+                <Comment>NSAPI 5</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>NSAPI_6</Alias>
+                <Comment>NSAPI 6</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>NSAPI_7</Alias>
+                <Comment>NSAPI 7</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>NSAPI_8</Alias>
+                <Comment>NSAPI 8</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>NSAPI_9</Alias>
+                <Comment>NSAPI 9</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>NSAPI_10</Alias>
+                <Comment>NSAPI 10</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>NSAPI_11</Alias>
+                <Comment>NSAPI 11</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>NSAPI_12</Alias>
+                <Comment>NSAPI 12</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>NSAPI_13</Alias>
+                <Comment>NSAPI 13</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>NSAPI_14</Alias>
+                <Comment>NSAPI 14</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>NSAPI_15</Alias>
+                <Comment>NSAPI 15</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>reserved</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_delay</Name>
+                <Comment>values for delay</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DELAY_SUB</Alias>
+                <Comment>Subscribed delay class (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DELAY_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DELAY_1</Alias>
+                <Comment>Delay class 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DELAY_2</Alias>
+                <Comment>Delay class 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>DELAY_3</Alias>
+                <Comment>Delay class 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>DELAY_4</Alias>
+                <Comment>Delay class 4 (best effort)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>DELAY_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Delay class 4 (best effort)</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_reliability</Name>
+                <Comment>values for reliability</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RELY_SUB</Alias>
+                <Comment>Subscribed reliability class (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RELY_RES_DL</Alias>
+                <Comment>Reserved (dowwnlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RELY_1</Alias>
+                <Comment>Acknowledged GTP, LLC, and RLC; Protected data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>RELY_2</Alias>
+                <Comment>Unacknowledged GTP; Acknowledged LLC and RLC, Protected data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>RELY_3</Alias>
+                <Comment>Unacknowledged GTP and LLC; Acknowledged RLC, Protected data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>RELY_4</Alias>
+                <Comment>Unacknowledged GTP, LLC, and RLC, Protected data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>RELY_5</Alias>
+                <Comment>Unacknowledged GTP, LLC, and RLC, Unprotected data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>RELY_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Unacknowledged GTP and LLC; Acknowledged RLC, Protected data</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sapi</Name>
+                <Comment>values for sapi</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SAPI_NONE</Alias>
+                <Comment>No SAPI assigned</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>SAPI_3</Alias>
+                <Comment>SAPI 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>SAPI_5</Alias>
+                <Comment>SAPI 5</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>SAPI_9</Alias>
+                <Comment>SAPI 9</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>SAPI_11</Alias>
+                <Comment>SAPI 11</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>reserved</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_peak</Name>
+                <Comment>values for peak</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PEAK_SUB</Alias>
+                <Comment>Subscribed peak throughput (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PEAK_RES_DL</Alias>
+                <Comment>reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PEAK_1000</Alias>
+                <Comment>Up to 1000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PEAK_2000</Alias>
+                <Comment>Up to 2000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>PEAK_4000</Alias>
+                <Comment>Up to 4000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>PEAK_8000</Alias>
+                <Comment>Up to 8000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>PEAK_16000</Alias>
+                <Comment>Up to 16000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>PEAK_32000</Alias>
+                <Comment>Up to 32000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>PEAK_64000</Alias>
+                <Comment>Up to 64000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>PEAK_128000</Alias>
+                <Comment>Up to 128000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>PEAK_256000</Alias>
+                <Comment>Up to 256000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>PEAK_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Up to 1000 octet/s</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_precedence</Name>
+                <Comment>values for precedence</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PRECED_SUB</Alias>
+                <Comment>Subscribed precedence (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PRECED_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PRECED_HIGH</Alias>
+                <Comment>High priority</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PRECED_NORM</Alias>
+                <Comment>Normal Priority</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>PRECED_LOW</Alias>
+                <Comment>Low priority</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>PRECED_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Normal Priority</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mean</Name>
+                <Comment>values for mean</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MEAN_SUB</Alias>
+                <Comment>Subscribed mean throughput (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MEAN_RES_DL</Alias>
+                <Comment>reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MEAN_100</Alias>
+                <Comment>100 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>MEAN_200</Alias>
+                <Comment>200 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>MEAN_500</Alias>
+                <Comment>500 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>MEAN_1000</Alias>
+                <Comment>1000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>MEAN_2000</Alias>
+                <Comment>2000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>MEAN_5000</Alias>
+                <Comment>5000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>MEAN_10000</Alias>
+                <Comment>10000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>MEAN_20000</Alias>
+                <Comment>20000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>MEAN_50000</Alias>
+                <Comment>50000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>MEAN_100000</Alias>
+                <Comment>100000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>MEAN_200000</Alias>
+                <Comment>200000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>MEAN_500000</Alias>
+                <Comment>500000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>MEAN_1000000</Alias>
+                <Comment>1000000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>MEAN_2000000</Alias>
+                <Comment>2000000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>MEAN_5000000</Alias>
+                <Comment>5000000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">16</Value>
+                <Alias>MEAN_10000000</Alias>
+                <Comment>10000000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">17</Value>
+                <Alias>MEAN_20000000</Alias>
+                <Comment>20000000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">18</Value>
+                <Alias>MEAN_50000000</Alias>
+                <Comment>50000000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">30</Value>
+                <Alias>MEAN_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">31</Value>
+                <Alias>MEAN_BEST</Alias>
+                <Comment>Best effort</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Best effort</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tc</Name>
+                <Comment>values for tc</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_TC_SUB</Alias>
+                <Comment>Subscribed traffic class (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_TC_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>QOS_TC_CONV</Alias>
+                <Comment>Conversational class</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>QOS_TC_STREAM</Alias>
+                <Comment>Streaming class</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>QOS_TC_INTER</Alias>
+                <Comment>Interactive class</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>QOS_TC_BG</Alias>
+                <Comment>Background class</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>QOS_TC_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_order</Name>
+                <Comment>values for order</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_ORDER_SUB</Alias>
+                <Comment>Subscribed delivery order (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_ORDER_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>QOS_ORDER_YES</Alias>
+                <Comment>With delivery order ('yes')</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>QOS_ORDER_NO</Alias>
+                <Comment>Without delivery order ('no')</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>QOS_ORDER_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_del_err_sdu</Name>
+                <Comment>values for del_err_sdu</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_DEL_ERR_SUB</Alias>
+                <Comment>Subscribed delivery order (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_DEL_ERR_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>QOS_DEL_ERR_NODETECT</Alias>
+                <Comment>No detect ('-')</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>QOS_DEL_ERR_YES</Alias>
+                <Comment>Erroneous SDUs are delivered ('yes')</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>QOS_DEL_ERR_NO</Alias>
+                <Comment>Erroneous SDUs are not delivered ('no')</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>QOS_DEL_ERR_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_max_sdu</Name>
+                <Comment>values for max_sdu</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_MAX_SDU_SUB</Alias>
+                <Comment>Subscribed maximum SDU size</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_MAX_SDU_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">151</Value>
+                <Alias>QOS_MAX_SDU_1502</Alias>
+                <Comment>Maximum SDU size 1502 octets</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">152</Value>
+                <Alias>QOS_MAX_SDU_1510</Alias>
+                <Comment>Maximum SDU size 1510 octets</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">153</Value>
+                <Alias>QOS_MAX_SDU_1520</Alias>
+                <Comment>Maximum SDU size 1520 octets</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>QOS_MAX_SDU_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_max_br_ul</Name>
+                <Comment>values for max_br_ul</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_MAX_BR_UL_SUB</Alias>
+                <Comment>Subscribed maximum uplink data rate (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_MAX_BR_UL_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>QOS_MAX_BR_UL_0</Alias>
+                <Comment>0 kbps uplink data rate</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_max_br_dl</Name>
+                <Comment>values for max_br_dl</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_MAX_BR_DL_SUB</Alias>
+                <Comment>Subscribed maximum downlink data rate (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_MAX_BR_DL_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>QOS_MAX_BR_DL_0</Alias>
+                <Comment>0 kbps downlink data rate</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ber</Name>
+                <Comment>values for ber</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_BER_SUB</Alias>
+                <Comment>Subscribed residual BER (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_BER_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>QOS_BER_5E_2</Alias>
+                <Comment>5*10-2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>QOS_BER_1E_2</Alias>
+                <Comment>1*10-2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>QOS_BER_5E_3</Alias>
+                <Comment>5*10-3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>QOS_BER_4E_3</Alias>
+                <Comment>4*10-3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>QOS_BER_1E_3</Alias>
+                <Comment>1*10-3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>QOS_BER_1E_4</Alias>
+                <Comment>1*10-4</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>QOS_BER_1E_5</Alias>
+                <Comment>1*10-5</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>QOS_BER_1E_6</Alias>
+                <Comment>1*10-6</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>QOS_BER_6E_8</Alias>
+                <Comment>6*10-8</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>QOS_BER_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sdu_err_ratio</Name>
+                <Comment>values for sdu_err_ratio</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_SDU_ERR_SUB</Alias>
+                <Comment>Subscribed SDU error ratio</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_SDU_ERR_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>QOS_SDU_ERR_1E_2</Alias>
+                <Comment>1*10-2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>QOS_SDU_ERR_7E_3</Alias>
+                <Comment>7*10-3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>QOS_SDU_ERR_1E_3</Alias>
+                <Comment>1*10-3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>QOS_SDU_ERR_1E_4</Alias>
+                <Comment>1*10-4</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>QOS_SDU_ERR_1E_5</Alias>
+                <Comment>1*10-5</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>QOS_SDU_ERR_1E_6</Alias>
+                <Comment>1*10-6</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>QOS_SDU_ERR_1E_1</Alias>
+                <Comment>1*10-1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>QOS_SDU_ERR_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_xfer_delay</Name>
+                <Comment>values for xfer_delay</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_XFER_DELAY_SUB</Alias>
+                <Comment>Subscribed transfer delay (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_XFER_DELAY_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">63</Value>
+                <Alias>QOS_XFER_DELAY_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_handling_pri</Name>
+                <Comment>values for handling_pri</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_HANDLING_PRI_SUB</Alias>
+                <Comment>Subscribed traffic handling priority (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_HANDLING_PRI_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>QOS_HANDLING_PRI_1</Alias>
+                <Comment>Priority level 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>QOS_HANDLING_PRI_2</Alias>
+                <Comment>Priority level 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>QOS_HANDLING_PRI_3</Alias>
+                <Comment>Priority level 3</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_guar_br_ul</Name>
+                <Comment>values for guar_br_ul</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_GUAR_BR_UL_SUB</Alias>
+                <Comment>Subscribed guaranteed uplink data rate (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_GUAR_BR_UL_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_guar_br_dl</Name>
+                <Comment>values for guar_br_dl</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_GUAR_BR_DL_SUB</Alias>
+                <Comment>Subscribed guaranteed downlink data rate (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QOS_GUAR_BR_DL_RES_DL</Alias>
+                <Comment>Reserved (downlink only)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pfi_val</Name>
+                <Comment>values for pfi_val</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PFI_BEST_EFFORT</Alias>
+                <Comment>Best effort</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PFI_SIGNALLING</Alias>
+                <Comment>Signalling</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PFI_SMS</Alias>
+                <Comment>SMS</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pdp_type_org</Name>
+                <Comment>values for pdp_type_org</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ETSI_ORG</Alias>
+                <Comment>ETSI allocated address (PPP)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>IETF_ORG</Alias>
+                <Comment>IETF allocated address</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>PDP_MT</Alias>
+                <Comment>Dynamic PDP addressing is applied, (uplink only)</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>ETSI allocated address (PPP)</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pdp_type_no</Name>
+                <Comment>values for pdp_type_no</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">00000001</Value>
+                <Alias>PPP_TYPE</Alias>
+                <Comment>PDP type PPP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100001</Value>
+                <Alias>IP4_TYPE</Alias>
+                <Comment>IPv4 address</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01010111</Value>
+                <Alias>IP6_TYPE</Alias>
+                <Comment>IPv6 address</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>IPv4 address</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_radio_prio_val</Name>
+                <Comment>values for radio_prio_val</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RADIO_PRIO_1</Alias>
+                <Comment>priority level 1 (highest)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>RADIO_PRIO_2</Alias>
+                <Comment>priority level 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>RADIO_PRIO_3</Alias>
+                <Comment>priority level 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>RADIO_PRIO_4</Alias>
+                <Comment>priority level 4 (lowest)</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>priority level 4 (lowest)</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sm_cause_val</Name>
+                <Comment>values for sm_cause_val</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">00011001</Value>
+                <Alias>CAUSE_LLC_OR_SNDCP_FAILURE</Alias>
+                <Comment>LLC or SNDCP failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00011010</Value>
+                <Alias>CAUSE_INSUFFICIENT_RESOURCES</Alias>
+                <Comment>Insufficient resources</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00011011</Value>
+                <Alias>CAUSE_MISSING_OR_UNKNOWN_APN</Alias>
+                <Comment>Missing or unknown APN</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00011100</Value>
+                <Alias>CAUSE_UNKNOWN_PDP_ADDR_OR_TYPE</Alias>
+                <Comment>Unknown PDP address or PDP type</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00011101</Value>
+                <Alias>CAUSE_USER_AUTH_FAILED</Alias>
+                <Comment>User Aauthentication failed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00011110</Value>
+                <Alias>CAUSE_ACTIVATE_REJECTED_BY_GGSN</Alias>
+                <Comment>Activation rejected by GGSN</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00011111</Value>
+                <Alias>CAUSE_ACTIVATE_REJECTED_UNSPEC</Alias>
+                <Comment>Activation rejected, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100000</Value>
+                <Alias>CAUSE_SERVICE_NOT_SUPPORTED</Alias>
+                <Comment>Service option not supported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100001</Value>
+                <Alias>CAUSE_SERVICE_NOT_SUBSCRIBED</Alias>
+                <Comment>Requested service option not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100010</Value>
+                <Alias>CAUSE_SERVICE_TEMP_OUT_OF_ORDER</Alias>
+                <Comment>Service option temporarily out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100011</Value>
+                <Alias>CAUSE_NSAPI_IN_USE</Alias>
+                <Comment>NSAPI already used</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100100</Value>
+                <Alias>CAUSE_REGULAR_DEACTIVATION</Alias>
+                <Comment>Regular deactivation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100101</Value>
+                <Alias>CAUSE_QOS_NOT_ACCEPTED</Alias>
+                <Comment>QoS not accepted</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100110</Value>
+                <Alias>CAUSE_NETWORK_FAILURE</Alias>
+                <Comment>Network failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100111</Value>
+                <Alias>CAUSE_REACTIVATION_REQUESTED</Alias>
+                <Comment>Reactivation requested</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00101000</Value>
+                <Alias>CAUSE_FEATURE_NOT_SUPPORTED</Alias>
+                <Comment>Feature not supported (context activation)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00101001</Value>
+                <Alias>CAUSE_SEMANTIC_TFT_ERROR</Alias>
+                <Comment>Semantic error in TFT operation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00101010</Value>
+                <Alias>CAUSE_SYNTACTIC_TFT_ERROR</Alias>
+                <Comment>Syntactical error in TFT operation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00101011</Value>
+                <Alias>CAUSE_UNKNOWN_LINKED_TI</Alias>
+                <Comment>Unknown PDP context (identified by linked TI)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00101100</Value>
+                <Alias>CAUSE_SEMANTIC_TFT_FILTER_ERROR</Alias>
+                <Comment>Semantic error in packet filter</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00101101</Value>
+                <Alias>CAUSE_SYNTACTIC_TFT_FILTER_ERROR</Alias>
+                <Comment>Syntactical error in packet filter</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00101110</Value>
+                <Alias>CAUSE_CONTEXT_NEEDS_TFT</Alias>
+                <Comment>PDP context without TFT already activated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01010001</Value>
+                <Alias>CAUSE_INVALID_TI</Alias>
+                <Comment>Invalid transaction identifier value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01011111</Value>
+                <Alias>CAUSE_SEMANTIC_ERROR_IN_MSG</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100000</Value>
+                <Alias>CAUSE_INVALID_MANDATORY_ELEMENT</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100001</Value>
+                <Alias>CAUSE_MSG_TYPE_NOT_IMPL</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100010</Value>
+                <Alias>CAUSE_MSG_TYPE_INCOMPATIBLE_WITH_STATE</Alias>
+                <Comment>Message type not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100011</Value>
+                <Alias>CAUSE_IE_NOT_IMPLEMENTED</Alias>
+                <Comment>Information element non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100100</Value>
+                <Alias>CAUSE_CONDITIONAL_IE_ERROR</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100101</Value>
+                <Alias>CAUSE_MSG_INCOMPATIBLE_WITH_STATE</Alias>
+                <Comment>Message not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01101111</Value>
+                <Alias>CAUSE_PROTOCOL_ERROR_UNSPEC</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Service option temporarily out of order</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tft_opcode</Name>
+                <Comment>values for tft_opcode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TFT_OPCODE_SPARE</Alias>
+                <Comment>Spare</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TFT_OPCODE_CREATE_TFT</Alias>
+                <Comment>Create new TFT</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TFT_OPCODE_DELETE_TFT</Alias>
+                <Comment>Delete existing TFT</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TFT_OPCODE_ADD_FILTERS</Alias>
+                <Comment>Add packet filters to existing TFT</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TFT_OPCODE_REPLACE_FILTERS</Alias>
+                <Comment>Replace packet filters in existing TFT</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>TFT_OPCODE_DELETE_FILTERS</Alias>
+                <Comment>Delete packet filters from existing TFT</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Reserved</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="23" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</AIM>

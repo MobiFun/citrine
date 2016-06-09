@@ -1,0 +1,1290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<AIM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aim.xsd">
+    <DocInfoSection>
+        <DocName DocType="AIM">ss</DocName>
+        <DocNum Number="601" Project="6147"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the messages processed by the Supplementary Services entity.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="97"/>
+            <Date Day="31" Month="7" Year="1997"/>
+            <Author>LE</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="97"/>
+            <Date Day="4" Month="2" Year="2000"/>
+            <Author>UB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Condat AG change</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="97"/>
+            <Date Day="7" Month="2" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Realised Cause Concept: added R99 cause 25, pre-emption.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="97"/>
+            <Date Day="7" Month="2" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switched to new template.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="104" Year="97"/>
+            <Date Day="4" Month="2" Year="2003"/>
+            <Author>LG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Conquest issue 8938.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>???            (GSM 4.80, August 1996, Version 4.11.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[1a]</RefId>
+            <RefTitle>GSM 2.81, Line Identification Supplementary Services - Stage 1 ETS 300 514, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 2.82, Call Forwarding Supplementary Services - Stage 1 ETS 300 515, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 2.83, Call Waiting and Call Hold Supplementary Services - Stage 1 ETS 300 516, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 2.84, Multi Party Supplementary Services - Stage 1 ETS 300 517, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 2.85, Closed User Group Supplementary Services - Stage 1 ETS 300 518, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 2.86, Advice of Charge Supplementary Services - Stage 1 ETS 300 519, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 2.88, Call Barring Supplementary Services - Stage 1 ETS 300 520, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 3.14, Support of Dual Tone Multi Frequency Signalling via the GSM System ETS 300 532, ETSI, April 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 3.40, Technical Realization of the Short Message Service Point-to-Point ETS 300 536, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 3.41, Technical Realization of Short Message Service Cell Broadcast ETS 300 537, ETSI, June 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>GSM 3.81, Line Identification Supplementary Services - Stage 2 ETS 300 542, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 3.82, Call Forwarding Supplementary Services - Stage 2 ETS 300 543, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>GSM 3.83, Call Waiting and Call Hold Supplementary Services - Stage 2 ETS 300 544, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 3.84, Multi Party Supplementary Services - Stage 2 ETS 300 545, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>GSM 3.85, Closed User Group Supplementary Services - Stage 2 ETS 300 546, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>GSM 3.86, Advice of Charge Supplementary Services - Stage 2 ETS 300 547, ETSI, March 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>GSM 3.88, Call Barring Supplementary Services - Stage 2 ETS 300 548, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>GSM 4.01, MS-BSS Interface General Aspects and Principles ETS 300 550, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18a]</RefId>
+            <RefTitle>GSM 4.03, MS-BSS Interface Channel Structures and Access Capabilities ETS 300 552, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>GSM 4.05, Data Link Layer General Aspects ETS 300 554, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>GSM 4.06, MS-BSS Interface Data Link Layer Specification ETS 300 555, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>GSM 4.07, Mobile Radio Interface Signalling Layer 3 General Aspects ETS 300 556, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>GSM 4.08, Mobile Radio Interface Layer 3 Specification ETS 300 557, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>GSM 4.10, Mobile Radio Interface Layer 3 Supplementary Services Specification  General Aspects ETS 300 558, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>GSM 4.11, Point-to-Point Short Message Service Support on Mobile Radio Interface ETS 300 559, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>GSM 4.12, Short Message Service Cell Broadcast Support on Mobile Radio Interface ETS 300 560, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>GSM 4.80, Mobile Radio Interface Supplementary Services Specification Formats and Coding ETS 300 564, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[27]</RefId>
+            <RefTitle>GSM 4.81, Line Identification Supplementary Services - Stage 3 ETS 300 565, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[28]</RefId>
+            <RefTitle>GSM 4.82, Call Forwarding Supplementary Services - Stage 3 ETS 300 566, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[29]</RefId>
+            <RefTitle>GSM 4.83, Call Waiting and Call Hold Supplementary Services - Stage 3 ETS 300 567, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[30]</RefId>
+            <RefTitle>GSM 4.84, Multi Party Supplementary Services - Stage 3 ETS 300 568, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[31]</RefId>
+            <RefTitle>GSM 4.85, Closed User Group Supplementary Services - Stage 3 ETS 300 569, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[32]</RefId>
+            <RefTitle>GSM 4.86, Advice of Charge Supplementary Services - Stage 3 ETS 300 570, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[33]</RefId>
+            <RefTitle>GSM 4.88, Call Barring Supplementary Services - Stage 3 ETS 300 571, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[34]</RefId>
+            <RefTitle>GSM 5.01, Physical Layer on the Radio Path General Description ETS 300 573, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[35]</RefId>
+            <RefTitle>GSM 5.02, Multiplexing and Multiple Access on the Radio Path ETS 300 574, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[36]</RefId>
+            <RefTitle>GSM 5.08, Radio Sub-system Link Control ETS 300 578, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[37]</RefId>
+            <RefTitle>GSM 5.10, Radio Sub-system Synchronisation ETS 300 579, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[38]</RefId>
+            <RefTitle>Service Access Point MMREG 6147.100.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[39]</RefId>
+            <RefTitle>Service Access Point MNCC 6147.101.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[40]</RefId>
+            <RefTitle>Service Access Point MNSS 6147.102.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[41]</RefId>
+            <RefTitle>Service Access Point MNSMS 6147.103.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[42]</RefId>
+            <RefTitle>Service Access Point MMCC 6147.104.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[43]</RefId>
+            <RefTitle>Service Access Point MMSS 6147.105.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[44]</RefId>
+            <RefTitle>Service Access Point MMSMS 6147.106.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[45]</RefId>
+            <RefTitle>Service Access Point RR 6147.107.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[46]</RefId>
+            <RefTitle>Service Access Point SIM 6147.108.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[47]</RefId>
+            <RefTitle>Service Access Point MPH 6147.109.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[48]</RefId>
+            <RefTitle>Service Access Point DL 6147.110.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[49]</RefId>
+            <RefTitle>Service Access Point MDL 6147.111.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[50]</RefId>
+            <RefTitle>Service Access Point PH 6147.112.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[51]</RefId>
+            <RefTitle>Service Access Point MMI 6147.113.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[52]</RefId>
+            <RefTitle>Message Sequence Charts CC 6147.200.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[53]</RefId>
+            <RefTitle>Message Sequence Charts SS 6147.201.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[54]</RefId>
+            <RefTitle>Message Sequence Charts SMS 6147.202.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[55]</RefId>
+            <RefTitle>Message Sequence Charts MM 6147.203.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[56]</RefId>
+            <RefTitle>Message Sequence Charts RR 6147.204.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[57]</RefId>
+            <RefTitle>Message Sequence Charts DL 6147.205.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[58]</RefId>
+            <RefTitle>Users Guide 6147.300.96.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[59]</RefId>
+            <RefTitle>Test Specification CC 6147.400.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[60]</RefId>
+            <RefTitle>Test Specification SS 6147.401.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[61]</RefId>
+            <RefTitle>Test Specification SMS 6147.402.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[62]</RefId>
+            <RefTitle>Test Specification MM 6147.403.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[63]</RefId>
+            <RefTitle>Test Specification RR 6147.404.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[64]</RefId>
+            <RefTitle>Test Specification DL 6147.405.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[65]</RefId>
+            <RefTitle>Test Specification CCD 6147.406.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[66]</RefId>
+            <RefTitle>SDL Specification CC 6147.500.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[67]</RefId>
+            <RefTitle>SDL Specification SS 6147.501.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[68]</RefId>
+            <RefTitle>SDL Specification SMS 6147.502.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[69]</RefId>
+            <RefTitle>SDL Specification MM 6147.503.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[70]</RefId>
+            <RefTitle>SDL Specification RR 6147.504.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[71]</RefId>
+            <RefTitle>SDL Specification DL 6147.505.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[72]</RefId>
+            <RefTitle>Message Specification CC 6147.600.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[73]</RefId>
+            <RefTitle>Message Specification SS 6147.601.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[74]</RefId>
+            <RefTitle>Message Specification SMS 6147.602.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[75]</RefId>
+            <RefTitle>Message Specification MM 6147.603.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[76]</RefId>
+            <RefTitle>Message Specification RR 6147.604.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[77]</RefId>
+            <RefTitle>Message Specification DL 6147.605.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[78]</RefId>
+            <RefTitle>Technical Documentation CC 6147.700.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[79]</RefId>
+            <RefTitle>Technical Documentation SS 6147.701.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[80]</RefId>
+            <RefTitle>Technical Documentation SMS 6147.702.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[81]</RefId>
+            <RefTitle>Technical Documentation MM 6147.703.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[82]</RefId>
+            <RefTitle>Technical Documentation RR 6147.704.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[83]</RefId>
+            <RefTitle>Technical Documentation DL 6147.705.97.100; Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[84]</RefId>
+            <RefTitle>Technical Documentation CCD 6147.706.97.100; Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>2 Constants</Section>
+        </Description>
+        <Constant>
+            <Alias>L3MAX</Alias>
+            <Value ValueType="DEC">251</Value>
+            <Comment>maximum size of a L3 buffer</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_SS_VERSION</Alias>
+            <Value ValueType="DEC">1</Value>
+            <Comment>maximum length in SS version</Comment>
+        </Constant>
+        <History>
+            <Date Day="1" Month="8" Year="1997"/>
+            <Author>SZ</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="4" Month="2" Year="2003"/>
+            <Author>LG</Author>
+            <Comment>added MAX_SS_VERSION</Comment>
+        </History>
+    </ConstantsSection>
+    <MessagesSection>
+        <Description>
+            <Section>This section contains all messages that are defined for the SS AIM</Section>
+        </Description>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the mobile station to request or acknowledge a supplementary service. The supplementary service to be invoked and its associated parameters are specified in the facility information element.</Section>
+                <Section>Reference : [1] section 2.3</Section>
+            </Description>
+            <MsgDef>
+                <Name>d_ss_facility</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00111010</MsgID>
+                <Comment>SS Facility</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>3.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>ss_facility</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>3.5</SpecRef>
+                <Comment>SS facility</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the mobile station to the network to request or acknowledge a supplementary service. The supplementary service to be invoked and its associated parameters are specified in the facility information element.</Section>
+                <Section>Reference : [1] section 2.3</Section>
+            </Description>
+            <MsgDef>
+                <Name>u_ss_facility</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00111010</MsgID>
+                <Comment>SS Facility</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>3.4</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>ss_facility</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>3.5</SpecRef>
+                <Comment>SS facility</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the mobile station to assign a new transaction identifier for call independent supplementary service control and request or acknowledge a supplementary service.</Section>
+                <Section>Reference : [1] section 2.4.1</Section>
+            </Description>
+            <MsgDef>
+                <Name>d_ss_register</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00111011</MsgID>
+                <Comment>SS Register</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>3.4</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>ss_facility</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">1C</ItemTag>
+                <SpecRef>3.5</SpecRef>
+                <Comment>SS facility</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the mobile station to the network to assign a new transaction identifier for call independent supplementary service control and request or acknowledge a supplementary service.</Section>
+                <Section>Reference : [1] section 2.4.2</Section>
+            </Description>
+            <MsgDef>
+                <Name>u_ss_register</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00111011</MsgID>
+                <Comment>SS Register</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>3.4</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>ss_facility</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">1C</ItemTag>
+                <SpecRef>3.5</SpecRef>
+                <Comment>SS facility</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>ss_version</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">7F</ItemTag>
+                <SpecRef>3.7.2</SpecRef>
+                <Comment>SS version</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent by the mobile station or the network to release a transaction identifier for call independent supplementary service control. It may also request or acknowledge a supplementary service.</Section>
+                <Section>Reference : [1] section 2.5</Section>
+            </Description>
+            <MsgDef>
+                <Name>b_ss_rel_comp</Name>
+                <MsgID Direction="BOTH" IDType="BIN">00101010</MsgID>
+                <Comment>SS Release Complete</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>3.4</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>ss_cause</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">08</ItemTag>
+                <SpecRef>GSM 4.08</SpecRef>
+                <Comment>SS cause</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>ss_facility</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">1C</ItemTag>
+                <SpecRef>3.5</SpecRef>
+                <Comment>SS facility</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+    </MessagesSection>
+    <MsgStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the SS AIM</Section>
+        </Description>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the facility information element is to transport supplementary service related information. Within the scope of TS GSM 04.08 the content of the Facility information field is an array of octets. The usage of this transportation mechanism is defined in TS GSM 04.80.</Section>
+                <Section>Reference : [1] section 3.5</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>ss_facility</Name>
+                <Comment>SS facility</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>fac_info</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[1..L3MAX]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Facility Information</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the supplementary version indicator is to allow the network to select the correct version of a protocol for a specific supplementary service.</Section>
+                <Section>Reference : [1] section 3.7.2</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>ss_version</Name>
+                <Comment>SS version</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>ver</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[0.. MAX_SS_VERSION]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>ss version content</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="2" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Description changed</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>length by symbol</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>The purpose of the cause information element is to describe the reason for generating certain messages, to provide diagnostic information in the event of procedural errors and to indicate the location of the cause originator.</Section>
+                <Section>Reference : [1] section 2.5</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>ss_cause</Name>
+                <Comment>Cause</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>cs2</Name>
+                </ItemLink>
+                <Control>
+                    <BitGroupDef>+</BitGroupDef>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Coding standard II</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0</Pattern>
+                    <BitLen>1</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>Spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>loc</Name>
+                </ItemLink>
+                <Control>
+                    <BitGroupDef>-</BitGroupDef>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Location</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>rec</Name>
+                </ItemLink>
+                <Control>
+                    <BitGroupDef>*</BitGroupDef>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Recommendation</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>cs</Name>
+                </ItemLink>
+                <Control>
+                    <BitGroupDef>*</BitGroupDef>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Cause value</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">ss</DocName>
+                    <Name>diag</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[0..27]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Diagnostics</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="18" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+    </MsgStructElementsSection>
+    <MsgBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the SS AIM</Section>
+        </Description>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : 3.4</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>msg_type</Name>
+                <BitLen>8</BitLen>
+                <Comment>Message Type</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [1] section 3.5</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>fac_info</Name>
+                <BitLen>8</BitLen>
+                <Comment>Facility Information</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [1] section 3.7.2</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ver</Name>
+                <BitLen>8</BitLen>
+                <Comment>Version Content</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">ss</DocName>
+                <Name>VAL_ver</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: TS GSM 4.08 section 10.5.4.11</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>cs</Name>
+                <BitLen>7</BitLen>
+                <Comment>Cause</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">ss</DocName>
+                <Name>VAL_cs</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="2" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Add Pre-emption cause (of R99)</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: TS GSM 04.08</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>cs2</Name>
+                <BitLen>2</BitLen>
+                <Comment>Coding standard</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">ss</DocName>
+                <Name>VAL_cs2</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: TS GSM 04.08</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>loc</Name>
+                <BitLen>4</BitLen>
+                <Comment>Location</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">ss</DocName>
+                <Name>VAL_loc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: TS GSM 04.08</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>rec</Name>
+                <BitLen>7</BitLen>
+                <Comment>Recommendation</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="18" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: TS GSM 04.08</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>diag</Name>
+                <BitLen>8</BitLen>
+                <Comment>Diagnostics</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="18" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+    </MsgBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the SS AIM</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ver</Name>
+                <Comment>values for ver</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>SS_VERSION_PHASE2</Alias>
+                <Comment>phase 2 service and error handling, ellipsis notation</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cs</Name>
+                <Comment>values for cs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CAUSE_UNASSIGN</Alias>
+                <Comment>Unassigned (unallocated) Note 9 number</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CAUSE_NO_ROUTE</Alias>
+                <Comment>No route to destination</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>CAUSE_CHAN_UNACCEPT</Alias>
+                <Comment>Channel unacceptable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>CAUSE_BARRED</Alias>
+                <Comment>Operator determined barring</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">16</Value>
+                <Alias>CAUSE_CALL_CLEAR</Alias>
+                <Comment>Normal call clearing</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">17</Value>
+                <Alias>CAUSE_USER_BUSY</Alias>
+                <Comment>User busy</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">18</Value>
+                <Alias>CAUSE_NO_RESPONSE</Alias>
+                <Comment>No user responding</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">19</Value>
+                <Alias>CAUSE_ALERT_NO_ANSWER</Alias>
+                <Comment>User alerting, no answer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">21</Value>
+                <Alias>CAUSE_CALL_REJECT</Alias>
+                <Comment>Call rejected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">22</Value>
+                <Alias>CAUSE_NUM_CHANGED</Alias>
+                <Comment>Number changed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">25</Value>
+                <Alias>CAUSE_PREEMPTION</Alias>
+                <Comment>Pre-emption</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">26</Value>
+                <Alias>CAUSE_USER_CLEAR</Alias>
+                <Comment>Non selected user clearing</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">27</Value>
+                <Alias>CAUSE_DEST_ORDER</Alias>
+                <Comment>Destination out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">28</Value>
+                <Alias>CAUSE_NUM_FORMAT</Alias>
+                <Comment>Invalid number format (incomplete number)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">29</Value>
+                <Alias>CAUSE_FACILITY_REJECT</Alias>
+                <Comment>Facility rejected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">30</Value>
+                <Alias>CAUSE_STATUS_ENQUIRY</Alias>
+                <Comment>Response to STATUS ENQUIRY</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">31</Value>
+                <Alias>CAUSE_UNSPECIFIED</Alias>
+                <Comment>Normal, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">34</Value>
+                <Alias>CAUSE_NO_CHAN_AVAIL</Alias>
+                <Comment>No circuit/channel available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">38</Value>
+                <Alias>CAUSE_NETWORK_ORDER</Alias>
+                <Comment>Network out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">41</Value>
+                <Alias>CAUSE_TEMP_FAIL</Alias>
+                <Comment>Temporary failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">42</Value>
+                <Alias>CAUSE_SWITCH_CONGEST</Alias>
+                <Comment>Switching equipment congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">43</Value>
+                <Alias>CAUSE_INFO_DISCARD</Alias>
+                <Comment>Access information discarded</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">44</Value>
+                <Alias>CAUSE_REQ_CHAN_UNAVAIL</Alias>
+                <Comment>requested circuit/channel not available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">47</Value>
+                <Alias>CAUSE_RESOURCE_UNAVAIL</Alias>
+                <Comment>Resources unavailable, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">49</Value>
+                <Alias>CAUSE_QOS_UNAVAIL</Alias>
+                <Comment>Quality of service unavailable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">50</Value>
+                <Alias>CAUSE_FACILITY_UNSUBSCRIB</Alias>
+                <Comment>Requested facility not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">55</Value>
+                <Alias>CAUSE_BARRED_IN_CUG</Alias>
+                <Comment>Incoming calls barred within the CUG</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">57</Value>
+                <Alias>CAUSE_BEARER_CAP_AUTHORIZ</Alias>
+                <Comment>Bearer capability not authorized</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">58</Value>
+                <Alias>CAUSE_BEARER_CAP_UNAVAIL</Alias>
+                <Comment>Bearer capability not presently available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">63</Value>
+                <Alias>CAUSE_SERVICE_UNAVAIL</Alias>
+                <Comment>Service or option not available, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">65</Value>
+                <Alias>CAUSE_BEARER_NOT_IMPLEM</Alias>
+                <Comment>Bearer service not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">68</Value>
+                <Alias>CAUSE_ACM_MAX</Alias>
+                <Comment>ACM equal to or greater than ACMmax</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">69</Value>
+                <Alias>CAUSE_FACILITY_NOT_IMPLEM</Alias>
+                <Comment>Requested facility not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">70</Value>
+                <Alias>CAUSE_RESTICT_BEARER_CAP</Alias>
+                <Comment>Only restricted digital information bearer capability is available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">79</Value>
+                <Alias>CAUSE_SERVICE_NOT_IMPLEM</Alias>
+                <Comment>Service or option not implemented, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">81</Value>
+                <Alias>CAUSE_INVALID_TI</Alias>
+                <Comment>Invalid transaction identifier value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">87</Value>
+                <Alias>CAUSE_USER_NOT_IN_CUG</Alias>
+                <Comment>User not member of CUG</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">88</Value>
+                <Alias>CAUSE_INCOMPAT_DEST</Alias>
+                <Comment>Incompatible destination</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">91</Value>
+                <Alias>CAUSE_INVALID_TRANS_NET</Alias>
+                <Comment>Invalid transit network selection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">95</Value>
+                <Alias>CAUSE_INCORRECT_MESSAGE</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">96</Value>
+                <Alias>CAUSE_INVALID_MAND_INFO</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">97</Value>
+                <Alias>CAUSE_MESSAGE_TYPE_NOT_IMPLEM</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">98</Value>
+                <Alias>CAUSE_MESSAGE_TYPE_INCOMPAT</Alias>
+                <Comment>Message type not compatible with protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">99</Value>
+                <Alias>CAUSE_INFO_ELEM_NOT_IMPLEM</Alias>
+                <Comment>Information element non existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">100</Value>
+                <Alias>CAUSE_COND_INFO_ELEM</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">101</Value>
+                <Alias>CAUSE_MESSAGE_INCOMPAT</Alias>
+                <Comment>Message not compatible with protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">102</Value>
+                <Alias>CAUSE_TIMER</Alias>
+                <Comment>Recovery on timer expiry</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">111</Value>
+                <Alias>CAUSE_PROTOCOL</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">127</Value>
+                <Alias>CAUSE_INTERWORKING</Alias>
+                <Comment>Interworking, unspecified</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cs2</Name>
+                <Comment>values for cs2</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CS_Q931</Alias>
+                <Comment>standardized coding as described in CCITT Rec. Q.931</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CS_INTERNATIONAL</Alias>
+                <Comment>reserved for other international standards</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CS_NATIONAL</Alias>
+                <Comment>national standard</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CS_GSM_PLMN</Alias>
+                <Comment>standard defined for the GSM PLMNS as described in 10.86/GSM 04.08</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_loc</Name>
+                <Comment>values for loc</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>LOC_USER</Alias>
+                <Comment>user</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LOC_PRIV_NET_LOCAL_USER</Alias>
+                <Comment>private network serving the local user</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>LOC_PUB_NET_LOCAL_USER</Alias>
+                <Comment>public network serving the local user</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>LOC_TRANSIT_NET</Alias>
+                <Comment>transit network</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>LOC_PUB_NET_REMOTE_USER</Alias>
+                <Comment>public network serving the remote user</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>LOC_PRIV_NET_REMOTE_USER</Alias>
+                <Comment>private network serving the remote user</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>LOC_INTERNATIONAL_NET</Alias>
+                <Comment>international network</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>LOC_BEYOND_POINT</Alias>
+                <Comment>network beyond interworking point</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>reserved</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</AIM>

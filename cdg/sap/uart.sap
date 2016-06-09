@@ -1,0 +1,3277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">uart</DocName>
+        <DocNum Number="117" Project="8441"/>
+        <Description>
+            <Section>This section contains general information on UART SAP</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="99"/>
+            <Date Day="24" Month="9" Year="1999"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="99"/>
+            <Date Day="14" Month="10" Year="1999"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Removed dummy parameter</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="99"/>
+            <Date Day="15" Month="2" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Primitive IDs changed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="99"/>
+            <Date Day="25" Month="4" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Flow and data primitives removed (now in DTI).</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="99"/>
+            <Date Day="17" Month="8" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>new primitive and parameter definition</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="99"/>
+            <Date Day="23" Month="10" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>add parameter tui_peer in UART_DTI_REQ primitive and rename ACI to MMI</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="99"/>
+            <Date Day="13" Month="2" Year="2001"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>add parameter c_id in UART_DTI_REQ primitive</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="99"/>
+            <Date Day="27" Month="2" Year="2001"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>add UART_DTI_CNF primitive</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="99"/>
+            <Date Day="16" Month="5" Year="2001"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>add Confirm primitives for Request primitives</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="99"/>
+            <Date Day="11" Month="6" Year="2001"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>remove constances because of scalebility for each customer</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="99"/>
+            <Date Day="17" Month="9" Year="2001"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>adaptations for DTI2</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="012" Year="99"/>
+            <Date Day="21" Month="9" Year="2001"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>remove values of direction parameter</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="013" Year="99"/>
+            <Date Day="15" Month="10" Year="2001"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>add primitives to request and indicate a disconnected DTI link</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="014" Year="99"/>
+            <Date Day="11" Month="3" Year="2002"/>
+            <Author>TVO</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Rename dti and parameter primitives, add UART_PARAMETERS_IND</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 05.02 version 8.0.0 Release 1999Digital cellular telecommunications system (Phase 2+);Multiplexing and multiple access on the radio path</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 04.60 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station (MS) - Base Station System (BSS) interface;Radio Link Control/ Medium Access Control (RLC/MAC) protocol</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 04.08 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface layer 3 specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 03.64 version 6.1.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Overall description of the GPRS radio interface; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 03.60 version 6.3.1 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Service description; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 04.07 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface signalling layer 3; General aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 04.64 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station - Serving GPRS Support Node (MS-SGSN)Logical Link Control (LLC) layer specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 05.08 version 6.4.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem link control</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 05.10 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem synchronization</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 03.20 TS 100 929: July 1998 (GSM 03.20 version 6.0.1)Security related network functions, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Draft GSM 03.22: August 1998 (GSM 03.22 version 6.1.0)Functions related to Mobile Station (MS) in idle mode and group receive mode, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 04.65 V6.3.0: Subnetwork Dependant Convergence Protocol ETSI, March 1999</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>ITU-T V42bis ITU-T, Recommendation V.42 bis 1990</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 09.60 GPRS Tunneling Protocol (GTP) across the Gn and Gp Interface</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>RFC 1661 IETF STD 51 July 1994The Point-to-Point Protocol (PPP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>RFC 1662 IETF STD 51 July 1994PPP in HDLC-like Framing</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>RFC 1570 January 1994PPP LCP Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>RFC 1989 August 1996PPP Link Quality Monitoring</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>RFC 1332 May 1992The PPP Internet Protocol Control Protocol (IPCP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>RFC 1877 December 1995PPP IPCP Extensions for Name Server Addresses</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>RFC 2153 May 1997PPP Vendor Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>RFC 1334 October 1992PPP Authentication Protocols (for Password Authentication Protocol only)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>RFC 1994 August 1996PPP Challenge Handshake Authentication Protocol (CHAP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>TIA/EIA-136-370Packet-Data Services - Enhanced General Packet Radio for TIA/EIA-136 (EGPRS-136) - Overview, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>TIA/EIA-136-376Packet-Data Services - EGPRS-136 Mobility Management, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>TIA/EIA-136-972Packet-Data Services - Stage 2 Description, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the UART SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>UART_DLCI_NOT_MULTIPLEXED</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment/>
+        </Constant>
+        <History>
+            <Date Day="11" Month="12" Year="2000"/>
+            <Author>STW</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="2" Month="2" Year="2001"/>
+            <Author>STW</Author>
+            <Comment>add UART_MAX_NUMBER_OF_CHANNELS</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="6" Year="2001"/>
+            <Author>STW</Author>
+            <Comment>remove constants</Comment>
+        </History>
+        <History>
+            <Date Day="5" Month="8" Year="2002"/>
+            <Author>TLU</Author>
+            <Comment>add UART_DLCI_NOT_MULTIPLEXED</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="52">
+        <Description>
+            <Section>This section contains all primitives that are defined for the UART SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>UART_PARAMETERS_REQ is used to set up the communication parameters of the serial link. UART will be flushed before the new parameters are set.</Section>
+                <Section>The comPar parameter contains the values to set.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_PARAMETERS_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>comPar</Name>
+                </ItemLink>
+                <Comment>Parameters of serial link</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="1" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Device parameter added</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="3" Year="2002"/>
+                <Author>TVO</Author>
+                <Comment>Renamed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_PARAMETERS_CNF is used to confirm a successful processing of UART_PARAMETERS_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_PARAMETERS_CNF</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="5" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="3" Year="2002"/>
+                <Author>TVO</Author>
+                <Comment>Renamed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_PARAMETERS_IND is used to inform ACI about initial parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_PARAMETERS_IND</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>uart_instances</Name>
+                </ItemLink>
+                <Comment>number of UART instances</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="3" Year="2002"/>
+                <Author>TVO</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_DTI_REQ is used to start or stop data transfer between UART and another entity. If this primitive specifies an existing DTI connection to be opened this connection will be removed and the new connection will be established. The existing connection will be flushed before it will be removed.</Section>
+                <Section>UART does not release the Data Link Connection (DLC) upon closing of a dti channel.</Section>
+                <Section>The DLCI parameter is ignored if UART is not in multiplexer mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DTI_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>direction</Name>
+                </ItemLink>
+                <Comment>direction of the DTI link</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>identifier of DTI connection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>entity_name</Name>
+                </ItemLink>
+                <Comment>communication entity name</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Parameters escChar and guardPeriod moved to primitive UART_SET_ESCAPE_REQ</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="10" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Parameter tui_peer added</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="1" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Device and dlci parameter added</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Adaptation for DTI2</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="3" Year="2002"/>
+                <Author>TVO</Author>
+                <Comment>Renamed, parameter dti_conn added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_DTI_CNF is the confirm primitive to UART_DTI_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DTI_CNF</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="3" Year="2002"/>
+                <Author>TVO</Author>
+                <Comment>Renamed, parameter dti_conn added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_DTI_IND is used to inform MMI about a disconnection of a DTI link. UART sends this primitive if the DTI link is disconnected by the DTI peer. The Data Link Connection (DLC) is still established.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DTI_IND</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="12" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="3" Year="2002"/>
+                <Author>TVO</Author>
+                <Comment>Renamed, parameter dti_conn added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitve disables the UART and removes the DTI connection. UART will be flushed before it will be disabled.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DISABLE_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="12" Month="9" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="1" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Device parameter added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_DISABLE_CNF is used to confirm a successful processing of UART_DISABLE_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DISABLE_CNF</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="5" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_RING_REQ sets or resets the ring indicator of the serial link or via a DLC (Data Link Connection). The DLCI parameter is ignored if UART is not in multiplexer mode.</Section>
+                <Section>The line_state parameter determines whether the ring indicator must turned on or off.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_RING_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>line_state</Name>
+                </ItemLink>
+                <Comment>states of line</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="1" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Device and dlci parameter added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_RING_CNF is used to confirm a successful processing of UART_RING_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_RING_CNF</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="5" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_DCD_REQ sets or resets the data carrier detect line of the serial link or via a DLC (Data Link Connection). The DLCI parameter is ignored if UART is not in multiplexer mode.</Section>
+                <Section>The line_state parameter determines whether the line must turned on or off.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DCD_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>line_state</Name>
+                </ItemLink>
+                <Comment>states of line</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="1" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Device and dlci parameter added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_DCD_CNF is used to confirm a successful processing of UART_DCD_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DCD_CNF</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="5" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_ESCAPE_REQ is used to enable or disable escape sequence detection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_ESCAPE_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>detection</Name>
+                </ItemLink>
+                <Comment>escape sequence detection</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_ESCAPE_CNF is used to confirm a successful processing of UART_ESCAPE_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_ESCAPE_CNF</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_DETECTED_IND is used to inform MMI about the reception of an escape sequence or a DTR line drop.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DETECTED_IND</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>cause of indication</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_ERROR_IND indicates an error in UART.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_ERROR_IND</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>error</Name>
+                </ItemLink>
+                <Comment>error code</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="9" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="1" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Device and dlci parameter added</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Rename cause parameter to error parameter</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to start the TS 27.010 muliplexer operation over a serial link.</Section>
+                <Section>Only advanced operation mode is supported.</Section>
+                <Section>Only UIH frames are supported.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_START_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>mode</Name>
+                </ItemLink>
+                <Comment>transparency mechanism</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>frame_type</Name>
+                </ItemLink>
+                <Comment>type of frame</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>n1</Name>
+                </ItemLink>
+                <Comment>maximum frame size</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>t1</Name>
+                </ItemLink>
+                <Comment>acknowledgement timer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>n2</Name>
+                </ItemLink>
+                <Comment>maximum numer of retransmissions</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>t2</Name>
+                </ItemLink>
+                <Comment>response timer for the multiplexer control channel</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>t3</Name>
+                </ItemLink>
+                <Comment>wake up response timer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_MUX_START_CNF is used to confirm a successful processing of UART_MUX_START_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_START_CNF</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="5" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UART_MUX_DLC_ESTABLISH_IND is used to open Data Link Connections (DLC). A DLC is a virtual connection between TE and MT. More than one DLC can be established.</Section>
+                <Section>The initiator of a DLC establishment is the TE. If the MUX receives a SABM frame it sends this primitive to MMI to indicate the reception. This primitive will only be sent in UART multiplexer mode.</Section>
+                <Section>Only convergence layer 1 and only AT command mode is supported.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_DLC_ESTABLISH_IND</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>convergence</Name>
+                </ItemLink>
+                <Comment>convergence layer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>n1</Name>
+                </ItemLink>
+                <Comment>maximum frame size</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>service</Name>
+                </ItemLink>
+                <Comment>service on DLC</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the positive response to UART_MUX_DLC_ESTABLISH_IND primitive. The negative respone is UART_MUX_DLC_RELEASE_REQ. The establishment of a DTI connection will be done by the UART_DTI_REQ primitive.</Section>
+                <Section>This primitive can only be sent in UART multiplexer mode.</Section>
+                <Section>MMI can specify a smaler frame size then given in the UART_MUX_DLC_ESTABLISH_IND primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_DLC_ESTABLISH_RES</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>n1</Name>
+                </ItemLink>
+                <Comment>maximum frame size</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to diconnect a DLC (Data Link Connection). This primitive can only be sent in UART multiplexer mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_DLC_RELEASE_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to inform MMI about diconnection of a DLC (Data Link Connection). This primitive will only be sent in UART multiplexer mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_DLC_RELEASE_IND</Name>
+                <PrimID Direction="UPLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>dlci</Name>
+                </ItemLink>
+                <Comment>data link connection identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to request power saving mode. This primitive can only be sent in UART multiplexer mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_SLEEP_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to inform MMI about power saving mode requested by TE. This primitive will only be sent in UART multiplexer mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_SLEEP_IND</Name>
+                <PrimID Direction="UPLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>MMI will send this primitive to UART to initiate a Wake-up of the multiplexer from the power saving mode. This primitive can only be sent in UART multiplexer mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_WAKEUP_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="1" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>If the TE wants to wake up MT from power saving mode then UART will send this primitive to MMI. This primitive will only be sent in UART multiplexer mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_WAKEUP_IND</Name>
+                <PrimID Direction="UPLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to terminate multiplexer operation on the serial link. This primitive can only be sent in UART multiplexer mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_CLOSE_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to inform MMI about termination of multiplexer operation on the serial link. This primitive will only be sent in UART multiplexer mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_MUX_CLOSE_IND</Name>
+                <PrimID Direction="UPLINK" Number="15"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is for internal purpose. It should not be used by any other entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DRIVER_SENT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="22" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>renamed</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="06" Year="2004"/>
+                <Author>MDF</Author>
+                <Comment>DIO IL integration: added devId</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is for internal purpose. It should not be used by any other entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DRIVER_RECEIVED_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="22" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>renamed</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="06" Year="2004"/>
+                <Author>MDF</Author>
+                <Comment>DIO IL integration: added devId</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is for internal purpose. It should not be used by any other entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DRIVER_FLUSHED_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="5" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="06" Year="2004"/>
+                <Author>MDF</Author>
+                <Comment>DIO IL integration: added devId </Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DIO IL integration: Signal triggered by DIO IL event  </Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DRIVER_CONNECT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="15"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="06" Year="2004"/>
+                <Author>MDF</Author>
+                <Comment>DIO IL integration: Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DIO IL integration: signals driver disconnection</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DRIVER_DISCONNECT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="16"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="06" Year="2004"/>
+                <Author>MDF</Author>
+                <Comment>DIO IL integration: Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DIO IL integration: signals the clearing of the driver</Section>
+            </Description>
+            <PrimDef>
+                <Name>UART_DRIVER_CLEAR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="17"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>UART</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>devId</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="06" Year="2004"/>
+                <Author>MDF</Author>
+                <Comment>DIO IL integration: Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>comPar</Name>
+                <Comment>Parameters of serial link</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>speed</Name>
+                </ItemLink>
+                <Comment>baud rate</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>bpc</Name>
+                </ItemLink>
+                <Comment>bits per character</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>nsb</Name>
+                </ItemLink>
+                <Comment>stop bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>parity</Name>
+                </ItemLink>
+                <Comment>parity of serial link</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>flow_rx</Name>
+                </ItemLink>
+                <Comment>flow control mode RX</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>flow_tx</Name>
+                </ItemLink>
+                <Comment>flow control mode TX</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>xon_valid</Name>
+                </ItemLink>
+                <Comment>indicator whether xon is valid</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>xon</Name>
+                </ItemLink>
+                <Comment>XOn character for XON/XOFF flow control</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>xoff_valid</Name>
+                </ItemLink>
+                <Comment>indicator whether xoff is valid</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>xoff</Name>
+                </ItemLink>
+                <Comment>XOff character for XON/XOFF flow control</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>esc_valid</Name>
+                </ItemLink>
+                <Comment>indicator whether esc_char and esc_gp are valid</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>esc_char</Name>
+                </ItemLink>
+                <Comment>escape character</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">uart</DocName>
+                    <Name>esc_gp</Name>
+                </ItemLink>
+                <Comment>guard period</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the UART device the primitive belongs to.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>device</Name>
+                <Type>U8</Type>
+                <Comment>device number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the Data Link Connection (DLC) in multiplexer mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dlci</Name>
+                <Type>U8</Type>
+                <Comment>data link connection identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>speed</Name>
+                <Type>U8</Type>
+                <Comment>baud rate</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_speed</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bpc</Name>
+                <Type>U8</Type>
+                <Comment>bits per character</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_bpc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nsb</Name>
+                <Type>U8</Type>
+                <Comment>stop bits</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_nsb</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>parity</Name>
+                <Type>U8</Type>
+                <Comment>parity of serial link</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_parity</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>flow_rx</Name>
+                <Type>U8</Type>
+                <Comment>flow control mode RX</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_flow_rx</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>flow_tx</Name>
+                <Type>U8</Type>
+                <Comment>flow control mode TX</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_flow_tx</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>xon_valid</Name>
+                <Type>U8</Type>
+                <Comment>indicator whether xon is valid</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_xon_valid</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>xon</Name>
+                <Type>U8</Type>
+                <Comment>XOn character for XON/XOFF flow control</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_xon</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>xoff_valid</Name>
+                <Type>U8</Type>
+                <Comment>indicator whether xoff is valid</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_xoff_valid</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>xoff</Name>
+                <Type>U8</Type>
+                <Comment>XOff character for XON/XOFF flow control</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_xoff</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>esc_valid</Name>
+                <Type>U8</Type>
+                <Comment>indicator whether esc_char and esc_gp are valid</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_esc_valid</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>esc_char</Name>
+                <Type>U8</Type>
+                <Comment>escape character</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_esc_char</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the parameters of the serial link. The parameters xon_valid and xoff_valid are used to indicate whether the parameters xon and xoff contains valid values. The parameter esc_valid is used to indicate whether the parameters esc_char and esc_gp contain valid values. The value zero for esc_gp has a special meaning, this value is used to turn off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>esc_gp</Name>
+                <Type>U16</Type>
+                <Comment>guard period</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_esc_gp</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Parameters xon_valid, xon, xoff_valid and xoff</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add escape sequence detection parameters</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Add constant to turn escape detection off</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines, if a dti channel is to be opened or closed.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_conn</Name>
+                <Type>U8</Type>
+                <Comment>DTI connect</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_dti_conn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="3" Year="2002"/>
+                <Author>TVO</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter determines whether DTILIB must send Request or Indication primitives. There are already predefined values for this parameter in the DTILIB. HOME means DTILIB must send Request primitives and NEIGHBOR means DTILIB must send Indication primitives.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>direction</Name>
+                <Type>U8</Type>
+                <Comment>direction of the DTI link</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Remove values</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to identify the affected DTI connection. In multiplexer mode this parameter is used to distinguish between multiplexer channels.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>link_id</Name>
+                <Type>U32</Type>
+                <Comment>identifier of DTI connection</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="13" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>change name to link_id and change type to ULONG</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a pointer to a string (zero terminated) which is the name of the entity for data exchange. The parameter is used to open a VSI communication channel to this entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>entity_name</Name>
+                <Type>U32</Type>
+                <Comment>communication entity name</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter provides information about the actual number of UART instances.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>uart_instances</Name>
+                <Type>U8</Type>
+                <Comment>number of UART instances</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="3" Year="2002"/>
+                <Author>TVO</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter determines the new state of status-line.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>line_state</Name>
+                <Type>U8</Type>
+                <Comment>state of line</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_line_state</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="1" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Renamed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to turn on or off escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>detection</Name>
+                <Type>U8</Type>
+                <Comment>escape sequence detection</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_detection</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes the reason for sending an UART_DETECTED_IND primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U8</Type>
+                <Comment>cause of indication</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the error code.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>error</Name>
+                <Type>U8</Type>
+                <Comment>error code</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_error</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="9" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Renamed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter determines the transparency mechanism used by the multiplexer.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mode</Name>
+                <Type>U8</Type>
+                <Comment>transparency mechanism</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter determines the type of information frame.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>frame_type</Name>
+                <Type>U8</Type>
+                <Comment>type of frame</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_frame_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the maximum frame size. Greater frames will be silently discarded.</Section>
+                <Section>The range of values is 1 - 128 in basic mode and 1 - 512 in advanced mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n1</Name>
+                <Type>U16</Type>
+                <Comment>maximum frame size</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_n1</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter determines the time to wait for an acknowledgement of the peer. It is specified in units of ten millisecounds.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t1</Name>
+                <Type>U8</Type>
+                <Comment>acknowledgement timer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_t1</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the number of retransmissions befor assuming that the peer is unable to respond. The range of values is 0 - 100.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n2</Name>
+                <Type>U8</Type>
+                <Comment>maximum numer of retransmissions</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_n2</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter determines the time to wait for a response at the multiplexer control channel. It is specified in units of ten millisecounds. This value must be longer than acknowledgement timer (t1).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t2</Name>
+                <Type>U8</Type>
+                <Comment>response timer for the multiplexer control channel</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_t2</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>If the multiplexer is in sleep mode then this parameter determines the time to wake up. It is specified in units of seconds.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t3</Name>
+                <Type>U8</Type>
+                <Comment>wake up response timer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_t3</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the type of data delivered by the DLC.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>convergence</Name>
+                <Type>U8</Type>
+                <Comment>convergence layer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_convergence</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the service on the DLC.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>service</Name>
+                <Type>U8</Type>
+                <Comment>service on DLC</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">uart</DocName>
+                <Name>VAL_service</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="2" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>add GPRS data, Circuit-Switched data and Trace / Debug output</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>DIO IL integration</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>devId</Name>
+                <Type>U32</Type>
+                <Comment>device ID</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="06" Year="2004"/>
+                <Author>MDF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the UART SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_esc_valid</Name>
+                <Comment>values for esc_valid</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_IO_ESC_UNDEF</Alias>
+                <Comment>values for escape sequence detection remain unchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_IO_ESC_VALID</Alias>
+                <Comment>values for escape sequence detection are valid</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_xoff</Name>
+                <Comment>values for xoff</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">19</Value>
+                <Alias>UART_IO_XOFF_DEFAULT</Alias>
+                <Comment>default value for XOff character</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_xon</Name>
+                <Comment>values for xon</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">17</Value>
+                <Alias>UART_IO_XON_DEFAULT</Alias>
+                <Comment>default value for XOn character</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_parity</Name>
+                <Comment>values for parity</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>UART_IO_PA_UNDEF</Alias>
+                <Comment>parity remain unchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_IO_PA_NONE</Alias>
+                <Comment>no parity and no space</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_IO_PA_EVEN</Alias>
+                <Comment>even parity</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UART_IO_PA_ODD</Alias>
+                <Comment>odd parity</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>UART_IO_PA_SPACE</Alias>
+                <Comment>no parity but space</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_flow_tx</Name>
+                <Comment>values for flow_tx</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>UART_IO_FC_TX_UNDEF</Alias>
+                <Comment>TX flow control mode remain unchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_IO_FC_TX_NONE</Alias>
+                <Comment>no TX flow control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_IO_FC_TX_RTS</Alias>
+                <Comment>RTS/CTS flow control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UART_IO_FC_TX_XOFF</Alias>
+                <Comment>XON/XOFF flow control</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_esc_char</Name>
+                <Comment>values for esc_char</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">43</Value>
+                <Alias>UART_IO_ESC_CHAR_DEFAULT</Alias>
+                <Comment>default value for escape character ('+')</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_flow_rx</Name>
+                <Comment>values for flow_rx</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>UART_IO_FC_RX_UNDEF</Alias>
+                <Comment>RX flow control mode remain unchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_IO_FC_RX_NONE</Alias>
+                <Comment>no RX flow control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_IO_FC_RX_RTS</Alias>
+                <Comment>RTS/CTS flow control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UART_IO_FC_RX_XOFF</Alias>
+                <Comment>XON/XOFF flow control</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nsb</Name>
+                <Comment>values for nsb</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>UART_IO_SB_UNDEF</Alias>
+                <Comment>stop bits remain unchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_IO_SB_1</Alias>
+                <Comment>one stop bit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UART_IO_SB_2</Alias>
+                <Comment>two stop bits</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_speed</Name>
+                <Comment>values for speed</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>UART_IO_SPEED_UNDEF</Alias>
+                <Comment>baud rate remain unchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_IO_SPEED_AUTO</Alias>
+                <Comment>auto detection of baud rate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_IO_SPEED_75</Alias>
+                <Comment>baud rate of 75 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UART_IO_SPEED_150</Alias>
+                <Comment>baud rate of 150 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>UART_IO_SPEED_300</Alias>
+                <Comment>baud rate of 300 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>UART_IO_SPEED_600</Alias>
+                <Comment>baud rate of 600 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>UART_IO_SPEED_1200</Alias>
+                <Comment>baud rate of 1200 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>UART_IO_SPEED_2400</Alias>
+                <Comment>baud rate of 2400 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>UART_IO_SPEED_4800</Alias>
+                <Comment>baud rate of 4800 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>UART_IO_SPEED_7200</Alias>
+                <Comment>baud rate of 7200 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>UART_IO_SPEED_9600</Alias>
+                <Comment>baud rate of 9600 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>UART_IO_SPEED_14400</Alias>
+                <Comment>baud rate of 14400 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>UART_IO_SPEED_19200</Alias>
+                <Comment>baud rate of 19200 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>UART_IO_SPEED_28800</Alias>
+                <Comment>baud rate of 28800 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>UART_IO_SPEED_33900</Alias>
+                <Comment>baud rate of 33900 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>UART_IO_SPEED_38400</Alias>
+                <Comment>baud rate of 38400 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>UART_IO_SPEED_57600</Alias>
+                <Comment>baud rate of 57600 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">16</Value>
+                <Alias>UART_IO_SPEED_115200</Alias>
+                <Comment>baud rate of 115200 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">17</Value>
+                <Alias>UART_IO_SPEED_203125</Alias>
+                <Comment>baud rate of 203125 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">18</Value>
+                <Alias>UART_IO_SPEED_406250</Alias>
+                <Comment>baud rate of 406250 bits per second</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">19</Value>
+                <Alias>UART_IO_SPEED_812500</Alias>
+                <Comment>baud rate of 812500 bits per second</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_esc_gp</Name>
+                <Comment>values for esc_gp</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1000</Value>
+                <Alias>UART_IO_ESC_GP_DEFAULT</Alias>
+                <Comment>default value for guard period (1000 ms)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_IO_ESC_OFF</Alias>
+                <Comment>no escape sequence detection</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_xoff_valid</Name>
+                <Comment>values for xoff_valid</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_IO_XOFF_UNDEF</Alias>
+                <Comment>XOff character remain unchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_IO_XOFF_VALID</Alias>
+                <Comment>XOff character valid</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_xon_valid</Name>
+                <Comment>values for xon_valid</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_IO_XON_UNDEF</Alias>
+                <Comment>XOn character remain unchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_IO_XON_VALID</Alias>
+                <Comment>XOn character valid</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_bpc</Name>
+                <Comment>values for bpc</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>UART_IO_BPC_UNDEF</Alias>
+                <Comment>bits per character remain unchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>UART_IO_BPC_7</Alias>
+                <Comment>7 bits per character</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>UART_IO_BPC_8</Alias>
+                <Comment>8 bits per character</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_conn</Name>
+                <Comment>values for dti_conn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_CONNECT_DTI</Alias>
+                <Comment>Connect DTI to UART</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_DISCONNECT_DTI</Alias>
+                <Comment>Disconnect DTI from UART</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_line_state</Name>
+                <Comment>values for line_state</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_LINE_ON</Alias>
+                <Comment>activate line</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_LINE_OFF</Alias>
+                <Comment>deactivate line</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_detection</Name>
+                <Comment>values for detection</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_ESC_DETECTION_OFF</Alias>
+                <Comment>turn off escape sequence detection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_ESC_DETECTION_ON</Alias>
+                <Comment>turn on escape sequence detection</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_DETECT_ESC</Alias>
+                <Comment>escape sequence detected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UART_DETECT_DTR</Alias>
+                <Comment>DTR line of serial link drops</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_error</Name>
+                <Comment>values for error</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>UART_ERROR_NO_CHANNEL</Alias>
+                <Comment>can not open VSI communication channel</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>UART_ERROR_MUX_ESTABLISH_FAIL</Alias>
+                <Comment>establishment of multiplexer operation fails</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>UART_ERROR_MUX_NO_RESPONSE</Alias>
+                <Comment>no response from TE multiplexer</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mode</Name>
+                <Comment>values for mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_MUX_MODE_BASIC</Alias>
+                <Comment>basic option</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_MUX_MODE_ADVANCED</Alias>
+                <Comment>advanced option</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_frame_type</Name>
+                <Comment>values for frame_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_MUX_FRAME_UIH</Alias>
+                <Comment>UIH frames used only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_MUX_FRAME_UI</Alias>
+                <Comment>UI frames used only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UART_MUX_FRAME_I</Alias>
+                <Comment>I frames used only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_MUX_FRAME_DEFAULT</Alias>
+                <Comment>default value</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_n1</Name>
+                <Comment>values for n1</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">31</Value>
+                <Alias>UART_MUX_N1_BASIC_DEFAULT</Alias>
+                <Comment>default value for the basic option</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">64</Value>
+                <Alias>UART_MUX_N1_ADVANCED_DEFAULT</Alias>
+                <Comment>default value for the advanced option</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_t1</Name>
+                <Comment>values for t1</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>UART_MUX_T1_DEFAULT</Alias>
+                <Comment>default value (100 ms)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_n2</Name>
+                <Comment>values for n2</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>UART_MUX_N2_DEFAULT</Alias>
+                <Comment>default value</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_t2</Name>
+                <Comment>values for t2</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">30</Value>
+                <Alias>UART_MUX_T2_DEFAULT</Alias>
+                <Comment>default value (300 ms)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_t3</Name>
+                <Comment>values for t3</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>UART_MUX_T3_DEFAULT</Alias>
+                <Comment>default value (10 seconds)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_convergence</Name>
+                <Comment>values for convergence</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_MUX_CONVERGENCE_UOS</Alias>
+                <Comment>unstructed octet stream</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UART_MUX_CONVERGENCE_UOSV24</Alias>
+                <Comment>unstructed octet stream with transmission of V.24 signal states</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>UART_MUX_CONVERGENCE_UFD</Alias>
+                <Comment>uninterruptible framed data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>UART_MUX_CONVERGENCE_IFD</Alias>
+                <Comment>interruptible framed data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_MUX_CONVERGENCE_DEFAULT</Alias>
+                <Comment>default value</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_service</Name>
+                <Comment>values for service</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_MUX_SERVICE_AT</Alias>
+                <Comment>AT command mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UART_MUX_SERVICE_DATA</Alias>
+                <Comment>data service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UART_MUX_SERVICE_VOICE_0621</Alias>
+                <Comment>voice service (coded - GSM 06.21)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>UART_MUX_SERVICE_VOICE_PCM64U</Alias>
+                <Comment>voice service (coded - PCM 64 kbits/s U-law)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>UART_MUX_SERVICE_VOICE_ADPCM</Alias>
+                <Comment>voice service (coded - ADPCM 32 kbits/s)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>UART_MUX_SERVICE_VOICE_PCM64A</Alias>
+                <Comment>voice service (coded - PCM 64 kbits/s A-law)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>UART_MUX_SERVICE_VOICE_PCM128</Alias>
+                <Comment>voice service (coded - PCM 128 kbits/s)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>UART_MUX_SERVICE_GPRS</Alias>
+                <Comment>GPRS data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>UART_MUX_SERVICE_CS</Alias>
+                <Comment>Circuit-Switched data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>UART_MUX_SERVICE_TRACE</Alias>
+                <Comment>Trace / Debug output</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UART_MUX_SERVICE_DEFAULT</Alias>
+                <Comment>default value</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

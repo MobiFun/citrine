@@ -1,0 +1,577 @@
+;********************************************************************************
+;*** File           : mm.mdf
+;*** Creation       : Thu Jun 19 15:32:10 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : mm
+;*** Document No.   : 6147.602.06.106
+;*** Document Date  : 2006-03-22
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: VR
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:19:30 2007"
+PRAGMA 	LAST_MODIFIED 	"2006-03-22"
+PRAGMA 	ID_AND_VERSION 	"6147.602.06.106"
+
+
+
+CONST 	L3MAX 	251 	; maximum size of a L3 buffer
+CONST 	MAXNAME 	40 	; maximum length of network name
+
+
+
+VALTAB 	VAL_cm_serv_type
+VAL 	DEF 	 	"reserved"
+VAL 	1 	ST_MOC 	"Mobile originating call establishment or packet mode connection establishment"
+VAL 	2 	ST_EMERGENCY 	"Emergency call establishment"
+VAL 	4 	ST_SMS 	"Short message service"
+VAL 	8 	ST_SS 	"Supplementary service activation"
+
+VALTAB 	VAL_follow
+VAL 	0 	FOR_PENDING_NO 	"No follow-on request pending"
+VAL 	1 	FOR_PENDING_YES 	"Follow-on request pending"
+
+VALTAB 	VAL_key_seq
+RANGE 	0 .. 6 	""
+VAL 	7 	 	"No key is available (MS to network); Reserved (network to MS)"
+
+VALTAB 	VAL_odd_even
+VAL 	0 	EVEN 	"even"
+VAL 	1 	ODD 	"odd"
+
+VALTAB 	VAL_rej_cause
+RANGE 	0b00110000 .. 0b00111111 	"retry upon entry into a new cell"
+VAL 	DEF 	 	"DOWNLINK : Service option temporarily out of order UPLINK : Protocol error, unspecified"
+VAL 	0b00000010 	RC_IMSI_IN_HLR 	"IMSI unknown in HLR"
+VAL 	0b00000011 	RC_ILLEGAL_MS 	"Illegal MS"
+VAL 	0b00000100 	RC_IMSI_IN_VLR 	"IMSI unknown in VLR"
+VAL 	0b00000101 	RC_IMEI_NOT_ACCEPTED 	"IMEI not accepted"
+VAL 	0b00000110 	RC_ILLEGAL_ME 	"Illegal ME"
+VAL 	0b00001011 	RC_PLMN_NOT_ALLOWED 	"PLMN not allowed"
+VAL 	0b00001100 	RC_LA_NOT_ALLOWED 	"Location Area not allowed"
+VAL 	0b00001101 	RC_ROAMING_NOT_ALLOWED 	"National roaming not allowed in this location area"
+VAL 	0b00001111 	RC_NO_SUITABLE_CELL_IN_LA 	%REL99% 	"Find another allowed location area in the same PLMN"
+VAL 	0b00010001 	RC_NETWORK_FAILURE 	"Network failure"
+VAL 	0b00010110 	RC_CONGETION 	"Congestion"
+VAL 	0b00100000 	RC_SERVICE_NOT_SUPPORTED 	"Service option not supported"
+VAL 	0b00100001 	RC_SERVICE_NOT_SUBSCRIBED 	"Requested service option not subscribed"
+VAL 	0b00100010 	RC_SERVICE_ORDER 	"Service option temporarily out of order"
+VAL 	0b00100110 	RC_IDENTIFIY 	"Call cannot be identified"
+VAL 	0b01011111 	RC_INCORRECT_MESSAGE 	"Semantically incorrect message"
+VAL 	0b01100000 	RC_INVALID_MAND_MESSAGE 	"Invalid mandatory information"
+VAL 	0b01100001 	RC_MESSAGE_TYPE_NOT_IMPLEM 	"Message type non-existent or not implemented"
+VAL 	0b01100010 	RC_MESSAGE_TYPE_INCOMPAT 	"Message type not compatible with the protocol state"
+VAL 	0b01100011 	RC_IE_NOT_IMPLEM 	"Information element non-existent or not implemented"
+VAL 	0b01100100 	RC_CONDITIONAL_IE 	"Conditional IE error"
+VAL 	0b01100101 	RC_MESSAGE_INCOMPAT 	"Message not compatible with the protocol state"
+VAL 	0b01101111 	RC_UNSPECIFIED 	"Protocol error, unspecified"
+
+VALTAB 	VAL_ident_type
+VAL 	DEF 	 	"reserved"
+VAL 	0 	ID_TYPE_NO_IDENT 	"No Identity"
+VAL 	1 	ID_TYPE_IMSI 	"IMSI"
+VAL 	2 	ID_TYPE_IMEI 	"IMEI"
+VAL 	3 	ID_TYPE_IMEISV 	"IMEISV"
+VAL 	4 	ID_TYPE_TMSI 	"TMSI"
+
+VALTAB 	VAL_sapi
+VAL 	0 	SAPI_0 	"SAPI used for RR, MM, CC and SS"
+VAL 	3 	SAPI_3 	"SAPI used for SMS"
+
+VALTAB 	VAL_pd
+VAL 	0 	PD_GCC 	"Group call control"
+VAL 	1 	PD_BCC 	"Broadcast Call Control"
+VAL 	2 	PD_PDSS1 	"PDSS1"
+VAL 	3 	PD_CC 	"Call Control, call related SS messages"
+VAL 	4 	PD_PDSS2 	"PDSS2"
+VAL 	5 	PD_MM 	"Mobility Management messages"
+VAL 	6 	PD_RR 	"Radio Resources management messages"
+VAL 	8 	PD_GPRS_MM 	"GPRS Mobility Management messages"
+VAL 	9 	PD_SMS 	"SMS messages"
+VAL 	10 	PD_GPRS_SM 	"GPRS Session Management messages"
+VAL 	11 	PD_SS 	"non call related SS messages"
+VAL 	12 	PD_LS 	"Location services"
+VAL 	15 	PD_TST 	"Reserved for test procedures described in GSM 11.10"
+
+VALTAB 	VAL_cs
+VAL 	0 	CODING_SCHEME_SMSCB 	"Coding scheme cell broadcast short messages"
+VAL 	1 	CODING_SCHEME_UCS2 	"Coding scheme UCS2, 16 bit, ISO ISO/IEC10646"
+
+VALTAB 	VAL_add_ci
+VAL 	0 	ADD_CI_NO 	"Country's Initials are not to be added"
+VAL 	1 	ADD_CI_YES 	"Country's Initials are to be added"
+
+VALTAB 	VAL_save_time_value
+VAL 	0 	TIME_ADJ_NO 	"No adjustment for Daylight Saving Time"
+VAL 	1 	TIME_ADJ_1 	"+1 hour adjustment for Daylight Saving Time"
+VAL 	2 	TIME_ADJ_2 	"+2 hours adjustment for Daylight Saving Time"
+
+
+
+
+VAR 	auth_sres 	"Authentication parameter SRES" 	
+ 	32
+
+
+VAR 	cm_serv_type 	"CM service type" 	
+ 	4
+
+VAL 	@m_mm - VAL_cm_serv_type@ 	
+
+VAR 	follow 	"Follow on request" 	
+ 	1
+
+VAL 	@m_mm - VAL_follow@ 	
+
+VAR 	ident_dig 	"Identity digit" 	
+ 	4
+
+
+VAR 	key_seq 	"key sequence" 	
+ 	3
+
+VAL 	@m_mm - VAL_key_seq@ 	
+
+VAR 	lac 	"Location Area Code" 	
+ 	16
+
+
+VAR 	lut 	"Location updating type" 	
+ 	2
+
+
+VAR 	msg_type 	"Message Type" 	
+ 	8
+
+
+VAR 	mcc 	"Mobile Country Code" 	
+ 	4
+
+
+VAR 	mnc 	"Mobile Network Code" 	
+ 	4
+
+
+VAR 	odd_even 	"Odd Even indicaction" 	
+ 	1
+
+VAL 	@m_mm - VAL_odd_even@ 	
+
+VAR 	rand 	"RAND value" 	
+ 	8
+
+
+VAR 	rej_cause 	"Reject cause" 	
+ 	8
+
+VAL 	@m_mm - VAL_rej_cause@ 	
+
+VAR 	ident_type 	"Type of identity" 	
+ 	3
+
+VAL 	@m_mm - VAL_ident_type@ 	
+
+VAR 	tmsi 	"TMSI" 	
+ 	32
+
+
+VAR 	dmy 	"Dummy" 	
+ 	4
+
+
+VAR 	sapi 	"SAPI" 	
+ 	2
+
+VAL 	@m_mm - VAL_sapi@ 	
+
+VAR 	pd 	"PD" 	
+ 	4
+
+VAL 	@m_mm - VAL_pd@ 	
+
+VAR 	cs 	"Coding Scheme" 	
+ 	3
+
+VAL 	@m_mm - VAL_cs@ 	
+
+VAR 	add_ci 	"Add Country Information" 	
+ 	1
+
+VAL 	@m_mm - VAL_add_ci@ 	
+
+VAR 	num_spare 	"Number of spare bits" 	
+ 	3
+
+
+VAR 	text 	"text string" 	
+ 	8
+
+
+VAR 	year 	"year" 	
+ 	4
+
+
+VAR 	month 	"month" 	
+ 	4
+
+
+VAR 	day 	"day" 	
+ 	4
+
+
+VAR 	hour 	"hour" 	
+ 	4
+
+
+VAR 	minute 	"minute" 	
+ 	4
+
+
+VAR 	second 	"second" 	
+ 	4
+
+
+VAR 	tz 	"time zone" 	
+ 	8
+
+
+VAR 	lsa_id 	"LSA identifier" 	
+ 	8
+
+
+VAR 	save_time_value 	"Daylight Saving Time Value" 	
+ 	2
+
+VAL 	@m_mm - VAL_save_time_value@ 	
+
+
+
+
+COMP 	auth_rand 	"Authentication parameter RAND"
+{
+ 	 	rand 	[0..16] 	 ; RAND value
+}
+
+
+
+COMP 	ciph_key_num 	"Ciphering Key Sequence Number"
+{
+ 	.0  ; spare
+ 	 	key_seq 	 ; Key Sequence
+}
+
+
+
+COMP 	follow_proceed 	"Follow on proceed"
+{
+}
+
+
+
+COMP 	ident 	"Identity type"
+{
+ 	.0  ; spare
+ 	 	ident_type 	 ; Type of identity
+}
+
+
+
+COMP 	loc_area_ident 	"Location Area Identification"
+{
+ 	BCD_NOFILL  	mcc 	[3] 	 ; Mobile Country Code
+ 	BCD_MNC  	mnc 	[2..3] 	 ; Mobile Network Code
+ 	 	lac 	 ; Location Area Code
+}
+
+
+
+COMP 	loc_upd_type 	"Location updating type"
+{
+ 	 	follow 	 ; follow on request
+ 	.0  ; spare
+ 	 	lut 	 ; location updating type
+}
+
+
+
+COMP 	mob_id 	"Mobile Identity"
+{
+ 	 	ident_type 	(GETPOS,:,4,+,:,1,+,SETPOS) ; Type of identity
+ 	 	odd_even 	(SETPOS) ; Odd/ Even indicaction
+ 	< (ident_type # ID_TYPE_NO_IDENT AND ident_type # ID_TYPE_TMSI) 	BCDODD  	ident_dig 	[0..16] 	(SETPOS)> 	 ; Identity digit
+ 	< (ident_type = ID_TYPE_TMSI) 	.1111 (:,SETPOS,8,+)> 	 ; spare
+ 	< (ident_type = ID_TYPE_TMSI) 	 	tmsi 	[.32] 	(SETPOS)> 	 ; TMSI
+ 	< (ident_type = ID_TYPE_NO_IDENT) 	 	dmy 	[0..16] 	(SETPOS)> 	 ; dummy
+}
+
+
+
+COMP 	pd_and_sapi 	"PD and SAPI"
+{
+ 	.00  ; spare
+ 	 	sapi 	 ; SAPI
+ 	 	pd 	 ; PD
+}
+
+
+
+COMP 	full_net_name 	"Full Network Name"
+{
+ 	.1  ; ext
+ 	 	cs 	 ; coding scheme
+ 	 	add_ci 	 ; add country information
+ 	 	num_spare 	 ; number of spare bits in last octett
+ 	 	text 	[0..MAXNAME] 	 ; text string
+}
+TYPEDEF COMP full_net_name 	short_net_name 	"Short Network Name"
+
+
+
+COMP 	net_tz 	"Network Time Zone"
+{
+ 	 	tz 	 ; Network Time Zone
+}
+
+
+
+COMP 	net_tz_and_time 	"Network Time Zone and Time"
+{
+ 	BCDEVEN  	year 	[2] 	 ; year
+ 	BCDEVEN  	month 	[2] 	 ; month
+ 	BCDEVEN  	day 	[2] 	 ; day
+ 	BCDEVEN  	hour 	[2] 	 ; hour
+ 	BCDEVEN  	minute 	[2] 	 ; minute
+ 	BCDEVEN  	second 	[2] 	 ; second
+ 	 	tz 	 ; Network Time Zone
+}
+
+
+
+COMP 	lsa_identifier 	%REL99% 	"LSA identifier"
+{
+ 	 	lsa_id 	[1..3] 	 ; LSA ID
+}
+
+
+
+COMP 	daylight_save_time 	%REL99% 	"Daylight Saving Time"
+{
+ 	.000000  ; spare
+ 	 	save_time_value 	 ; Daylight Saving Time value
+}
+
+
+
+COMP 	eqv_plmn 	"PLMN"
+{
+ 	BCD_NOFILL  	mcc 	[3] 	 ; Mobile Country Code
+ 	BCD_MNC  	mnc 	[2..3] 	 ; Mobile Network Code
+}
+
+
+
+COMP 	eqv_plmn_list 	"Equivalent PLMN list"
+{
+ 	 	eqv_plmn 	[1..5] 	 ; Equivalent PLMN
+}
+
+
+
+COMP 	cts_per 	"Structured Element"
+{
+}
+
+
+
+
+
+
+MSG 	d_abort 	downlink 	0b00101001 ; Abort
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rej_cause 	 ; Reject cause
+}
+
+
+
+MSG 	d_auth_rej 	downlink 	0b00010001 ; Authentication reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_auth_req 	downlink 	0b00010010 ; Authentication request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	ciph_key_num 	 ; Ciphering key sequence number
+ 	.0000  ; Spare half octet
+ 	GSM3_V  	auth_rand 	 ; Authentication parameter RAND
+}
+
+
+
+MSG 	u_auth_res 	uplink 	0b00010100 ; Authentication response
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	auth_sres 	 ; Authentication parameter SRES
+}
+
+
+
+MSG 	u_cm_reestab_req 	uplink 	0b00101000 ; CM Re-establishment request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	ciph_key_num 	 ; Ciphering key sequence number
+ 	.0000  ; Spare half octet
+ 	GSM4_LV EXTERN @m_rr_com - mob_class_2@ 	 	mob_class_2 	 ; Mobile station classmark
+ 	GSM4_LV  	mob_id 	 ; Mobile identity
+ 	GSM3_TV  	loc_area_ident 	0x13 	 ; Location area identification
+}
+
+
+
+MSG 	u_cm_serv_abort 	uplink 	0b00100011 ; CM service abort
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_cm_serv_accept 	downlink 	0b00100001 ; CM service accept
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_cm_serv_rej 	downlink 	0b00100010 ; CM service reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rej_cause 	 ; Reject cause
+}
+
+
+
+MSG 	u_cm_serv_req 	uplink 	0b00100100 ; CM service request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	cm_serv_type 	 ; CM service type
+ 	GSM1_V  	ciph_key_num 	 ; Ciphering key sequence number
+ 	GSM4_LV EXTERN @m_rr_com - mob_class_2@ 	 	mob_class_2 	 ; Mobile station classmark
+ 	GSM4_LV  	mob_id 	 ; Mobile identity
+}
+
+
+
+MSG 	d_ident_req 	downlink 	0b00011000 ; Identity request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	ident 	 ; Identity type
+ 	.0000  ; Spare half octet
+}
+
+
+
+MSG 	u_ident_res 	uplink 	0b00011001 ; Identity response
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	mob_id 	 ; Mobile identity
+}
+
+
+
+MSG 	u_imsi_detach_ind 	uplink 	0b00000001 ; IMSI detach indication
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V EXTERN @m_rr_com - mob_class_1@ 	 	mob_class_1 	 ; Mobile station classmark
+ 	GSM4_LV  	mob_id 	 ; Mobile identity
+}
+
+
+
+MSG 	d_loc_upd_accept 	downlink 	0b00000010 ; Location updating accept
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	loc_area_ident 	 ; Location area identification
+ 	GSM4_TLV  	mob_id 	0x17 	 ; Mobile identity
+ 	GSM2_T  	follow_proceed 	0xA1 	 ; Follow on proceed
+ 	GSM2_T  	cts_per 	0xA2 	 ; CTS permission
+ 	GSM4_TLV  	eqv_plmn_list 	0x4A 	 ; Equivalent PLMNs
+}
+
+
+
+MSG 	d_loc_upd_rej 	downlink 	0b00000100 ; Location updating reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rej_cause 	 ; Reject cause
+}
+
+
+
+MSG 	u_loc_upd_req 	uplink 	0b00001000 ; Location updating request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	loc_upd_type 	 ; Location updating type
+ 	GSM1_V  	ciph_key_num 	 ; Ciphering key sequence number
+ 	GSM3_V  	loc_area_ident 	 ; Location area identification
+ 	GSM3_V EXTERN @m_rr_com - mob_class_1@ 	 	mob_class_1 	 ; Mobile station classmark
+ 	GSM4_LV  	mob_id 	 ; Mobile identity
+}
+
+
+
+MSG 	b_mm_status 	both 	0b00110001 ; MM Status
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rej_cause 	 ; Reject cause
+}
+
+
+
+MSG 	d_tmsi_realloc_cmd 	downlink 	0b00011010 ; TMSI reallocation command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	loc_area_ident 	 ; Location area identification
+ 	GSM4_LV  	mob_id 	 ; Mobile identity
+}
+
+
+
+MSG 	u_tmsi_realloc_comp 	uplink 	0b00011011 ; TMSI reallocation complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_cm_service_prompt 	downlink 	0b00100101 ; CM service prompt
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	pd_and_sapi 	 ; PD and SAPI
+}
+
+
+
+MSG 	d_mm_information 	downlink 	0b00110010 ; MM Information
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	full_net_name 	0x43 	 ; Full name for network
+ 	GSM4_TLV  	short_net_name 	0x45 	 ; Short name for network
+ 	GSM3_TV  	net_tz 	0x46 	 ; Network Time Zone
+ 	GSM3_TV  	net_tz_and_time 	0x47 	 ; Network Zone and Time
+ 	GSM4_TLV  	lsa_identifier 	0x48 	 ; LSA Identity
+ 	GSM4_TLV  	daylight_save_time 	0x49 	 ; Daylight Saving Time
+}
+
+
+
+
+
+

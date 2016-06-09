@@ -1,0 +1,1166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">fad</DocName>
+        <DocNum Number="103" Project="8411"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for fax and data transmission consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity. The entity, which is described in this document, is coloured grey in the following figure :</Section>
+            <Section>Figure 1-1: Architecture of the fax and data protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the fax and data protocol stack are:</Section>
+            <Section>1.1 RA - Rate Adaptation</Section>
+            <Section>This entity performs an adaptation between an asynchronous or synchronous data stream with several bit rates on to the fixed bit rate used at the TCH. This is performed by the rate adaptation functions RA1' and RA0 described in GSM 04.21.</Section>
+            <Section>1.2 RLP - Radio Link Protocol</Section>
+            <Section>This entity provides a Layer 2 protocol for asynchronous reliable data transfer as specified in GSM 04.22. It includes error correction, sequence numbers and a mechanism for repeating corrupted and lost messages.</Section>
+            <Section>1.3 L2R - Layer 2 Relay Functionality</Section>
+            <Section>The L2R provides relay functions in order to adapt the character-oriented data received from the TE via USART to the bit-oriented RLP protocol.</Section>
+            <Section>1.4 FAD 03.45 - Fax Adaptation Protocol</Section>
+            <Section>The fax adaptation protocol, as specified in GSM 03.45, provides synchronisation with the BCS and MSG modems of the peer entity. It uses byte repetition in conjunction with a voting algorithm to handle corruption on the TCH data stream. The non-transparent fax protocol in accordance with GSM 03.46 is not part of this implementation.</Section>
+            <Section>The fax adapter enables T.30 to send BCS at 300 BPS and T.4 MSG in 2400, 4800, 7200 and 9600 BPS.</Section>
+            <Section>1.5 T.30 - Fax Protocol Entity</Section>
+            <Section>The protocol uses binary coded signals packed in HDLC frames to set up and release a connection in the message phase of the FAX transmission. This entity is specified in the ITU-T.30. The main tasks of this unit are:</Section>
+            <Section>* Building the HDLC frames with CRC.</Section>
+            <Section>* Performing bit stuffing/de-stuffing.</Section>
+            <Section>* Executing a sequence of 5 phases: 1.) set up, 2.) pre-message procedures, 3.) transmission/reception, 4.) post message procedures, 5.) waiting for call release.</Section>
+            <Section>1.6 ACI - AT Command Interpreter</Section>
+            <Section>The ACI is specified in GSM 07.07. It is responsible for call establishment via the GSM voice protocol stack and terminal adaptation for asynchronous transparent character-oriented data transmission. The ACI is able to receive AT commands and send the replies over the USART driver to a remote PC. This makes it possible to control the voice and data protocol stack from a remote application running on a PC. The ACI also provides a unique interface for an internal MMI in the MS.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the F&amp;D. The driver has to be able to perform flow control.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="98"/>
+            <Date Day="6" Month="4" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="98"/>
+            <Date Day="17" Month="4" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Modified</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="200" Year="98"/>
+            <Date Day="7" Month="5" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Modified</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="201" Year="98"/>
+            <Date Day="12" Month="5" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>XGEN-convertible version created</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="300" Year="98"/>
+            <Date Day="24" Month="7" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Modified (first implementation)</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="301" Year="98"/>
+            <Date Day="28" Month="7" Year="1998"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>SDU aligned with reserved element</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="302" Year="98"/>
+            <Date Day="29" Month="10" Year="1998"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>(de)activate_cnf added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="303" Year="98"/>
+            <Date Day="24" Month="6" Year="1999"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>RX TX buffer sizes added in FAD_ACTIVATE_CNF</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="304" Year="98"/>
+            <Date Day="16" Month="2" Year="2000"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Parameter trans_rate always defined as USHORT</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="305" Year="00"/>
+            <Date Day="22" Month="4" Year="2002"/>
+            <Author>SLO</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Opcodes expanded to 32 bit</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the FAD SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>DUMMY_FAD</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>Dummy</Comment>
+        </Constant>
+        <History>
+            <Date Day="24" Month="3" Year="1998"/>
+            <Author>DL</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="19">
+        <Description>
+            <Section>This section contains all primitives that are defined for the FAD SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The FAD_ACTIVATE_REQ primitive is issued by T30 to activate the FAD entity in the NULL state.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_ACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>FAD</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>trans_rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>frames_per_prim</Name>
+                </ItemLink>
+                <Comment>frames per primitive</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="7" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (frames_per_prim added)</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="8" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (trans_rate corrected: ULONG -> USHORT)</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Half rate channel flag removed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_DEACTIVATE_REQ primitive is issued by T30 to deactivate the FAD entity following the conclusion of Phase D, whereupon FAD returns to the NULL state.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_DEACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>FAD</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="6" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_MODIFY_REQ primitive is issued by T30 to notify FAD that the transmission of the TCH has changed..</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_MODIFY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>FAD</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>trans_rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (name altered: MODIFY -> RATE)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (name altered: RATE -> MODIFY, parameters revised)</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="8" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (trans_rate corrected: ULONG -> USHORT)</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Half rate channel flag removed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_DATA_REQ primitive is used to send FAD data to the peer entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>FAD</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>final</Name>
+                </ItemLink>
+                <Comment>final flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>trans_rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (parameters revised)</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="7" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (duration parameter removed)</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>SDU aligned.</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>access_rate removed replaced by trans_rate</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_DATA_IND primitive is used to forward received data to T30.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>final</Name>
+                </ItemLink>
+                <Comment>final flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>reserved</Name>
+                </ItemLink>
+                <Comment>reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>SDU aligned.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_DATA_CNF primitive informs T30 that the message/frame transmission requested by the upper layers (ACI, T30) has been successfully completed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_DATA_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_SND_TCF_REQ primitive is used to request FAD to send TCF data to the remote modem.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_SND_TCF_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>FAD</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>trans_rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="10" Month="7" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="1" Year="1999"/>
+                <Author>DL</Author>
+                <Comment>Access rate added</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="2" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Modified (trans_rate corrected: UBYTE -> USHORT)</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_SND_TCF_CNF primitive is issued by FAD to inform T30 that TCF data has been sent to the remote modem.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_SND_TCF_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="10" Month="7" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_RCV_TCF_REQ primitive is used to alert FAD to expect TCF data from the remote modem.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_RCV_TCF_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>FAD</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>trans_rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="25" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="7" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (duration parameter removed)</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="1" Year="1999"/>
+                <Author>DL</Author>
+                <Comment>Access rate added</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="2" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Modified (trans_rate corrected: UBYTE -> USHORT)</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_RCV_TCF_CNF primitive is issued after reception of TCF data and indicates the percentage rate of correct data received during transmission.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_RCV_TCF_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>ratio</Name>
+                </ItemLink>
+                <Comment>TCF ratio (%)</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="25" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_READY_REQ primitive is issued by T30 to notify FAD that it is ready to receive further data.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_READY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>FAD</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="22" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_READY_IND primitive is issued by FAD to notify T30 that it is ready to receive further data.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_READY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="22" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_IGNORE_REQ primitive is issued by T30 to request FAD not to send any further data.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_IGNORE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>FAD</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="3" Month="7" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_MUX_IND primitive is issued by FAD prior to issuing a FAD-DATA indication primitive and informs T30 of the type of data (BCS or MSG) to be expected.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_MUX_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>mode</Name>
+                </ItemLink>
+                <Comment>receive mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_ERROR_IND primitive is issued by FAD to alert T30 that an error has occurred in the course of message or facsimile transmission.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_DEACTIVATE_CNF primitive is issued by FAD to inform T30 that deactivation is completed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_DEACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="29" Month="10" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The FAD_ACTIVATE_CNF primitive is issued by FAD to inform T30 that activation is completed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>FAD_ACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>buf_size_rx</Name>
+                </ItemLink>
+                <Comment>buffer size RX</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>buf_size_tx</Name>
+                </ItemLink>
+                <Comment>buffer size TX</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="10" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>all elements added</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters are part of the primitives described above contain the values specified below where applicable. These values are selected to correspond to element values used in the air-interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>Service Data Unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">fad</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>buffer content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters are part of the primitives described above contain the values specified below where applicable. These values are selected to correspond to element values used in the air-interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the transmission rate used for the fax transmission.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>trans_rate</Name>
+                <Type>U16</Type>
+                <Comment>transmission rate</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">fad</DocName>
+                <Name>VAL_trans_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="8" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (corrected: ULONG -> USHORT)</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to indicate whether the final flag is set. The final flag indicates that the exchange of commands between FAD and its peer has been concluded.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>final</Name>
+                <Type>U8</Type>
+                <Comment>final flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>buffer content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the number of framesto be contained in a SDU (send/receive).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>frames_per_prim</Name>
+                <Type>U16</Type>
+                <Comment>no. of frames per primitive</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="7" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter indicates the type of data (BCS or MSG) received from the remote modem.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mode</Name>
+                <Type>U8</Type>
+                <Comment>receive mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">fad</DocName>
+                <Name>VAL_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains the error cause which has occurred during transmission.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">fad</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Values added</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Values added</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="7" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Values added</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="11" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Values added</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="1" Year="1999"/>
+                <Author>DL</Author>
+                <Comment>Values added (collisions)</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="11" Year="2000"/>
+                <Author>KJF</Author>
+                <Comment>Values added</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="5" Year="2002"/>
+                <Author>KJF</Author>
+                <Comment>Concept for causes</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter records the percentage of correct data received during TCF reception.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ratio</Name>
+                <Type>U8</Type>
+                <Comment>percentage of correct TCF received</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to insert reserved fields into the data structure of the DATA_REQ and DATA_IND primitives to align the position of the sdu to avoid copy operations..</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reserved</Name>
+                <Type>U16</Type>
+                <Comment>Reserved</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to notify the size of the buffer which is used in the fax receive mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf_size_rx</Name>
+                <Type>U16</Type>
+                <Comment>buffer size RX</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to notify the size of the buffer which is used in the fax send mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf_size_tx</Name>
+                <Type>U16</Type>
+                <Comment>buffer size TX</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the FAD SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_trans_rate</Name>
+                <Comment>values for trans_rate</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">300</Value>
+                <Alias>R_BCS</Alias>
+                <Comment>rate 300 bit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2400</Value>
+                <Alias>R_2400</Alias>
+                <Comment>rate 2400 bit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4800</Value>
+                <Alias>R_4800</Alias>
+                <Comment>rate 4800 bit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7200</Value>
+                <Alias>R_7200</Alias>
+                <Comment>rate 7200 bit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9600</Value>
+                <Alias>R_9600</Alias>
+                <Comment>rate 9600 bit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12000</Value>
+                <Alias>R_12000</Alias>
+                <Comment>rate 12000 bit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14400</Value>
+                <Alias>R_14400</Alias>
+                <Comment>rate 14400 bit/s</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mode</Name>
+                <Comment>values for mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>MUX_OFF</Alias>
+                <Comment>ignore</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>MUX_BCS</Alias>
+                <Comment>BCS data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>MUX_MSG</Alias>
+                <Comment>MSG  data</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">CC00</Value>
+                <Alias>ERR_REM_FAD</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC11</Value>
+                <Alias>ERR_REM_PREAMBLE</Alias>
+                <Comment>DATA received instead of PREAMBLE - Preamble too short</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC12</Value>
+                <Alias>ERR_REM_DATA_BCS</Alias>
+                <Comment>DATA received from remote modem during BCS phase</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC13</Value>
+                <Alias>ERR_REM_TRAIN_START</Alias>
+                <Comment>DATA received from remote modem at start of training</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC14</Value>
+                <Alias>ERR_REM_NO_TRAINING</Alias>
+                <Comment>DATA received from remote modem prior to training</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC15</Value>
+                <Alias>ERR_REM_TRAINING</Alias>
+                <Comment>DATA received from remote modem during training</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC16</Value>
+                <Alias>ERR_REM_MSG</Alias>
+                <Comment>DATA received from remote modem while sending MSG data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC17</Value>
+                <Alias>ERR_REM_PREAMBLE_SHORT</Alias>
+                <Comment>PREAMBLE received from remote station too short</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC18</Value>
+                <Alias>ERR_REM_PREAMBLE_LONG</Alias>
+                <Comment>PREAMBLE received from remote station too long</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC19</Value>
+                <Alias>ERR_REM_IDENT</Alias>
+                <Comment>Incorrect identification from remote modem</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC20</Value>
+                <Alias>ERR_LOCAL_FAD</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC21</Value>
+                <Alias>ERR_LOCAL_BCS_RATE</Alias>
+                <Comment>BCS rate requested by local modem (MSG phase)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC22</Value>
+                <Alias>ERR_LOCAL_MSG_RATE</Alias>
+                <Comment>MSG rate requested by local modem (BCS phase)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC23</Value>
+                <Alias>ERR_LOCAL_DATA_NULL</Alias>
+                <Comment>DATA request received from T30 in NULL state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC24</Value>
+                <Alias>ERR_LOCAL_DATA_BCS</Alias>
+                <Comment>DATA request received from T30 while receiving BCS data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC25</Value>
+                <Alias>ERR_LOCAL_DATA_TCF_SND</Alias>
+                <Comment>DATA request received from T30 while sending TCF  data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC26</Value>
+                <Alias>ERR_LOCAL_DATA_TCF_RCV</Alias>
+                <Comment>DATA request received from T30 while receiving TCF  data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC27</Value>
+                <Alias>ERR_LOCAL_DATA_MSG</Alias>
+                <Comment>DATA request received from T30 while receiving MSG data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC28</Value>
+                <Alias>ERR_LOCAL_DATA_UNDEF</Alias>
+                <Comment>DATA request received from T30 - state unknown</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC29</Value>
+                <Alias>ERR_LOCAL_DATA_MSG_UFL</Alias>
+                <Comment>DATA request not received from T30 - MSG-REC underflow</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC30</Value>
+                <Alias>ERR_LOCAL_IDENT</Alias>
+                <Comment>Incorrect identification from local modem</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC40</Value>
+                <Alias>ERR_OWN_FAD</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC41</Value>
+                <Alias>ERR_FAD_SUB_TRAIN</Alias>
+                <Comment>FAD in unknown substate during training</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC42</Value>
+                <Alias>ERR_FAD_SUB_TCF</Alias>
+                <Comment>FAD in unknown substate (TCF)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC43</Value>
+                <Alias>ERR_FAD_SUB_MSG</Alias>
+                <Comment>FAD in unknown substate (MSG)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC50</Value>
+                <Alias>ERR_GENERAL_FAD</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC51</Value>
+                <Alias>ERR_INVALID_DATA_RCV</Alias>
+                <Comment>invalid data received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC52</Value>
+                <Alias>ERR_EMPTY_BUFFER</Alias>
+                <Comment>send/receive buffer is empty</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CC52</Value>
+                <Alias>ERR_OVERFLOW_BCS_RCV</Alias>
+                <Comment>buffer  overflow while receiving BCS data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CCFF</Value>
+                <Alias>ERR_NOT_SET</Alias>
+                <Comment>error not set</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

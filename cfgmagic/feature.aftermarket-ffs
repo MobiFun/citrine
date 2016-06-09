@@ -1,0 +1,38 @@
+# This feature is specific to Compal and Pirelli targets.  When we put our own
+# FreeCalypso firmware on these phones, we are using them in a way that is very
+# different from how they were intended to be used by their respective
+# manufacturers.  Hence the term "aftermarket".  Although the original firmwares
+# of these phones are TI-based and feature TI-based flash file systems, neither
+# Pirelli's FFS nor that of any Compal variant is suitable for direct reuse by
+# FreeCalypso GSM fw.
+#
+# Therefore, if we are putting our own fw on one of these aftermarket devices
+# and we need to use a real non-volatile FFS in flash, rather than fake FFS
+# in RAM, we need to define our own aftermarket FFS, and we can put it in any
+# part of the flash that suits our needs, without much regard for Compal's or
+# Foxconn's originally intended flash layout - what we are doing with their
+# hardware goes totally against their intentions anyway.
+#
+# Because our aftermarket FFS configuration inherently involves our own choice
+# of flash location for this FFS, the present feature aftermarket-ffs takes two
+# required arguments: the starting flash sector number and the total number of
+# flash sectors to be used for the aftermarket FFS.  It is the user's
+# responsibility to ensure that these numbers are sensible.
+
+check_target_feature "$1"
+
+if [ $# != 3 ]
+then
+	echo "feature aftermarket-ffs: two arguments required" 1>&2
+	exit 1
+fi
+
+FFS_IN_RAM=0
+CONFIG_AFTERMARKET_FFS=1
+CONFIG_AFTERMARKET_FFS_START=$2
+CONFIG_AFTERMARKET_FFS_NBLOCKS=$3
+CONFIG_FLASH_WRITE=1
+export_to_c	CONFIG_AFTERMARKET_FFS
+export_to_c	CONFIG_AFTERMARKET_FFS_START
+export_to_c	CONFIG_AFTERMARKET_FFS_NBLOCKS
+export_to_c	CONFIG_FLASH_WRITE

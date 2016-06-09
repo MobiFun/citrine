@@ -1,0 +1,1029 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">8010_135_sn_sap</DocName>
+        <DocNum Number="135" Project="8010"/>
+        <Description>
+            <Section>This document is part of the High Level Design (HLD) for the Texas Instruments GSM/GPRS/EDGE/UMTS protocol stack.. The document describes the service access point between SNDCP and UPM for management of the user plane and SNDCP and the DTI manager for controlling the DTI connections.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document based on 7510.125.02.001</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>HEM</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed status to Accepted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="4" Month="12" Year="2002"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added downlink sequence number to ul_sdus structure.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="30" Month="1" Year="2003"/>
+            <Author>GSO</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated to 8010</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="11" Month="2" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>The llc_sapi is renamed to sapi.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="02"/>
+            <Date Day="12" Month="2" Year="2003"/>
+            <Author>GSO</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated Pragma table</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="02"/>
+            <Date Day="27" Month="3" Year="2003"/>
+            <Author>ALE</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>SN_SEQUENCE_REQ and  SN_SEQUENCE_IND have been added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="02"/>
+            <Date Day="15" Month="5" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Replaced ack_flag with relclass and peak. Removed a number of redundant prefixes.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="02"/>
+            <Date Day="1" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed ps_cause from UNION to STRUCT</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="02"/>
+            <Date Day="7" Month="1" Year="2004"/>
+            <Author>ABR</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updating SAP with changes needed after two2one project.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="012" Year="04"/>
+            <Date Day="8" Month="6" Year="2004"/>
+	    <Author>rpk</Author>
+            <DocStatus State="APPROVED"/>
+	    <Comment>Changed itemlink of pkt_flow_id from nas_include to ps_include sap.</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the 8010_135_SN_SAP SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">SN</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="21" Month="1" Year="2004"/>
+            <Author>ABR</Author>
+            <Comment>Changed SDU to PDU.</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the 8010_135_SN_SAP SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>MAX_UL_PDU</Alias>
+            <Value ValueType="DEC">255</Value>
+            <Comment>Max number of unconfirmed PDUs transferred between RATs (in SN_GET_PENDING_PDU_CNF).</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_NSAPI</Alias>
+            <ItemLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>SIZE_NSAPI</Name>
+            </ItemLink>
+            <Comment>Maximum NSAPI array index for SN_GET_PENDING_PDU_CNF</Comment>
+        </Constant>
+        <History>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="21" Month="1" Year="2004"/>
+            <Author>ABR</Author>
+            <Comment>Changed SDU to PDU.</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="158">
+        <Description>
+            <Section>The following sections describe the primitives defined on the SN SAP.</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by SNDCP to inform UPM that resources have been allocated for this NSAPI. Also, if this NSAPI uses acknowledged mode LLC transfer, the corresponding LLC link has been established.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_ACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>SNDCP</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>comp_params</Name>
+                </ItemLink>
+                <Comment>Compression parameters</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by UPM to inform SNDCP that an NSAPI has been activated for data transfer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_ACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SNDCP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>LLC service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Comment>Radio priority</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos_r97</Name>
+                </ItemLink>
+                <Alias>snsm_qos</Alias>
+                <Comment>Peak throughput and other qos</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>establish</Name>
+                </ItemLink>
+                <Comment>Establish request</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>comp_params</Name>
+                </ItemLink>
+                <Comment>Compression parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>pkt_flow_id</Name>
+                </ItemLink>
+                <Comment>Packet Flow Identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The llc_sapi is renamed to sapi.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="5" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Replaced ack_flag with relclass and peak.</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Added pkt_flow_id parameter.</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="6" Year="2004"/>
+		<Author>rpk</Author>
+                <Comment>Changed pkt_flow_id link from nas_include to ps_include.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by SNDCP to inform UPM that resources for the NSAPI indicated have been released.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_DEACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>SNDCP</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Changed nsapi_set to nsapi</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by UPM to inform SNDCP that a NSAPI has been deactivated, and that SNDCP should release all resources allocated to that NSAPI.</Section>
+                <Section>This includes releasing any LLC links if the NSAPI were using acknowledged LLC transfer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_DEACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SNDCP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>rel_ind</Name>
+                </ItemLink>
+                <Comment>Local release indicator</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Changed nsapi_set to nsapi.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by SNDCP to return the handles of buffered PDUs to UPM. The buffer handles are indicated for each NSAPI separately. This primitive is used as part of a RAT change to UMTS.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_GET_PENDING_PDU_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>SNDCP</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>ul_pdus</Name>
+                </ItemLink>
+                <Control>[0..SIZE_NSAPI]</Control>
+                <Comment>Array of DTI description lists and sequence numbers.</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="4" Year="2003"/>
+                <Author>ALE</Author>
+                <Comment>Index has been changed.</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Changed all SDU to PDU.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by UPM as part of a RAT change to retrieve any buffered PDUs in SNDCP.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_GET_PENDING_PDU_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SNDCP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Changed SDU to PDU.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by SNDCP to inform UPM that parameters for the NSAPI have been updated, if necessary.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_MODIFY_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>SNDCP</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by UPM to inform SNDCP that SAPI, radio_prio, and/or acknowledged mode parameters have changed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_MODIFY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SNDCP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>LLC service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Comment>Radio priority</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos_r97</Name>
+                </ItemLink>
+                <Alias>snsm_qos</Alias>
+                <Comment>Reliability class and other qos</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>pkt_flow_id</Name>
+                </ItemLink>
+                <Comment>Packet Flow Identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The llc_sapi is renamed to sapi.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="5" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Replaced ack_flag with relclass and peak.</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="6" Year="2004"/>
+		<Author>rpk</Author>
+                <Comment>Changed pkt_flow_id link from nas_include to ps_include.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by SNDCP to inform the control plane of error situations.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_STATUS_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>SNDCP</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>Set of network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>LLC service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>Cause parameter</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The llc_sapi is renamed to sapi.</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used during an inter-SGSN routeing area update to deliver SGSN Receive N-PDU number to the SNDCP entity.</Section>
+                <Section>The primitive applies only to NSAPIs using acknowledged peer-to-peer LLC operation.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_SEQUENCE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SNDCP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>receive_no_list</Name>
+                </ItemLink>
+                <Control>[0..SIZE_NSAPI]</Control>
+                <Comment>Receive NDPU number list</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="19" Month="3" Year="2003"/>
+                <Author>ALE</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used during an inter-SGSN routeing area update to return Receive N-PDU number of the SNDCP entity on the MS side.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_SEQUENCE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>SNDCP</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>receive_no_list</Name>
+                </ItemLink>
+                <Control>[0..SIZE_NSAPI]</Control>
+                <Comment>Receive NDPU number list</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="19" Month="3" Year="2003"/>
+                <Author>ALE</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive is used to get information about the amount of transferred data. Parameter 'nsapi' indicates the affected nsapi. If parameter 'reset'  is set to NAS_RESET_YES, then the last values of all counters will be sent with the resulting SN_COUNT_CNF and all counters for the affected nsapi will be set to 0. If parameter 'reset' is set to NAS_RESET_NO then then the last values of all counters will be sent with the resulting SN_COUNT_CNF.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_COUNT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SNDCP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>reset</Name>
+                </ItemLink>
+                <Comment>shall counters be reset</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive is used to get information about the amount of transferred data. Parameter 'nsapi' indicates the affected nsapi. Parameter 'octets_uplink' indicates the number of transferred octets uplink. Only payload without SN, LLC, RLC headers is computed. Parameter 'octets_downlink' indicates the number of transferred octets downlink. Parameter 'packets_uplink' indicates the number of transferred packets uplink. Parameter 'packets_downlink' indicates the number of transferred packets downlink.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_COUNT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>SNDCP</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>octets_uplink</Name>
+                </ItemLink>
+                <Comment>octets uplink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>octets_downlink</Name>
+                </ItemLink>
+                <Comment>octets  downlink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>packets_uplink</Name>
+                </ItemLink>
+                <Comment>packets uplink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>packets_downlink</Name>
+                </ItemLink>
+                <Comment>packets downlink</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by ACI's DTI manager to order DTI connection (re-)establishment or termination from SNDCP with the given parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_DTI_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>SNDCP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>dti connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_linkid</Name>
+                </ItemLink>
+                <Comment>dti linkid</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>dti_neighbor</Name>
+                </ItemLink>
+                <Comment>dti neighbor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>dti direction</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by SNDCP to inform ACI's DTI manager that a previously ordered connection (re-)establishment/termination is complete.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SN_DTI_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>SNDCP</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_linkid</Name>
+                </ItemLink>
+                <Comment>dti linkid</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>dti  connect</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains the anchor element in a DTI2 descriptor list. It contains information in the total octet count of the descriptor lists - the sum of octet counts for each descriptor - as well as a pointer to the first descriptor in the list.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>desc_list2</Name>
+                <Comment>DTI parameters</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>list_len</Name>
+                </ItemLink>
+                <Comment>Octet count of data in all descriptors</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>first</Name>
+                </ItemLink>
+                <Comment>Pointer to first descriptor in list</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="10" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter is used to return buffered, unconfirmed PDUs from SNDCP to UPM. Only NSAPIs that use acknowledged mode LLC transfer shall have their unconfirmed PDUs transferred to the new RAT.</Section>
+                <Section>The PDUs are returned as an array of DTI2 descriptor lists handles and a sequence number for the relevant NSAPI.</Section>
+                <Section>In addition to PDUs, the sequence number of the last acknowledged uplink PDU is included.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ul_pdus</Name>
+                <Comment>Sequence number and descriptor list handles pr. NSAPI</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network Service Access Point Identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>dl_sequence_number</Name>
+                </ItemLink>
+                <Comment>Sequence number of last unacknowledged downlink PDU (used by the network)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>desc_list2</Name>
+                </ItemLink>
+                <Control>PTR [0 .. MAX_UL_PDU]</Control>
+                <Comment>List of unconfirmed uplink PDUs</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="4" Year="2003"/>
+                <Author>ALE</Author>
+                <Comment>NSAPI parameter has been introduced instead of ul_sequence_number</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Changed all SDU to PDU.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains the Receive NPDU numbers and relevant NSAPIs.</Section>
+                <Section>The Receive NPDU parameter is a number set to every SNDCP PDU received with the LL_DATA_IND or LL_UNITDATA_IND primitive.</Section>
+                <Section>The Receive NPDU parameter is used in the SN_SEQUENCE_REQ primitive where it is considered as the receive NPDU number on the NW side and SN_SEQUENCE_IND where it is considered as the receive NPDU number on the MS side.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>receive_no_list</Name>
+                <Comment>Ssequence numbers and MEM  handles pr. NSAPI</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer Service Access Point Identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                    <Name>receive_no</Name>
+                </ItemLink>
+                <Comment>Receive NPDU number</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="27" Month="3" Year="2003"/>
+                <Author>ALE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the anchor element in a DTI2 descriptor list. It contains information in the total octet count of the descriptor lists - the sum of octet counts for each descriptor - as well as a pointer to the first descriptor in the list.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>list_len</Name>
+                <Type>U16</Type>
+                <Comment>Octet count of data in all descriptors</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="10" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the anchor element in a DTI2 descriptor list. It contains information in the total octet count of the descriptor lists - the sum of octet counts for each descriptor - as well as a pointer to the first descriptor in the list.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>first</Name>
+                <Type>U32</Type>
+                <Comment>Pointer to first descriptor in list</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="10" Month="1" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to return buffered, unconfirmed PDUs from SNDCP to UPM. Only NSAPIs that use acknowledged mode LLC transfer shall have their unconfirmed PDUs transferred to the new RAT.</Section>
+                <Section>The PDUs are returned as an array of DTI2 descriptor lists handles and a sequence number for the relevant NSAPI.</Section>
+                <Section>In addition to PDUs, the sequence number of the last acknowledged uplink PDU is included.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dl_sequence_number</Name>
+                <Type>U8</Type>
+                <Comment>Sequence number of last unacknowledged downlink PDU (used by the network)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="4" Year="2003"/>
+                <Author>ALE</Author>
+                <Comment>NSAPI parameter has been introduced instead of ul_sequence_number</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Changed all SDU to PDU.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates whether the SNDCP entity should force establishment of the LLC link or wait for the LL_ESTABLISH_IND primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>establish</Name>
+                <Type>U8</Type>
+                <Comment/>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_135_sn_sap</DocName>
+                <Name>VAL_establish</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="3" Year="2003"/>
+                <Author>ALE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the Receive NPDU numbers and relevant NSAPIs.</Section>
+                <Section>The Receive NPDU parameter is a number set to every SNDCP PDU received with the LL_DATA_IND or LL_UNITDATA_IND primitive.</Section>
+                <Section>The Receive NPDU parameter is used in the SN_SEQUENCE_REQ primitive where it is considered as the receive NPDU number on the NW side and SN_SEQUENCE_IND where it is considered as the receive NPDU number on the MS side.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>receive_no</Name>
+                <Type>U8</Type>
+                <Comment>Receive NPDU number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="3" Year="2003"/>
+                <Author>ALE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section/>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_neighbor</Name>
+                <Type>U32</Type>
+                <Comment>DTI neighbor entity name.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="02" Year="2004"/>
+                <Author>rpk</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the 8010_135_SN_SAP SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_establish</Name>
+                <Comment>values for establish</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ACTIVE_ESTABLISHMENT</Alias>
+                <Comment>SNDCP shall send LL_ESTABLISH_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PASSIVE_ESTABLISHMENT</Alias>
+                <Comment>SNDCP shall wait for LL_ESTABLISH_IND</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

@@ -1,0 +1,274 @@
+;********************************************************************************
+;*** File           : l1test.pdf
+;*** Creation       : Wed Mar 11 09:58:09 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : l1test
+;*** Document No.   : 8010.148.03.003
+;*** Document Date  : 2003-06-06
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: AGR
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:44:08 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-06-06"
+PRAGMA 	ID_AND_VERSION 	"8010.148.03.003"
+PRAGMA 	PREFIX 	L1TEST 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	NO 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+CONST 	TEST_BUFFER_SIZE 	1000 	; Test data buffer size
+CONST 	MAX_TIMESLOTS 	8 	; Defines the maximum number of timeslots per frame
+CONST 	BURST_PER_BLOCK 	4 	; Number of bursts that compose a block
+
+
+
+
+
+
+VAR 	chn_mode 	"Channel mode" 	B
+
+
+VAR 	valid_flag 	"Valid flag for received data" 	B
+
+
+VAR 	d_ra_conf 	"Traffic control register" 	S
+
+
+VAR 	d_ra_act 	"Activity word" 	S
+
+
+VAR 	d_fax 	"Fax status and parameter word" 	S
+
+
+VAR 	d_ra_statu 	"Rate adaptation status word for uplink" 	S
+
+
+VAR 	d_ra_statd 	"Rate adaptation status word for downlink" 	S
+
+
+VAR 	crc_error 	"CRC error" 	B
+
+
+VAR 	bcch_level 	"BCCH level" 	C
+
+
+VAR 	radio_freq 	"Radio frequency" 	S
+
+
+VAR 	burst_level 	"Burst level" 	C
+
+
+VAR 	pch 	"PCH" 	B
+
+
+VAR 	assignment_id 	"Assignment Id" 	B
+
+
+VAR 	tx_data_no 	"Tx data number" 	B
+
+
+VAR 	fn 	"Frame number" 	L
+
+
+VAR 	timing_advance_value 	"Timing advance value" 	B
+
+
+VAR 	allocation_exhausted 	"Allocation exhausted" 	B
+
+
+VAR 	rlc_blocks_sent 	"RLC blocks sent" 	B
+
+
+VAR 	last_poll_response 	"Last poll response" 	B
+
+
+
+
+
+
+
+
+; L1TEST_CALL_MPHC_READ_DCCH 	0x8000409B
+; L1TEST_RETURN_MPHC_READ_DCCH 	0x8000009B
+; L1TEST_CALL_MPHC_DCCH_DOWNLINK 	0x8001409B
+; L1TEST_RETURN_MPHC_DCCH_DOWNLINK 	0x8001009B
+; L1TEST_CALL_MPHC_DATA_UL 	0x8002409B
+; L1TEST_RETURN_MPHC_DATA_UL 	0x8002009B
+; L1TEST_CALL_MPHC_DATA_DL 	0x8003409B
+; L1TEST_RETURN_MPHC_DATA_DL 	0x8003009B
+; L1TEST_CALL_MPHP_POWER_CONTROL 	0x8004409B
+; L1TEST_RETURN_MPHP_POWER_CONTROL 	0x8004009B
+; L1TEST_CALL_MPHP_UPLINK 	0x8005409B
+; L1TEST_RETURN_MPHP_UPLINK 	0x8005009B
+; L1TEST_CALL_MPHP_DOWNLINK 	0x8006409B
+; L1TEST_RETURN_MPHP_DOWNLINK 	0x8006009B
+
+
+
+PRIM 	L1TEST_CALL_MPHC_READ_DCCH 	0x8000409B
+{
+ 	chn_mode 	 ; Channel mode
+}
+
+
+
+
+
+
+PRIM 	L1TEST_RETURN_MPHC_READ_DCCH 	0x8000009B
+{
+ 	EXTERN @p_mphc - l2_frame@ 	l2_frame 	 ; L2 radio frame
+}
+
+
+
+
+
+
+PRIM 	L1TEST_CALL_MPHC_DCCH_DOWNLINK 	0x8001409B
+{
+ 	EXTERN @p_mphc - l2_frame@ 	l2_frame 	 ; L2 radio frame
+ 	valid_flag 	 ; Valid flag for received data
+}
+
+
+
+
+
+
+PRIM 	L1TEST_RETURN_MPHC_DCCH_DOWNLINK 	0x8001009B
+{
+}
+
+
+
+
+
+
+PRIM 	L1TEST_CALL_MPHC_DATA_UL 	0x8002409B
+{
+}
+
+
+
+
+
+
+PRIM 	L1TEST_RETURN_MPHC_DATA_UL 	0x8002009B
+{
+ 	EXTERN @p_mphc - l2_frame@ 	l2_frame 	 ; L2 radio frame
+ 	d_ra_conf 	 ; Traffic control register
+ 	d_ra_act 	 ; Activity word
+ 	d_ra_statu 	 ; Rate adaptation status word
+ 	d_fax 	 ; Fax status and parameter word
+}
+
+
+
+
+
+
+PRIM 	L1TEST_CALL_MPHC_DATA_DL 	0x8003409B
+{
+ 	EXTERN @p_mphc - l2_frame@ 	l2_frame 	 ; L2 radio frame
+ 	d_ra_act 	 ; Activity word
+ 	d_ra_statd 	 ; Rate adaptation status word
+}
+
+
+
+
+
+
+PRIM 	L1TEST_RETURN_MPHC_DATA_DL 	0x8003009B
+{
+}
+
+
+
+
+
+
+PRIM 	L1TEST_CALL_MPHP_POWER_CONTROL 	0x8004409B
+{
+ 	assignment_id 	 ; Assignment Id
+ 	crc_error 	 ; CRC error
+ 	bcch_level 	 ; BCCH level
+ 	radio_freq 	[BURST_PER_BLOCK] 	 ; Radio frequency
+ 	burst_level 	[BURST_PER_BLOCK] 	 ; Burst level
+}
+
+
+
+
+
+
+PRIM 	L1TEST_RETURN_MPHP_POWER_CONTROL 	0x8004009B
+{
+ 	pch 	[MAX_TIMESLOTS] 	 ; PCH
+}
+
+
+
+
+
+
+PRIM 	L1TEST_CALL_MPHP_UPLINK 	0x8005409B
+{
+ 	assignment_id 	 ; Assignment Id
+ 	tx_data_no 	 ; Tx data number
+ 	fn 	 ; Frame number
+ 	timing_advance_value 	 ; Timing advance value
+ 	allocation_exhausted 	 ; Allocation exhausted
+}
+
+
+
+
+
+
+PRIM 	L1TEST_RETURN_MPHP_UPLINK 	0x8005009B
+{
+ 	EXTERN @p_mac - ul_poll_resp@ 	ul_poll_resp 	[4] 	 ; UL poll response
+ 	EXTERN @p_mac - ul_data@ 	ul_data 	[4] 	 ; UL data
+}
+
+
+
+
+
+
+PRIM 	L1TEST_CALL_MPHP_DOWNLINK 	0x8006409B
+{
+ 	assignment_id 	 ; Assignment Id
+ 	fn 	 ; Frame number
+ 	EXTERN @p_mac - dl_data@ 	dl_data 	[0..4] 	 ; DL data
+ 	rlc_blocks_sent 	 ; RLC blocks sent
+ 	last_poll_response 	 ; Last poll response
+}
+
+
+
+
+
+
+PRIM 	L1TEST_RETURN_MPHP_DOWNLINK 	0x8006009B
+{
+}
+
+
+
+
+
+
+
+
+

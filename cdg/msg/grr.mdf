@@ -1,0 +1,5436 @@
+;********************************************************************************
+;*** File           : grr.mdf
+;*** Creation       : Thu Jun 19 15:32:10 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : grr
+;*** Document No.   : 8010.603.019.04
+;*** Document Date  : 2004-09-02
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: xboregow
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:18:58 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-09-02"
+PRAGMA 	ID_AND_VERSION 	"8010.603.019.04"
+PRAGMA 	CCDNAME 	GRR 	; CCD name tag
+
+
+
+CONST 	MAX_REJECT 	4 	; There is no reference in 0460 for that value. Assumption M. The maximum value for M == MAX_RETRANS is 4
+CONST 	MAX_NCELL_REST 	5 	; MAX_NCELL -1 = 5
+CONST 	MAX_CHAN_IMEAS 	32 	; Total number  of channels for interference measurements
+CONST 	MAX_CHAN_EXT 	64 	; Max number of channels for extended Measurements
+CONST 	MAX_CHAN_NC 	64 	; Max number of channels for network controlled cell re-selection
+CONST 	MAX_RFL_NUM_LIST 	16 	; 
+CONST 	MAX_ARFCN_LIST 	64 	; 
+CONST 	MAX_NH_PCCCH_CARRIER 	5 	; 
+CONST 	MAX_PCCCH_DES 	16 	; 
+CONST 	MAX_M_NH_PCCCH_C 	2 	; 
+CONST 	MAX_M_H_PCCCH_C 	16 	; 
+CONST 	MAX_NCMP_S1 	7 	; this is maximum because the length indicator is a 3 bit value
+CONST 	MAX_XMR_S1 	32 	; this is maximum because the length indicator is a 5 bit value
+CONST 	MAX_CELL_ALLOC 	4 	; 
+CONST 	MAX_GPRS_MS_ALLOC 	7 	; 
+CONST 	MAX_RFL_IN_PSI 	4 	; '_IN_PSI' because of same name in RR air messages
+CONST 	MAX_NCELL_PAR2 	5 	; 
+CONST 	MAX_REP_PAGE_INFO 	4 	; 
+CONST 	MAX_RFREQ 	5 	; Max removed frequencies in NC Meas.
+CONST 	MAX_AFREQ 	5 	; Max added frequencies in NC Meas.
+CONST 	MAX_LIST_AFREQ 	2 	; Max number of added frequency lists
+CONST 	MAX_MSG_TYPE 	10 	; used in PACKET PSI STATUS and PACKET SI STATUS
+CONST 	MAX_NCELL_PARA 	6 	; see PSI3
+CONST 	MAX_NCELL_PAR2_S1 	2 	; see PSI3bis
+CONST 	MAX_NCELL_PAR2_S2 	2 	; see PSI3bis
+CONST 	MAX_NCELL_PAR2_DES 	2 	; see PSI3bis
+CONST 	MAX_NH_PCCCH_C 	16 	; 
+CONST 	MAX_FREQ_DIFF_CS_PAR 	8 	; Maximum number of frequency difference and Cell Selection parameters structure. See PSI3 description
+CONST 	MAX_NCELL_IN_PSI3BIS 	5 	; Maximum number  of neighbor cell parmeters in PSI3BIS message. Calculation is based on, that this structure can contain at least 31 bits and the an RLC/MAC control block has a size of up to 22 bytes.
+CONST 	MAX_NCELL2_IN_PSI3BIS 	3 	; Maximum number  of  neighbor cell parameters 2 in PSI3BIS message. This structure can contain at least 45 bits.
+CONST 	MAX_BASIC_CELL_IN_NCELL2 	3 	; See PSI3BIS
+CONST 	MAX_REMAINING_CELL_IN_NCELL2 	18 	; See PSI3BIS
+CONST 	MAX_NEIGHBOR_PARAMETER_SET_IN_NCELL2 	4 	; See PSI3BIS
+CONST 	MAX_NR_OF_NCELL 	32 	; See PSI3
+CONST 	MAX_CHAN_LIST 	7 	; See PSI4
+CONST 	MAX_EXT_FREQ_LIST 	7 	; See PSI5
+CONST 	MAX_EXT_FREQ_LIST_ELEM 	32 	; SeePSI5
+CONST 	MAX_NUMBER_CELLS 	128 	; this is maximum because the length indicator is a 7 bit value
+CONST 	MAX_CELL_DIFF_LENGTH 	8 	; this is maximum because the length indicator is a 3 bit value
+CONST 	MAX_3G_NEIGH_CELLS 	64 	; maximum value 3 uarfcn times 32 cells
+CONST 	MAX_CONT_OCT 	32 	; this is maximum because the length indicator is a 5 bit value
+CONST 	MAX_N_CBQ2 	8 	; this is maximum because the length indicator is a 3 bit value
+CONST 	MAX_NR_REMAINING_CELLS 	16 	; See PSI3BIS
+CONST 	NINETEEN 	19 	; Max number of GSM messages
+CONST 	X7BITMAX 	128 	; 7 bit max
+CONST 	MAX_FDD 	131 	; (L3MAX_ACK-3-1-1)*8/(14+1) = 131,2
+CONST 	MAX_TDD 	131 	; (L3MAX_ACK-3-1-1)*8/(14+1) = 131,2
+CONST 	MAX_NR_OF_FREQ_OR_CELLS 	32 	; this is maximum because the length indicator is a 5 bit value
+CONST 	MAX_REP 	256 	; 1{<Structure>}'' value ?
+CONST 	MAX_NUM_BEP_TN 	8 	; Maximum number of time slots for BEP measurements
+CONST 	MAX_NUM_ACC_TYPE 	16 	; Maximum number of access technologies that can be requested by NW in Packet Uplink assignment message
+CONST 	MAX_SIZE_URBB_DL 	144 	; Maximum number of bits that can be included in uncompressed received block bitmap.(144 = 184 - 24 - 1 - 15)
+CONST 	MAX_SIZE_CRBB 	127 	; Maximum number of bits that can be included in compressed received block bitmap
+CONST 	MAX_LSA_ID 	2 	; Maximum number of LSA IDs
+CONST 	MAX_SIZE_URBB_UL 	128 	; Maximum number of bits possible when only uncompress bitmap present for Uplink
+CONST 	MAX_NUM_CONTAINER 	9 	; Maximum Number of Container that can be present
+
+
+
+VALTAB 	VAL_ps
+VAL 	0 	GRR_NO 	"not present"
+VAL 	1 	GRR_YES 	"present"
+
+VALTAB 	VAL_msg_type
+VAL 	0b100001 	D_ACCESS_REJ_c 	"Packet Access Reject"
+VAL 	0b000001 	D_CELL_CHAN_ORDER_c 	"Packet Cell Change Order"
+VAL 	0b000010 	D_DL_ASSIGN_c 	"Packet Downlink Assignment"
+VAL 	0b000011 	D_MEAS_ORDER_c 	"Packet Measurement Order"
+VAL 	0b100010 	D_PAGING_REQ_c 	"Packet Paging Request"
+VAL 	0b100011 	D_PDCH_RELEASE_c 	"Packet PDCH Release"
+VAL 	0b000100 	D_POLLING_REQ_c 	"Packet Polling Request"
+VAL 	0b000101 	D_CTRL_PWR_TA_c 	"Packet Power Control/Timing Advance"
+VAL 	0b100100 	D_PRACH_PAR_c 	"Packet PRACH Parameters"
+VAL 	0b000110 	D_QUEUING_NOT_c 	"Packet Queuing Notification"
+VAL 	0b000111 	D_TS_RECONFIG_c 	"Packet Timeslot Reconfigure"
+VAL 	0b001000 	D_TBF_RELEASE_c 	"Packet TBF Release"
+VAL 	0b001001 	D_UL_ACK_c 	"Packet Uplink Ack/Nack"
+VAL 	0b001010 	D_UL_ASSIGN_c 	"Packet Uplink Assignment"
+VAL 	0b001101 	D_PKT_SERV_CELL_DATA_c 	"Packet Serving Cell Data"
+VAL 	0b100101 	D_DL_DUMMY_c 	"Packet Downlink Dummy Control Block"
+VAL 	0b110001 	PSI_1_c 	"Packet System Information Type 1"
+VAL 	0b110010 	PSI_2_c 	"Packet System Information Type 2"
+VAL 	0b110011 	PSI_3_c 	"Packet System Information Type 3"
+VAL 	0b110100 	PSI_3_BIS_c 	"Packet System Information Type 3 bis"
+VAL 	0b111100 	PSI_3_TER_c 	"Packet System Information Type 3 ter"
+VAL 	0b111101 	PSI_3_QUATER_c 	"Packet System Information Type 3 quater"
+VAL 	0b110101 	PSI_4_c 	"Packet System Information Type 4"
+VAL 	0b110110 	PSI_5_c 	"Packet System Information Type 5"
+VAL 	0b110000 	PSI_6_c 	"Packet System Information Type 6"
+VAL 	0b111000 	PSI_7_c 	"Packet System Information Type 7"
+VAL 	0b111001 	PSI_8_c 	"Packet System Information Type 8"
+VAL 	0b110111 	PSI_13_c 	"Packet System Information Type 13"
+VAL 	0b111010 	PSI_14_c 	"Packet System Information Type 14"
+VAL 	0b111110 	PSI_15_c 	"Packet System Information Type 15"
+VAL 	0b000000 	U_CELL_CHAN_FAILURE_c 	"Packet Cell Change Failure"
+VAL 	0b000001 	U_CTRL_ACK_c 	"Packet Control Acknowledgement"
+VAL 	0b000010 	U_DL_ACK_c 	"Packet Downlink Ack/Nack"
+VAL 	0b000011 	U_UL_DUMMY_c 	"Packet Uplink Dummy Control Block"
+VAL 	0b000100 	U_MEAS_REPORT_c 	"Packet Measurement Report"
+VAL 	0b001010 	U_ENHNC_MEAS_REPORT_c 	"Packet Enhanced Measurement Report"
+VAL 	0b000101 	U_RESOURCE_REQ_c 	"Packet Resource Request"
+VAL 	0b000110 	U_MS_TBF_STATUS_c 	"Packet Mobile TBF Status"
+VAL 	0b000111 	U_PKT_PSI_STATUS_MSG_c 	"Packet PSI Status Message"
+VAL 	0b001001 	U_PAUSE_MSG_c 	"Packet Pause message"
+VAL 	0b001011 	U_ADD_MS_RADIO_CAP_c 	"Additional MS Radio Access Capabilities"
+VAL 	0b001000 	U_E_DL_ACK_c 	"EGPRS Packet Downlink Ack/Nack"
+VAL 	0b001101 	U_PKT_SI_STATUS_c 	"Packet SI status message"
+VAL 	0b001100 	U_PKT_CELL_CHANGE_NOTIFICATION_c 	"Packet Cell Change Notification"
+VAL 	0b001100 	D_PKT_NEIGHBOUR_CELL_DATA_c 	"Packet Neighbour Cell Data"
+VAL 	0b001011 	D_CELL_CHANGE_CONTINUE_c 	"Packet Cell Change Continue"
+
+VALTAB 	VAL_page_mode
+VAL 	0b00 	NORMAL_PAGING 	"Normal Paging"
+VAL 	0b01 	EXT_PAGING 	"Extended Paging"
+VAL 	0b10 	REORG_PAGING 	"Paging Reorganisation"
+VAL 	0b11 	SAME_PAGING 	"Same as before"
+
+VALTAB 	VAL_access_type
+VAL 	0b00 	TWO_PHASE 	"Two Phase Access Request"
+VAL 	0b01 	PAGE 	"Page Response"
+VAL 	0b10 	CELL_UPDATE 	"Cell Update"
+VAL 	0b11 	MM_PROC 	"Mobility Management procedure"
+
+VALTAB 	VAL_chan_coding_cmd
+VAL 	0b00 	 	"CS-1"
+VAL 	0b01 	 	"CS-2"
+VAL 	0b10 	 	"CS-3"
+VAL 	0b11 	 	"CS-4"
+
+VALTAB 	VAL_tlli_chan_coding
+VAL 	0 	 	"the MS shall use CS-1 for any RLC data block containing a TLLI in the RLC data block header"
+VAL 	1 	 	"the MS shall use the value commanded in the CHANNEL_CODING_COMMAND for any RLC data block containing a TLLI in the RLC data block header"
+
+VALTAB 	VAL_mac_mode
+VAL 	0 	DYNAMIC_ALLOCATION 	"Dynamic allocation"
+VAL 	1 	EXT_DYNAMIC_ALLOCATION 	"Extended Dynamic allocation"
+VAL 	2 	FIXED_ALLOCATION 	"Fixed allocation, not half duplex mode"
+VAL 	3 	FA_HALF_DUPLEX 	"Fixed allocation, half duplex mode"
+
+VALTAB 	VAL_rlc_mode
+VAL 	0 	 	"RLC acknowledged mode"
+VAL 	1 	 	"RLC unacknowledged mode"
+
+VALTAB 	VAL_pctrl_ack
+VAL 	0 	 	"in case the message is sent in access burst format, the same meaning as for the value '11' except that the mobile station is requesting new TBF. Otherwise the bit value '00' is reserved and shall not be sent. If received it shall be intepreted as bit value '01'."
+VAL 	1 	 	"the MS received an RLC/MAC control block addressed to itself and with RBSN = 1, and did not receive an RLC/MAC control block with the same RTI value and RBSN = 0."
+VAL 	2 	 	"the MS received an RLC/MAC control block addressed to itself and with RBSN = 0, and did not receive an RLC/MAC control block with the same RTI value and RBSN = 1. This value is sent irrespective of the value of the FS bit."
+VAL 	3 	 	"the MS received two RLC/MAC blocks with the same RTI value, one with RBSN = 0 and the other with RBSN = 1."
+
+VALTAB 	VAL_rel_cause
+VAL 	0 	NORMAL_RELEASE 	""
+VAL 	2 	ABNORMAL_RELEASE 	""
+
+VALTAB 	VAL_psi_change_field
+VAL 	0b0000 	UPDATE_UNS_PSI 	"Update of unspecified PSI message(s);"
+VAL 	0b0001 	UPDATE_UNKNOWN 	"Unknown"
+VAL 	0b0010 	UPDATE_PSI2 	"PSI2 updated"
+VAL 	0b0011 	UPDATE_PSI3 	"PSI3/PSI3bis updated"
+VAL 	0b0100 	UPDATE_PSI4 	"PSI4 updated"
+VAL 	0b0101 	UPDATE_PSI5 	"PSI5 updated"
+VAL 	0b1000 	UPDATE_PSI8 	"PSI8 updated"
+
+VALTAB 	VAL_si_change_ma
+VAL 	DEF 	 	"update of unknown SI message type"
+VAL 	0 	 	"Update of unspecified SI message or SI messages;"
+VAL 	1 	 	"Update of SI1 message;"
+VAL 	2 	 	"Update of SI2, SI2 bis or SI2 ter message;"
+VAL 	3 	 	"Update of SI3, SI4, SI7 or SI8 message;"
+VAL 	4 	 	"Update of SI9 message;"
+VAL 	5 	 	"Update of SI15 message;"
+
+VALTAB 	VAL_failure_cause
+VAL 	DEF 	 	"Immediate Assign Reject or Packet Access Reject on target cell"
+VAL 	0 	Freq_Not_Impl 	"Frequency not implemented"
+VAL 	1 	No_Resp_On_Target_Cell 	"No response on target cell"
+VAL 	2 	ImAssign_Rej_OR_Packet_Acc_Rej 	"Immediate Assign Reject or Packet Access Reject on target cell"
+VAL 	3 	On_Going_Cs_Connection 	"On going CS connection"
+VAL 	5 	MS_IN_GMM_Standby_State 	"MS in GMM Standby State"
+VAL 	6 	Forced_To_GMM_Standby_State 	"Forced to the Standby State"
+
+VALTAB 	VAL_ctrl_order
+VAL 	0 	NCMEAS_NC0 	"NC0"
+VAL 	1 	NCMEAS_NC1 	"NC1"
+VAL 	2 	NCMEAS_NC2 	"NC2"
+VAL 	3 	NCMEAS_RESET 	"RESET"
+
+VALTAB 	VAL_alpha
+VAL 	0b0000 	 	"Alpha = 0.0"
+VAL 	0b0001 	 	"Alpha = 0.1"
+VAL 	0b0010 	 	"Alpha = 0.2"
+VAL 	0b0011 	 	"Alpha = 0.3"
+VAL 	0b0100 	 	"Alpha = 0.4"
+VAL 	0b0101 	 	"Alpha = 0.5"
+VAL 	0b0110 	 	"Alpha = 0.6"
+VAL 	0b0111 	 	"Alpha = 0.7"
+VAL 	0b1000 	 	"Alpha = 0.8"
+VAL 	0b1001 	 	"Alpha = 0.9"
+VAL 	0b1010 	 	"Alpha = 1.0"
+
+VALTAB 	VAL_pb
+VAL 	0b0000 	 	"PB = 0 dB"
+VAL 	0b0001 	 	"PB = -2 dB"
+VAL 	0b0010 	 	"PB = -4 dB"
+VAL 	0b0011 	 	"PB = -6 dB"
+VAL 	0b0100 	 	"PB = -8 dB"
+VAL 	0b0101 	 	"PB = -10 dB"
+VAL 	0b0110 	 	"PB = -12 dB"
+VAL 	0b0111 	 	"PB = -14 dB"
+VAL 	0b1000 	 	"PB = -16 dB"
+VAL 	0b1001 	 	"PB = -18 dB"
+VAL 	0b1010 	 	"PB = -20 dB"
+VAL 	0b1011 	 	"PB = -22 dB"
+VAL 	0b1100 	 	"PB = -24 dB"
+VAL 	0b1101 	 	"PB = -26 dB"
+VAL 	0b1110 	 	"PB = -28 dB"
+VAL 	0b1111 	 	"PB = -30 dB"
+
+VALTAB 	VAL_pc_meas_chan
+VAL 	0 	MEAS_PWR_BCCH 	"downlink measurements for power control shall be made on BCCH"
+VAL 	1 	MEAS_PWR_PDCH 	"downlink measurements for power control shall be made on PDCH"
+
+VALTAB 	VAL_imeas_chan_list
+VAL 	0 	PSI4_NOT_BROADCASTED 	""
+VAL 	1 	PSI4_BROADCASTED 	""
+
+VALTAB 	VAL_chan_need
+VAL 	0b00 	 	"Any channel"
+VAL 	0b01 	 	"SDCCH"
+VAL 	0b10 	 	"TCH/F (Full rate)"
+VAL 	0b11 	 	"TCH/H or TCH/F"
+
+VALTAB 	VAL_ecsc
+VAL 	0 	 	"Early Classmark Sending is forbidden"
+VAL 	1 	 	"Early Classmark Sending is allowed"
+
+VALTAB 	VAL_ecsr_3g
+VAL 	0 	 	"Neither UTRAN nor cdma2000 classmark change message shall be sent with the Early Classmark Sending"
+VAL 	1 	 	"The sending of UTRAN and CDMA2000 Classmark Sending messages is controlled by the Early Classmark Sending Control parameter"
+
+VALTAB 	VAL_tx_int
+VAL 	0 	 	"2 slots used to spread transmission"
+VAL 	1 	 	"3 slots used to spread transmission"
+VAL 	2 	 	"4 slots used to spread transmission"
+VAL 	3 	 	"5 slots used to spread transmission"
+VAL 	4 	 	"6 slots used to spread transmission"
+VAL 	5 	 	"7 slots used to spread transmission"
+VAL 	6 	 	"8 slots used to spread transmission"
+VAL 	7 	 	"9 slots used to spread transmission"
+VAL 	8 	 	"10 slots used to spread transmission"
+VAL 	9 	 	"12 slots used to spread transmission"
+VAL 	10 	 	"14 slots used to spread transmission"
+VAL 	11 	 	"16 slots used to spread transmission"
+VAL 	12 	 	"20 slots used to spread transmission"
+VAL 	13 	 	"25 slots used to spread transmission"
+VAL 	14 	 	"32 slots used to spread transmission"
+VAL 	15 	 	"50 slots used to spread transmission"
+
+VALTAB 	VAL_s_prach
+VAL 	DEF 	 	"reserved"
+VAL 	0 	 	"S=12"
+VAL 	1 	 	"S=15"
+VAL 	2 	 	"S=20"
+VAL 	3 	 	"S=30"
+VAL 	4 	 	"S=41"
+VAL 	5 	 	"S=55"
+VAL 	6 	 	"S=76"
+VAL 	7 	 	"S=109"
+VAL 	8 	 	"S=163"
+VAL 	9 	 	"S=217"
+
+VALTAB 	VAL_max_retrans
+VAL 	0 	 	"1 retransmission allowed"
+VAL 	1 	 	"2 retransmission allowed"
+VAL 	2 	 	"4 retransmission allowed"
+VAL 	3 	 	"7 retransmission allowed"
+
+VALTAB 	VAL_radio_prio
+VAL 	0 	 	"Radio Priority 1 (Highest priority)"
+VAL 	1 	 	"Radio Priority 2"
+VAL 	2 	 	"Radio Priority 3"
+VAL 	3 	 	"Radio Priority 4 (Lower priority)"
+
+VALTAB 	VAL_llc_pdu_type
+VAL 	0 	 	"LLC PDU is SACK or ACK"
+VAL 	1 	 	"LLC PDU is not SACK or ACK"
+
+VALTAB 	VAL_bs_pbcch_blks
+VAL 	0b00 	 	"B0 is used for PBCCH"
+VAL 	0b01 	 	"B0, B6 is used for PBCCH"
+VAL 	0b10 	 	"B0, B6, B3 is used for PBCCH"
+VAL 	0b11 	 	"B0, B6, B3, B9 is used for PBCCH"
+
+VALTAB 	VAL_bs_prach_blks
+VAL 	0b0000 	 	"No block is reserved for PRACH (default)"
+VAL 	0b0001 	 	"B0 is used for PRACH"
+VAL 	0b0010 	 	"B0, B6 is used for PRACH"
+VAL 	0b0011 	 	"B0, B6, B3 is used for PRACH"
+VAL 	0b0100 	 	"B0, B6, B3, B9 is used for PRACH"
+VAL 	0b0101 	 	"B0, B6, B3, B9, B1 is used for PRACH"
+VAL 	0b0110 	 	"B0, B6, B3, B9, B1, B7 is used for PRACH"
+VAL 	0b0111 	 	"B0, B6, B3, B9, B1, B7, B4 is used for PRACH"
+VAL 	0b1000 	 	"B0, B6, B3, B9, B1, B7, B4, B10 is used for PRACH"
+VAL 	0b1001 	 	"B0, B6, B3, B9, B1, B7, B4, B10, B2 is used for PRACH"
+VAL 	0b1010 	 	"B0, B6, B3, B9, B1, B7, B4, B10, B2, B8 is used for PRACH"
+VAL 	0b1011 	 	"B0, B6, B3, B9, B1, B7, B4, B10, B2, B8, B5 is used for PRACH"
+VAL 	0b1100 	 	"B0, B6, B3, B9, B1, B7, B4, B10, B2, B8, B5, B11 is used for PRACH"
+
+VALTAB 	VAL_cell_ba
+VAL 	0 	CR_ALLOWED 	"Status for cell reselection is set to normal;"
+VAL 	1 	CR_NOT_WED 	"Status for cell reselection is set to barred."
+
+VALTAB 	VAL_gprs_resel_off
+VAL 	16 	GPRS_RESEL_OFF_DEFAULT 	"Default value"
+VAL 	255 	GPRS_RESEL_OFF_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_si13_loc
+VAL 	0 	BCCH_NORM 	""
+VAL 	1 	BCCH_EXT 	""
+
+VALTAB 	VAL_pbcch_loc
+VAL 	0b00 	PBCCH_TN1 	""
+VAL 	0b01 	PBCCH_TN2 	""
+VAL 	0b10 	PBCCH_TN3 	""
+VAL 	0b11 	PBCCH_TN4 	""
+
+VALTAB 	VAL_gprs_prio_class
+VAL 	0xFF 	GPRS_PRIORITY_CLASS_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_gprs_hcs_thr
+VAL 	0xFF 	GPRS_HCS_THR_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_gprs_rxlev_access_min
+VAL 	0xFF 	GPRS_RXLEV_ACCESS_MIN_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_txpwr_max_cch
+VAL 	0xFF 	GPRS_MS_TXPWR_MAX_CCH_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_gprs_temp_offset
+VAL 	0b000 	GPRS_TEMPORARY_OFFSET_00_DB 	"0 dB"
+VAL 	0b001 	GPRS_TEMPORARY_OFFSET_10_DB 	"10 dB"
+VAL 	0b010 	GPRS_TEMPORARY_OFFSET_20_DB 	"20 dB"
+VAL 	0b011 	GPRS_TEMPORARY_OFFSET_30_DB 	"30 dB"
+VAL 	0b100 	GPRS_TEMPORARY_OFFSET_40_DB 	"40 dB"
+VAL 	0b101 	GPRS_TEMPORARY_OFFSET_50_DB 	"50 dB"
+VAL 	0b110 	GPRS_TEMPORARY_OFFSET_60_DB 	"60 dB"
+VAL 	0b111 	GPRS_TEMPORARY_OFFSET_INFINITY 	"infinity"
+VAL 	0xFF 	GPRS_TEMPORARY_OFFSET_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_gprs_penalty_time
+VAL 	0b11111 	GPRS_PENALTY_TIME_MAX 	"Maximum value of GPRS_PENALTY_TIME"
+VAL 	0xFF 	GPRS_PENALTY_TIME_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_waitsize
+VAL 	0 	WAIT_1S 	"field is coded in units of seconds"
+VAL 	1 	WAIT_20ms 	"field is coded in units of 20 ms"
+
+VALTAB 	VAL_bl_o_bl_per
+VAL 	0 	BLOCKS 	"ALLOCATION_BITMAP is to be interpreted as blocks"
+VAL 	1 	BLOCK_PERIODS 	"ALLOCATION_BITMAP is to be interpreted as block periods"
+
+VALTAB 	VAL_att
+VAL 	0 	CCD_ATT_NO 	"MSs are not allowed to apply IMSI attach and detach proc."
+VAL 	1 	CCD_ATT_YES 	"MSs in the cell shall apply IMSI attach and detach procedure."
+
+VALTAB 	VAL_neci
+VAL 	0 	NECI_NO 	"New establishment causes are not supported"
+VAL 	1 	NECI_YES 	"New establishment causes are supported"
+
+VALTAB 	VAL_pwcr
+VAL 	0 	POW_CTRL_NO 	"PWRC is not set"
+VAL 	1 	POW_CTRL_YES 	"PWRC is set"
+
+VALTAB 	VAL_dtx
+VAL 	DEF 	 	"invalid DTX indicator"
+VAL 	0 	B_DTX_MAY_USE 	"The MSs may use uplink DTX"
+VAL 	1 	B_DTX_SHALL_USE 	"The MSs shall use uplink DTX"
+VAL 	2 	B_DTX_DONT_USE 	"The MS shall not use uplink DTX"
+
+VALTAB 	VAL_rfl_num
+VAL 	0x0F 	RFL_NUMBER_4_DL_CTRL_MSG_MAX 	"Maximum value for RFL_NUMBER when included in a downlink RLC/MAC control messsage."
+
+VALTAB 	VAL_rab_acc_re
+VAL 	0b0 	GRR_RA_RETRY_DISABLED 	"access to another cell is not allowed"
+VAL 	0b1 	GRR_RA_RETRY_ENABLED 	"access to another cell is allowed"
+
+VALTAB 	VAL_t_resel
+VAL 	0b000 	GRR_T_RESEL_DEFAULT 	"5 seconds"
+VAL 	0b001 	 	"10 seconds"
+VAL 	0b010 	 	"15 seconds"
+VAL 	0b011 	 	"20 seconds"
+VAL 	0b100 	 	"30 seconds"
+VAL 	0b101 	 	"60 seconds"
+VAL 	0b110 	 	"120 seconds"
+VAL 	0b111 	 	"300 seconds"
+
+VALTAB 	VAL_non_drx_per
+VAL 	0b010 	NC_NON_DRX_PER_DEFAULT 	"Non-DRX mode period default value (0.48 sec)"
+
+VALTAB 	VAL_rep_per_i
+VAL 	0b011 	NC_REP_PER_T_DEFAULT 	"Reporting period default value in packet transfer mode"
+VAL 	0b111 	NC_REP_PER_I_DEFAULT 	"Reporting period default value in packet idle mode"
+
+VALTAB 	VAL_xrep_per
+VAL 	0b101 	EXT_REP_PER_DEFAULT 	"Reporting period default value"
+
+VALTAB 	VAL_xrep_type
+VAL 	0b00 	XREP_TYPE1 	"Type 1 measurement reporting"
+VAL 	0b01 	XREP_TYPE2 	"Type 2 measurement reporting"
+VAL 	0b10 	XREP_TYPE3 	"Type 3 measurement reporting"
+VAL 	0b11 	XREP_RESERVED 	"Reserved"
+
+VALTAB 	VAL_prio_acc_thr
+VAL 	0b000 	P_NOT_ALLOWED 	"packet access is not allowed in the cell;"
+VAL 	0b001 	 	"spare, shall be interpreted as '000' (packet access not allowed);"
+VAL 	0b010 	 	"spare, shall be interpreted as '000' (packet access not allowed);"
+VAL 	0b011 	P_PRIO1 	"packet access is allowed for priority level 1;"
+VAL 	0b100 	P_PRIO2 	"packet access is allowed for priority level 1 to 2;"
+VAL 	0b101 	P_PRIO3 	"packet access is allowed for priority level 1 to 3;"
+VAL 	0b110 	P_PRIO4 	"packet access is allowed for priority level 1 to 4;"
+VAL 	0b111 	 	"shall be interpreted as '110' (packet access allowed)."
+
+VALTAB 	VAL_spgc_ccch_sup
+VAL 	0 	SPLIT_PG_CYCLE_NOT_SUPPORTED 	""
+VAL 	1 	SPLIT_PG_CYCLE_SUPPORTED 	""
+
+VALTAB 	VAL_nc_mode
+VAL 	0 	NCMODE_NC1 	"Mobile station in mode NC1"
+VAL 	1 	NCMODE_NC2 	"Mobile station in mode NC2"
+
+VALTAB 	VAL_xdyn_alloc
+VAL 	0 	DYNAMIC_ALLOC 	"Dynamic Allocation"
+VAL 	1 	EXT_DYNAMIC_ALLOC 	"Extended Dynamic Allocation"
+
+VALTAB 	VAL_usf_grant
+VAL 	0 	ONE_RLC_BLOCK 	"the ms shall transmit one RLC/MAC block"
+VAL 	1 	FOUR_C_RLC_BLOCKS 	"the ms shall transmit four consecutive RLC/MAC blocks"
+
+VALTAB 	VAL_rbb
+VAL 	0 	INVALID 	"Negative Ack of the RLC data block with BSN=(SSN-bit_nr)mod128"
+VAL 	1 	RECEIVED 	"Positive Ack of the RLC data block with BSN=(SSN-bit_nr)mod128"
+
+VALTAB 	VAL_f_ack_ind
+VAL 	0 	 	"retransmission are requested and the TBF is incomplete"
+VAL 	1 	 	"no retransmissions are requested and this message indicates acknowledgement of all RLC data in the TBF"
+
+VALTAB 	VAL_im_rel_c0
+VAL 	0 	 	"Same procedure as for an autonomous cell reselection"
+VAL 	1 	 	"Immediate release of the on-going TBF"
+
+VALTAB 	VAL_mode
+VAL 	0 	MODE_A 	""
+VAL 	1 	MODE_B 	""
+
+VALTAB 	VAL_tbf_cause
+VAL 	DEF 	 	"Status, unspecified"
+VAL 	0 	 	"Normal event"
+VAL 	1 	 	"Status, unspecified"
+VAL 	2 	 	"Syntactically incorrect message, non-distribution part error"
+VAL 	3 	 	"Syntactically incorrect message, message escape"
+VAL 	4 	 	"Message not compatible with current protocol state"
+
+VALTAB 	VAL_psi_status_ind
+VAL 	0 	NO_PSI_STATUS_SUPPORT 	""
+VAL 	1 	PSI_STATUS_SUPPORT 	""
+
+VALTAB 	VAL_multi_band_rep
+VAL 	0 	GRR_MULTIBAND_REPORTING_0 	"normal operation"
+VAL 	1 	GRR_MULTIBAND_REPORTING_1 	"one cell of the non-serving cell band"
+VAL 	2 	GRR_MULTIBAND_REPORTING_2 	"two cells of the non-serving cell band"
+VAL 	3 	GRR_MULTIBAND_REPORTING_3 	"three cells of the non-serving cell band"
+
+VALTAB 	VAL_pr_mode
+VAL 	0 	PR_MODE_A_ONE 	"for one address MS"
+VAL 	1 	PR_MODE_B_ALL 	"for all MS"
+
+VALTAB 	VAL_xmeas_order
+VAL 	0b00 	XMEAS_EM0 	"EM0"
+VAL 	0b01 	XMEAS_EM1 	"EM1"
+VAL 	0b10 	XMEAS_RESERVED 	"Reserved"
+VAL 	0b11 	XMEAS_RESET 	"RESET"
+
+VALTAB 	VAL_add_ms_rac 	%REL99%
+VAL 	0 	ADD_MS_RAC_INFO_AVAIL_0 	"indicates that MS will not send more information about its radio access capabilities than included in this message"
+VAL 	1 	ADD_MS_RAC_INFO_AVAIL_1 	"indicates that MS will send more information about its radio access capabilities in the next control message"
+
+VALTAB 	VAL_retrans_of_prr 	%REL99%
+VAL 	0 	RETRANS_OF_PRR_0 	"indicates that this message is an initial Packet Resource Request"
+VAL 	1 	RETRANS_OF_PRR_1 	"indicates that this message is a retransmitted Packet Resource Request: in this case the corresponding PRR message shall not be interpreted as a request for resource reassignment."
+
+VALTAB 	VAL_tbf_est 	%REL99%
+VAL 	0 	TBF_EST_NOT_ALLOWED_0 	"the mobile station is not allowed to request the establishment of new TBF"
+VAL 	1 	TBF_EST_ALLOWED_1 	"the mobile station is allowed to request the establishment of new TBF"
+
+VALTAB 	VAL_mscr 	%REL99%
+VAL 	0 	MSCR_98_0 	"The MSC is Release '98 or older"
+VAL 	1 	MSCR_99_1 	"The MSC is Release '99 onwards"
+
+VALTAB 	VAL_sgsnr 	%REL99%
+VAL 	0 	SGSNR_98_0 	"The SGSN is Release '98 or older"
+VAL 	1 	SGSNR_99_1 	"The SGSN is Release '99 onwards"
+
+VALTAB 	VAL_band_indicator 	%REL99%
+VAL 	0 	BAND_IND_1800_0 	"ARFCN indicates 1800 band"
+VAL 	1 	BAND_IND_1900_1 	"ARFCN indicates 1900 band"
+
+VALTAB 	VAL_non_gsm_info 	%REL99%
+VAL 	0b00 	NON_GSM_NOT_BROAD 	"non-GSM information is not broadcast on the cell"
+VAL 	0b01 	NON_GSM_BROAD_PSI6 	"non-GSM information is broadcast on the cell in PSI6 message"
+VAL 	0b10 	NON_GSM_BROAD_PSI7 	"non-GSM information is broadcast on the cell in PSI7 message"
+VAL 	0b11 	NON_GSM_BROAD_PSI6_PSI7 	"non-GSM information is broadcast on the cell in PSI6 and PSI7 messages"
+
+VALTAB 	VAL_Psi8_broadcast 	%REL99%
+VAL 	0 	PSI8_NOT_BROAD 	"PSI8 is not broadcast on the cell"
+VAL 	1 	PSI8_BROAD 	"PSI8 is broadcast on the cell"
+
+VALTAB 	VAL_psi3ter_broadcast 	%REL99%
+VAL 	0 	PSI3ter_NOT_BROAD 	"PSI3ter is not broadcast on the cell"
+VAL 	1 	PSI3ter_BROAD 	"PSI3ter is broadcast on the cell"
+
+VALTAB 	VAL_psi3quater_broadcast 	%REL99%
+VAL 	0 	PSI3quater_NOT_BROAD 	"PSI3quater is not broadcast on the cell"
+VAL 	1 	PSI3quater_BROAD 	"PSI3quaer is broadcast on the cell"
+
+VALTAB 	VAL_invalid_bsic_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0b00 	INVALID_BSIC_REPORT_N_A 	"Report on cells with invalid BSIC and allowed NCC part of BSIC is not allowed"
+VAL 	0b01 	INVALID_BSIC_REPORT_OK 	"Report on cells with invalid BSIC and allowed NCC part of BSIC is allowed. In this case NCC_PERMITTED is required"
+
+VALTAB 	VAL_reporting_type 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0b00 	REPORT_TYPE_ENH_REP 	"The MS shall use the PACKET ENHANCED MEASUREMENT REPORT message for (NC) reporting"
+VAL 	0b01 	REPORT_TYPE_REP 	"The MS shall use the PACKET MEASUREMENT REPORT message for (NC) reporting."
+
+VALTAB 	VAL_reporting_rate 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0b00 	REPORTING_RATE_NORMAL 	"normal rate reporting"
+VAL 	0b01 	REPORTING_RATE_REDUCED 	"Reduced reporting rate allowed."
+
+VALTAB 	VAL_diversity 	%REL99%
+VAL 	0b00 	DIVERSITY_OFF 	"Diversity is not applied for this cell"
+VAL 	0b01 	DIVERSITY_ON 	"Diversity is applied for this cell."
+
+VALTAB 	VAL_bandwidth_tdd 	%REL99%
+VAL 	0b000 	MCPS_3_84 	"Speed_3.84Mcps"
+VAL 	0b001 	MCPS_1_28 	"Speed_1.28Mcps"
+
+VALTAB 	VAL_fdd_indic_0 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0b00 	FDD_PAR_VAL_0_NOT_MEMB 	"parameter value '0000000000' is not a member of the set"
+VAL 	0b01 	FDD_PAR_VAL_0_MEMB 	"parameter value '0000000000' is a member of the set"
+
+VALTAB 	VAL_tdd_indic_0 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0b00 	TDD_PAR_VAL_0_NOT_MEMB 	"parameter value '0000000000' is not a member of the set"
+VAL 	0b01 	TDD_PAR_VAL_0_MEMB 	"parameter value '0000000000' is a member of the set"
+
+VALTAB 	VAL_rep_prio 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0b00 	NORMAL_PRIO 	"Normal reporting priority"
+VAL 	0b01 	HIGH_PRIO 	"High reporting priority"
+
+VALTAB 	VAL_non_gsm_pro_disc
+VAL 	0b001 	TIA_EIA136 	"TIA/EIA-136 -All other values are reserved"
+
+VALTAB 	VAL_bsic_seen 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0b00 	NO_CELL_SEEN 	"No cell with invalid BSIC and allowed NCC part of BSIC is seen"
+VAL 	0b01 	ONE_CELL_SEEN 	"One cell or more with invalid BSIC and allowed NCC part of BSIC is seen"
+
+VALTAB 	VAL_lqm_mode 	%REL99%
+VAL 	0b00 	NOT_REPORT_IM_OR_BEP 	""
+VAL 	0b01 	REPORT_IM_NOT_BEP 	""
+VAL 	0b10 	REPORT_BEP_NOT_IM 	""
+VAL 	0b11 	REPORT_BEP_AND_IM 	""
+
+VALTAB 	VAL_reduced_ma_bitmap
+VAL 	0b00 	CORRSP_RA_FREQ_NOT_BELONG_TO_RED_MA 	"the corresponding radio frequency channel does not belong to the reduced MA;"
+VAL 	0b01 	CORRSP_RA_FREQ_BELONG_TO_RED_MA 	"the corresponding radio frequency channel belongs to the reduced MA."
+
+VALTAB 	VAL_egprs_chan_coding_cmd 	%REL99 AND FF_EGPRS%
+VAL 	0b0000 	MCS1 	"MCS-1"
+VAL 	0b0001 	MCS2 	"MCS-2"
+VAL 	0b0010 	MCS3 	"MCS-3"
+VAL 	0b0011 	MCS4 	"MCS-4"
+VAL 	0b0100 	MCS5 	"MCS-5"
+VAL 	0b0101 	MCS6 	"MCS-6"
+VAL 	0b0110 	MCS7 	"MCS-7"
+VAL 	0b0111 	MCS8 	"MCS-8"
+VAL 	0b1000 	MCS9 	"MCS-9"
+VAL 	0b1001 	MCS5_7 	"MCS-5-7"
+VAL 	0b1010 	MCS6_9 	"MCS-6-9"
+
+VALTAB 	VAL_Choice_flag 	%REL99 AND FF_EGPRS%
+VAL 	0b00 	GRR_CHOICE_00 	""
+VAL 	0b01 	GRR_CHOICE_01 	""
+VAL 	0b10 	GRR_CHOICE_10 	""
+VAL 	0b11 	GRR_CHOICE_11 	""
+
+VALTAB 	VAL_egprs_ws 	%REL99%
+VAL 	0b00000 	EGPRS_WS_64 	""
+VAL 	0b00001 	EGPRS_WS_96 	""
+VAL 	0b00010 	EGPRS_WS_128 	""
+VAL 	0b00011 	EGPRS_WS_160 	""
+VAL 	0b00100 	EGPRS_WS_192 	"(maximum window size for a 1 timeslot TBF)"
+VAL 	0b00101 	EGPRS_WS_224 	""
+VAL 	0b00110 	EGPRS_WS_256 	"(maximum window size for a 2 timeslot TBF)"
+VAL 	0b00111 	EGPRS_WS_288 	""
+VAL 	0b01000 	EGPRS_WS_320 	""
+VAL 	0b01001 	EGPRS_WS_352 	""
+VAL 	0b01010 	EGPRS_WS_384 	"(maximum window size for a 3 timeslot TBF)"
+VAL 	0b01011 	EGPRS_WS_416 	""
+VAL 	0b01100 	EGPRS_WS_448 	""
+VAL 	0b01101 	EGPRS_WS_480 	""
+VAL 	0b01110 	EGPRS_WS_512 	"(maximum window size for a 4 timeslot TBF)"
+VAL 	0b01111 	EGPRS_WS_544 	""
+VAL 	0b10000 	EGPRS_WS_576 	""
+VAL 	0b10001 	EGPRS_WS_608 	""
+VAL 	0b10010 	EGPRS_WS_640 	"(maximum window size for a 5 timeslot TBF)"
+VAL 	0b10011 	EGPRS_WS_672 	""
+VAL 	0b10100 	EGPRS_WS_704 	""
+VAL 	0b10101 	EGPRS_WS_736 	""
+VAL 	0b10110 	EGPRS_WS_768 	"(maximum window size for a 6 timeslot TBF)"
+VAL 	0b10111 	EGPRS_WS_800 	""
+VAL 	0b11000 	EGPRS_WS_832 	""
+VAL 	0b11001 	EGPRS_WS_864 	""
+VAL 	0b11010 	EGPRS_WS_896 	"(maximum window size for a 7 timeslot TBF)"
+VAL 	0b11011 	EGPRS_WS_928 	""
+VAL 	0b11100 	EGPRS_WS_960 	""
+VAL 	0b11101 	EGPRS_WS_992 	""
+VAL 	0b11110 	EGPRS_WS_1024 	"(maximum window size for a 8 timeslot TBF)"
+
+VALTAB 	VAL_tlli_bcc 	%REL99 AND FF_EGPRS%
+VAL 	0 	TLLI_BCC_DEFAULT 	"the mobile station shall use CS-1 in GPRS TBF mode and MCS-1 in EGPRS TBF mode"
+VAL 	1 	TLLI_BCC_COMMANDED 	"the mobile station shall use the value commanded in the CHANNEL_CODING_COMMAND or EGPRS_CHANNEL_CODING_COMMAND field"
+
+VALTAB 	VAL_cbmp_color_code
+VAL 	0 	CRBB_CW_0 	"First code word in CRBB represents run length of zeros"
+VAL 	1 	CRBB_CW_1 	"First code word in CRBB represents run length of ones"
+
+VALTAB 	VAL_generation
+VAL 	0b00 	GENERATION_DEFAULT 	"Default value for parameter generation."
+
+VALTAB 	VAL_ctrl_ack_type
+VAL 	0 	 	"default format is four access bursts"
+VAL 	1 	 	"default format is RLC/MAC control block."
+
+VALTAB 	VAL_scale_ord 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	SCALE_0dB 	"Scaling by 0dB"
+VAL 	1 	SCALE_10dB 	"Scaling by 10dB"
+VAL 	2 	SCALE_AUTO 	"Automatic scaling"
+
+VALTAB 	VAL_rep_thres 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+RANGE 	0 .. 7 	"Values Range"
+IFNOTPRESENT 0
+VAL 	0 	REP_THRESHOLD_0 	"0 dB"
+VAL 	1 	REP_THRESHOLD_6 	"6 dB"
+VAL 	2 	REP_THRESHOLD_12 	"12 dB"
+VAL 	3 	REP_THRESHOLD_18 	"18 dB"
+VAL 	4 	REP_THRESHOLD_24 	"24 dB"
+VAL 	5 	REP_THRESHOLD_30 	"30 dB"
+VAL 	6 	REP_THRESHOLD_36 	"36 dB"
+VAL 	7 	REP_THRESHOLD_INF 	"Infinite value"
+
+VALTAB 	VAL_rep_offset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+RANGE 	0 .. 7 	"Values Range"
+IFNOTPRESENT 0
+VAL 	0 	REP_OFFSET_0 	"0 dB"
+VAL 	1 	REP_OFFSET_6 	"6 dB"
+VAL 	2 	REP_OFFSET_12 	"12 dB"
+VAL 	3 	REP_OFFSET_18 	"18 dB"
+VAL 	4 	REP_OFFSET_24 	"24 dB"
+VAL 	5 	REP_OFFSET_30 	"30 dB"
+VAL 	6 	REP_OFFSET_36 	"36 dB"
+VAL 	7 	REP_OFFSET_42 	"42 dB"
+
+VALTAB 	VAL_ccn_active 	%REL4%
+VAL 	0 	 	"CCN is disabled towards the corresponding cell(but if the broadcast parameter are present then follow broadcasted ccn_active)"
+VAL 	1 	 	"CCN is enabled towards the corresponding cell"
+
+VALTAB 	VAL_psi_status
+VAL 	0 	PSI_STATUS_NOT_SUPPORTED 	"The network does not support the PACKET SI STATUS message"
+VAL 	1 	PSI_STATUS_SUPPORTED 	"The network  support the PACKET SI STATUS message"
+
+VALTAB 	VAL_pccn_sending 	%REL4%
+VAL 	0 	PCCN_FIRST_SEND 	"This is the first sending of the Packet Cell Change Notification message;"
+VAL 	1 	PCCN_SECOND_SEND 	"This is the second sending of the Packet Cell Change Notification message"
+
+VALTAB 	Val_mess_rec 	%REL4%
+VAL 	0 	MSG_SUPPORTED_NOT_RCVD 	"Values Item"
+VAL 	1 	MSG_SUPPORTED_RCVD 	"Values Item"
+VAL 	2 	MSG_SUPPORTED_PART_RCVD 	"Values Item"
+VAL 	3 	MSG_SUPPORTED_COMP_RCVD 	"Values Item"
+
+
+
+
+VAR 	ps 	"Pseudo Synchronisation capability" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	a5_1 	"A5/1" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	a5_2 	"A5/2" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	a5_3 	"A5/3" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	a5_4 	"A5/4" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	a5_5 	"A5/5" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	a5_6 	"A5/6" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	a5_7 	"A5/7" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	vgcs 	"Voice Group Call Service" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	vbs 	"Voice Broadcast Service" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	es_ind 	"Early Classmark Sending" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	gprs_edac 	"GPRS Extended Dynamic Allocation Capability" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	final_alloc 	"FINAL_ALLOCATION" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	half_dupelx 	"HALF_DUPLEX_MODE" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	same_ra_scell 	"SAME_RA_AS_SERVING_CELL" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	repeat_alloc 	"REPEAT_ALLOCATION" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	si15_ind 	"SI15_IND" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	flag 	"Flag" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	flag2 	"Flag2" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	flag3 	"Flag3" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	inst_bitmap 	"Instance Bitmap Element" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	ul_release 	"UPLINK_RELEASE" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	dl_release 	"DOWNLINK_RELEASE" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	flag_grr_ra_cap_2 	"Valid flag for MS RA capability value part II" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	release_98 	"Flag_Release98" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	release_99 	%REL99% 	"Flag_Release99" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	flag_mop 	"Flag_MSK_OR_PSK" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	start_freq_flag 	"Start Freqencies Flag" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	egprs_flag 	"Egprs escape" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	ul_rlc_resegment 	%REL99 AND FF_EGPRS% 	"UL rlc block resegment" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	arac_retx_req 	%REL99 AND FF_EGPRS% 	"arac retransmission request" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	is_out_of_mem 	%REL99 AND FF_EGPRS% 	"MS_OUT_OF_MEMORY" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	bow 	%REL99 AND FF_EGPRS% 	"BEGINNING_OF_WINDOW" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	eow 	%REL99 AND FF_EGPRS% 	"END_OF_WINDOW" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	pre_emptive_tx 	%REL99 AND FF_EGPRS% 	"PRE_EMPTIVE_TRANSMISSION" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	prr_retx_req 	%REL99 AND FF_EGPRS% 	"PRR RETRANSMISSION REQUEST" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	bit_buf 	"Bit buffer" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	msg_type 	"Message Type" 	
+ 	6
+
+VAL 	@m_grr - VAL_msg_type@ 	
+
+VAR 	msg_type2 	"Message Type" 	
+ 	6
+
+VAL 	@m_grr - VAL_msg_type@ 	
+
+VAR 	page_mode 	"Page Mode" 	
+ 	2
+
+VAL 	@m_grr - VAL_page_mode@ 	
+
+VAR 	tqi 	"TQI" 	
+ 	16
+
+
+VAR 	access_type 	"Access Type" 	
+ 	2
+
+VAL 	@m_grr - VAL_access_type@ 	
+
+VAR 	tlli_value 	"TLLI" 	
+ 	32
+
+
+VAR 	cr_tlli 	"CONTENTION_RESOLUTION_TLLI" 	
+ 	32
+
+
+VAR 	ma_ch_mark 	"MA_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	cm1 	"CHANGE_MARK_1" 	
+ 	2
+
+
+VAR 	cm2 	"CHANGE_MARK_2" 	
+ 	2
+
+
+VAR 	psi2_cm 	"PSI2_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	psi3_cm 	"PSI3_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	psi4_cm 	"PSI4_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	psi5_cm 	"PSI5_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	psi6_cm 	%REL4% 	"PSI6_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	psi7_cm 	%REL4% 	"PSI7_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	psi8_cm 	%REL99% 	"PSI8_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	si13_cm 	"SI13_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	psix_cm 	"PSIX_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	c_value 	"C_VALUE" 	
+ 	6
+
+
+VAR 	rxqual 	"RXQUAL" 	
+ 	3
+
+
+VAR 	signvar 	"SIGN_VAR" 	
+ 	6
+
+
+VAR 	ilev0 	"I_LEVEL_TNO" 	
+ 	4
+
+
+VAR 	ilev1 	"I_LEVEL_TN1" 	
+ 	4
+
+
+VAR 	ilev2 	"I_LEVEL_TN2" 	
+ 	4
+
+
+VAR 	ilev3 	"I_LEVEL_TN3" 	
+ 	4
+
+
+VAR 	ilev4 	"I_LEVEL_TN4" 	
+ 	4
+
+
+VAR 	ilev5 	"I_LEVEL_TN5" 	
+ 	4
+
+
+VAR 	ilev6 	"I_LEVEL_TN6" 	
+ 	4
+
+
+VAR 	ilev7 	"I_LEVEL_TN7" 	
+ 	4
+
+
+VAR 	ilevabs0 	"I_LEVEL_ABS_TNO" 	
+ 	6
+
+
+VAR 	ilevabs1 	"I_LEVEL_ABS_TN1" 	
+ 	6
+
+
+VAR 	ilevabs2 	"I_LEVEL_ABS_TN2" 	
+ 	6
+
+
+VAR 	ilevabs3 	"I_LEVEL_ABS_TN3" 	
+ 	6
+
+
+VAR 	ilevabs4 	"I_LEVEL_ABS_TN4" 	
+ 	6
+
+
+VAR 	ilevabs5 	"I_LEVEL_ABS_TN5" 	
+ 	6
+
+
+VAR 	ilevabs6 	"I_LEVEL_ABS_TN6" 	
+ 	6
+
+
+VAR 	ilevabs7 	"I_LEVEL_ABS_TN7" 	
+ 	6
+
+
+VAR 	chan_coding_cmd 	"CHANNEL_CODING_COMMAND" 	
+ 	2
+
+VAL 	@m_grr - VAL_chan_coding_cmd@ 	
+
+VAR 	tlli_chan_coding 	"TLLI_BLOCK_CHANNEL_CODING" 	
+ 	1
+
+VAL 	@m_grr - VAL_tlli_chan_coding@ 	
+
+VAR 	mac_mode 	"MAC_MODE" 	
+ 	2
+
+VAL 	@m_grr - VAL_mac_mode@ 	
+
+VAR 	rlc_mode 	"RLC_MODE" 	
+ 	1
+
+VAL 	@m_grr - VAL_rlc_mode@ 	
+
+VAR 	dl_rlc_mode 	"DOWNLINK_RLC_MODE" 	
+ 	1
+
+VAL 	@m_grr - VAL_rlc_mode@ 	
+
+VAR 	ctrl_ack 	"CONTROL_ACK" 	
+ 	1
+
+
+VAR 	pctrl_ack 	"P_CONTROL_ACK" 	
+ 	2
+
+VAL 	@m_grr - VAL_pctrl_ack@ 	
+
+VAR 	dl_tfi_assign 	"DOWNLINK_TFI_ASSIGNMENT" 	
+ 	5
+
+
+VAR 	ul_tfi_assign 	"UPLINK_TFI_ASSIGNMENT" 	
+ 	5
+
+
+VAR 	ul_tfi 	"Uplink TFI" 	
+ 	5
+
+
+VAR 	dl_tfi 	"Downlink TFI" 	
+ 	5
+
+
+VAR 	rel_cause 	"TBF Release Cause" 	
+ 	4
+
+VAL 	@m_grr - VAL_rel_cause@ 	
+
+VAR 	nln 	"NLN" 	
+ 	2
+
+
+VAR 	pbcch_change_ma 	"PBCCH_CHANGE_MARK" 	
+ 	3
+
+
+VAR 	psi_change_field 	"PSI_CHANGE_FIELD" 	
+ 	4
+
+VAL 	@m_grr - VAL_psi_change_field@ 	
+
+VAR 	meas_order 	"MEASUREMENT_ORDER" 	
+ 	1
+
+
+VAR 	psi1_rep_per 	"PSI1_REPEAT_PERIOD" 	
+ 	4
+
+
+VAR 	psi_cnt_lr 	"PSI_COUNT_LR" 	
+ 	6
+
+
+VAR 	psi_cnt_hr 	"PSI_COUNT_HR" 	
+ 	4
+
+
+VAR 	psi2_ind 	"PSI2_INDEX" 	
+ 	3
+
+
+VAR 	psi4_ind 	"PSI4_INDEX" 	
+ 	3
+
+
+VAR 	psi5_ind 	"PSI5_INDEX" 	
+ 	3
+
+
+VAR 	psi6_ind 	%REL4% 	"PSI6_INDEX" 	
+ 	3
+
+
+VAR 	psi7_ind 	%REL4% 	"PSI7_INDEX" 	
+ 	3
+
+
+VAR 	psi8_ind 	%REL99% 	"PSI8_INDEX" 	
+ 	3
+
+
+VAR 	psi2_cnt 	"PSI2_COUNT" 	
+ 	3
+
+
+VAR 	psi4_cnt 	"PSI4_COUNT" 	
+ 	3
+
+
+VAR 	psi5_cnt 	"PSI5_COUNT" 	
+ 	3
+
+
+VAR 	psi6_cnt 	%REL4% 	"PSI6_COUNT" 	
+ 	3
+
+
+VAR 	psi7_cnt 	%REL4% 	"PSI7_COUNT" 	
+ 	3
+
+
+VAR 	psi8_cnt 	%REL99% 	"PSI8_COUNT" 	
+ 	3
+
+
+VAR 	psi3bis_cnt 	"PSI3_BIS_COUNT" 	
+ 	4
+
+
+VAR 	psi3bis_ind 	"PSI3_BIS_INDEX" 	
+ 	4
+
+
+VAR 	psi3ter_cnt 	"PSI3_TER_COUNT" 	
+ 	4
+
+
+VAR 	psi3ter_ind 	"PSI3_TER_INDEX" 	
+ 	4
+
+
+VAR 	psi3qua_cnt 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"PSI3_QUA_COUNT" 	
+ 	4
+
+
+VAR 	psi3qua_ind 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"PSI3_QUA_INDEX" 	
+ 	4
+
+
+VAR 	bcch_change_ma 	"BCCH_CHANGE_MARK" 	
+ 	3
+
+
+VAR 	si_change_ma 	"SI_CHANGE_FIELD" 	
+ 	4
+
+VAL 	@m_grr - VAL_si_change_ma@ 	
+
+VAR 	arfcn 	"ARFCN" 	
+ 	10
+
+
+VAR 	start_freq 	"START_FREQUENCY" 	
+ 	10
+
+
+VAR 	bsic 	"BSIC" 	
+ 	6
+
+
+VAR 	bsic2 	"BSIC" 	
+ 	6
+
+
+VAR 	failure_cause 	"Packet Cell Change Failure Cause" 	
+ 	4
+
+VAL 	@m_grr - VAL_failure_cause@ 	
+
+VAR 	ctrl_order 	"NETWORK_CONTROL_ORDER" 	
+ 	2
+
+VAL 	@m_grr - VAL_ctrl_order@ 	
+
+VAR 	pmo_index 	"PMO_INDEX" 	
+ 	3
+
+
+VAR 	pmo_cnt 	"PMO_COUNT" 	
+ 	3
+
+
+VAR 	ts_available 	"Timeslots Available" 	
+ 	8
+
+
+VAR 	alpha 	"Alpha" 	
+ 	4
+
+VAL 	@m_grr - VAL_alpha@ 	
+
+VAR 	gamma 	"GAMMA_TN" 	
+ 	5
+
+
+VAR 	t_avg_w 	"T_AVG_W" 	
+ 	5
+
+
+VAR 	t_avg_t 	"T_AVG_T" 	
+ 	5
+
+
+VAR 	pb 	"PB" 	
+ 	4
+
+VAL 	@m_grr - VAL_pb@ 	
+
+VAR 	pc_meas_chan 	"PC_MEAS_CHAN" 	
+ 	1
+
+VAL 	@m_grr - VAL_pc_meas_chan@ 	
+
+VAR 	imeas_chan_list 	"INT_MEAS_CHANNEL_LIST_AVAIL" 	
+ 	1
+
+VAL 	@m_grr - VAL_imeas_chan_list@ 	
+
+VAR 	n_avg_i 	"N_AVG_I" 	
+ 	4
+
+
+VAR 	meas_inter 	"MEASUREMENT_INTERVAL" 	
+ 	5
+
+
+VAR 	meas_bitmap 	"MEASUREMENT_BITMAP" 	
+ 	8
+
+
+VAR 	ptmsi 	"PTMSI" 	
+ 	32
+
+
+VAR 	tmsi_field 	"TMSI" 	
+ 	32
+
+
+VAR 	chan_need 	"CHANNEL_NEEDED" 	
+ 	2
+
+VAL 	@m_grr - VAL_chan_need@ 	
+
+VAR 	emlpp_prio 	"eMLPP_PRIORITY" 	
+ 	3
+
+
+VAR 	ta_value 	"TIMING_ADVANCE_VALUE" 	
+ 	6
+
+
+VAR 	ul_ta_index 	"UPLINK_TA_INDEX" 	
+ 	4
+
+
+VAR 	dl_ta_index 	"DOWNLINK_TA_INDEX" 	
+ 	4
+
+
+VAR 	ta_index 	"TA_INDEX" 	
+ 	4
+
+
+VAR 	ta_tn 	"TIMING_ADVANCE_TIMESLOT_NUMBER" 	
+ 	3
+
+
+VAR 	tn 	"TIMESLOT_NUMBER" 	
+ 	3
+
+
+VAR 	ul_ta_tn 	"UPLINK_TA_TIMESLOT" 	
+ 	3
+
+
+VAR 	dl_ta_tn 	"DOWNLINK_TA_TIMESLOT" 	
+ 	3
+
+
+VAR 	ext_len 	"Extension Length" 	
+ 	6
+
+
+VAR 	spare_ext 	"spare bit extensions IE" 	
+ 	1
+
+
+VAR 	ecsc 	"ECSC" 	
+ 	1
+
+VAL 	@m_grr - VAL_ecsc@ 	
+
+VAR 	ecsr_3g 	"ECSR 3G" 	
+ 	1
+
+VAL 	@m_grr - VAL_ecsr_3g@ 	
+
+VAR 	tx_int 	"TX_INT" 	
+ 	4
+
+VAL 	@m_grr - VAL_tx_int@ 	
+
+VAR 	s_prach 	"S (PRACH Parameter)" 	
+ 	4
+
+VAL 	@m_grr - VAL_s_prach@ 	
+
+VAR 	max_retrans 	"MAX_RETRANS" 	
+ 	2
+
+VAL 	@m_grr - VAL_max_retrans@ 	
+
+VAR 	ac_class 	"ACC_CONTR_CLASS" 	
+ 	16
+
+
+VAR 	access_info 	"Random Access Information" 	
+ 	11
+
+
+VAR 	peak_thr_class 	"PEAK_THROUGHPUT_CLASS" 	
+ 	4
+
+
+VAR 	radio_prio 	"RADIO_PRIORITY" 	
+ 	2
+
+VAL 	@m_grr - VAL_radio_prio@ 	
+
+VAR 	llc_pdu_type 	"LLC_PDU_TYPE" 	
+ 	1
+
+VAL 	@m_grr - VAL_llc_pdu_type@ 	
+
+VAR 	rlc_octet_cnt 	"RLC_OCTET_COUNT" 	
+ 	16
+
+
+VAR 	tsc 	"Training Sequence Code" 	
+ 	3
+
+
+VAR 	maio 	"MAIO" 	
+ 	6
+
+
+VAR 	rfreq_index 	"REMOVED_FREQ_INDEX" 	
+ 	6
+
+
+VAR 	ma_num 	"MA_NUMBER" 	
+ 	4
+
+
+VAR 	hsn 	"HSN" 	
+ 	6
+
+
+VAR 	len_ma_list 	"Length of MA Frequency List contents" 	
+ 	4
+
+
+VAR 	ma_list 	"MA Frequency List contents" 	
+ 	8
+
+
+VAR 	bs_pcc_rel 	"BS_PCC_REL" 	
+ 	1
+
+
+VAR 	bs_pbcch_blks 	"BS_PBCCH_BLKS" 	
+ 	2
+
+VAL 	@m_grr - VAL_bs_pbcch_blks@ 	
+
+VAR 	bs_prach_blks 	"BS_PRACH_BLKS" 	
+ 	4
+
+VAL 	@m_grr - VAL_bs_prach_blks@ 	
+
+VAR 	bs_pag_blks 	"BS_PAG_BLKS_RES" 	
+ 	4
+
+
+VAR 	ul_ts_alloc 	"UPLINK_TIMESLOT_ALLOCATION" 	
+ 	8
+
+
+VAR 	ts_alloc 	"TIMESLOT_ALLOCATION" 	
+ 	8
+
+
+VAR 	dl_tn_alloc 	"DOWNLINK_TIMESLOT_ALLOCATION" 	
+ 	8
+
+
+VAR 	dl_ctrl_ts 	"DOWNLINK_CONTROL_TIMESLOT" 	
+ 	3
+
+
+VAR 	alloc_map 	"ALLOCATION_BITMAP" 	
+ 	1
+
+
+VAR 	cell_ba 	"CELL_BAR_ACCESS_2" 	
+ 	1
+
+VAL 	@m_grr - VAL_cell_ba@ 	
+
+VAR 	gprs_resel_off 	"GPRS_RESELECT_OFFSET" 	
+ 	5
+
+VAL 	@m_grr - VAL_gprs_resel_off@ 	
+
+VAR 	si13_loc 	"SI13_LOCATION" 	
+ 	1
+
+VAL 	@m_grr - VAL_si13_loc@ 	
+
+VAR 	pbcch_loc 	"PBCCH_LOCATION" 	
+ 	2
+
+VAL 	@m_grr - VAL_pbcch_loc@ 	
+
+VAR 	gprs_prio_class 	"GPRS_PRIORITY_CLASS" 	
+ 	3
+
+VAL 	@m_grr - VAL_gprs_prio_class@ 	
+
+VAR 	gprs_hcs_thr 	"GPRS_HCS_THR" 	
+ 	5
+
+VAL 	@m_grr - VAL_gprs_hcs_thr@ 	
+
+VAR 	gprs_rxlev_access_min 	"GPRS_RXLEV_ACCESS_MIN" 	
+ 	6
+
+VAL 	@m_grr - VAL_gprs_rxlev_access_min@ 	
+
+VAR 	txpwr_max_cch 	"GPRS_MS_TXPWR_MAX_CCH" 	
+ 	5
+
+VAL 	@m_grr - VAL_txpwr_max_cch@ 	
+
+VAR 	gprs_temp_offset 	"GPRS_TEMPORARY_OFFSET" 	
+ 	3
+
+VAL 	@m_grr - VAL_gprs_temp_offset@ 	
+
+VAR 	gprs_penalty_time 	"GPRS_PENALTY_TIME" 	
+ 	5
+
+VAL 	@m_grr - VAL_gprs_penalty_time@ 	
+
+VAR 	wait_ind 	"Wait Indication" 	
+ 	8
+
+
+VAR 	waitsize 	"Wait Indication Size" 	
+ 	1
+
+VAL 	@m_grr - VAL_waitsize@ 	
+
+VAR 	a_map_len 	"ALLOCATION_BITMAP_LENGTH" 	
+ 	7
+
+
+VAR 	bl_o_bl_per 	"BLOCKS_OR_BLOCK_PERIODS" 	
+ 	1
+
+VAL 	@m_grr - VAL_bl_o_bl_per@ 	
+
+VAR 	ts_overr 	"TS_OVERRIDE" 	
+ 	8
+
+
+VAR 	rel 	"TBF Starting Time Relative" 	
+ 	13
+
+
+VAR 	mcc 	"Mobile Country Code" 	
+ 	4
+
+
+VAR 	mnc 	"Mobile Network Code" 	
+ 	4
+
+
+VAR 	lac 	"Location Area Code" 	
+ 	16
+
+
+VAR 	rac 	"RAC" 	
+ 	8
+
+
+VAR 	cell_id_ie 	"Cell identity" 	
+ 	16
+
+
+VAR 	att 	"Attach / detach allowed" 	
+ 	1
+
+VAL 	@m_grr - VAL_att@ 	
+
+VAR 	t3212 	"T 3212 time-out value" 	
+ 	8
+
+
+VAR 	neci 	"Half rate support" 	
+ 	1
+
+VAL 	@m_grr - VAL_neci@ 	
+
+VAR 	pwcr 	"Power Control" 	
+ 	1
+
+VAL 	@m_grr - VAL_pwcr@ 	
+
+VAR 	dtx 	"Discontinuous Transmission (BCCH)" 	
+ 	2
+
+VAL 	@m_grr - VAL_dtx@ 	
+
+VAR 	rl_timeout 	"Radio Link Timeout" 	
+ 	4
+
+
+VAR 	flist 	"Frequency List Contents" 	
+ 	8
+
+
+VAR 	rfl_num 	"RFL_NUMBER" 	
+ 	4
+
+VAL 	@m_grr - VAL_rfl_num@ 	
+
+VAR 	rfl_cont_len 	"Length of RFL contents" 	
+ 	4
+
+
+VAR 	ma_len 	"MA_LENGTH" 	
+ 	6
+
+
+VAR 	ma_map 	"MA_BITMAP" 	
+ 	1
+
+
+VAR 	arfcn_index 	"ARFCN index" 	
+ 	6
+
+
+VAR 	gprs_c_hyst 	"GPRS_CELL_RESELECT_HYSTERESIS" 	
+ 	3
+
+
+VAR 	c31_hyst 	"C31_HYST" 	
+ 	1
+
+
+VAR 	c32_qual 	"C32_QUAL" 	
+ 	1
+
+
+VAR 	rab_acc_re 	"RANDOM_ACCESS_RETRY" 	
+ 	1
+
+VAL 	@m_grr - VAL_rab_acc_re@ 	
+
+VAR 	t_resel 	"T_RESEL" 	
+ 	3
+
+VAL 	@m_grr - VAL_t_resel@ 	
+
+VAR 	ra_re_hyst 	"RA_RESELECT_HYSTERESIS" 	
+ 	3
+
+
+VAR 	n_rest 	"NR_OF_REMAINING_CELLS" 	
+ 	4
+
+
+VAR 	n_r_cells 	"NR_OF_REMAINING_CELLS2" 	
+ 	4
+
+
+VAR 	freq_diff_len 	"FREQ_DIFF_LENGTH" 	
+ 	3
+
+
+VAR 	non_drx_per 	"NC_NON_DRX_PERIOD" 	
+ 	3
+
+VAL 	@m_grr - VAL_non_drx_per@ 	
+
+VAR 	rep_per_i 	"NC_REPORTING_PERIOD_I" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_per_i@ 	
+
+VAR 	rep_per_t 	"NC_REPORTING_PERIOD_T" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_per_i@ 	
+
+VAR 	xrep_per 	"EXT_REPORTING_PERIOD" 	
+ 	3
+
+VAL 	@m_grr - VAL_xrep_per@ 	
+
+VAR 	int_freq 	"INT_FREQUENCY" 	
+ 	5
+
+
+VAR 	xrep_type 	"EXT_REPORTING_TYPE" 	
+ 	2
+
+VAL 	@m_grr - VAL_xrep_type@ 	
+
+VAR 	prio_acc_thr 	"PRIORITY_ACCESS_THR" 	
+ 	3
+
+VAL 	@m_grr - VAL_prio_acc_thr@ 	
+
+VAR 	spgc_ccch_sup 	"SPGC_CCCH_SUP" 	
+ 	1
+
+VAL 	@m_grr - VAL_spgc_ccch_sup@ 	
+
+VAR 	nc_mode 	"NC_MODE" 	
+ 	1
+
+VAL 	@m_grr - VAL_nc_mode@ 	
+
+VAR 	rxlev_scell 	"RXLEV_SERVING_CELL" 	
+ 	6
+
+
+VAR 	rxlev_n 	"RXLEV_N" 	
+ 	6
+
+
+VAR 	i_scell 	"INTERFERENCE_SERVING_CELL" 	
+ 	6
+
+
+VAR 	rxlev_ncell 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RXLEV_NCELL" 	
+ 	6
+
+
+VAR 	num_nc_meas 	"NUMBER_OF_NC_MEASUREMENTS" 	
+ 	3
+
+
+VAR 	freq_n 	"FREQUENZ_N" 	
+ 	6
+
+
+VAR 	num_meas 	"NUMBER_OF_MEASUREMENTS" 	
+ 	5
+
+
+VAR 	rlc_db_granted 	"RLC_DATA_BLOCKS_GRANTED" 	
+ 	8
+
+
+VAR 	xdyn_alloc 	"Extended Dynamic Allocation" 	
+ 	1
+
+VAL 	@m_grr - VAL_xdyn_alloc@ 	
+
+VAR 	usf_grant 	"USF_GRANULARITY" 	
+ 	1
+
+VAL 	@m_grr - VAL_usf_grant@ 	
+
+VAR 	usf 	"USF" 	
+ 	3
+
+
+VAR 	plev 	"Persistence Level Radio Priority" 	
+ 	4
+
+
+VAR 	rbb 	"RECEIVE_BLOCK_BITMAP" 	
+ 	1
+
+VAL 	@m_grr - VAL_rbb@ 	
+
+VAR 	f_ack_ind 	"FINAL_ACK_INDICATION" 	
+ 	1
+
+VAL 	@m_grr - VAL_f_ack_ind@ 	
+
+VAR 	ssn 	"STARTING_SEQUENCE_NUMBER" 	
+ 	7
+
+
+VAR 	essn 	%REL99 AND FF_EGPRS% 	"EGPRS_STARTING_SEQUENCE_NUMBER" 	
+ 	11
+
+
+VAR 	nr_freq 	"NR_OF_FREQUENCY" 	
+ 	5
+
+
+VAR 	num_rfreq 	"NR_OF_REMOVED_FREQ" 	
+ 	5
+
+
+VAR 	im_rel_c0 	"IMMEDIATE_REL" 	
+ 	1
+
+VAL 	@m_grr - VAL_im_rel_c0@ 	
+
+VAR 	im_rel_c1 	%REL99% 	"IMMEDIATE_REL" 	
+ 	1
+
+VAL 	@m_grr - VAL_im_rel_c0@ 	
+
+VAR 	mode 	"BTS_PWR_CTRL_MODE" 	
+ 	1
+
+VAL 	@m_grr - VAL_mode@ 	
+
+VAR 	p0 	"BTS_PWR_CTRL_P0" 	
+ 	4
+
+
+VAR 	exc_acc 	"EXC_ACC" 	
+ 	1
+
+
+VAR 	ncc_permitted 	"NCC_PERMITTED" 	
+ 	8
+
+
+VAR 	tbf_cause 	"TBF_CAUSE" 	
+ 	3
+
+VAL 	@m_grr - VAL_tbf_cause@ 	
+
+VAR 	ms_id_len 	"Length of Mobile Identity" 	
+ 	4
+
+
+VAR 	add_msg_type 	"Addional Message Type" 	
+ 	1
+
+
+VAR 	psi_status_ind 	"PSI_STATUS_IND" 	
+ 	1
+
+VAL 	@m_grr - VAL_psi_status_ind@ 	
+
+VAR 	para_ptr 	"CELL_PARAMS_POINTER" 	
+ 	2
+
+
+VAR 	bcc 	"BTS Colour Code" 	
+ 	3
+
+
+VAR 	ncc 	"Network Colour Code" 	
+ 	3
+
+
+VAR 	ccch_conf 	"CCCF-CONF" 	
+ 	3
+
+
+VAR 	bs_ag_blks_res 	"BS_AG_BLKS_RES" 	
+ 	3
+
+
+VAR 	bs_pa_mfrms 	"BS-PA-MFRMS" 	
+ 	3
+
+
+VAR 	tx_integer 	"TX_INTEGER" 	
+ 	4
+
+
+VAR 	multi_band_rep 	"MULTIBAND_REPORTING" 	
+ 	2
+
+VAL 	@m_grr - VAL_multi_band_rep@ 	
+
+VAR 	pr_mode 	"PR_MODE" 	
+ 	1
+
+VAL 	@m_grr - VAL_pr_mode@ 	
+
+VAR 	xmeas_order 	"EXT_MEASUREMENT_ORDER" 	
+ 	2
+
+VAL 	@m_grr - VAL_xmeas_order@ 	
+
+VAR 	ec 	"EC" 	
+ 	1
+
+
+VAR 	t1 	"T1'" 	
+ 	5
+
+
+VAR 	t2 	"T2" 	
+ 	5
+
+
+VAR 	t3 	"T3" 	
+ 	6
+
+
+VAR 	psix_cnt 	"PSIX_COUNT" 	
+ 	4
+
+
+VAR 	freq_diff 	"FREQ_DIFF" 	
+ 	8
+
+
+VAR 	ident_digit 	"identity digit" 	
+ 	8
+
+
+VAR 	pfi 	%REL99% 	"PFI" 	
+ 	7
+
+
+VAR 	add_ms_rac 	%REL99% 	"ADD_MS_RAC_INFO_AVAIL" 	
+ 	1
+
+VAL 	@m_grr - VAL_add_ms_rac@ 	
+
+VAR 	retrans_of_prr 	%REL99% 	"RETRANS_OF_PRR" 	
+ 	1
+
+VAL 	@m_grr - VAL_retrans_of_prr@ 	
+
+VAR 	p_ext_ta 	%REL99% 	"Packet_Extend_Timing_Advance" 	
+ 	2
+
+
+VAR 	tbf_est 	%REL99% 	"TBF_EST" 	
+ 	1
+
+VAL 	@m_grr - VAL_tbf_est@ 	
+
+VAR 	mscr 	%REL99% 	"MSCR" 	
+ 	1
+
+VAL 	@m_grr - VAL_mscr@ 	
+
+VAR 	sgsnr 	%REL99% 	"SGSNR" 	
+ 	1
+
+VAL 	@m_grr - VAL_sgsnr@ 	
+
+VAR 	band_indicator 	%REL99% 	"BAND_INDICATOR" 	
+ 	1
+
+VAL 	@m_grr - VAL_band_indicator@ 	
+
+VAR 	non_gsm_info 	%REL99% 	"NON_GSM_INFORMATION" 	
+ 	2
+
+VAL 	@m_grr - VAL_non_gsm_info@ 	
+
+VAR 	Psi8_broadcast 	%REL99% 	"PSI8_BROADCAST" 	
+ 	1
+
+VAL 	@m_grr - VAL_Psi8_broadcast@ 	
+
+VAR 	psi3ter_broadcast 	%REL99% 	"PSI3ter_BROADCAST" 	
+ 	1
+
+VAL 	@m_grr - VAL_psi3ter_broadcast@ 	
+
+VAR 	psi3quater_broadcast 	%REL99% 	"PSI3quater_BROADCAST" 	
+ 	1
+
+VAL 	@m_grr - VAL_psi3quater_broadcast@ 	
+
+VAR 	invalid_bsic_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"INVALID_BSIC_REPORTING" 	
+ 	1
+
+VAL 	@m_grr - VAL_invalid_bsic_rep@ 	
+
+VAR 	reporting_type 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting type" 	
+ 	1
+
+VAL 	@m_grr - VAL_reporting_type@ 	
+
+VAR 	reporting_rate 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Rate" 	
+ 	1
+
+VAL 	@m_grr - VAL_reporting_rate@ 	
+
+VAR 	serv_cell_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Serving Cell Reporting" 	
+ 	2
+
+
+VAR 	scale_ord 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Scale ordered" 	
+ 	2
+
+VAL 	@m_grr - VAL_scale_ord@ 	
+
+VAR 	scale 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"SCALE" 	
+ 	1
+
+
+VAR 	rep_offset_900 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Offset 900" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_offset@ 	
+
+VAR 	rep_thres_900 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Threshold 900" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_thres@ 	
+
+VAR 	rep_offset_1800 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Offset 1800" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_offset@ 	
+
+VAR 	rep_thres_1800 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Threshold 1800" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_thres@ 	
+
+VAR 	rep_offset_400 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Offset 400" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_offset@ 	
+
+VAR 	rep_thres_400 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Threshold 400" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_thres@ 	
+
+VAR 	rep_offset_1900 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Offset 1900" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_offset@ 	
+
+VAR 	rep_thres_1900 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Threshold 1900" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_thres@ 	
+
+VAR 	rep_offset_850 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Offset 850" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_offset@ 	
+
+VAR 	rep_thres_850 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting Threshold 850" 	
+ 	3
+
+VAL 	@m_grr - VAL_rep_thres@ 	
+
+VAR 	fdd_arfcn 	%REL99% 	"FDD ARFCN" 	
+ 	14
+
+
+VAR 	tdd_arfcn 	%REL99% 	"TDD ARFCN" 	
+ 	14
+
+
+VAR 	diversity 	%REL99% 	"Diversity" 	
+ 	1
+
+VAL 	@m_grr - VAL_diversity@ 	
+
+VAR 	scrambl_codes 	%REL99% 	"Scrambling Codes" 	
+ 	9
+
+
+VAR 	bandwidth_tdd 	%REL99% 	"Bandwidth TDD" 	
+ 	3
+
+VAL 	@m_grr - VAL_bandwidth_tdd@ 	
+
+VAR 	bandwidth_fdd 	%REL99% 	"Bandwidth FDD" 	
+ 	3
+
+
+VAR 	cell_par 	%REL99% 	"Cell Parameter" 	
+ 	7
+
+
+VAR 	sync_case 	%REL99% 	"Sync Case" 	
+ 	1
+
+
+VAR 	ba_ind_used 	%REL99% 	"BA IND/USED" 	
+ 	1
+
+
+VAR 	ba_ind_used_3g 	%REL99% 	"BA IND/USED 3G" 	
+ 	1
+
+
+VAR 	n1 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"N1" 	
+ 	2
+
+
+VAR 	n2 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"N2" 	
+ 	5
+
+
+VAR 	rem_cell_index_3g 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Removed Cell Index 3G" 	
+ 	7
+
+
+VAR 	cell_diff_len_3g 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Cell Diff Length 3G" 	
+ 	3
+
+
+VAR 	cell_diff_3g 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Cell Diff 3G" 	
+ 	1
+
+
+VAR 	pmo_ind_used 	%REL99% 	"PMO IND/USED" 	
+ 	1
+
+
+VAR 	fdd_indic_0 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Indic 0" 	
+ 	1
+
+VAL 	@m_grr - VAL_fdd_indic_0@ 	
+
+VAR 	tdd_indic_0 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD Indic 0" 	
+ 	1
+
+VAL 	@m_grr - VAL_tdd_indic_0@ 	
+
+VAR 	nr_of_fdd_cells 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"NR OF FDD Cells" 	
+ 	5
+
+
+VAR 	nr_of_tdd_cells 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"NR OF FDD Cells" 	
+ 	5
+
+
+VAR 	fdd_cell_info_field 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Cell Information Field" 	
+ 	122
+
+
+VAR 	tdd_cell_info_field 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD Cell Information Field" 	
+ 	126
+
+
+VAR 	number_cells 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Number Cells" 	
+ 	7
+
+
+VAR 	rep_prio 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"REP Priority" 	
+ 	1
+
+VAL 	@m_grr - VAL_rep_prio@ 	
+
+VAR 	qsearch_p 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Qsearch P" 	
+ 	4
+
+
+VAR 	qsearch_i 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Qsearch I" 	
+ 	4
+
+
+VAR 	n_3g 	%REL99% 	"N 3G" 	
+ 	3
+
+
+VAR 	cell_list_3g_index 	%REL99% 	"Cell List 3G Index" 	
+ 	7
+
+
+VAR 	reporting_quantity 	%REL99% 	"Reporting Quantity" 	
+ 	6
+
+
+VAR 	cell_index_start_rtd 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Cell Index Start RTD" 	
+ 	7
+
+
+VAR 	rtd_6bit 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RTD 6 BIT" 	
+ 	6
+
+
+VAR 	rtd_12bit 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RTD 12 BIT" 	
+ 	12
+
+
+VAR 	tdd_gprs_qoffset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD GPRS Qoffset" 	
+ 	4
+
+
+VAR 	fdd_gprs_qoffset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD GPRS Qoffset" 	
+ 	4
+
+
+VAR 	fdd_qoffset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Qoffset" 	
+ 	4
+
+
+VAR 	tdd_qoffset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD Qoffset" 	
+ 	4
+
+
+VAR 	fdd_qmin 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Qmin" 	
+ 	3
+
+
+VAR 	non_gsm_pro_disc 	%REL4% 	"Non GSM Protokol Discriminator" 	
+ 	3
+
+VAL 	@m_grr - VAL_non_gsm_pro_disc@ 	
+
+VAR 	nr_of_con_oct 	%REL4% 	"Nr Of Container Octets" 	
+ 	5
+
+
+VAR 	container 	%REL4% 	"Container" 	
+ 	8
+
+
+VAR 	chan_typ_tdma_offset 	%REL99% 	"Channel Type and TDMA offset" 	
+ 	5
+
+
+VAR 	bcch_change_mark 	%REL4% 	"BCCH Change Mark" 	
+ 	3
+
+
+VAR 	bsic_seen 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"BSIC Seen" 	
+ 	1
+
+VAL 	@m_grr - VAL_bsic_seen@ 	
+
+VAR 	bcch_freq_ncell 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"BCCH FREQ NCELL" 	
+ 	5
+
+
+VAR 	rai 	%REL4% 	"RAI" 	
+ 	48
+
+
+VAR 	lsa_id 	%REL99% 	"LSA_ID" 	
+ 	24
+
+
+VAR 	short_lsa_id 	%REL99% 	"ShortLSA_ID" 	
+ 	10
+
+
+VAR 	nr_of_freq_or_cells 	%REL99% 	"NR_OF_FREQ_OR_CELLS" 	
+ 	5
+
+
+VAR 	lqm_mode 	%REL99% 	"Link Quality Measurement Mode" 	
+ 	2
+
+VAL 	@m_grr - VAL_lqm_mode@ 	
+
+VAR 	bep_period2 	%REL99% 	"BEP Period two" 	
+ 	4
+
+
+VAR 	length_reduced_bitmap 	%REL99% 	"Length of Reduced MA bitmap" 	
+ 	7
+
+
+VAR 	reduced_ma_bitmap 	%REL99% 	"Reduced MA bitmap" 	
+ 	1
+
+VAL 	@m_grr - VAL_reduced_ma_bitmap@ 	
+
+VAR 	maio_2 	%REL99% 	"Maio 2" 	
+ 	6
+
+
+VAR 	m_bep 	%REL99 AND FF_EGPRS% 	"MEAN_BEP" 	
+ 	5
+
+
+VAR 	cv_bep 	%REL99 AND FF_EGPRS% 	"CV_BEP" 	
+ 	3
+
+
+VAR 	gmsk_mean_bep_tn 	%REL99 AND FF_EGPRS% 	"GMSK MEAN BEP TN" 	
+ 	4
+
+
+VAR 	psk8_mean_bep_tn 	%REL99 AND FF_EGPRS% 	"PSK8 MEAN BEP TN" 	
+ 	4
+
+
+VAR 	large_cell_operation 	%REL99% 	"Large Cell operation" 	
+ 	1
+
+
+VAR 	n_ccch_nh 	%REL99% 	"N CCCH NH" 	
+ 	4
+
+
+VAR 	nib_ccch_0 	%REL99% 	"NIB_CCCH_0" 	
+ 	4
+
+
+VAR 	nib_ccch_1 	%REL99% 	"NIB_CCCH_1" 	
+ 	4
+
+
+VAR 	nib_ccch_2 	%REL99% 	"NIB_CCCH_2" 	
+ 	4
+
+
+VAR 	nib_ccch_3 	%REL99% 	"NIB_CCCH_3" 	
+ 	4
+
+
+VAR 	time_grp 	%REL99% 	"Time group" 	
+ 	2
+
+
+VAR 	guar_const_pwr_grp 	%REL99% 	"Guar Constant Pwr Group" 	
+ 	2
+
+
+VAR 	egprs_chan_coding_cmd 	%REL99 AND FF_EGPRS% 	"EGPRS_CHANNEL_CODING_COMMAND" 	
+ 	4
+
+VAL 	@m_grr - VAL_egprs_chan_coding_cmd@ 	
+
+VAR 	Choice_flag 	%REL99% 	"Choice_flag" 	
+ 	2
+
+VAL 	@m_grr - VAL_Choice_flag@ 	
+
+VAR 	egprs_ws 	%REL99% 	"EGPRS Window Size" 	
+ 	5
+
+VAL 	@m_grr - VAL_egprs_ws@ 	
+
+VAR 	ul_egprs_ws 	%REL99 AND FF_EGPRS% 	"Uplink EGPRS Window Size" 	
+ 	5
+
+VAL 	@m_grr - VAL_egprs_ws@ 	
+
+VAR 	dl_egprs_ws 	%REL99 AND FF_EGPRS% 	"Downlink EGPRS Window Size" 	
+ 	5
+
+VAL 	@m_grr - VAL_egprs_ws@ 	
+
+VAR 	tlli_bcc 	%REL99 AND FF_EGPRS% 	"tlli_block_channel_coding" 	
+ 	1
+
+VAL 	@m_grr - VAL_tlli_bcc@ 	
+
+VAR 	num_blk_alloc 	%REL99 AND FF_EGPRS% 	"NUM_BLK_ALLOC" 	
+ 	2
+
+
+VAR 	len 	%REL99 AND FF_EGPRS% 	"EGPRS Ack Nack value part Length" 	
+ 	8
+
+
+VAR 	urbb_1 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP" 	
+ 	MAX_SIZE_URBB_UL
+
+
+VAR 	crbb 	%REL99 AND FF_EGPRS% 	"COMPRESSED_RECEIVED_BLOCK_BITMAP" 	
+ 	MAX_SIZE_CRBB
+
+
+VAR 	comp_bmp_len 	%REL99 AND FF_EGPRS% 	"COMPRESSED_BITMAP_LENGTH" 	
+ 	7
+
+
+VAR 	cbmp_color_code 	%REL99 AND FF_EGPRS% 	"COMPRESSED_BITMAP_STARTING_COLOR_CODE" 	
+ 	1
+
+VAL 	@m_grr - VAL_cbmp_color_code@ 	
+
+VAR 	generation 	"Generation" 	
+ 	2
+
+VAL 	@m_grr - VAL_generation@ 	
+
+VAR 	qsearch_C_init 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Qsearch_C_Initial" 	
+ 	1
+
+
+VAR 	ctrl_ack_type 	"CONTROL_ACK_TYPE" 	
+ 	1
+
+VAL 	@m_grr - VAL_ctrl_ack_type@ 	
+
+VAR 	release_4 	"Flag_Release4" 	
+ 	1
+
+VAL 	@m_grr - VAL_ps@ 	
+
+VAR 	ccn_active 	%REL4% 	"CCN is enabled or disabled towards the corresponding cell" 	
+ 	1
+
+VAL 	@m_grr - VAL_ccn_active@ 	
+
+VAR 	si_status_ind 	%REL4% 	"SI_STATUS_IND " 	
+ 	1
+
+VAL 	@m_grr - VAL_psi_status@ 	
+
+VAR 	urbb_2 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP" 	
+ 	MAX_SIZE_URBB_UL
+
+
+VAR 	urbb_3 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP" 	
+ 	MAX_SIZE_URBB_UL
+
+
+VAR 	container_id 	%REL4% 	"Container Id" 	
+ 	2
+
+
+VAR 	pccn_sending 	%REL4% 	"PCCN SENDING" 	
+ 	1
+
+VAL 	@m_grr - VAL_pccn_sending@ 	
+
+VAR 	container_idx 	%REL4% 	"Container Index" 	
+ 	5
+
+
+VAR 	pd 	%REL4% 	"protocol discriminator" 	
+ 	3
+
+
+VAR 	cd_len 	%REL4% 	"CD_LENGTH " 	
+ 	5
+
+
+VAR 	cd_data_1 	%REL4% 	"Container Data" 	
+ 	8
+
+
+VAR 	cc_data_2 	%REL4% 	"Container Data" 	
+ 	8
+
+
+VAR 	si_msg_type 	%REL4% 	"SI_MESSAGE_TYPE " 	
+ 	8
+
+
+VAR 	mess_rec 	%REL4% 	"MESS_REC " 	
+ 	2
+
+VAL 	@m_grr - Val_mess_rec@ 	
+
+VAR 	si_x_count 	%REL4% 	"SIX_COUNT " 	
+ 	4
+
+
+VAR 	si_x_cm 	%REL4% 	"SIX_CHANGE_MARK" 	
+ 	3
+
+
+VAR 	urbb 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP for DL" 	
+ 	MAX_SIZE_URBB_DL
+
+
+VAR 	urbb_4 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP for DL" 	
+ 	MAX_SIZE_URBB_DL
+
+
+VAR 	urbb_5 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP for DL" 	
+ 	MAX_SIZE_URBB_DL
+
+
+
+
+
+COMP 	wait 	"Wait Structure"
+{
+ 	 	wait_ind 	 ; WAIT_INDICATION
+ 	 	waitsize 	 ; WAIT INDICATIONSIZE
+}
+
+
+
+COMP 	bts_pwr_ctrl 	"BTS_PWR_CTRL"
+{
+ 	 	p0 	 ; BTS_PWR_CTRL_P0
+ 	 	mode 	 ; BTS_PWR_CTRL_MODE
+ 	 	pr_mode 	 ; PR_MODE
+}
+
+
+
+COMP 	psi_des 	"PSI Description"
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	psix_cm 	 ; PSIX_CHANGE_MARK
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	psix_cnt 	> 	 ; PSIX_COUNT
+ 	< (flag=1) 	 	inst_bitmap 	[psix_cnt+1..16] 	> 	 ; Instance Bitmap
+}
+
+
+
+COMP 	received_psi 	"Received PSI"
+{
+ 	CSN1_S1  	psi_des 	[0..MAX_MSG_TYPE] 	 ; PSI Description
+ 	 	add_msg_type 	 ; Additional Message Type
+}
+
+
+
+COMP 	unknown_psi 	"Unkown PSI"
+{
+ 	CSN1_S1  	msg_type 	[0..MAX_MSG_TYPE] 	 ; Message Type
+ 	 	add_msg_type 	 ; Addional Message Type
+}
+
+
+
+COMP 	glob_tfi 	"Global TFI"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ul_tfi 	> 	 ; Uplink TFI
+ 	< (flag=1) 	 	dl_tfi 	> 	 ; Downlink TFI
+}
+TYPEDEF COMP glob_tfi 	glob_tfi_assign 	"GLOBAL_TFI_ASSIGNMENT"
+
+
+
+COMP 	add2 	"Address Information2"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag = 0) 	 	glob_tfi 	> 	 ; Global TFI
+ 	< (flag = 1) 	 	flag2 	> 	 ; Flag2
+ 	< (flag = 1 AND flag2 = 0) 	 	tlli_value 	> 	 ; TLLI
+ 	< (flag = 1 AND flag2 = 1) 	 	flag3 	> 	 ; Flag3
+ 	< (flag = 1 AND flag2 = 1 AND flag3 = 0) 	 	tqi 	> 	 ; TQI
+}
+
+
+
+COMP 	add1 	"Address Information1"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag = 0) 	 	glob_tfi 	> 	 ; Global TFI
+ 	< (flag = 1) 	 	flag2 	> 	 ; Flag
+ 	< (flag = 1 AND flag2 = 0) 	 	tlli_value 	> 	 ; TLLI
+}
+
+
+
+COMP 	chan_req_des 	"Channel Request Description"
+{
+ 	 	peak_thr_class 	 ; PEAK_THROUGHPUT_CLASS
+ 	 	radio_prio 	 ; RADIO_PRIORITY
+ 	 	rlc_mode 	 ; RLC_MODE
+ 	 	llc_pdu_type 	 ; LLC_ PDU_TYPE
+ 	 	rlc_octet_cnt 	 ; RLC_OCTET_COUNT
+}
+
+
+
+COMP 	gpta 	"Global Packet Timing Advance"
+{
+ 	CSN1_S1  	ta_value 	 ; TIMING_ADVANCE_VALUE
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	ul_ta_index 	> 	 ; UPLINK_TA_INDEX
+ 	< (flag=1) 	 	ul_ta_tn 	> 	 ; UPLINK_TA_TIMESLOT
+ 	 	flag2 	 ; Flag2
+ 	< (flag2=1) 	 	dl_ta_index 	> 	 ; DOWNLINK_TA_INDEX
+ 	< (flag2=1) 	 	dl_ta_tn 	> 	 ; DOWNLINK_TA_TIMESLOT
+}
+
+
+
+COMP 	chamge_ma_sub 	"Change Mark Sub Structure"
+{
+ 	 	cm1 	 ; CHANGE_MARK_1
+ 	CSN1_S1  	cm2 	 ; CHANGE_MARK_2
+}
+
+
+
+COMP 	indi_encod 	"Indirect Encoding"
+{
+ 	 	maio 	 ; MAIO
+ 	 	ma_num 	 ; MA_NUMBER
+ 	CSN1_S1  	chamge_ma_sub 	 ; Change Mark Sub Structure
+}
+
+
+
+COMP 	di_encod2 	"Direct Encoding 2"
+{
+ 	 	maio 	 ; MAIO
+ 	 	hsn 	 ; HSN
+ 	 	len_ma_list 	 ; Length of MA Frequency List contents
+ 	 	ma_list 	[len_ma_list +3..19] 	 ; MA Frequency List contents
+}
+
+
+
+COMP 	block_struct 	"Blocks Structure"
+{
+ 	 	bl_o_bl_per 	 ; BLOCKS_OR_BLOCK_PERIODS
+ 	 	a_map_len 	 ; ALLOCATION_BITMAP_LENGTH
+ 	 	alloc_map 	[a_map_len..127] 	 ; ALLOCATION_BITMAP
+}
+
+
+
+COMP 	g_pwr_par 	"Global Power Control Parameters"
+{
+ 	 	alpha 	 ; ALPHA
+ 	 	t_avg_w 	 ; T_AVG_W
+ 	 	t_avg_t 	 ; T_AVG_T
+ 	 	pb 	 ; PB
+ 	 	pc_meas_chan 	 ; PC_MEAS_CHAN
+ 	 	imeas_chan_list 	 ; INT_MEAS_CHANNEL_LIST_AVAIL
+ 	 	n_avg_i 	 ; N_AVG_I
+}
+
+
+
+COMP 	ext_bits 	"Extensions Bits IE"
+{
+ 	 	ext_len 	 ; extension length
+ 	 	spare_ext 	[ext_len+1..64] 	 ; spare bit extensions IE
+}
+
+
+
+COMP 	pccch_org_par 	"PCCCH Organization Parameters"
+{
+ 	 	bs_pcc_rel 	 ; BS_PCC_REL
+ 	 	bs_pbcch_blks 	 ; BS_PBCCH_BLKS
+ 	 	bs_pag_blks 	 ; BS_PAG_BLKS_RES
+ 	 	bs_prach_blks 	 ; BS_PRACH_BLKS
+}
+
+
+
+COMP 	loc_area_ident 	"Location Area Identification"
+{
+ 	BCD_NOFILL  	mcc 	[3] 	 ; Mobile Country Code
+ 	BCD_MNC  	mnc 	[2..3] 	 ; Mobile Network Code
+ 	 	lac 	 ; Location Area Code
+}
+
+
+
+COMP 	cell_id 	"Cell Identification"
+{
+ 	 	loc_area_ident 	 ; Location Area Identification IE
+ 	 	rac 	 ; RAC
+ 	 	cell_id_ie 	 ; Cell Identity IE
+}
+
+
+
+COMP 	rfl_num_list 	"RFL number list"
+{
+ 	 	rfl_num 	 ; RFL_NUMBER
+}
+
+
+
+COMP 	rfl_cont 	"Frequency List"
+{
+ 	 	flist 	 ; Frequency List Contents
+}
+
+
+
+COMP 	rfl 	"Reference Frequency Lists"
+{
+ 	 	rfl_num 	 ; RFL_NUMBER
+ 	 	rfl_cont_len 	 ; Length of RFL contents
+ 	 	rfl_cont 	[rfl_cont_len+3..19] 	 ; RFL contents
+}
+
+
+
+COMP 	cell_alloc 	"Cell Allocation"
+{
+ 	 	rfl_num 	 ; RFL_Number
+}
+
+
+
+COMP 	ma_struct 	"MA Structure"
+{
+ 	 	ma_len 	 ; MA_LENGTH
+ 	 	ma_map 	[ma_len+1..64] 	 ; MA_BITMAP
+}
+
+
+
+COMP 	arfcn_index_list 	"ARFCN Index List Structure"
+{
+ 	 	arfcn_index 	 ; ARFCN index
+}
+
+
+
+COMP 	gprs_ms_alloc_ie 	"GPRS Mobile Allocations IE"
+{
+ 	 	hsn 	 ; HSN
+ 	CSN1_S1  	rfl_num_list 	[0..MAX_RFL_NUM_LIST] 	 ; RFL number list
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ma_struct 	> 	 ; MA Structure
+ 	< (flag=1) 	CSN1_S1  	arfcn_index_list 	[0..MAX_ARFCN_LIST] 	> 	 ; ARFCN index list
+}
+
+
+
+COMP 	gprs_ms_alloc 	"GPRS Mobile Allocations"
+{
+ 	 	ma_num 	 ; MA_NUMBER
+ 	 	gprs_ms_alloc_ie 	 ; GPRS Mobile Allocation IE
+}
+
+
+
+COMP 	di_encod1 	"Direct Encoding 1"
+{
+ 	 	maio 	 ; MAIO
+ 	 	gprs_ms_alloc_ie 	 ; GPRS Mobile Allocation IE
+}
+
+
+
+COMP 	freq_par 	"Frequency Parameters"
+{
+ 	 	tsc 	 ; Training Sequence Code
+ 	 	flag 	 ; Flag
+ 	 	flag2 	 ; Flag2
+ 	< (flag=0 AND flag2=0) 	 	arfcn 	> 	 ; ARFCN
+ 	< (flag=0 AND flag2=1) 	 	indi_encod 	> 	 ; Indirect encoding
+ 	< (flag=1 AND flag2=0) 	 	di_encod1 	> 	 ; Direct encoding 1
+ 	< (flag=1 AND flag2=1) 	 	di_encod2 	> 	 ; Direct encoding 2
+}
+
+
+
+COMP 	pbcch_des 	"PBCCH Description"
+{
+ 	 	pb 	 ; PB
+ 	 	tsc 	 ; TSC
+ 	 	tn 	 ; TIMESLOT_NUMBER
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	flag2 	> 	 ; Flag2
+ 	< (flag=1 AND flag2=0) 	 	arfcn 	> 	 ; ARFCN
+ 	< (flag=1 AND flag2=1) 	 	maio 	> 	 ; MAIO
+}
+
+
+
+COMP 	h_pccch_c 	"Hopping PCCCH Description"
+{
+ 	 	maio 	 ; MAIO
+ 	 	ts_alloc 	 ; TIMESLOT_ALLOCATION
+}
+
+
+
+COMP 	nh_pccch_c 	"Non Hopping PCCCH Description"
+{
+ 	 	arfcn 	 ; ARFCN
+ 	 	ts_alloc 	 ; TIMESLOT_ALLOCATION
+}
+
+
+
+COMP 	ma_h_s1 	"Hopping PCCCH Description and MA_NUMBER"
+{
+ 	 	ma_num 	 ; MA_NUMBER
+ 	CSN1_S1  	h_pccch_c 	[0..MAX_M_H_PCCCH_C] 	 ; Hopping PCCCH carriers
+}
+
+
+
+COMP 	pccch_des 	"PCCCH Description"
+{
+ 	 	tsc 	 ; TSC
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	CSN1_S1  	nh_pccch_c 	[0..MAX_NH_PCCCH_C] 	> 	 ; Non-hopping PCCCH carriers
+ 	< (flag=1) 	 	ma_h_s1 	> 	 ; MA_NUMBER and Hopping PCCCH carriers
+}
+
+
+
+COMP 	gen_cell_par 	"General Cell Selection parameter"
+{
+ 	 	gprs_c_hyst 	 ; GPRS_CELL_RESELECT_HYSTERESIS
+ 	 	c31_hyst 	 ; C31_HYST
+ 	 	c32_qual 	 ; C32_QUAL:
+ 	 	rab_acc_re 	 ; RANDOM_ACCESS_RETRY
+ 	CSN1_S1  	t_resel 	 ; T_RESEL
+ 	CSN1_S1  	ra_re_hyst 	 ; RA_RESELECT_HYSTERESIS
+}
+
+
+
+COMP 	hcs_par 	"HCS Structure"
+{
+ 	 	gprs_prio_class 	 ; GPRS_PRIORITY_CLASS
+ 	 	gprs_hcs_thr 	 ; GPRS_HCS_THR
+}
+
+
+
+COMP 	scell_par 	"Serving Cell parameters"
+{
+ 	 	cell_ba 	 ; CELL_BAR_ACCESS_2
+ 	 	exc_acc 	 ; EXC_ACC
+ 	 	gprs_rxlev_access_min 	 ; GPRS_RXLEV_ACCESS_MIN
+ 	 	txpwr_max_cch 	 ; GPRS_MS_TXPWR_MAX_CCH
+ 	CSN1_S1  	hcs_par 	 ; HCS Serving Cell parameters
+ 	 	multi_band_rep 	 ; MULTIBAND_REPORTING
+}
+
+
+
+COMP 	si13_pbcch_s1 	"SI13_PBCCH_LOCATION sub1"
+{
+ 	 	pbcch_loc 	 ; PBCCH_LOCATION
+ 	 	psi1_rep_per 	 ; PSI1_REPEAT_PERIOD
+}
+
+
+
+COMP 	si13_pbcch 	"SI13_PBCCH_LOCATION structure"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	si13_loc 	> 	 ; SI13_LOCATION
+ 	< (flag=1) 	 	si13_pbcch_s1 	> 	 ; SI13_PBCCH_LOCATION Sub 1
+}
+
+
+
+COMP 	cs_par_s1 	"Cell Selection Parameters Sub 1"
+{
+ 	 	gprs_rxlev_access_min 	 ; GPRS_RXLEV_ACCESS_MIN
+ 	 	txpwr_max_cch 	 ; GPRS_MS_TXPWR_MAX_CCH
+}
+
+
+
+COMP 	cs_par_s2 	"Cell selection parameters Sub 2"
+{
+ 	 	gprs_temp_offset 	 ; GPRS_TEMPORARY_OFFSET
+ 	 	gprs_penalty_time 	 ; GPRS_PENALTY_TIME
+}
+
+
+
+COMP 	cs_par 	"Cell selection parameters"
+{
+ 	 	cell_ba 	 ; CELL_BAR_ACCESS_2
+ 	 	exc_acc 	 ; EXC_ACC
+ 	 	same_ra_scell 	 ; SAME_RA_AS_SERVING_CELL
+ 	CSN1_S1  	cs_par_s1 	 ; Cell selection parameters Sub 1
+ 	CSN1_S1  	cs_par_s2 	 ; Cell selection parameters Sub 2
+ 	CSN1_S1  	gprs_resel_off 	 ; GPRS_RESELECT_OFFSET
+ 	CSN1_S1  	hcs_par 	 ; HCS parameters
+ 	CSN1_S1  	si13_pbcch 	 ; SI13_PBCCH_LOCATION
+}
+
+
+
+COMP 	ncell_par2_set 	"Neighbour Cell parameters 2 Parameter Set"
+{
+ 	CSN1_S1  	ncc 	 ; Network Colour Code
+ 	 	exc_acc 	 ; EXC_ACC
+ 	CSN1_S1  	gprs_rxlev_access_min 	 ; GPRS_RXLEV_ACCESS_MIN
+ 	CSN1_S1  	txpwr_max_cch 	 ; GPRS_MS_TXPWR_MAX_CCH
+ 	CSN1_S1  	gprs_prio_class 	 ; GPRS_PRIORITY_CLASS
+ 	CSN1_S1  	gprs_hcs_thr 	 ; GPRS_HCS_THR
+ 	CSN1_S1  	si13_pbcch 	 ; SI13_PBCCH_LOCATION
+ 	 	gprs_temp_offset 	 ; GPRS_TEMPORARY_OFFSET
+ 	 	gprs_penalty_time 	 ; GPRS_PENALTY_TIME
+ 	 	gprs_resel_off 	 ; GPRS_RESELECT_OFFSET
+}
+
+
+
+COMP 	ma_num_maio 	"MA_NUMBER and MAIO"
+{
+ 	 	ma_num 	 ; MA_NUMBER
+ 	 	maio 	 ; MAIO
+}
+
+
+
+COMP 	chan_group 	"Channel group structure"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	arfcn 	> 	 ; ARFCN
+ 	< (flag=1) 	 	ma_num_maio 	> 	 ; MA_NUMBER and MAIO
+ 	 	ts_alloc 	 ; TIMESLOT_ALLOCATION
+}
+
+
+
+COMP 	chan_list2 	"Channel List Structure 2"
+{
+ 	 	chan_group 	 ; Channel group structure
+}
+
+
+
+COMP 	chan_list_imeas 	"Channel List for Interference measurements"
+{
+ 	 	chan_group 	 ; Channel group structure
+ 	CSN1_S1  	chan_list2 	[0..MAX_CHAN_LIST] 	 ; Channel list structure
+}
+
+
+
+COMP 	list_rf 	"List of removed Frequency"
+{
+ 	 	num_rfreq 	 ; NR_OF_REMOVED_FREQ
+ 	 	rfreq_index 	[num_rfreq+1.. MAX_RFREQ] 	 ; REMOVED_FREQ_INDEX
+}
+
+
+
+COMP 	si13_cm_gprs_alloc 	"SI13_CHANGE_MARK and GPRS Alloc"
+{
+ 	 	si13_cm 	 ; SI13_CHANGE_MARK
+ 	 	gprs_ms_alloc_ie 	 ; GPRS Mobile Allocation IE
+}
+
+
+
+COMP 	psi13_pwr_par 	"PSI13 Power Control Parameters"
+{
+ 	 	alpha 	 ; ALPHA
+ 	 	t_avg_w 	 ; T_AVG_W
+ 	 	t_avg_t 	 ; T_AVG_T
+ 	 	pc_meas_chan 	 ; PC_MEAS_CHAN
+ 	 	n_avg_i 	 ; N_AVG_I
+}
+
+
+
+COMP 	pbcch_n_pres 	"PBCCH not present in cell structure"
+{
+ 	 	rac 	 ; RAC
+ 	 	spgc_ccch_sup 	 ; SPGC_CCCH_SUP
+ 	 	prio_acc_thr 	 ; PRIORITY_ACCESS_THR
+ 	 	ctrl_order 	 ; NETWORK_CONTROL_ORDER
+ 	EXTERN @m_rr_com - gprs_cell_opt@ 	 	gprs_cell_opt 	 ; GPRS Cell Options
+ 	 	psi13_pwr_par 	 ; GPRS Power Control Parameters
+}
+
+
+
+COMP 	nc_meas_s1 	"NC Measurement Report Sub1"
+{
+ 	 	freq_n 	 ; FREQUENCY_N
+ 	CSN1_S1  	bsic 	 ; BSIC_N
+ 	 	rxlev_n 	 ; RXLEV_N
+}
+
+
+
+COMP 	nc_meas_rep 	"NC Measurement Report"
+{
+ 	 	nc_mode 	 ; NC_MODE
+ 	 	rxlev_scell 	 ; RXLEV_SERVING_CELL
+ 	CSN1_S1  	i_scell 	 ; INTERFERENCE_SERVING_CELL
+ 	 	num_nc_meas 	 ; NUMBER_OF_NC_MEASUREMENTS
+ 	 	nc_meas_s1 	[num_nc_meas..MAX_NCMP_S1] 	 ; NC Measurement Report Sub1
+}
+
+
+
+COMP 	ilev 	"I_LEVEL Structure"
+{
+ 	CSN1_S1  	ilev0 	 ; I_LEVEL_TN0
+ 	CSN1_S1  	ilev1 	 ; I_LEVEL_TN1
+ 	CSN1_S1  	ilev2 	 ; I_LEVEL_TN2
+ 	CSN1_S1  	ilev3 	 ; I_LEVEL_TN3
+ 	CSN1_S1  	ilev4 	 ; I_LEVEL_TN4
+ 	CSN1_S1  	ilev5 	 ; I_LEVEL_TN5
+ 	CSN1_S1  	ilev6 	 ; I_LEVEL_TN6
+ 	CSN1_S1  	ilev7 	 ; I_LEVEL_TN7
+}
+
+
+
+COMP 	chan_qual_rep 	"Channel Quality Report"
+{
+ 	 	c_value 	 ; C_VALUE
+ 	 	rxqual 	 ; RXQUAL
+ 	 	signvar 	 ; SIGN_VAR
+ 	 	ilev 	 ; I_LEVEL Structure
+}
+
+
+
+COMP 	ilev_abs 	"I_LEVEL Absolute Structure"
+{
+ 	CSN1_S1  	ilevabs0 	 ; I_LEVEL_ABS_TN0
+ 	CSN1_S1  	ilevabs1 	 ; I_LEVEL_ABS_TN1
+ 	CSN1_S1  	ilevabs2 	 ; I_LEVEL_ABS_TN2
+ 	CSN1_S1  	ilevabs3 	 ; I_LEVEL_ABS_TN3
+ 	CSN1_S1  	ilevabs4 	 ; I_LEVEL_ABS_TN4
+ 	CSN1_S1  	ilevabs5 	 ; I_LEVEL_ABS_TN5
+ 	CSN1_S1  	ilevabs6 	 ; I_LEVEL_ABS_TN6
+ 	CSN1_S1  	ilevabs7 	 ; I_LEVEL_ABS_TN7
+}
+
+
+
+COMP 	ext_mp_s1 	"EXT Measurement Report Sub1"
+{
+ 	 	freq_n 	 ; FREQUENCY_N
+ 	CSN1_S1  	bsic 	 ; BSIC_N
+ 	 	rxlev_n 	 ; RXLEV_N
+}
+
+
+
+COMP 	xmeas_rep 	"EXT Measurement Report"
+{
+ 	 	xrep_type 	 ; EXT_REPORTING_TYPE
+ 	CSN1_S1  	ilev_abs 	 ; I_LEVEL Absolute Structure
+ 	 	num_meas 	 ; NUMBER_OF_MEASUREMENTS
+ 	 	ext_mp_s1 	[num_meas..MAX_XMR_S1] 	 ; EXT Measurement Report Sub1
+}
+
+
+
+COMP 	tn_alloc 	"Timeslot Allocation"
+{
+ 	CSN1_S1  	usf 	 ; USF_TN
+}
+
+
+
+COMP 	usf_g 	"USF_TN and GAMMA_TN"
+{
+ 	 	usf 	 ; USF
+ 	 	gamma 	 ; GAMMA
+}
+
+
+
+COMP 	pers_lev 	"Persistence Level Structure"
+{
+ 	 	plev 	[4] 	 ; Persistence Level Radio Prio
+}
+
+
+
+COMP 	prach_ctrl_par 	"PRACH Control Parameters"
+{
+ 	 	ac_class 	 ; ACC_CONTR_CLASS
+ 	 	max_retrans 	[4] 	 ; MAX_RETRANS
+ 	 	s_prach 	 ; 
+ 	 	tx_int 	 ; TX_INT
+ 	CSN1_S1  	pers_lev 	 ; PERSISTENCE_LEVEL
+}
+
+
+
+COMP 	ack_nack_des 	"Ack/Nack Description"
+{
+ 	 	f_ack_ind 	 ; FINAL_ACK_INDICATION
+ 	 	ssn 	 ; STARTING_SEQUENCE_NUMBER
+ 	 	rbb 	[64] 	 ; RECEIVED_BLOCK_BITMAP
+}
+
+
+
+COMP 	cbmp_info 	%REL99 AND FF_EGPRS% 	"COMPRESSED_BMP_INFO"
+{
+ 	 	comp_bmp_len 	(KEEP,2) ; COMPRESSED_BITMAP_LENGTH
+ 	 	cbmp_color_code 	 ; COMPRESSED_BITMAP_STARTING_COLOR_CODE
+ 	 	crbb 	[.comp_bmp_len..MAX_SIZE_CRBB] 	 ; COMPRESSED_RECEIVED_BLOCK_BITMAP
+}
+
+
+
+COMP 	ul_egprs_ack_nack_info 	%REL99 AND FF_EGPRS% 	"UL EGPRS Ack/Nack IE"
+{
+ 	 	flag 	(KEEP,1) 	 ; Flag
+ 	< (flag = 1) 	 	len 	> 	 ; EGPRS Ack Nack Length
+ 	 	f_ack_ind 	 ; FINAL_ACK_INDICATION
+ 	 	bow 	 ; BEGINNING_OF_WINDOW
+ 	 	eow 	 ; END_OF_WINDOW
+ 	 	essn 	 ; EGPRS_STARTING_SEQUENCE_NUMBER
+ 	 	flag2 	 ; Compressed bitmap indicator
+ 	< (flag2 = 1) 	 	cbmp_info 	> 	 ; COMPRESSED_BMP_INFO
+ 	< (flag2 = 0 AND flag=1) 	 	urbb_1 	[.len-15..MAX_SIZE_URBB_UL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP
+ 	< (flag2 = 1 AND flag=1) 	 	urbb_2 	[.len-( (TAKE,2)+23)..MAX_SIZE_URBB_UL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP
+ 	< (flag = 0) 	GSM5_V  	urbb_3 	[.0..MAX_SIZE_URBB_UL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP
+}
+
+
+
+COMP 	ms_id 	"Mobile Identity"
+{
+ 	 	ms_id_len 	 ; Length of Mobile Identity
+ 	 	ident_digit 	[ms_id_len..15] 	 ; value part
+}
+
+
+
+COMP 	rep_page_s2 	"Repeated Page info Sub 2"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	tmsi_field 	> 	 ; TMSI
+ 	< (flag=1) 	 	ms_id 	> 	 ; Mobile_identity
+ 	 	chan_need 	 ; CHANNEL_NEEDED
+ 	CSN1_S1  	emlpp_prio 	 ; eMLPP_PRIORITY
+}
+
+
+
+COMP 	rep_page_s1 	"Repeated Page info Sub1"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ptmsi 	> 	 ; PTMSI
+ 	< (flag=1) 	 	ms_id 	> 	 ; Mobile_identity
+}
+
+
+
+COMP 	rep_page_info 	"Repeated Page info"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	rep_page_s1 	> 	 ; Repeated Page info Sub 1
+ 	< (flag=1) 	 	rep_page_s2 	> 	 ; Repeated Page info Sub 2
+}
+
+
+
+COMP 	abs 	"TBF Starting Time Absolute"
+{
+ 	 	t1 	 ; T1'
+ 	 	t3 	 ; T3
+ 	 	t2 	 ; T2
+}
+TYPEDEF COMP abs 	fn_mod 	"FRAME_NUMBER"
+
+
+
+COMP 	tbf_s_time 	"TBF Starting Time"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	rel 	> 	 ; TBF Starting Time Relative
+ 	< (flag=0) 	 	abs 	> 	 ; TBF Starting Time Absolute
+}
+TYPEDEF COMP tbf_s_time 	meas_start_grr 	"MEASUREMENT_STARTING_TIME"
+
+
+
+COMP 	meas_map 	"Measurement Mapping"
+{
+ 	 	meas_start_grr 	 ; MEASUREMENT_STARTING_TIME
+ 	 	meas_inter 	 ; MEASUREMENT_INTERVAL
+ 	 	meas_bitmap 	 ; MEASUREMENT_BITMAP
+}
+
+
+
+COMP 	fa_s2 	"FA Sub2"
+{
+ 	 	tbf_s_time 	 ; TBF_STARTING_TIME
+ 	CSN1_S1  	ts_alloc 	 ; TIMESLOT_ALLOCATION
+ 	.0  ; spare
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	block_struct 	> 	 ; Block Structure
+ 	< (flag=1) 	 	alloc_map 	[0..127] 	> 	 ; ALLOCATION_BITMAP
+}
+
+
+
+COMP 	f_alloc_ack 	"Fixed Allocation Uplink Ack/Nack"
+{
+ 	 	final_alloc 	 ; FINAL_ALLOCATION
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ts_overr 	> 	 ; TS_OVERRIDE
+ 	< (flag=1) 	 	fa_s2 	> 	 ; FA Sub2
+}
+
+
+
+COMP 	req_ref_p 	"Packet Request Reference"
+{
+ 	 	access_info 	 ; RANDOM_ACCESS_INFORMATION
+ 	 	fn_mod 	 ; FRAME_NUMBER
+}
+
+
+
+COMP 	add3 	"Address Information3"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag = 0) 	 	glob_tfi 	> 	 ; Global TFI
+ 	< (flag = 1) 	 	flag2 	> 	 ; Flag2
+ 	< (flag = 1 AND flag2 = 0) 	 	tlli_value 	> 	 ; TLLI
+ 	< (flag = 1 AND flag2 = 1) 	 	flag3 	> 	 ; Flag3
+ 	< (flag = 1 AND flag2 = 1 AND flag3 = 0) 	 	tqi 	> 	 ; TQI
+ 	< (flag = 1 AND flag2 = 1 AND flag3 = 1) 	 	req_ref_p 	> 	 ; Packet Request Ref.
+}
+
+
+
+COMP 	req_ref_tfi 	"Packet Request Ref. or Global TFI"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	req_ref_p 	> 	 ; Packet Request Ref.
+ 	< (flag=1) 	 	glob_tfi 	> 	 ; Global TFI
+}
+
+
+
+COMP 	reject 	"Reject Structure"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	tlli_value 	> 	 ; TLLI
+ 	< (flag=1) 	 	req_ref_tfi 	> 	 ; Packet Request Ref. or Global TFI
+ 	CSN1_S1  	wait 	 ; Wait Structure
+}
+TYPEDEF COMP reject 	add_reject 	"Additional Reject Structure"
+
+
+
+COMP 	gamma_tn 	"Gamma Array"
+{
+ 	CSN1_S1  	gamma 	 ; GAMMA_TN
+}
+
+
+
+COMP 	pwr_par 	"Power Control Parameters"
+{
+ 	 	alpha 	 ; Alpha
+ 	 	gamma_tn 	[8] 	 ; GAMMA Array
+}
+
+
+
+COMP 	f_alloc_ul 	"Fixed Allocation Uplink Assignment"
+{
+ 	CSN1_S1  	ul_tfi_assign 	 ; UPLINK_TFI_ASSIGNMENT
+ 	 	final_alloc 	 ; FINAL_ALLOCATION
+ 	 	dl_ctrl_ts 	 ; DOWNLINK_CONTROL_TIMESLOT
+ 	CSN1_S1  	bts_pwr_ctrl 	 ; BTS_PWR_CTRL
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ts_alloc 	> 	 ; TIMESLOT_ALLOCATION
+ 	< (flag=1) 	 	pwr_par 	> 	 ; Power Control Parameters
+ 	 	half_dupelx 	 ; HALF_DUPLEX_MODE
+ 	 	tbf_s_time 	 ; TBF_STARTING_TIME
+ 	.0  ; spare
+ 	 	flag2 	 ; Flag2
+ 	< (flag2=0) 	 	block_struct 	> 	 ; Block Structure
+ 	< (flag2=1) 	 	alloc_map 	[0..127] 	> 	 ; ALLOCATION_BITMAP
+}
+
+
+
+COMP 	f_alloc_re 	"Fixed Allocation Reconfigure"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ul_ts_alloc 	> 	 ; UPLINK_TIMESLOT_ALLOCATION
+ 	< (flag=1) 	 	pwr_par 	> 	 ; Power Control Parameters
+ 	 	final_alloc 	 ; FINAL_ALLOCATION
+ 	 	dl_ctrl_ts 	 ; DOWNLINK_CONTROL_TIMESLOT
+ 	CSN1_S1  	bts_pwr_ctrl 	 ; BTS_PWR_CTRL
+ 	CSN1_S1  	meas_map 	 ; Measurement Mapping
+ 	 	tbf_s_time 	 ; TBF_STARTING_TIME
+ 	.0  ; spare
+ 	 	flag2 	 ; Flag2
+ 	< (flag2=0) 	 	block_struct 	> 	 ; Block Structure
+ 	< (flag2=1) 	 	alloc_map 	[0..127] 	> 	 ; ALLOCATION_BITMAP
+}
+
+
+
+COMP 	usf_array 	"USF and GAMMA Array"
+{
+ 	CSN1_S1  	usf_g 	 ; USF_TN and GAMMA_TN
+}
+
+
+
+COMP 	tn_alloc_pwr 	"Timeslot Allocation with Power Control Parameters"
+{
+ 	 	alpha 	 ; ALPHA
+ 	 	usf_array 	[8] 	 ; USF and GAMMA Array
+}
+
+
+
+COMP 	dyn_alloc_p 	"Dynamic Allocation"
+{
+ 	 	xdyn_alloc 	 ; Extended Dynamic Allocation
+ 	 	flag2 	 ; flag2
+ 	< (flag2=1) 	 	p0 	> 	 ; BTS_PWR_CTRL_P0
+ 	< (flag2=1) 	 	pr_mode 	> 	 ; PR_MODE
+ 	 	usf_grant 	 ; USF_GRANULARITY
+ 	CSN1_S1  	ul_tfi_assign 	 ; UPLINK_TFI_ASSIGNMENT
+ 	CSN1_S1  	rlc_db_granted 	 ; RLC_DATA_BLOCKS_GRANTED
+ 	CSN1_S1  	tbf_s_time 	 ; TBF_STARTING_TIME
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	tn_alloc 	[8] 	> 	 ; Timeslot Allocation Structure
+ 	< (flag=1) 	 	tn_alloc_pwr 	> 	 ; Timeslot Allocation with Power Control Parameters
+}
+
+
+
+COMP 	alf_gam 	"ALPHA and GAMMA"
+{
+ 	 	alpha 	 ; AlPHA
+ 	 	gamma 	 ; GAMMA
+}
+
+
+
+COMP 	sin_alloc 	"Single Block Allocation"
+{
+ 	 	tn 	 ; TIMESLOT_NUMBER
+ 	CSN1_S1  	alf_gam 	 ; ALPHA and GAMMA
+ 	CSN1_S1  	bts_pwr_ctrl 	 ; BTS_PWR_CTRL
+ 	 	tbf_s_time 	 ; TBF_STARTING_TIME
+}
+
+
+
+COMP 	freq_diff_struct 	"FREQ_DIFF_STRUCT"
+{
+ 	 	freq_diff 	[.(TAKE,1)+1..8] 	 ; FREQ_DIFF
+}
+TYPEDEF COMP freq_diff_struct 	freq_diff_struct_2 	"FREQ_DIFF_STRUCT"
+
+
+
+COMP 	xfreq_list 	"EXT FREQUENCY LIST"
+{
+ 	 	start_freq 	 ; START_FREQUENCY
+ 	 	nr_freq 	 ; NR_OF_FREQUENCY
+ 	 	freq_diff_len 	(KEEP,1) ; FREQ_DIFF_LENGTH
+ 	 	freq_diff_struct 	[nr_freq..MAX_EXT_FREQ_LIST_ELEM] 	 ; FREQ_DIFF_STRUCT
+}
+TYPEDEF COMP xfreq_list 	xfreq_list2 	"EXT FREQUENCY LIST"
+
+
+
+COMP 	em1 	"EXT Measurement Struct"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	xrep_type 	> 	 ; EXT_REPORTING_TYPE
+ 	< (flag=1 AND xrep_type=1) 	 	ncc_permitted 	> 	 ; NCC_PERMITTED
+ 	< (flag=1 AND xrep_type=2) 	CSN1_S1  	int_freq 	> 	 ; INT_FREQUENCY
+ 	CSN1_S1  	xrep_per 	 ; EXT_REPORTING_PERIOD
+ 	 	xfreq_list 	 ; EXT FREQUENCY LIST
+ 	CSN1_S1  	xfreq_list2 	[0.. MAX_EXT_FREQ_LIST] 	 ; EXT FREQUENCY LIST
+}
+
+
+
+COMP 	xmeas_par 	"EXT Measurement Parameters"
+{
+ 	 	xmeas_order 	 ; EXT_MEASUREMENT_ORDER
+ 	< (xmeas_order=1) 	 	em1 	> 	 ; Ext. Measurement Struct
+}
+
+
+
+COMP 	ncell_par_rest 	"Neighbour Cell parameters Rest"
+{
+ 	 	freq_diff_struct 	 ; FREQ_DIFF_STRUCT
+ 	 	bsic 	 ; BSIC
+ 	 	cs_par 	 ; Cell selection parameters
+}
+
+
+
+COMP 	ncell_par 	"Neighbour Cell parameters"
+{
+ 	 	start_freq 	 ; START_FREQUENCY
+ 	 	bsic 	 ; BSIC
+ 	 	cs_par 	 ; Cell selection parameters
+ 	 	n_rest 	 ; NR_OF_REMAINING_CELLS
+ 	 	freq_diff_len 	(KEEP,1) ; FREQ_DIFF_LENGTH
+ 	< (n_rest # 0) 	 	ncell_par_rest 	[n_rest..MAX_FREQ_DIFF_CS_PAR] 	> 	 ; Neighbour Cell parameters Rest
+}
+
+
+
+COMP 	afreq_s 	"List of added Frequency Sub"
+{
+ 	 	freq_diff_struct 	 ; FREQ_DIFF_STRUCT
+ 	 	bsic 	 ; BSIC
+ 	CSN1_S1  	cs_par 	 ; Cell selection parameters
+}
+
+
+
+COMP 	list_af 	"List of added Frequency"
+{
+ 	 	start_freq 	 ; START_FREQUENCY
+ 	 	bsic 	 ; BSIC
+ 	CSN1_S1  	cs_par 	 ; Cell selection parameters
+ 	 	nr_freq 	 ; NR_OF_FREQUENCY
+ 	 	freq_diff_len 	(KEEP,1) ; FREQ_DIFF_LENGTH
+ 	 	afreq_s 	[nr_freq..MAX_AFREQ] 	 ; List of added Frequency Sub
+}
+
+
+
+COMP 	nc_freq_list 	"NC_FREQUENCY_LIST"
+{
+ 	CSN1_S1  	list_rf 	 ; List of removed Frequency
+ 	CSN1_S1  	list_af 	[1..MAX_LIST_AFREQ] 	 ; List of added Frequency
+}
+
+
+
+COMP 	dyn_alloc_ts 	"Dynamic Allocation"
+{
+ 	 	xdyn_alloc 	 ; Extended Dynamic Allocation
+ 	 	flag2 	 ; flag2
+ 	< (flag2=1) 	 	p0 	> 	 ; BTS_PWR_CTRL_P0
+ 	< (flag2=1) 	 	pr_mode 	> 	 ; PR_MODE
+ 	 	usf_grant 	 ; USF_GRANULARITY
+ 	CSN1_S1  	rlc_db_granted 	 ; RLC_DATA_BLOCKS_GRANTED
+ 	CSN1_S1  	tbf_s_time 	 ; TBF_STARTING_TIME
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	tn_alloc 	[8] 	> 	 ; Timeslot Allocation Structure
+ 	< (flag=1) 	 	tn_alloc_pwr 	> 	 ; Timeslot Allocation with Power Control Parameters
+}
+
+
+
+COMP 	add_psi 	%REL99% 	"Add_PSI_Messages"
+{
+ 	 	non_gsm_info 	 ; NON_GSM_INFORMATION
+ 	 	Psi8_broadcast 	 ; PSI8_BROADCAST
+ 	 	psi3ter_broadcast 	 ; PSI3ter_BROADCAST
+ 	 	psi3quater_broadcast 	 ; PSI3quater_BROADCAST
+}
+
+
+
+COMP 	report_900_grr 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 900"
+{
+ 	 	rep_offset_900 	 ; Reporting Offset 900
+ 	 	rep_thres_900 	 ; Reporting Threshold 900
+}
+
+
+
+COMP 	report_1800_grr 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 1800"
+{
+ 	 	rep_offset_1800 	 ; Reporting Offset 1800
+ 	 	rep_thres_1800 	 ; Reporting Threshold 1800
+}
+
+
+
+COMP 	report_400_grr 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 400"
+{
+ 	 	rep_offset_400 	 ; Reporting Offset 400
+ 	 	rep_thres_400 	 ; Reporting Treshold 400
+}
+
+
+
+COMP 	report_1900_grr 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 1900"
+{
+ 	 	rep_offset_1900 	 ; Reporting Offset 1900
+ 	 	rep_thres_1900 	 ; Reporting Threshold 1900
+}
+
+
+
+COMP 	report_850_grr 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 850"
+{
+ 	 	rep_offset_850 	 ; Reporting Offset 850
+ 	 	rep_thres_850 	 ; Reporting Treshold 850
+}
+
+
+
+COMP 	fdd_multi_report 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Multi Reporting"
+{
+ 	EXTERN @m_rr_com - fdd_rep_quant@ 	 	fdd_rep_quant 	 ; FDD REP Quant
+ 	EXTERN @m_rr_com - fdd_multi_rep@ 	 	fdd_multi_rep 	 ; FDD MULTI Reporting Struct
+}
+
+
+
+COMP 	gprs_meas_par_report 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS Meas Param Desc Report"
+{
+ 	CSN1_S1  	multi_band_rep 	 ; MULTIBAND_REPORTING
+ 	CSN1_S1  	serv_cell_rep 	 ; Serving Cell Reporting
+ 	CSN1_S1  	scale_ord 	 ; Scale ordered
+ 	CSN1_S1  	report_900_grr 	 ; Reporting 900
+ 	CSN1_S1  	report_1800_grr 	 ; Reporting 1800
+ 	CSN1_S1  	report_400_grr 	 ; Reporting 400
+ 	CSN1_S1  	report_1900_grr 	 ; Reporting 1900
+ 	CSN1_S1  	report_850_grr 	 ; Reporting 850
+}
+
+
+
+COMP 	gprs_meas_par_desc_meas 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS Meas Param Desc Mesurement"
+{
+ 	CSN1_S1  	multi_band_rep 	 ; MULTIBAND_REPORTING
+ 	CSN1_S1  	serv_cell_rep 	 ; Serving Cell Reporting
+ 	 	scale_ord 	 ; SCALE ORD
+ 	CSN1_S1  	report_900_grr 	 ; Reporting 900
+ 	CSN1_S1  	report_1800_grr 	 ; Reporting 1800
+ 	CSN1_S1  	report_400_grr 	 ; Reporting 400
+ 	CSN1_S1  	report_1900_grr 	 ; Reporting 1900
+ 	CSN1_S1  	report_850_grr 	 ; Reporting 850
+}
+
+
+
+COMP 	gprs_3g_meas_par_desc_pmo 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS 3G Meas Param Desc"
+{
+ 	CSN1_S1  	fdd_multi_report 	 ; FDD Multi Reporting
+ 	CSN1_S1 EXTERN @m_rr_com - fdd_report@ 	 	fdd_report 	 ; FDD Reporting
+ 	CSN1_S1 EXTERN @m_rr_com - tdd_multirat_rep@ 	 	tdd_multirat_rep 	 ; TDD Multirat Reporting
+ 	CSN1_S1 EXTERN @m_rr_com - tdd_rep@ 	 	tdd_rep 	 ; TDD Reporting
+ 	CSN1_S1 EXTERN @m_rr_com - cdma2000_multirat_rep@ 	 	cdma2000_multirat_rep 	 ; CDMA2000 Multirat Reporting
+ 	CSN1_S1 EXTERN @m_rr_com - cdma2000_rep@ 	 	cdma2000_rep 	 ; CDMA2000 Reporting
+}
+
+
+
+COMP 	gprs_3g_meas_par_desc 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS 3G Meas Param Desc"
+{
+ 	CSN1_S1  	fdd_multi_report 	 ; FDD Multi Reporting
+ 	CSN1_S1 EXTERN @m_rr_com - fdd_report@ 	 	fdd_report 	 ; FDD Reporting
+ 	CSN1_S1 EXTERN @m_rr_com - tdd_multirat_rep@ 	 	tdd_multirat_rep 	 ; TDD Multirat Reporting
+ 	CSN1_S1 EXTERN @m_rr_com - tdd_rep@ 	 	tdd_rep 	 ; TDD Reporting
+}
+
+
+
+COMP 	enh_rep_param_struct 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"ENH Reporting Parameters Struct"
+{
+ 	 	reporting_type 	 ; Report type
+ 	 	reporting_rate 	 ; Reporting Rate
+ 	 	invalid_bsic_rep 	 ; INVALID_BSIC_REPORTING
+ 	CSN1_S1  	ncc_permitted 	 ; NCC_PERMITTED
+ 	CSN1_S1  	gprs_meas_par_report 	 ; GPRS Meas Param Desc Report
+ 	CSN1_S1  	gprs_3g_meas_par_desc 	 ; GPRS 3G Meas Param Desc
+}
+
+
+
+COMP 	utran_fdd_grr 	%REL99% 	"Utran FDD 3G"
+{
+ 	 	fdd_arfcn 	 ; FDD ARFCN
+ 	 	diversity 	 ; Diversity
+ 	CSN1_S1  	bandwidth_fdd 	 ; Bandwidth FDD
+ 	 	scrambl_codes 	 ; Scrambling Codes
+}
+
+
+
+COMP 	utran_tdd_grr 	%REL99% 	"Utran TDD 3G"
+{
+ 	 	tdd_arfcn 	 ; TDD ARFCN
+ 	 	diversity 	 ; Diversity
+ 	CSN1_S1  	bandwidth_tdd 	 ; Bandwidth TDD
+ 	 	cell_par 	 ; Cell Parameter
+ 	 	sync_case 	 ; Sync Case
+}
+
+
+
+COMP 	target_cell_3g 	%REL99% 	"Target Cell 3G"
+{
+ 	CSN1_S1  	utran_fdd_grr 	 ; Utran FDD 3G
+ 	CSN1_S1  	utran_tdd_grr 	 ; Utran TDD 3G
+}
+
+
+
+COMP 	n2_struct 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"3G cell N2 struct"
+{
+ 	 	rem_cell_index_3g 	 ; Removed Cell Index 3G
+ 	 	cell_diff_len_3g 	 ; Cell Diff Length 3G
+ 	 	cell_diff_3g 	[cell_diff_len_3g..MAX_CELL_DIFF_LENGTH] 	 ; Cell Diff 3G
+}
+
+
+
+COMP 	n1_struct 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"3G cell N1 struct"
+{
+ 	 	n2 	 ; N2
+ 	 	n2_struct 	[n2+1..32] 	 ; 3G cell N2 struct
+}
+
+
+
+COMP 	rem_3g_cell_desc 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Removed 3G Cell Description"
+{
+ 	 	n1 	 ; N1
+ 	 	n1_struct 	[n1+1..4] 	 ; 3G cell N1 struct
+}
+
+
+
+COMP 	rep_utran_fdd_n_cells 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Repeated UTRAN FDD Neighbour Cells"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	fdd_arfcn 	> 	 ; FDD ARFCN
+ 	 	fdd_indic_0 	 ; FDD Indic 0
+ 	 	nr_of_fdd_cells 	 ; NR OF FDD Cells
+ 	 	fdd_cell_info_field 	 ; FDD Cell Information Field
+}
+
+
+
+COMP 	rep_utran_tdd_n_cells 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Repeated UTRAN TDD Neighbour Cells"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	tdd_arfcn 	> 	 ; TDD ARFCN
+ 	 	tdd_indic_0 	 ; TDD Indic 0
+ 	 	nr_of_tdd_cells 	 ; NR OF TDD Cells
+ 	 	tdd_cell_info_field 	 ; TDD Cell Information Field
+}
+
+
+
+COMP 	gprs_rep_prio_cell_desc 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS REP Priority Description"
+{
+ 	 	number_cells 	 ; Numer Cells
+ 	 	rep_prio 	[number_cells..X7BITMAX] 	 ; REP Priority
+}
+
+
+
+COMP 	gprs_3g_meas_par_desc_ext_pmo 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS 3G Meas Param Desc Ext"
+{
+ 	 	qsearch_p 	 ; Qsearch P
+ 	EXTERN @m_rr_com - search_prio_3g@ 	 	search_prio_3g 	 ; Search Prio 3G
+ 	 	gprs_3g_meas_par_desc_pmo 	 ; GPRS 3G Meas Param Desc
+}
+
+
+
+COMP 	gprs_3g_meas_par_desc_ext_pcco 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS 3G Meas Param Desc Ext"
+{
+ 	 	qsearch_p 	 ; Qsearch P
+ 	EXTERN @m_rr_com - search_prio_3g@ 	 	search_prio_3g 	 ; Search Prio 3G
+ 	 	gprs_3g_meas_par_desc 	 ; GPRS 3G Meas Param Desc
+}
+
+
+
+COMP 	fdd_info_ded 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Dedicated mode FDD information"
+{
+ 	 	fdd_qoffset 	 ; FDD Qoffset
+ 	EXTERN @m_rr_com - fdd_rep_quant@ 	 	fdd_rep_quant 	 ; FDD rep quant
+ 	EXTERN @m_rr_com - fdd_multi_rep@ 	 	fdd_multi_rep 	 ; FDD multirat reporting
+}
+
+
+
+COMP 	tdd_info_ded 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Dedicated mode TDD information"
+{
+ 	 	tdd_qoffset 	 ; TDD Qoffset
+ 	EXTERN @m_rr_com - tdd_multirat_rep@ 	 	tdd_multirat_rep 	 ; TDD multirat reporting
+}
+
+
+
+COMP 	init_ded_mod_rep_desc_3g 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"3G Initial Dedicated mode Reporting"
+{
+ 	 	ba_ind_used_3g 	 ; 3G Neighbour Cell Information
+ 	 	qsearch_i 	 ; Qsearch_I
+ 	 	qsearch_C_init 	 ; Qsearch_C_Initial
+ 	CSN1_S1  	fdd_info_ded 	 ; Dedicated mode FDD information
+ 	CSN1_S1  	tdd_info_ded 	 ; Dedicated mode TDD information
+}
+
+
+
+COMP 	ba_psi3_str 	%REL99% 	"BA_Used_or_PSI3_Struct"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	psi3_cm 	> 	 ; PSI3_CHANGE_MARK
+ 	< (flag=0) 	 	ba_ind_used 	> 	 ; BA IND/USED
+ 	< (flag=0) 	 	ba_ind_used_3g 	> 	 ; BA IND/USED 3G
+ 	 	pmo_ind_used 	 ; PMO IND/USED
+}
+
+
+
+COMP 	cell_list_3g 	%REL99% 	"Cell List 3G"
+{
+ 	 	cell_list_3g_index 	 ; Cell List 3G Index
+ 	 	reporting_quantity 	 ; Reporting Quantity
+}
+
+
+
+COMP 	meas_rep_3g_str 	%REL99% 	"Mesurement Report 3G Struct"
+{
+ 	 	n_3g 	 ; N 3G
+ 	 	cell_list_3g 	[(n_3g+1)..MAX_3G_NEIGH_CELLS] 	 ; Cell List 3G
+}
+
+
+
+COMP 	fdd_info_grr 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Information"
+{
+ 	 	fdd_gprs_qoffset 	 ; FDD GPRS Qoffset
+ 	 	fdd_qmin 	 ; FDD Qmin
+}
+
+
+
+COMP 	gprs_3g_meas_par_desc_qua 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS 3G Meas Param Desc quater"
+{
+ 	 	qsearch_p 	 ; Qsearch P
+ 	EXTERN @m_rr_com - search_prio_3g@ 	 	search_prio_3g 	 ; Search Prio 3G
+ 	CSN1_S1  	fdd_info_grr 	 ; FDD Information
+ 	CSN1_S1  	tdd_gprs_qoffset 	 ; TDD GPRS Qoffset
+}
+
+
+
+COMP 	non_gsm_mess 	%REL4% 	"Non GSM Message"
+{
+ 	 	non_gsm_pro_disc 	 ; Non GSM Protokol Discriminator
+ 	 	nr_of_con_oct 	 ; Nr Of Container Octets
+ 	 	container 	[nr_of_con_oct..MAX_CONT_OCT] 	 ; Container
+}
+
+
+
+COMP 	cbch_chan_desc 	%REL99% 	"CBCH Channel Discription"
+{
+ 	 	chan_typ_tdma_offset 	 ; Channel Type and TDMA offset
+ 	 	tn 	 ; TIMESLOT_NUMBER
+ 	 	freq_par 	 ; Frequency Parameters
+}
+
+
+
+COMP 	ccch_access_info 	%REL4% 	"CCCH Access Information"
+{
+ 	 	bcch_change_mark 	 ; BCCH Change Mark
+ 	CSN1_S1  	si13_cm_gprs_alloc 	 ; SI13_CHANGE_MARK and GPRS Alloc
+ 	 	spgc_ccch_sup 	 ; SPGC_CCCH_SUP
+ 	 	prio_acc_thr 	 ; PRIORITY_ACCESS_THR
+ 	 	ctrl_order 	 ; NETWORK_CONTROL_ORDER
+ 	EXTERN @m_rr_com - gprs_cell_opt@ 	 	gprs_cell_opt 	 ; GPRS Cell Options
+ 	 	psi13_pwr_par 	 ; GPRS Power Control Parameters
+ 	 	sgsnr 	 ; SGSNR
+}
+
+
+
+COMP 	PBCCH_Desc 	%REL4% 	"PBCCH Description Struct_2"
+{
+ 	 	psi1_rep_per 	 ; PSI1_REPEAT_PERIOD
+ 	 	pb 	 ; PB
+ 	 	tn 	 ; TIMESLOT_NUMBER
+ 	 	freq_par 	 ; Frequency Parameters
+}
+
+
+
+COMP 	utran_freq_lst 	%REL4% 	"UTRAN Frequency List"
+{
+ 	CSN1_S1  	fdd_arfcn 	[0..MAX_FDD] 	 ; FDD_ARFCN
+ 	CSN1_S1  	tdd_arfcn 	[0..MAX_TDD] 	 ; TDD_ARFCN
+}
+
+
+
+COMP 	serv_cell_data 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Serving Cell data"
+{
+ 	 	rxlev_scell 	 ; RXLEV_SERVING_CELL
+ 	CSN1_S1  	i_scell 	 ; INTERFERENCE_SERVING_CELL
+}
+
+
+
+COMP 	rep_invalid_bsic_info 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Repeated Invalid BSIC Information"
+{
+ 	 	bcch_freq_ncell 	 ; BCCH FREQ NCELL
+ 	 	bsic 	 ; BSIC
+ 	 	rxlev_ncell 	 ; RXLEV_NCELL
+}
+
+
+
+COMP 	non_gprs_ext_info 	"Non GPRS cell options Extension Information"
+{
+ 	 	ecsc 	 ; ECSC
+ 	 	ecsr_3g 	 ; ECSR 3G
+}
+
+
+
+COMP 	lsa_id_struct 	%REL99% 	"Lsa ID struct"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	lsa_id 	> 	 ; LSA_ID
+ 	< (flag=1) 	 	short_lsa_id 	> 	 ; ShortLSA_ID
+}
+
+
+
+COMP 	serv_cell_lsa_id_info 	%REL99% 	"Serving Cell LSA ID info"
+{
+ 	CSN1_S1  	lsa_id_struct 	[0..MAX_LSA_ID] 	 ; Lsa ID struct
+}
+
+
+
+COMP 	lsa_param2 	%REL99% 	"LSA_parameters"
+{
+ 	 	nr_of_freq_or_cells 	 ; NR_OF_FREQ_OR_CELLS
+ 	 	serv_cell_lsa_id_info 	[nr_of_freq_or_cells..MAX_NR_OF_FREQ_OR_CELLS] 	 ; Serving Cell LSA ID info
+}
+
+
+
+COMP 	egprs_link_adpt_para 	%REL99% 	"EGPRS Link Adaptation parameters"
+{
+ 	 	egprs_ws 	 ; EGPRS Window Size
+ 	 	lqm_mode 	 ; Link Quality Measurement Mode
+ 	CSN1_S1  	bep_period2 	 ; BEP Period two
+}
+
+
+
+COMP 	compact_red_ma 	%REL99% 	"COMPACT Reduced MA"
+{
+ 	 	length_reduced_bitmap 	 ; Length of Reduced MA bitmap
+ 	 	reduced_ma_bitmap 	[length_reduced_bitmap..128] 	 ; Reduced MA bitmap
+ 	CSN1_S1  	maio_2 	 ; Maio 2
+}
+
+
+
+COMP 	gmsk_8psk 	%REL99 AND FF_EGPRS% 	"GMSK_8PSK"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	gmsk_mean_bep_tn 	> 	 ; GMSK MEAN BEP TN
+ 	< (flag=1) 	 	psk8_mean_bep_tn 	> 	 ; PSK8 MEAN BEP TN
+}
+
+
+
+COMP 	gmsk_str 	%REL99 AND FF_EGPRS% 	"GMSK struct"
+{
+ 	 	m_bep 	 ; MEAN_BEP
+ 	 	cv_bep 	 ; CV_BEP
+}
+
+
+
+COMP 	psk8_str 	%REL99 AND FF_EGPRS% 	"PSK8 Struct"
+{
+ 	 	m_bep 	 ; MEAN_BEP
+ 	 	cv_bep 	 ; CV_BEP
+}
+
+
+
+COMP 	egprs_bep_lnk_qual_meas 	%REL99 AND FF_EGPRS% 	"EGPRS BEP Link Quality Measurements"
+{
+ 	CSN1_S1  	gmsk_str 	 ; GMSK Struct
+ 	CSN1_S1  	psk8_str 	 ; PSK8 Struct
+}
+
+
+
+COMP 	num_idle_blks_str 	%REL99% 	"Number of Idle Blocks"
+{
+ 	CSN1_S1  	nib_ccch_0 	 ; NIB_CCCH_0
+ 	CSN1_S1  	nib_ccch_1 	 ; NIB_CCCH_1
+ 	CSN1_S1  	nib_ccch_2 	 ; NIB_CCCH_2
+ 	CSN1_S1  	nib_ccch_3 	 ; NIB_CCCH_3
+}
+
+
+
+COMP 	compact_ctrl_info 	%REL99% 	"COMPACT Control Information"
+{
+ 	 	large_cell_operation 	 ; Large Cell operation
+ 	CSN1_S1  	num_idle_blks_str 	 ; Number of Idle Blocks
+ 	CSN1_S1  	n_ccch_nh 	 ; N CCCH NH
+}
+
+
+
+COMP 	compact_cell_sel_str 	%REL99% 	"COMPACT Cell selection Struct"
+{
+ 	 	bsic 	 ; BSIC
+ 	 	cell_ba 	 ; CELL_BAR_ACCESS_2
+ 	 	exc_acc 	 ; EXC_ACC
+ 	 	same_ra_scell 	 ; SAME_RA_AS_SERVING_CELL
+ 	CSN1_S1  	cs_par_s1 	 ; Cell selection parameters Sub 1
+ 	CSN1_S1  	cs_par_s2 	 ; Cell selection parameters Sub 2
+ 	CSN1_S1  	gprs_resel_off 	 ; GPRS_RESELECT_OFFSET
+ 	CSN1_S1  	hcs_par 	 ; HCS parameters
+ 	CSN1_S1  	time_grp 	 ; Time group
+ 	CSN1_S1  	guar_const_pwr_grp 	 ; Guar Constant Pwr Group
+}
+
+
+
+COMP 	freq_diff_and_com_param 	%REL99% 	"Frequency diff and compact cell selection params"
+{
+ 	 	freq_diff_struct_2 	 ; FREQ_DIFF_STRUCT
+ 	 	compact_cell_sel_str 	 ; COMPACT Cell selection params
+}
+
+
+
+COMP 	compact_neighbour_cell_str 	%REL99% 	"COMPACT Neighbour Cell params Struct"
+{
+ 	 	start_freq 	 ; START_FREQUENCY
+ 	 	compact_cell_sel_str 	 ; COMPACT Cell selection Struct
+ 	 	n_rest 	 ; NR_OF_REMAINING_CELLS
+ 	 	freq_diff_len 	(KEEP,1) ; FREQ_DIFF_LENGTH
+ 	 	freq_diff_and_com_param 	[n_rest..MAX_FREQ_DIFF_CS_PAR] 	 ; Frequency diff and compact cell selection params
+}
+
+
+
+COMP 	compact_info_str 	%REL99% 	"COMPACT Information struct"
+{
+ 	 	cell_id 	 ; Cell Identification
+ 	CSN1_S1  	compact_neighbour_cell_str 	[0..MAX_NCELL_PARA] 	 ; COMPACT Neighbour Cell params Struct
+}
+
+
+
+COMP 	compact_neighbour_param_set_str 	%REL99% 	"COMPACT Neighbour Parameter Set"
+{
+ 	CSN1_S1  	ncc 	 ; Network Colour Code
+ 	 	exc_acc 	 ; EXC_ACC
+ 	CSN1_S1  	gprs_rxlev_access_min 	 ; GPRS_RXLEV_ACCESS_MIN
+ 	CSN1_S1  	txpwr_max_cch 	 ; GPRS_MS_TXPWR_MAX_CCH
+ 	CSN1_S1  	gprs_prio_class 	 ; GPRS_PRIORITY_CLASS
+ 	CSN1_S1  	gprs_hcs_thr 	 ; GPRS_HCS_THR
+ 	 	gprs_temp_offset 	 ; GPRS_TEMPORARY_OFFSET
+ 	 	gprs_penalty_time 	 ; GPRS_PENALTY_TIME
+ 	 	gprs_resel_off 	 ; GPRS_RESELECT_OFFSET
+ 	CSN1_S1  	guar_const_pwr_grp 	 ; Guar Constant Pwr Group
+}
+
+
+
+COMP 	compact_ncp2_prop_struct 	%REL99% 	"COMPACT NCP2 Property Struct"
+{
+ 	 	freq_diff_struct 	 ; FREQ_DIFF_STRUCT
+ 	 	same_ra_scell 	 ; SAME_RA_AS_SERVING_CELL
+ 	 	cell_ba 	 ; CELL_BAR_ACCESS_2
+ 	 	bcc 	 ; BTS Colour Code
+ 	CSN1_S1  	time_grp 	 ; Time group
+}
+
+
+
+COMP 	comp_ncp2_rep_struct 	%REL99% 	"COMPACT NCP2 Repeat Struct"
+{
+ 	 	start_freq 	 ; START_FREQUENCY
+ 	 	same_ra_scell 	 ; SAME_RA_AS_SERVING_CELL
+ 	 	cell_ba 	 ; CELL_BAR_ACCESS_2
+ 	 	bcc 	 ; BTS Colour Code
+ 	CSN1_S1  	time_grp 	 ; Time group
+ 	 	n_r_cells 	 ; NR_OF_REMAINING_CELLS
+ 	 	freq_diff_len 	(KEEP,1) ; FREQ_DIFF_LENGTH
+ 	< (n_r_cells # 0) 	 	compact_ncp2_prop_struct 	[n_r_cells..MAX_NCELL_PAR2_S2] 	> 	 ; COMPACT NCP2 Property Struct
+}
+
+
+
+COMP 	compact_ncp2_str 	%REL99% 	"COMPACT NCP2 Struct"
+{
+ 	 	comp_ncp2_rep_struct 	 ; COMPACT NCP2 Repeat Struct
+ 	 	para_ptr 	 ; CELL_PARAMS_POINTER
+}
+
+
+
+COMP 	compact_neighbour_cell_param 	%REL99% 	"COMPACT Neighbour Cell Parameters"
+{
+ 	 	flag 	 ; Flag
+ 	 	flag2 	 ; Flag2
+ 	< (flag=0 AND flag2=0) 	 	compact_ncp2_str 	[0..MAX_BASIC_CELL_IN_NCELL2] 	> 	 ; COMPACT NCP2 Struct
+ 	< (flag=0 AND flag2=0) 	 	compact_neighbour_param_set_str 	[(TAKE,2)+1..MAX_NEIGHBOR_PARAMETER_SET_IN_NCELL2] 	> 	 ; COMPACT Neighbour Parameter Set
+}
+
+
+
+COMP 	nc_meas_per 	"NC Measurement Periods"
+{
+ 	 	non_drx_per 	 ; NC_NON_DRX_PERIOD
+ 	 	rep_per_i 	 ; NC_REPORTING_PERIOD_I
+ 	 	rep_per_t 	 ; NC_REPORTING_PERIOD_T
+}
+
+
+
+COMP 	nc_meas_par 	"NC Measurement Parameters"
+{
+ 	 	ctrl_order 	 ; NETWORK_CONTROL_ORDER
+ 	CSN1_S1  	nc_meas_per 	 ; NC Measurement Periods
+}
+
+
+
+COMP 	nc_meas_par_list 	"NC Measurement Parameters Including Frequency List"
+{
+ 	 	nc_meas_par 	 ; NC Measurement Parameters
+ 	CSN1_S1  	nc_freq_list 	 ; NC_FREQUENCY_LIST
+}
+
+
+
+COMP 	non_gprs_ext_bits 	"Non GPRS cell options Extensions Bits IE"
+{
+ 	 	ext_len 	 ; Extension length
+ 	 	non_gprs_ext_info 	[.ext_len+1..64] 	 ; Non GPRS cell options Extension Information and spare bit(s)
+}
+
+
+
+COMP 	non_gprs_opt 	"Non GPRS Cell Options"
+{
+ 	 	att 	 ; ATT
+ 	CSN1_S1  	t3212 	 ; T3212
+ 	 	neci 	 ; NECI
+ 	 	pwcr 	 ; PWRC
+ 	 	dtx 	 ; DTX
+ 	 	rl_timeout 	 ; RADIO-LINK-TIMEOUT
+ 	 	bs_ag_blks_res 	 ; BS_AG_BLKS_RES
+ 	 	ccch_conf 	 ; CCCH-CONF
+ 	 	bs_pa_mfrms 	 ; BS-PA-MFRMS
+ 	 	max_retrans 	 ; MAX-RETRANS
+ 	 	tx_integer 	 ; TX-INTEGER
+ 	 	ec 	 ; EC
+ 	 	txpwr_max_cch 	 ; MS-TXPDR-MAX-CCCH
+ 	CSN1_S1  	ext_bits 	 	%!REL99% ; Structured Element Item
+ 	CSN1_S1  	non_gprs_ext_bits 	 	%REL99% ; Non GPRS cell options extension Bits IE
+}
+
+
+
+COMP 	bep_tn 	%REL99 AND FF_EGPRS% 	"BEP per Time Slot"
+{
+ 	CSN1_S1  	gmsk_8psk 	 ; GMSK_8PSK
+}
+
+
+
+COMP 	bep_meas 	%REL99 AND FF_EGPRS% 	"BEP measurements"
+{
+ 	 	bep_tn 	[MAX_NUM_BEP_TN] 	 ; BEP Per Time Slot
+}
+
+
+
+COMP 	egprs_timesl_qual_meas 	%REL99 AND FF_EGPRS% 	"EGPRS Timeslot Link Quality Measurement"
+{
+ 	CSN1_S1  	bep_meas 	 ; BEP measurements
+ 	CSN1_S1  	ilev 	 ; I_LEVEL Structure
+}
+
+
+
+COMP 	egprs_chan_qual_rep 	%REL99 AND FF_EGPRS% 	"EGPRS Channel Quality Report"
+{
+ 	 	egprs_bep_lnk_qual_meas 	 ; EGPRS BEP Link Quality Measurements
+ 	 	c_value 	 ; C_VALUE
+ 	 	egprs_timesl_qual_meas 	 ; EGPRS Timeslot Link Quality Measurement
+}
+
+
+
+COMP 	multi_alloc 	%REL99 AND FF_EGPRS% 	"Multi Block Allocation"
+{
+ 	 	tn 	 ; TIMESLOT_NUMBER
+ 	CSN1_S1  	alf_gam 	 ; ALPHA and GAMMA
+ 	CSN1_S1  	bts_pwr_ctrl 	 ; BTS_PWR_CTRL
+ 	 	tbf_s_time 	 ; TBF_STARTING_TIME
+ 	 	num_blk_alloc 	 ; NUM_BLK_ALLOC
+}
+
+
+
+COMP 	egprs_ts_config_para 	%REL99 AND FF_EGPRS% 	"Egprs timeslot configuration parameters"
+{
+ 	CSN1_S1  	compact_red_ma 	 ; COMPACT Reduced MA
+ 	 	egprs_chan_coding_cmd 	 ; EGPRS_CHANNEL_CODING_COMMAND
+ 	 	ul_rlc_resegment 	 ; UL rlc block resegment
+ 	CSN1_S1  	dl_egprs_ws 	 ; Downlink EGPRS Window Size
+ 	CSN1_S1  	ul_egprs_ws 	 ; Uplink EGPRS Window Size
+ 	 	lqm_mode 	 ; Link Quality Measurement Mode
+ 	 	gpta 	 ; Global Packet Timing Advance
+ 	CSN1_S1  	p_ext_ta 	 ; Packet Extended Timing Advance
+ 	 	dl_rlc_mode 	 ; DOWNLINK_RLC_MODE
+ 	 	ctrl_ack 	 ; CONTROL_ACK
+ 	CSN1_S1  	dl_tfi 	 ; Downlink TFI
+ 	CSN1_S1  	ul_tfi 	 ; Uplink TFI
+ 	 	dl_tn_alloc 	 ; DOWNLINK_TIMESLOT_ALLOCATION
+ 	CSN1_S1  	freq_par 	 ; Frequency Parameters
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	dyn_alloc_ts 	> 	 ; Dynamic Allocation
+ 	< (flag=1) 	 	f_alloc_re 	> 	 ; Fixed allocation Reconfigure
+}
+
+
+
+COMP 	Egprs_ts_reconfig_info 	%REL99 AND FF_EGPRS% 	"Egprs packet time slot reconfigure IE"
+{
+ 	 	Choice_flag 	 ; Choice flag
+ 	< (Choice_flag=0) 	 	egprs_ts_config_para 	> 	 ; Egprs timeslot configuration parameters
+}
+
+
+
+COMP 	ncell_par2_s2 	"Neighbour Cell parameters 2 Description Sub 2"
+{
+ 	 	freq_diff_struct 	 ; FREQ_DIFF_STRUCT
+ 	 	same_ra_scell 	 ; SAME_RA_AS_SERVING_CELL
+ 	 	cell_ba 	 ; CELL_BAR_ACCESS_2
+ 	 	bcc 	 ; BTS Colour Code
+}
+
+
+
+COMP 	ncell_par2_s1 	"Neighbour Cell parameters 2 Description Sub 1"
+{
+ 	 	start_freq 	 ; START_FREQUENCY
+ 	 	same_ra_scell 	 ; SAME_RA_AS_SERVING_CELL
+ 	 	cell_ba 	 ; CELL_BAR_ACCESS_2
+ 	 	bcc 	 ; BTS Colour Code
+ 	 	n_r_cells 	 ; NR_OF_REMAINING_CELLS2
+ 	 	freq_diff_len 	(KEEP,1) ; FREQ_DIFF_LENGTH
+ 	< (n_r_cells # 0) 	 	ncell_par2_s2 	[n_r_cells..MAX_NCELL_PAR2_S2] 	> 	 ; Neighbour Cell parameters 2 Description Sub 2
+}
+
+
+
+COMP 	ncell_par2_des 	"Neighbour Cell parameters 2 Description"
+{
+ 	CSN1_S1  	ncell_par2_s1 	[0..MAX_REMAINING_CELL_IN_NCELL2] 	 ; Neighbour Cell parameters 2 Description Sub 1
+ 	 	para_ptr 	(MAX,2) ; CELL_PARAMS_POINTER
+}
+
+
+
+COMP 	ncell_par2 	"Neighbour Cell parameters 2"
+{
+ 	 	generation 	 ; GENERATION
+ 	< (generation=0) 	CSN1_S1  	ncell_par2_des 	[0..MAX_BASIC_CELL_IN_NCELL2] 	> 	 ; Neighbour Cell parameters 2 Description
+ 	< (generation=0) 	 	ncell_par2_set 	[(TAKE,2)+1..MAX_NEIGHBOR_PARAMETER_SET_IN_NCELL2] 	> 	 ; Neighbour Cell parameters 2 Parameter Set
+}
+
+
+
+COMP 	egprs_ack_nack_desc 	%REL99 AND FF_EGPRS% 	"EGPRS Ack Nack description used in dl ack/nack"
+{
+ 	 	f_ack_ind 	 ; FINAL_ACK_INDICATION
+ 	 	bow 	 ; BEGINNING_OF_WINDOW
+ 	 	eow 	 ; END_OF_WINDOW
+ 	 	essn 	 ; EGPRS_STARTING_SEQUENCE_NUMBER
+ 	CSN1_S1  	cbmp_info 	 ; COMPRESSED_BMP_INFO
+ 	< ((TAKE,2) = 0  AND  (TAKE,1) > 15) 	 	urbb 	[.(TAKE,1)-15..MAX_SIZE_URBB_DL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP
+ 	< ((TAKE,1) > 15) 	 	urbb_4 	[.(TAKE,1)-((TAKE,2)+23)..MAX_SIZE_URBB_DL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP
+ 	< ((TAKE,1) = 0) 	GSM5_V  	urbb_5 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP
+}
+
+
+
+COMP 	egprs_ack_nack_info 	%REL99 AND FF_EGPRS% 	"EGPRS Ack/Nack IE"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag = 1) 	 	len 	(KEEP,1)> 	 ; EGPRS Ack Nack value part Length
+ 	 	egprs_ack_nack_desc 	 ; EGPRS Ack Nack description
+}
+
+
+
+COMP 	neighbour_cell_desc_3g_pmo 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Neighbour Cell Description 3G"
+{
+ 	EXTERN @m_rr_com - threeg_cells@ 	 	threeg_cells 	 ; Structured Element Item
+ 	CSN1_S1 EXTERN @m_rr_com - cdma2000_cell_desc@ 	 	cdma2000_cell_desc 	 ; CDMA2000 Description
+ 	CSN1_S1  	rem_3g_cell_desc 	 ; Removed 3G Cell Description
+}
+
+
+
+COMP 	enh_meas_param_pmo 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"ENH Mesurement Parameters"
+{
+ 	 	ba_psi3_str 	 ; BA_Used_or_PSI3_Struct
+ 	 	reporting_type 	 ; Reporting type
+ 	 	reporting_rate 	 ; Reporting Rate
+ 	 	invalid_bsic_rep 	 ; INVALID_BSIC_REPORTING
+ 	CSN1_S1  	neighbour_cell_desc_3g_pmo 	 ; Neighbour Cell Description 3G
+ 	CSN1_S1  	gprs_rep_prio_cell_desc 	 ; GPRS REP Priority Description
+ 	CSN1_S1  	gprs_meas_par_desc_meas 	 ; GPRS Meas Param Desc Mesurement
+ 	CSN1_S1  	gprs_3g_meas_par_desc_ext_pmo 	 ; GPRS 3G Meas Param Desc Ext
+}
+
+
+
+COMP 	neighbour_cell_desc_3g_pcco 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Neighbour Cell Description 3G"
+{
+ 	EXTERN @m_rr_com - threeg_cells@ 	 	threeg_cells 	 ; Structured Element Item
+ 	CSN1_S1  	rem_3g_cell_desc 	 ; Removed 3G Cell Description
+}
+
+
+
+COMP 	enh_meas_param_pcco 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"ENH Measurement Parameters"
+{
+ 	 	ba_psi3_str 	 ; BA_Used_or_PSI3_Struct
+ 	 	reporting_type 	 ; Reporting type
+ 	 	reporting_rate 	 ; Reporting Rate
+ 	 	invalid_bsic_rep 	 ; INVALID_BSIC_REPORTING
+ 	CSN1_S1  	neighbour_cell_desc_3g_pcco 	 ; Neighbour Cell Description 3G
+ 	CSN1_S1  	gprs_rep_prio_cell_desc 	 ; GPRS REP Priority Description
+ 	CSN1_S1  	gprs_meas_par_desc_meas 	 ; GPRS Meas Param Desc Mesurement
+ 	CSN1_S1  	gprs_3g_meas_par_desc_ext_pcco 	 ; GPRS 3G Meas Param Desc Ext
+}
+
+
+
+COMP 	rep_invalid_bsic_info_csn1_s1 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Repeated Invalid BSIC Information optional structure"
+{
+ 	CSN1_S1  	rep_invalid_bsic_info 	 ; Repeated Invalid BSIC Information
+}
+
+
+
+COMP 	reporting_quantity_bmp 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting quantity bitmap"
+{
+ 	CSN1_S1  	reporting_quantity 	 ; Reporting quantity
+}
+
+
+
+COMP 	nc_rep_quan 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"NC measurement reporting quantity"
+{
+ 	 	reporting_quantity_bmp 	[0.. MAX_REP] 	 ; Reporting Quantity bitmap
+}
+
+
+
+COMP 	nc_meas_rep_enh 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"NC Measurement Report Enh"
+{
+ 	 	nc_mode 	 ; NC_MODE
+ 	 	ba_psi3_str 	 ; BA_Used_or_PSI3_Struct
+ 	 	bsic_seen 	 ; BSIC Seen
+ 	 	scale 	 ; SCALE
+ 	CSN1_S1  	serv_cell_data 	 ; Serving Cell data
+ 	CSN1_S1  	rep_invalid_bsic_info 	[0.. MAX_NCMP_S1] 	 ; Repeated Invalid BSIC Information optional structures
+ 	CSN1_S1  	nc_rep_quan 	 ; NC measurement reporting quantity
+}
+
+
+
+COMP 	rtd6_struct 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RTD6 Struct"
+{
+ 	CSN1_S1  	rtd_6bit 	 ; RTD6 bit  for the cell
+}
+
+
+
+COMP 	rtd6_struct_opt_array 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RTD6 Struct"
+{
+ 	CSN1_S1  	rtd_6bit 	 ; RTD6 bit  for the cell
+}
+
+
+
+COMP 	rtd_struct_6bit 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RTD STRUCT 6 Bit"
+{
+ 	CSN1_S1  	cell_index_start_rtd 	 ; Cell Index Start RTD
+ 	 	rtd6_struct 	 ; RTD6 Struct
+ 	CSN1_S0  	rtd6_struct_opt_array 	[0.. MAX_NR_OF_NCELL] 	 ; RTD6 Struct
+}
+
+
+
+COMP 	rtd12_struct 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RTD12 Struct"
+{
+ 	CSN1_S1  	rtd_12bit 	 ; RTD12 bit  for the cell
+}
+
+
+
+COMP 	rtd12_struct_opt_array 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RTD12 Struct"
+{
+ 	CSN1_S1  	rtd_12bit 	 ; RTD12 bit  for the cell
+}
+
+
+
+COMP 	rtd_struct_12bit 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RTD STRUCT 12 Bit"
+{
+ 	CSN1_S1  	cell_index_start_rtd 	 ; Cell Index Start RTD
+ 	 	rtd12_struct 	 ; RTD12 Struct
+ 	CSN1_S0  	rtd12_struct_opt_array 	[0.. MAX_NR_OF_NCELL] 	 ; RTD12 Struct
+}
+
+
+
+COMP 	real_time_diff 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Real Time Difference Desc"
+{
+ 	CSN1_S1  	rtd_struct_6bit 	 ; RTD STRUCT 6 Bit
+ 	CSN1_S1  	rtd_struct_12bit 	 ; RTD STRUCT 12Bit
+}
+
+
+
+COMP 	ccn_meas_rep 	%REL4% 	"CCN Measurement Report"
+{
+ 	 	rxlev_scell 	 ; RXLEV_SERVING_CELL
+ 	CSN1_S1  	i_scell 	 ; INTERFERENCE_SERVING_CELL 
+ 	 	num_nc_meas 	 ; NUMBER_OF_NC_MEASUREMENTS 
+ 	 	nc_meas_s1 	[num_nc_meas..MAX_NCMP_S1] 	 ; NC Measurement Report 
+}
+
+
+
+COMP 	container_rep_struct 	%REL4% 	"Container repetition struct "
+{
+ 	 	pd 	 ; Protocol Discriminator, It has no meaning in case cd_len=0
+ 	 	cd_len 	 ; Container Length
+ 	< (cd_len> 0 AND cd_len < 19) 	 	cd_data_1 	[cd_len..18] 	> 	 ; Container Segment Type 1
+ 	< (cd_len = 0 OR cd_len > 18) 	 	cc_data_2 	[0..18] 	> 	 ; Container Segment Type 2, Please refer to the description above.
+}
+
+
+
+COMP 	unknown_si 	%REL4% 	"Received Unknown SI Message List "
+{
+ 	CSN1_S1  	si_msg_type 	[0..MAX_MSG_TYPE] 	 ; SI Msg Type
+ 	 	add_msg_type 	 ; Additional Msg Type
+}
+
+
+
+COMP 	si_des 	%REL4% 	"Received SI Description"
+{
+ 	 	si_msg_type 	 ; SI_MESSAGE_TYPE 
+ 	 	mess_rec 	 ; MESS_REC 
+ 	< (mess_rec>1) 	 	si_x_cm 	> 	 ; SI SIX CM
+ 	< (mess_rec=2) 	 	si_x_count 	> 	 ; SI SIX Count
+ 	< (mess_rec=2) 	 	inst_bitmap 	[si_x_count+1..16] 	> 	 ; Instance Bitmap
+}
+
+
+
+COMP 	received_si 	%REL4% 	" Received SI Message List "
+{
+ 	CSN1_S1  	si_des 	[0..MAX_MSG_TYPE] 	 ; SI Description
+ 	 	add_msg_type 	 ; Additional Message Type
+}
+
+
+
+COMP 	egprs_ul_ack_nack_trnc_grp 	%REL99 AND FF_EGPRS% 	"EGPRS Ack/Nack desc and Fixed Alloc trunc group"
+{
+ 	 	ul_egprs_ack_nack_info 	 ; UL EGPRS Ack/Nack IE
+ 	< ((TAKE,1)> 0) 	CSN1_S1  	f_alloc_ack 	> 	 ; Fixed Allocation Uplink Ack/Nack
+}
+
+
+
+COMP 	container_rep_struct_trnc_grp 	%REL4% 	"Container Repitition Struct trunc group"
+{
+ 	 	container_rep_struct 	[0..MAX_NUM_CONTAINER] 	 ; Container Repitition Struct
+}
+
+
+
+COMP 	release_4_str 	%REL4% 	"R4 structured elements"
+{
+ 	CSN1_S1 EXTERN @m_rr_com - ccn_support_description@ 	 	ccn_support_description 	 ; CCN Support Description
+}
+
+
+
+COMP 	release_99_str 	%REL99% 	"R99 structured elements"
+{
+ 	CSN1_S1  	compact_neighbour_cell_param 	[0..MAX_NCELL2_IN_PSI3BIS] 	 ; COMPACT Neighbour Cell Parameters
+ 	.0  ; Mandatory bit
+ 	CSN1_S1  	release_4_str 	 	%REL4% ; R4 structured elements
+}
+
+
+
+COMP 	release_98_str 	%REL99% 	"R98 structured elements"
+{
+ 	CSN1_S1  	lsa_param2 	 ; LSA_parameters
+ 	CSN1_S1  	release_99_str 	 ; R99 structured elements
+}
+
+
+
+COMP 	ncell_par_trnc_grp 	"NCELL params trunc group"
+{
+ 	CSN1_S1  	ncell_par 	[0..MAX_NCELL_IN_PSI3BIS] 	 ; Neigbour cell parameters
+ 	CSN1_S1  	ncell_par2 	[0..MAX_NCELL2_IN_PSI3BIS] 	 ; Neighbour Cell parameters 2
+ 	CSN1_S1  	release_98_str 	 	%REL99% ; R98 structured elements
+}
+
+
+
+COMP 	rtd_rep_prio_trnc_grp 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RTD and REP PRIO trunc group"
+{
+ 	CSN1_S1  	real_time_diff 	 ; Real Time Difference Desc
+ 	CSN1_S1  	gprs_rep_prio_cell_desc 	 ; GPRS REP Priority Description
+}
+
+
+
+COMP 	psi_3_qua_trnc_grp 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"PSI3 quater trunc group"
+{
+ 	CSN1_S1  	gprs_rep_prio_cell_desc 	 ; GPRS REP Priority Description
+ 	CSN1_S1 EXTERN @m_rr_com - threeg_cells@ 	 	threeg_cells 	 ; Neighbour Cell Description 3G Quarter
+ 	CSN1_S1  	gprs_3g_meas_par_desc_qua 	 ; GPRS 3G Meas Param Desc quater
+ 	CSN1_S1  	init_ded_mod_rep_desc_3g 	 ; 3G Initial Dedicated mode Reporting
+}
+
+
+
+COMP 	release_99_str_psi_2 	%REL99% 	"R99 structure"
+{
+ 	CSN1_S1  	compact_ctrl_info 	 ; COMPACT Control Information
+ 	CSN1_S1  	add_psi 	 ; Add_PSI_Messages
+}
+
+
+
+COMP 	psi_2_trnc_grp 	"PSI 2 trunc group"
+{
+ 	CSN1_S1  	cell_id 	 ; Cell Identification
+ 	CSN1_S1  	non_gprs_opt 	 ; Non GPRS Cell Options
+ 	CSN1_S1  	rfl 	[0..MAX_RFL_IN_PSI] 	 ; Reference Frequency Lists
+ 	CSN1_S1  	cell_alloc 	[0..MAX_CELL_ALLOC] 	 ; Cell Allocation
+ 	CSN1_S1  	gprs_ms_alloc 	[0..MAX_GPRS_MS_ALLOC] 	 ; GPRS Mobile Allocations
+ 	CSN1_S1  	pccch_des 	[0..MAX_PCCCH_DES] 	 ; PCCCH Description
+ 	CSN1_S1  	release_99_str_psi_2 	 	%REL99% ; R99 structure
+}
+
+
+
+COMP 	non_gsm_mess_trnc_grp 	%REL4% 	"Non GSM message trunc group"
+{
+ 	 	non_gsm_mess 	[0..NINETEEN] 	 ; Non GSM Message
+}
+
+
+
+COMP 	add_reject_trnc_grp 	"Additional Reject trunc group"
+{
+ 	CSN1_S1  	add_reject 	[0..MAX_REJECT] 	 ; Additional Reject Structure
+}
+
+
+
+COMP 	release_99_str_pda 	%REL99% 	"R99 structure"
+{
+ 	CSN1_S1  	egprs_link_adpt_para 	 ; EGPRS Link Adaptation parameters
+ 	CSN1_S1  	p_ext_ta 	 ; Packet_Extend_Timing_Advance
+ 	CSN1_S1  	compact_red_ma 	 ; COMPACT Reduced MA
+}
+
+
+
+COMP 	pda_trnc_grp 	"PDA trunc concat notation group"
+{
+ 	CSN1_S1  	freq_par 	 ; Frequency Parameters
+ 	CSN1_S1  	dl_tfi_assign 	 ; DOWNLINK_TFI_ASSIGNMENT
+ 	CSN1_S1  	pwr_par 	 ; Power Control Parameters
+ 	CSN1_S1  	tbf_s_time 	 ; TBF_STARTING_TIME
+ 	CSN1_S1  	meas_map 	 ; Measurement Mapping
+ 	CSN1_S1  	release_99_str_pda 	 	%REL99% ; R99 structure
+}
+
+
+
+COMP 	rep_page_info_trnc_grp 	"Repeated Page info trunc notation group"
+{
+ 	CSN1_S1  	rep_page_info 	[0..MAX_REP_PAGE_INFO] 	 ; Repeated Page info
+}
+
+
+
+COMP 	release_99_str_d_ul_ack 	%REL99% 	"R99 structure"
+{
+ 	CSN1_S1  	p_ext_ta 	 ; Packet_Extend_Timing_Advance
+ 	 	tbf_est 	 ; TBF_EST
+}
+
+
+
+COMP 	ta_index_tn 	"TA index and timeslot structure"
+{
+ 	 	ta_index 	 ; TA_INDEX
+ 	 	ta_tn 	 ; TA_TIMESLOT
+}
+
+
+
+COMP 	pta 	"Packet Timing Advance"
+{
+ 	CSN1_S1  	ta_value 	 ; TIMING_ADVANCE_VALUE
+ 	CSN1_S1  	ta_index_tn 	 ; TA index and timeslot structure
+}
+
+
+
+COMP 	gprs_ul_ack_nack_info 	"GPRS Uplink Ack Nack structure"
+{
+ 	 	chan_coding_cmd 	 ; CHANNEL_CODING_COMMAND
+ 	 	ack_nack_des 	 ; Ack/Nack Description
+ 	CSN1_S1  	cr_tlli 	 ; CONTENTION_RESOLUTION_TLLI :
+ 	CSN1_S1  	pta 	 ; Packet Timing Advance
+ 	CSN1_S1  	pwr_par 	 ; Power Control Parameters
+ 	CSN1_S1  	ext_bits 	 ; Extension Structure
+ 	CSN1_S1  	f_alloc_ack 	 ; Fixed Allocation Uplink Ack/Nack
+ 	CSN1_S1  	release_99_str_d_ul_ack 	 	%REL99% ; R99 structure
+}
+
+
+
+COMP 	egprs_tbf_para 	%REL99 AND FF_EGPRS% 	"Egprs TBF parameters"
+{
+ 	CSN1_S1  	cr_tlli 	 ; CONTENTION_RESOLUTION_TLLI
+ 	CSN1_S1  	compact_red_ma 	 ; COMPACT Reduced MA
+ 	 	egprs_chan_coding_cmd 	 ; EGPRS_CHANNEL_CODING_COMMAND
+ 	 	ul_rlc_resegment 	 ; UL rlc block resegment
+ 	 	egprs_ws 	 ; EGPRS Window Size
+ 	EXTERN @m_rr_com - acc_tech_req@ 	 	acc_tech_req 	 ; Access Technologies Request
+ 	 	arac_retx_req 	 ; Arac retransmission request
+ 	 	tlli_bcc 	 ; Tlli_block_channel_coding
+ 	CSN1_S1  	bep_period2 	 ; BEP Period two
+ 	 	pta 	 ; Packet Timing Advance
+ 	CSN1_S1  	p_ext_ta 	 ; Packet Extended Timing Advance
+ 	CSN1_S1  	freq_par 	 ; Frequency Parameters
+ 	 	Choice_flag 	 ; Choice_flag
+ 	< (Choice_flag=1) 	 	dyn_alloc_p 	> 	 ; Dynamic Allocation
+ 	< (Choice_flag=2) 	 	multi_alloc 	> 	 ; Multi Block Allocation
+ 	< (Choice_flag=3) 	 	f_alloc_ul 	> 	 ; Fixed Allocation Uplink Assignment
+}
+
+
+
+COMP 	egprs_ul_assign 	%REL99 AND FF_EGPRS% 	"Egprs UL assignment parameters"
+{
+ 	 	Choice_flag 	 ; Choice_flag
+ 	< (Choice_flag=0) 	 	egprs_tbf_para 	> 	 ; Egprs TBF parameters
+}
+
+
+
+COMP 	egprs_ul_ack_nack 	%REL99 AND FF_EGPRS% 	"EGPRS Uplink Ack Nack description"
+{
+ 	 	egprs_chan_coding_cmd 	 ; EGPRS_CHANNEL_CODING_COMMAND
+ 	 	ul_rlc_resegment 	 ; UL rlc block resegment
+ 	 	pre_emptive_tx 	 ; PRE_EMPTIVE_TRANSMISSION
+ 	 	prr_retx_req 	 ; PRR RETRANSMISSION REQUEST
+ 	 	arac_retx_req 	 ; arac retransmission request
+ 	CSN1_S1  	cr_tlli 	 ; CONTENTION_RESOLUTION_TLLI :
+ 	 	tbf_est 	 ; TBF_EST
+ 	CSN1_S1  	pta 	 ; Packet Timing Advance
+ 	CSN1_S1  	p_ext_ta 	 ; Packet_Extend_Timing_Advance
+ 	CSN1_S1  	pwr_par 	 ; Power Control Parameters
+ 	CSN1_S1  	ext_bits 	 ; Extension Structure
+ 	CSN1_CONCAT  	egprs_ul_ack_nack_trnc_grp 	 ; EGPRS Ack/Nack desc and Fixed Alloc trunc group
+}
+
+
+
+COMP 	egprs_ul_ack_nack_info 	%REL99 AND FF_EGPRS% 	"EGPRS Uplink Ack Nack IE"
+{
+ 	 	Choice_flag 	 ; Choice_flag
+ 	< (Choice_flag=0b00) 	 	egprs_ul_ack_nack 	> 	 ; EGPRS Uplink Ack Nack description
+}
+
+
+
+COMP 	release_4_str_psi_3 	%REL4% 	"R4 structure"
+{
+ 	CSN1_S1 EXTERN @m_rr_com - ccn_support_description@ 	 	ccn_support_description 	 ; CCN Support Description 
+}
+
+
+
+COMP 	release_99_str_psi_3 	%REL99% 	"R99 structure"
+{
+ 	.00  ; Mandatory bits
+ 	CSN1_S1  	compact_info_str 	 ; COMPACT Information struct
+ 	.0  ; Mandatory bit
+ 	CSN1_S1  	release_4_str_psi_3 	 	%REL4% ; R4 structure
+}
+
+
+
+COMP 	release_98_str_psi_3 	%REL99% 	"R98 structure"
+{
+ 	CSN1_S1  	serv_cell_lsa_id_info 	[0.. MAX_REP] 	 ; ServingCell LSA ID info
+ 	CSN1_S1  	lsa_param2 	 ; LSA_parameters
+ 	CSN1_S1  	release_99_str_psi_3 	 ; R99 structure
+}
+
+
+
+COMP 	release_4_str_d_meas_order 	%REL4% 	"R4 structured elements"
+{
+ 	 	ccn_active 	 ; CCN support
+ 	CSN1_S1 EXTERN @m_rr_com - ccn_support_description@ 	 	ccn_support_description 	 ; CCN Support Description 
+}
+
+
+
+COMP 	release_99_str_d_meas_order 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"R99 structured elements"
+{
+ 	CSN1_S1  	enh_meas_param_pmo 	 ; ENH Measurement Parameters
+ 	CSN1_S1  	release_4_str_d_meas_order 	 	%REL4% ; R4 structured elements
+}
+
+
+
+COMP 	release_98_str_d_meas_order 	%REL99% 	"R98 structured elements"
+{
+ 	CSN1_S1  	lsa_param2 	 ; LSA_parameters
+ 	CSN1_S1  	release_99_str_d_meas_order 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; R99 structured elements
+}
+
+
+
+COMP 	release_99_str_prr 	%REL99% 	"R99 structure"
+{
+ 	 	flag 	 	%REL99 AND !FF_EGPRS% ; Structured Element Item
+ 	 	flag2 	 	%REL99 AND !FF_EGPRS% ; Structured Element Item
+ 	CSN1_S1  	egprs_bep_lnk_qual_meas 	 	%REL99 AND FF_EGPRS% ; EGPRS BEP Link Quality Measurements
+ 	CSN1_S1  	egprs_timesl_qual_meas 	 	%REL99 AND FF_EGPRS% ; EGPRS Timeslot Link Quality Measurement
+ 	CSN1_S1  	pfi 	 ; PFI
+ 	 	add_ms_rac 	 ; ADD_MS_RAC_INFO_AVAIL
+ 	 	retrans_of_prr 	 ; RETRANS_OF_PRR
+}
+
+
+
+COMP 	release_99_str_u_dl_ack 	%REL99% 	"R99 structure"
+{
+ 	CSN1_S1  	pfi 	 ; PF_Identifier
+}
+
+
+
+COMP 	release_99_str_psi_1 	%REL99% 	"R99 structure"
+{
+ 	 	mscr 	 ; MSCR
+ 	 	sgsnr 	 ; SGSNR
+ 	 	band_indicator 	 ; BAND_INDICATOR
+}
+
+
+
+COMP 	release_99_str_psi_5 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"R99 structure"
+{
+ 	CSN1_S1  	enh_rep_param_struct 	 ; ENH Reporting Parameters Struct
+}
+
+
+
+COMP 	psi1_pbcch_info 	"PSI1 and PBCCH info"
+{
+ 	 	psi1_rep_per 	 ; PSI1_REPEAT_PERIOD
+ 	 	pbcch_des 	 ; PBCCH Description
+}
+
+
+
+COMP 	release_4_str_psi_13 	%REL4% 	"R4 structure"
+{
+ 	 	si_status_ind 	 ; SI_STATUS_IND 
+}
+
+
+
+COMP 	release_99_str_psi_13 	%REL99% 	"R99 structure"
+{
+ 	 	sgsnr 	 ; SGSNR
+ 	CSN1_S1  	release_4_str_psi_13 	 	%REL4% ; R4 structure
+}
+
+
+
+COMP 	release_99_str_pmr 	%REL99% 	"R99 structure"
+{
+ 	CSN1_S1  	ba_psi3_str 	 ; BA_Used_or_PSI3_Struct
+ 	CSN1_S1  	meas_rep_3g_str 	 ; Measurement Report 3G Struct
+}
+
+
+
+COMP 	release_99_str_pccf 	%REL99% 	"R99 structure"
+{
+ 	CSN1_S1  	utran_fdd_grr 	 ; Utran FDD 3G
+ 	CSN1_S1  	utran_tdd_grr 	 ; Utran TDD 3G
+}
+
+
+
+COMP 	tgt_cell_3g_info 	%REL99% 	"3G target cell info"
+{
+ 	.00  ; spare
+ 	 	im_rel_c1 	 ; IMMEDIATE_REL
+ 	 	target_cell_3g 	 ; Target Cell 3G
+}
+
+
+
+COMP 	release_4_str_pcco 	%REL4% 	"R4 structure"
+{
+ 	 	ccn_active 	 ; CCN active
+ 	CSN1_S1  	container_id 	 ; Container Id
+ 	CSN1_S1 EXTERN @m_rr_com - ccn_support_description@ 	 	ccn_support_description 	 ; CCN Support Description
+}
+
+
+
+COMP 	release_99_str_pcco 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"R99 structure"
+{
+ 	 	enh_meas_param_pcco 	 ; ENH Measurement Parameters
+ 	CSN1_S1  	release_4_str_pcco 	 	%REL4% ; R4 structure
+}
+
+
+
+COMP 	release_98_str_pcco 	%REL99% 	"R98 structure"
+{
+ 	CSN1_S1  	lsa_param2 	 ; LSA_parameters
+ 	CSN1_S1  	release_99_str_pcco 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; R99 structure
+}
+
+
+
+COMP 	gsm_target_cell 	"GSM Target Cell"
+{
+ 	 	arfcn 	 ; ARFCN
+ 	 	bsic 	 ; BSIC
+ 	 	nc_meas_par_list 	 ; NC Measurement Parameters Including Frequency List
+ 	CSN1_S1  	release_98_str_pcco 	 	%REL99% ; R98 structure
+}
+
+
+
+COMP 	tgt_cell_gsm_info 	"GSM target cell info"
+{
+ 	 	im_rel_c0 	 ; IMMEDIATE_REL
+ 	 	gsm_target_cell 	 ; GSM Target Cell
+}
+
+
+
+COMP 	tqi_req_ref_p 	"TQI and Packet Request Ref."
+{
+ 	 	Choice_flag 	 ; choice flag
+ 	< (Choice_flag=0b10) 	 	tqi 	> 	 ; TQI
+ 	< (Choice_flag=0b11) 	 	req_ref_p 	> 	 ; Packet Request Ref.
+}
+
+
+
+COMP 	add4 	"Address Information4"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag = 0) 	 	glob_tfi 	> 	 ; Global TFI
+ 	< (flag = 1) 	 	tqi_req_ref_p 	> 	 ; TQI and Packet Request Ref.
+}
+
+
+
+COMP 	release_99_str_ppcta 	%REL99% 	"R99 structure"
+{
+ 	CSN1_S1  	p_ext_ta 	 ; Packet_Extend_Timing_Advance
+}
+
+
+
+COMP 	new_cell_info 	%REL4% 	"New cell info"
+{
+ 	 	arfcn 	 ; ARFCN
+ 	 	bsic 	 ; BSIC
+ 	 	container_id 	 ; Container Id
+}
+
+
+
+COMP 	neighbour_cell 	%REL4% 	"Neighbour cell"
+{
+ 	 	arfcn 	 ; ARFCN
+ 	 	bsic 	 ; BSIC
+}
+
+
+
+
+
+
+MSG 	d_access_rej 	downlink 	0b100001 ; Packet Access Reject
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; Page Mode
+ 	 	reject 	 ; Reject Structure
+ 	CSN1_CONCAT  	add_reject_trnc_grp 	 ; Additional Reject trunc group
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_queuing_not 	downlink 	0b000110 ; Packet Queuing Notification
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	.111  ; spare
+ 	 	req_ref_p 	 ; Packet Request Reference
+ 	 	tqi 	 ; TQI
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_resource_req 	uplink 	0b000101 ; Packet Resource Request
+{
+ 	 	msg_type 	 ; Message Type
+ 	CSN1_S1  	access_type 	 ; Access Type
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	glob_tfi 	> 	 ; Global TFI
+ 	< (flag=1) 	 	tlli_value 	> 	 ; TLLI
+ 	CSN1_S1 EXTERN @m_rr_com - ra_cap@ 	 	ra_cap 	 ; MS RA capability value
+ 	 	chan_req_des 	 ; Channel Request Description
+ 	CSN1_S1  	ma_ch_mark 	 ; MA_CHANGE_MARK
+ 	 	c_value 	 ; C_VALUE
+ 	CSN1_S1  	signvar 	 ; SIGN_VAR
+ 	 	ilev 	 ; I_LEVEL Structure
+ 	CSN1_S1  	release_99_str_prr 	 	%REL99% ; R99 structure
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_ul_assign 	downlink 	0b001010 ; Packet Uplink Assignment
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; Page Mode
+ 	CSN1_S1  	pers_lev 	 ; PERSISTENCE_LEVEL
+ 	 	add3 	 ; Address Information3
+ 	 	egprs_flag 	 ; EGPRS escape
+ 	< (egprs_flag=0) 	 	chan_coding_cmd 	> 	 ; CHANNEL_CODING_COMMAND
+ 	< (egprs_flag=0) 	 	tlli_chan_coding 	> 	 ; TLLI_BLOCK_CHANNEL_CODING
+ 	< (egprs_flag=0) 	 	pta 	> 	 ; Packet Timing Advance
+ 	< (egprs_flag=0) 	CSN1_S1  	freq_par 	> 	 ; Frequency Parameters
+ 	< (egprs_flag=0) 	 	flag 	> 	 ; Flag
+ 	< (egprs_flag=0) 	 	flag2 	> 	 ; Flag2
+ 	< (egprs_flag= 0 AND flag=0 AND flag2=1) 	 	dyn_alloc_p 	> 	 ; Dynamic Allocation
+ 	< (egprs_flag= 0 AND flag=1 AND flag2=0) 	 	sin_alloc 	> 	 ; Single Block Allocation
+ 	< (egprs_flag= 0 AND flag=1 AND flag2=1) 	 	f_alloc_ul 	> 	 ; Fixed Allocation Uplink Assignment
+ 	< (egprs_flag=0) 	 	release_99 	> 	 	%REL99% ; Flag_Release99
+ 	< (egprs_flag=0 AND release_99 = 1) 	CSN1_S1  	p_ext_ta 	> 	 	%REL99% ; Packet Extended Timing Advance
+ 	< (egprs_flag=1) 	 	egprs_ul_assign 	> 	 	%REL99 AND FF_EGPRS% ; Egprs UL assignment parameters
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_dl_assign 	downlink 	0b000010 ; Packet Downlink Assignment
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	CSN1_S1  	pers_lev 	 ; PERSISTENCE_LEVEL
+ 	 	add1 	 ; Address Information1
+ 	.0  ; spare
+ 	 	mac_mode 	 ; MAC_MODE
+ 	 	rlc_mode 	 ; RLC_MODE
+ 	 	ctrl_ack 	 ; CONTROL_ACK
+ 	 	ts_alloc 	 ; TIMESLOT_ALLOCATION
+ 	 	pta 	 ; Packet Timing Advance
+ 	CSN1_S1  	bts_pwr_ctrl 	 ; BTS_PWR_CTRL
+ 	CSN1_CONCAT  	pda_trnc_grp 	 ; PDA trunc concat notation group
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_tbf_release 	downlink 	0b001000 ; Packet TBF Release
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	.0  ; spare
+ 	 	glob_tfi 	 ; Global TFI
+ 	 	ul_release 	 ; UPLINK_RELEASE
+ 	 	dl_release 	 ; DOWNLINK_RELEASE
+ 	 	rel_cause 	 ; TBF Release Cause
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_paging_req 	downlink 	0b100010 ; Packet Paging Request
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	CSN1_S1  	pers_lev 	 ; PERSISTENCE_LEVEL
+ 	CSN1_S1  	nln 	 ; NLN
+ 	CSN1_CONCAT  	rep_page_info_trnc_grp 	 ; Repeated Page info trunc notation group
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_dl_ack 	uplink 	0b000010 ; Packet Downlink Ack/Nack
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	dl_tfi 	 ; DOWNLINK_TFI
+ 	 	ack_nack_des 	 ; Ack/Nack Description
+ 	CSN1_S1  	chan_req_des 	 ; Channel Request Description
+ 	 	chan_qual_rep 	 ; Channel Quality Report
+ 	CSN1_S1  	release_99_str_u_dl_ack 	 	%REL99% ; R99 structure
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_e_dl_ack 	uplink 	0b001000 	%REL99 AND FF_EGPRS% ; EGPRS Packet Downlink Ack/Nack
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	dl_tfi 	 ; DOWNLINK_TFI
+ 	 	is_out_of_mem 	 ; MS_OUT_OF_MEMORY
+ 	CSN1_S1  	egprs_chan_qual_rep 	 ; EGPRS Channel Quality Report
+ 	CSN1_S1  	chan_req_des 	 ; Channel Request Description
+ 	CSN1_S1  	pfi 	 ; PF_Identifier
+ 	CSN1_S1  	ext_bits 	 ; Extensions Bits IE
+ 	 	egprs_ack_nack_info 	 ; EGPRS Ack/Nack IE
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_ul_ack 	downlink 	0b001001 ; Packet Uplink Ack/Nack
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	.00  ; spare
+ 	 	ul_tfi 	 ; UPLINK_TFI
+ 	 	egprs_flag 	 ; EGPRS flag
+ 	< (egprs_flag=0) 	 	gprs_ul_ack_nack_info 	> 	 ; GPRS Uplink Ack Nack structure
+ 	< (egprs_flag=1) 	 	egprs_ul_ack_nack_info 	> 	 	%REL99 AND FF_EGPRS% ; EGPRS Uplink Ack Nack IE
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_1 	downlink 	0b110001 ; Packet System Information Type 1
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	pbcch_change_ma 	 ; PBCCH_CHANGE_MARK
+ 	 	psi_change_field 	 ; PSI_CHANGE_FIELD
+ 	 	psi1_rep_per 	 ; PSI1_REPEAT_PERIOD
+ 	 	psi_cnt_lr 	 ; PSI_COUNT_LR
+ 	CSN1_S1  	psi_cnt_hr 	 ; PSI_COUNT_HR
+ 	 	meas_order 	 ; MEASUREMENT_ORDER
+ 	EXTERN @m_rr_com - gprs_cell_opt@ 	 	gprs_cell_opt 	 ; GPRS Cell Options
+ 	 	prach_ctrl_par 	 ; PRACH Control Parameters
+ 	 	pccch_org_par 	 ; PCCCH Organization Parameters
+ 	 	g_pwr_par 	 ; Global Power Control Parameters
+ 	 	psi_status_ind 	 ; PSI_STATUS_IND
+ 	CSN1_S1_OPT  	release_99_str_psi_1 	 	%REL99% ; R99 structure
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_2 	downlink 	0b110010 ; Packet System Information Type 2
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi2_cm 	 ; PSI2_CHANGE_MARK
+ 	 	psi2_ind 	 ; PSI2_INDEX
+ 	 	psi2_cnt 	 ; PSI2_COUNT
+ 	CSN1_CONCAT  	psi_2_trnc_grp 	 ; PSI 2 trunc group
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_3 	downlink 	0b110011 ; Packet System Information Type 3
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi3_cm 	 ; PSI3_CHANGE_MARK
+ 	 	psi3bis_cnt 	 ; PSI3_BIS_COUNT
+ 	 	scell_par 	 ; Serving Cell parameters
+ 	 	gen_cell_par 	 ; General Cell Selection parameter
+ 	CSN1_S1  	ncell_par 	[0..MAX_NCELL_PARA] 	 ; Neighbour Cell parameters
+ 	CSN1_S1_OPT  	release_98_str_psi_3 	 	%REL99% ; R98 structure
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_3_bis 	downlink 	0b110100 ; Packet System Information Type 3 bis
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi3_cm 	 ; PSI3_CHANGE_MARK
+ 	 	psi3bis_ind 	 ; PSI3_BIS_INDEX
+ 	 	psi3bis_cnt 	 ; PSI3_BIS_COUNT
+ 	CSN1_CONCAT  	ncell_par_trnc_grp 	 ; NCELL params trunc group
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_3_ter 	downlink 	0b111100 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Packet System Information Type 3 ter
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi3_cm 	 ; PSI3_CHANGE_MARK
+ 	 	psi3ter_ind 	 ; PSI3_TER_INDEX
+ 	 	psi3ter_cnt 	 ; PSI3_TER_COUNT
+ 	CSN1_CONCAT  	rtd_rep_prio_trnc_grp 	 ; RTD and REP PRIO trunc group
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_3_qua 	downlink 	0b111101 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Packet System Information Type 3 quater
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi3_cm 	 ; PSI3_CHANGE_MARK
+ 	 	psi3qua_ind 	 ; PSI3_QUA_INDEX
+ 	 	psi3qua_cnt 	 ; PSI3_QUA_COUNT
+ 	CSN1_CONCAT  	psi_3_qua_trnc_grp 	 ; PSI3 qua trunc group
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_4 	downlink 	0b110101 ; Packet System Information Type 4
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi4_cm 	 ; PSI4_CHANGE_MARK
+ 	 	psi4_ind 	 ; PSI4_INDEX
+ 	 	psi4_cnt 	 ; PSI4_COUNT
+ 	 	chan_list_imeas 	 ; Channel List for Interference measurements
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_5 	downlink 	0b110110 ; Packet System Information Type 5
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi5_cm 	 ; PSI5_CHANGE_MARK
+ 	 	psi5_ind 	 ; PSI5_INDEX
+ 	 	psi5_cnt 	 ; PSI5_COUNT
+ 	CSN1_S1  	nc_meas_par 	 ; NC Measurement Parameters
+ 	CSN1_S1  	xmeas_par 	 ; EXT Measurement Parameters
+ 	CSN1_S1_OPT  	release_99_str_psi_5 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; R99 structure
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_6 	downlink 	0b110000 	%REL4% ; Packet System Information Type 6
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi6_cm 	 ; PSI6_CHANGE_MARK
+ 	 	psi6_ind 	 ; PSI6_INDEX
+ 	 	psi6_cnt 	 ; PSI6_COUNT
+ 	CSN1_CONCAT  	non_gsm_mess_trnc_grp 	 ; Non GSM message trunc group
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_7 	downlink 	0b111000 	%REL4% ; Packet System Information Type 7
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi7_cm 	 ; PSI7_CHANGE_MARK
+ 	 	psi7_ind 	 ; PSI7_INDEX
+ 	 	psi7_cnt 	 ; PSI7_COUNT
+ 	 	non_gsm_mess 	[nr_of_con_oct..MAX_CONT_OCT] 	 ; Non GSM Message
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_8 	downlink 	0b111001 	%REL99% ; Packet System Information Type 8
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	psi8_cm 	 ; PSI8_CHANGE_MARK
+ 	 	psi8_ind 	 ; PSI8_INDEX
+ 	 	psi8_cnt 	 ; PSI8_COUNT
+ 	CSN1_S1  	cbch_chan_desc 	 ; CBCH Channel Discription
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_13 	downlink 	0b110111 ; Packet System Information Type 13
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	bcch_change_ma 	 ; BCCH_CHANGE_MARK
+ 	 	si_change_ma 	 ; SI_CHANGE_FIELD
+ 	CSN1_S1  	si13_cm_gprs_alloc 	 ; SI13_CHANGE_MARK and GPRS Alloc
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	pbcch_n_pres 	> 	 ; PBCCH not present in cell structure
+ 	< (flag=1) 	 	psi1_pbcch_info 	> 	 ; PSI1 and PBCCH info
+ 	CSN1_S1_OPT  	release_99_str_psi_13 	 	%REL99% ; R99 structure
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_14 	downlink 	0b111010 	%REL4% ; Packet System Information Type 14
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ccch_access_info 	> 	 ; CCCH Access Information
+ 	< (flag=1) 	 	PBCCH_Desc 	> 	 ; PBCCH Description Struct_2
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	psi_15 	downlink 	0b111110 	%REL4% ; Packet System Information Type 15
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	CSN1_S1  	utran_freq_lst 	 ; UTRAN Frequency List
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_ctrl_ack 	uplink 	0b000001 ; Packet Control Acknowledgement
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	tlli_value 	 ; TLLI
+ 	 	pctrl_ack 	 ; P_CTRL_ACK
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_cell_chan_failure 	uplink 	0b000000 ; Packet Cell Change Failure
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	tlli_value 	 ; TLLI
+ 	 	arfcn 	 ; ARFCN
+ 	 	bsic 	 ; BSIC
+ 	 	failure_cause 	 ; CAUSE
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_cell_chan_order 	downlink 	0b000001 ; Packet Cell Change Order
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	add1 	 ; Address Information1
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	tgt_cell_gsm_info 	> 	 ; GSM target cell info
+ 	< (flag=1) 	 	tgt_cell_3g_info 	> 	 	%REL99% ; Message Item
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_dl_dummy 	downlink 	0b100101 ; Packet Downlink Dummy Control Block
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	CSN1_S1  	pers_lev 	 ; PERSISTENCE_LEVEL
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_ul_dummy 	uplink 	0b000011 ; Packet Uplink Dummy Control Block
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	tlli_value 	 ; TLLI
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_meas_report 	uplink 	0b000100 ; Packet Measurement Report
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	tlli_value 	 ; TLLI
+ 	CSN1_S1  	psi5_cm 	 ; PSI5_CHANGE_MARK
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	nc_meas_rep 	> 	 ; NC Measurement Report
+ 	< (flag=1) 	 	xmeas_rep 	> 	 ; EXT Measurement Report
+ 	CSN1_S1  	release_99_str_pmr 	 	%REL99% ; R99 structure
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_meas_order 	downlink 	0b000011 ; Packet Measurement Order
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	add1 	 ; Address Information1
+ 	 	pmo_index 	 ; PMO_INDEX
+ 	 	pmo_cnt 	 ; PMO_COUNT
+ 	CSN1_S1  	nc_meas_par_list 	 ; NC Measurement Parameters Including Frequency List
+ 	CSN1_S1  	xmeas_par 	 ; EXT Measurement Parameters
+ 	CSN1_S1  	release_98_str_d_meas_order 	 	%REL99% ; R98 structured elements
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_ms_tbf_status 	uplink 	0b000110 ; Packet Mobile TBF Status
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	glob_tfi 	 ; Global TFI
+ 	 	tbf_cause 	 ; TBF_CAUSE
+ 	CSN1_S1  	msg_type2 	 ; STATUS_MSG_TYPE
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_enhnc_meas_report 	uplink 	0b001010 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Packet  Enhanced Measurement Report
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	tlli_value 	 ; TLLI
+ 	 	nc_meas_rep_enh 	 ; NC Measurement Report Enh
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_pdch_release 	downlink 	0b100011 ; Packet PDCH Release
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	ts_available 	> 	 ; Timeslots Available
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_polling_req 	downlink 	0b000100 ; Packet Polling Request
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	add2 	 ; Address Information2
+ 	 	ctrl_ack_type 	 ; CONTROL_ACK_TYPE
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_ctrl_pwr_ta 	downlink 	0b000101 ; Packet Power Control/Timing Advance
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	add4 	 ; Address Information4
+ 	.0  ; spare
+ 	CSN1_S1  	g_pwr_par 	 ; Global Power Control Parameters
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	flag2 	> 	 ; Flag2
+ 	< (flag=0 OR flag=1 AND flag2=0) 	 	gpta 	> 	 ; Global Packet Timing Advance
+ 	< (flag=0 OR flag=1 AND flag2=1) 	 	pwr_par 	> 	 ; Power Control Parameters
+ 	CSN1_S1  	release_99_str_ppcta 	 	%REL99% ; R99 structure
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_prach_par 	downlink 	0b100100 ; Packet PRACH Parameters
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	 	prach_ctrl_par 	 ; PRACH Control Parameters
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_pkt_psi_status_msg 	uplink 	0b000111 ; Packet PSI Status Message
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	glob_tfi 	 ; Global TFI
+ 	 	pbcch_change_ma 	 ; PBCCH_CHANGE_MARK
+ 	 	received_psi 	 ; Received PSI
+ 	 	unknown_psi 	 ; Unknown PSI
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_pause_msg 	uplink 	0b001001 	%REL4% ; Packet Pause Message
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	tlli_value 	 ; TLLI
+ 	 	rai 	 ; RAI
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_add_ms_radio_cap 	uplink 	0b001011 	%REL99 AND FF_EGPRS% ; Additional MS Radio Access Capabilities
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	glob_tfi 	> 	 ; Global TFI
+ 	< (flag=1) 	 	tlli_value 	> 	 ; TLLI
+ 	EXTERN @m_rr_com - ra_cap@ 	 	ra_cap 	 ; MS RA capability value
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_pkt_cell_notification 	uplink 	0b001100 	%REL4% ; Packet Cell Change Notification
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	glob_tfi 	 ; Global TFI
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	arfcn 	> 	 ; ARFCN
+ 	< (flag=0) 	 	bsic 	> 	 ; BSIC
+ 	 	flag2 	 ; Flag
+ 	< (flag2=0) 	 	ba_ind_used 	> 	 ; BA used bit
+ 	< (flag2=1) 	 	psi3_cm 	> 	 ; PSI 3 CM
+ 	 	pmo_ind_used 	 ; PMO
+ 	 	pccn_sending 	 ; PCCN Sending
+ 	 	ccn_meas_rep 	 ; CCN Meas Report
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_pkt_cell_change_con 	downlink 	0b001011 	%REL4% ; Packet Cell Change Continue
+{
+ 	 	msg_type 	 ; MessageType
+ 	 	page_mode 	 ; Page Mode
+ 	.0  ; Escape Seq
+ 	 	glob_tfi 	 ; GLOBAL TBI
+ 	CSN1_S1  	new_cell_info 	 ; New cell info
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_pkt_neighbour_cell_data 	downlink 	0b001100 	%REL4% ; Packet Neighbour Cell Data
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; Page Mode
+ 	.0  ; Escape Seq
+ 	 	glob_tfi 	 ; Global TFI
+ 	 	container_id 	 ; container id
+ 	.0  ; Spare
+ 	 	container_idx 	 ; Container Index
+ 	CSN1_S1  	neighbour_cell 	 ; Neighbour cell
+ 	CSN1_CONCAT  	container_rep_struct_trnc_grp 	 ; Container Repitition Struct trunc group
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_pkt_serv_cell_data 	downlink 	0b001101 	%REL4% ; Packet Serving Cell Data
+{
+ 	 	msg_type 	 ; MessageType
+ 	 	page_mode 	 ; Page Mode
+ 	.0  ; Escape Seq
+ 	 	glob_tfi 	 ; Global TFI
+ 	.0000  ; Spare Bits
+ 	 	container_idx 	 ; Container Index
+ 	CSN1_CONCAT  	container_rep_struct_trnc_grp 	 ; Container Repitition Struct trunc group
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_pkt_si_status_msg 	uplink 	0b001101 	%REL4% ; PACKET SI STATUS 
+{
+ 	 	msg_type 	 ; Msg Type
+ 	 	glob_tfi 	 ; Global TFI
+ 	 	bcch_change_mark 	 ; BCCH change mark as received in SI-13 or PSI-13
+ 	 	received_si 	 ; Received SI Message List 
+ 	 	unknown_si 	 ; Received Unknown SI Message List 
+ 	S_PADDING .00101011 (22) ; Spare Padding 
+}
+
+
+
+MSG 	d_ts_reconfig 	downlink 	0b000111 ; Packet Timeslot Reconfigure
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	.0  ; Spare
+ 	 	glob_tfi 	 ; GLOBAL_TFI
+ 	 	egprs_flag 	 ; Egprs_flag
+ 	< (egprs_flag=0) 	 	chan_coding_cmd 	> 	 ; CHANNEL_CODING_COMMAND
+ 	< (egprs_flag=0) 	 	gpta 	> 	 ; Global Packet Timing Advance
+ 	< (egprs_flag=0) 	 	dl_rlc_mode 	> 	 ; DOWNLINK_RLC_MODE
+ 	< (egprs_flag=0) 	 	ctrl_ack 	> 	 ; CONTROL_ACK
+ 	< (egprs_flag=0) 	CSN1_S1  	dl_tfi 	> 	 ; Downlink TFI
+ 	< (egprs_flag=0) 	CSN1_S1  	ul_tfi 	> 	 ; Uplink TFI
+ 	< (egprs_flag=0) 	 	dl_tn_alloc 	> 	 ; DOWNLINK_TIMESLOT_ALLOCATION
+ 	< (egprs_flag=0) 	CSN1_S1  	freq_par 	> 	 ; Frequency Parameters
+ 	< (egprs_flag=0) 	 	flag 	> 	 ; Flag
+ 	< (flag=0 AND egprs_flag=0) 	 	dyn_alloc_ts 	> 	 ; Dynamic Allocation
+ 	< (flag=1 AND egprs_flag=0) 	 	f_alloc_re 	> 	 ; Fixed allocation Reconfigure
+ 	< (egprs_flag=0) 	 	release_99 	> 	 	%REL99% ; Flag_Release99
+ 	< (egprs_flag=0 AND release_99=1) 	CSN1_S1  	p_ext_ta 	> 	 	%REL99% ; Packet_Extend_Timing_Advance
+ 	< (egprs_flag=1) 	 	Egprs_ts_reconfig_info 	> 	 	%REL99 AND FF_EGPRS% ; Egprs packet time slot reconfigure IE
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+
+
+

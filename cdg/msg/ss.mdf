@@ -1,0 +1,214 @@
+;********************************************************************************
+;*** File           : ss.mdf
+;*** Creation       : Thu Jun 19 15:32:13 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : ss
+;*** Document No.   : 6147.601.97.104
+;*** Document Date  : 2003-02-04
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: LG
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:21:24 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-02-04"
+PRAGMA 	ID_AND_VERSION 	"6147.601.97.104"
+
+
+
+CONST 	L3MAX 	251 	; maximum size of a L3 buffer
+CONST 	MAX_SS_VERSION 	1 	; maximum length in SS version
+
+
+
+VALTAB 	VAL_ver
+VAL 	0x00 	SS_VERSION_PHASE2 	"phase 2 service and error handling, ellipsis notation"
+
+VALTAB 	VAL_cs
+VAL 	1 	CAUSE_UNASSIGN 	"Unassigned (unallocated) Note 9 number"
+VAL 	3 	CAUSE_NO_ROUTE 	"No route to destination"
+VAL 	6 	CAUSE_CHAN_UNACCEPT 	"Channel unacceptable"
+VAL 	8 	CAUSE_BARRED 	"Operator determined barring"
+VAL 	16 	CAUSE_CALL_CLEAR 	"Normal call clearing"
+VAL 	17 	CAUSE_USER_BUSY 	"User busy"
+VAL 	18 	CAUSE_NO_RESPONSE 	"No user responding"
+VAL 	19 	CAUSE_ALERT_NO_ANSWER 	"User alerting, no answer"
+VAL 	21 	CAUSE_CALL_REJECT 	"Call rejected"
+VAL 	22 	CAUSE_NUM_CHANGED 	"Number changed"
+VAL 	25 	CAUSE_PREEMPTION 	"Pre-emption"
+VAL 	26 	CAUSE_USER_CLEAR 	"Non selected user clearing"
+VAL 	27 	CAUSE_DEST_ORDER 	"Destination out of order"
+VAL 	28 	CAUSE_NUM_FORMAT 	"Invalid number format (incomplete number)"
+VAL 	29 	CAUSE_FACILITY_REJECT 	"Facility rejected"
+VAL 	30 	CAUSE_STATUS_ENQUIRY 	"Response to STATUS ENQUIRY"
+VAL 	31 	CAUSE_UNSPECIFIED 	"Normal, unspecified"
+VAL 	34 	CAUSE_NO_CHAN_AVAIL 	"No circuit/channel available"
+VAL 	38 	CAUSE_NETWORK_ORDER 	"Network out of order"
+VAL 	41 	CAUSE_TEMP_FAIL 	"Temporary failure"
+VAL 	42 	CAUSE_SWITCH_CONGEST 	"Switching equipment congestion"
+VAL 	43 	CAUSE_INFO_DISCARD 	"Access information discarded"
+VAL 	44 	CAUSE_REQ_CHAN_UNAVAIL 	"requested circuit/channel not available"
+VAL 	47 	CAUSE_RESOURCE_UNAVAIL 	"Resources unavailable, unspecified"
+VAL 	49 	CAUSE_QOS_UNAVAIL 	"Quality of service unavailable"
+VAL 	50 	CAUSE_FACILITY_UNSUBSCRIB 	"Requested facility not subscribed"
+VAL 	55 	CAUSE_BARRED_IN_CUG 	"Incoming calls barred within the CUG"
+VAL 	57 	CAUSE_BEARER_CAP_AUTHORIZ 	"Bearer capability not authorized"
+VAL 	58 	CAUSE_BEARER_CAP_UNAVAIL 	"Bearer capability not presently available"
+VAL 	63 	CAUSE_SERVICE_UNAVAIL 	"Service or option not available, unspecified"
+VAL 	65 	CAUSE_BEARER_NOT_IMPLEM 	"Bearer service not implemented"
+VAL 	68 	CAUSE_ACM_MAX 	"ACM equal to or greater than ACMmax"
+VAL 	69 	CAUSE_FACILITY_NOT_IMPLEM 	"Requested facility not implemented"
+VAL 	70 	CAUSE_RESTICT_BEARER_CAP 	"Only restricted digital information bearer capability is available"
+VAL 	79 	CAUSE_SERVICE_NOT_IMPLEM 	"Service or option not implemented, unspecified"
+VAL 	81 	CAUSE_INVALID_TI 	"Invalid transaction identifier value"
+VAL 	87 	CAUSE_USER_NOT_IN_CUG 	"User not member of CUG"
+VAL 	88 	CAUSE_INCOMPAT_DEST 	"Incompatible destination"
+VAL 	91 	CAUSE_INVALID_TRANS_NET 	"Invalid transit network selection"
+VAL 	95 	CAUSE_INCORRECT_MESSAGE 	"Semantically incorrect message"
+VAL 	96 	CAUSE_INVALID_MAND_INFO 	"Invalid mandatory information"
+VAL 	97 	CAUSE_MESSAGE_TYPE_NOT_IMPLEM 	"Message type non-existent or not implemented"
+VAL 	98 	CAUSE_MESSAGE_TYPE_INCOMPAT 	"Message type not compatible with protocol state"
+VAL 	99 	CAUSE_INFO_ELEM_NOT_IMPLEM 	"Information element non existent or not implemented"
+VAL 	100 	CAUSE_COND_INFO_ELEM 	"Conditional IE error"
+VAL 	101 	CAUSE_MESSAGE_INCOMPAT 	"Message not compatible with protocol state"
+VAL 	102 	CAUSE_TIMER 	"Recovery on timer expiry"
+VAL 	111 	CAUSE_PROTOCOL 	"Protocol error, unspecified"
+VAL 	127 	CAUSE_INTERWORKING 	"Interworking, unspecified"
+
+VALTAB 	VAL_cs2
+VAL 	0 	CS_Q931 	"standardized coding as described in CCITT Rec. Q.931"
+VAL 	1 	CS_INTERNATIONAL 	"reserved for other international standards"
+VAL 	2 	CS_NATIONAL 	"national standard"
+VAL 	3 	CS_GSM_PLMN 	"standard defined for the GSM PLMNS as described in 10.86/GSM 04.08"
+
+VALTAB 	VAL_loc
+VAL 	DEF 	 	"reserved"
+VAL 	0 	LOC_USER 	"user"
+VAL 	1 	LOC_PRIV_NET_LOCAL_USER 	"private network serving the local user"
+VAL 	2 	LOC_PUB_NET_LOCAL_USER 	"public network serving the local user"
+VAL 	3 	LOC_TRANSIT_NET 	"transit network"
+VAL 	4 	LOC_PUB_NET_REMOTE_USER 	"public network serving the remote user"
+VAL 	5 	LOC_PRIV_NET_REMOTE_USER 	"private network serving the remote user"
+VAL 	7 	LOC_INTERNATIONAL_NET 	"international network"
+VAL 	10 	LOC_BEYOND_POINT 	"network beyond interworking point"
+
+
+
+
+VAR 	msg_type 	"Message Type" 	
+ 	8
+
+
+VAR 	fac_info 	"Facility Information" 	
+ 	8
+
+
+VAR 	ver 	"Version Content" 	
+ 	8
+
+VAL 	@m_ss - VAL_ver@ 	
+
+VAR 	cs 	"Cause" 	
+ 	7
+
+VAL 	@m_ss - VAL_cs@ 	
+
+VAR 	cs2 	"Coding standard" 	
+ 	2
+
+VAL 	@m_ss - VAL_cs2@ 	
+
+VAR 	loc 	"Location" 	
+ 	4
+
+VAL 	@m_ss - VAL_loc@ 	
+
+VAR 	rec 	"Recommendation" 	
+ 	7
+
+
+VAR 	diag 	"Diagnostics" 	
+ 	8
+
+
+
+
+
+COMP 	ss_facility 	"SS facility"
+{
+ 	 	fac_info 	[1..L3MAX] 	 ; Facility Information
+}
+
+
+
+COMP 	ss_version 	"SS version"
+{
+ 	 	ver 	[0.. MAX_SS_VERSION] 	 ; ss version content
+}
+
+
+
+COMP 	ss_cause 	"Cause"
+{
+ 	+ 	 	cs2 	 ; Coding standard II
+ 	.0  ; Spare
+ 	- 	 	loc 	 ; Location
+ 	* 	 	rec 	 ; Recommendation
+ 	* 	 	cs 	 ; Cause value
+ 	 	diag 	[0..27] 	 ; Diagnostics
+}
+
+
+
+
+
+
+MSG 	d_ss_facility 	downlink 	0b00111010 ; SS Facility
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	ss_facility 	 ; SS facility
+}
+
+
+
+MSG 	u_ss_facility 	uplink 	0b00111010 ; SS Facility
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	ss_facility 	 ; SS facility
+}
+
+
+
+MSG 	d_ss_register 	downlink 	0b00111011 ; SS Register
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	ss_facility 	0x1C 	 ; SS facility
+}
+
+
+
+MSG 	u_ss_register 	uplink 	0b00111011 ; SS Register
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	ss_facility 	0x1C 	 ; SS facility
+ 	GSM4_TLV  	ss_version 	0x7F 	 ; SS version
+}
+
+
+
+MSG 	b_ss_rel_comp 	both 	0b00101010 ; SS Release Complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	ss_cause 	0x08 	 ; SS cause
+ 	GSM4_TLV  	ss_facility 	0x1C 	 ; SS facility
+}
+
+
+
+
+
+

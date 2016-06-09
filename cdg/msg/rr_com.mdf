@@ -1,0 +1,1933 @@
+;********************************************************************************
+;*** File           : rr_com.mdf
+;*** Creation       : Thu Jun 19 15:32:11 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : rr_com
+;*** Document No.   : 8010.606.02.008
+;*** Document Date  : 2004-01-16
+;*** Document Status: APPROVED
+;*** Document Author: x0abuali
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:20:42 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-01-16"
+PRAGMA 	ID_AND_VERSION 	"8010.606.02.008"
+PRAGMA 	CCDNAME 	RR_COM 	; CCD name tag
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	NO 	; Adds enumerations in the .val file.
+
+
+
+CONST 	MAX_ADD_RA_CAP 	4 	; number of RA caps is MAX_ADD_RA_CAP+1
+CONST 	MAX_NUM_ACC_TYPE 	16 	; Maximum number of access technologies that can be requested by NW in Packet Uplink assignment message
+CONST 	MAX_BSIC 	18 	; Maximum number of bsic_struct in Measurement Information message ((23*8-28-14)/7 = 20) and in SI 2quater Rest Octets IE ((20*8-22-14)/7 = 17)
+CONST 	MAX_NNC 	96 	; Maximum number of cells in Neighbour cell list for Enhanced Measurements
+CONST 	MAXRTDS6 	20 	; Maximum number of 6 Bit Real Time Difference structures in Measurement Information message and in SI 2quater Rest Octets IE (assuming 1 value per structure)
+CONST 	MAXRTDS12 	10 	; Maximum number of 12 Bit Real Time Difference structures in Measurement Information message and in SI 2quater Rest Octets IE  (assuming 1 value per structure)
+CONST 	MAXRTD6 	8 	; Maximum number of 6 Bit Real Time Difference values per 6 Bit RTD structure (assumed value, theoretical maximum: 21)
+CONST 	MAXRTD12 	6 	; Maximum number of 12 Bit Real Time Difference values per 12 Bit RTD structure (assumed value, theoretical maximum: 11)
+CONST 	BIT7_MAX 	128 	; 7 bit max
+CONST 	MAX_TDD_CELLS 	21 	; Maximum number of TDD cell info in 3G neighbour cell info
+CONST 	MAX_FDD_CELLS 	17 	; Maximum number of FDD cell info in 3G neighbour cell info
+CONST 	MAX_FDD 	131 	; (L3MAX_ACK-3-1-1)*8/(14+1) = 131,2
+CONST 	MAX_TDD 	131 	; (L3MAX_ACK-3-1-1)*8/(14+1) = 131,2
+CONST 	MAX_CDMA2K_NEIGH_CELLS 	64 	; maximum value 3 uarfcn times 32 cells
+
+
+
+VALTAB 	VAL_ab_type 	%REL99%
+VAL 	0 	AB_8_BIT 	"8 bit access burst shall be used"
+VAL 	1 	AB_11_BIT 	"11 bit access burst shall be used"
+
+VALTAB 	VAL_acc_tech_typ
+VAL 	DEF 	 	"unknown"
+VAL 	0 	ACC_GSM_P 	"GSM P"
+VAL 	1 	ACC_GSM_E 	"GSM E -note that GSM E covers GSM P"
+VAL 	2 	ACC_GSM_R 	"GSM R - note that GSM R covers GSM E and GSM P"
+VAL 	3 	ACC_GSM_1800 	"GSM 1800 (DCS)"
+VAL 	4 	ACC_GSM_1900 	"GSM 1900 (PCS)"
+VAL 	5 	ACC_GSM_450 	"GSM 450"
+VAL 	6 	ACC_GSM_480 	"GSM 480"
+VAL 	7 	ACC_GSM_850 	"GSM 850"
+VAL 	15 	ACC_CAP_SAME_AS_PRECED 	%REL99% 	"When access capabilities of a band is same as it's previously included band."
+VAL 	14 	ACC_INVALID 	%REL99% 	"no valid access technology type present (this value isn?t defined in the specification)"
+VAL 	15 	ACC_INVALID 	%!REL99% 	"no valid access technology type present (this value isn?t defined in the specification)"
+
+VALTAB 	VAL_pow_class
+VAL 	1 	POWER_CLASS_1 	"Power Class 1"
+VAL 	2 	POWER_CLASS_2 	"Power Class 2"
+VAL 	3 	POWER_CLASS_3 	"Power Class 3"
+VAL 	4 	POWER_CLASS_4 	"Power Class 4"
+VAL 	5 	POWER_CLASS_5 	"Power Class 5"
+VAL 	6 	 	"Reserved"
+VAL 	7 	 	"Reserved"
+VAL 	POWER_CLASS_2 	MIN_CLASS_GSM 	"minimal GSM power class"
+VAL 	POWER_CLASS_5 	MAX_CLASS_GSM 	"maximal GSM power class"
+VAL 	POWER_CLASS_1 	MIN_CLASS_DCS 	"minimal DCS power class"
+VAL 	POWER_CLASS_3 	MAX_CLASS_DCS 	"maximal DCS power class"
+VAL 	POWER_CLASS_1 	MIN_CLASS_PCS 	"minimal PCS power class"
+VAL 	POWER_CLASS_3 	MAX_CLASS_PCS 	"maximal PCS power class"
+VAL 	POWER_CLASS_5 	CLASS_MIN_POW_GSM 	"GSM power class with the lowest output power"
+VAL 	POWER_CLASS_2 	CLASS_MIN_POW_DCS 	"DCS power class with the lowest output power"
+VAL 	POWER_CLASS_2 	CLASS_MIN_POW_PCS 	"PCS power class with the lowest output power"
+VAL 	0 	IDX_PWRCLASS_900 	"Index for use with rf_cap.rf_power.pow_class4[] array"
+VAL 	1 	IDX_PWRCLASS_1800 	"Index for use with rf_cap.rf_power.pow_class4[] array"
+VAL 	2 	IDX_PWRCLASS_1900 	"Index for use with rf_cap.rf_power.pow_class4[] array"
+VAL 	3 	IDX_PWRCLASS_850 	"Index for use with rf_cap.rf_power.pow_class4[] array"
+VAL 	4 	IDX_PWRCLASS_400 	"Index for use with rf_cap.rf_power.pow_class4[] array"
+VAL 	5 	IDX_PWRCLASS_700 	%REL99% 	"Index for use with rf_cap.rf_power.pow_class4[] array"
+
+VALTAB 	VAL_bool
+VAL 	0 	NO 	"value is not set"
+VAL 	1 	YES 	"value is set"
+VAL 	0 	NOT_SUPPORTED 	"feature not supported"
+VAL 	1 	SUPPORTED 	"feature supported"
+
+VALTAB 	VAL_flag
+VAL 	0 	GRR_NO 	"not present"
+VAL 	1 	GRR_YES 	"present"
+
+VALTAB 	VAL_bss_paging_coord 	%REL99%
+VAL 	0 	CS_PG_NOT_SUPPORTED 	"The cell does not support Circuit-Switched paging co-ordination"
+VAL 	1 	CS_PG_SUPPORTED 	"The cell supports Circuit-Switched paging co-ordination"
+
+VALTAB 	VAL_ctrl_ack_type
+VAL 	0 	 	"default format is four access bursts"
+VAL 	1 	 	"default format is RLC/MAC control block."
+
+VALTAB 	VAL_dtm_g_ms_class
+VAL 	0 	SUB_CLASS_1 	"Sub-Class 1 supported"
+VAL 	1 	SUB_CLASS_5 	"Sub-Class 5 supported"
+VAL 	2 	SUP_CLASS_9 	"Sub-Class 9 supported"
+VAL 	3 	 	"Reserved"
+
+VALTAB 	VAL_dtm_g_high_ms_class 	%TI_PS_FF_REL99_AND_ABOVE%
+VAL 	0 	 	"Reserved"
+VAL 	1 	SUB_CLASS_31_OR_36 	"Multislot class 31 or 36 supported"
+VAL 	2 	SUB_CLASS_32_OR_37 	"Multislot class 32 or 37 supported"
+VAL 	3 	SUB_CLASS_33_OR_38 	"Multislot class 33 or 38 supported"
+VAL 	4 	SUB_CLASS_41 	"Multislot class 41 supported"
+VAL 	5 	SUB_CLASS_42 	"Multislot class 42 supported"
+VAL 	6 	SUB_CLASS_43 	"Multislot class 43 supported"
+VAL 	7 	SUB_CLASS_44 	"Multislot class 44 supported"
+
+VALTAB 	VAL_dtm_support 	%REL99%
+VAL 	0 	DTM_NOT_SUPPORTED 	"The cell does not support DTM procedures."
+VAL 	1 	DTM_SUPPORTED 	"The cell supports DTM procedures."
+
+VALTAB 	VAL_egprs_packet_channel_request 	%REL99%
+VAL 	0 	EGPRS_PACKET_CHANNEL_REQUEST_MSG_SENT 	""
+VAL 	1 	PACKET_CHANNEL_REQUEST_MSG_SENT 	""
+
+VALTAB 	VAL_bands
+VAL 	0x00 	BAND_AUTO 	"0b00000000: All bands shall be scanned"
+VAL 	0x01 	BAND_GSM_900 	"0b00000001: GSM 900 is supported, shall be scanned"
+VAL 	0x02 	BAND_DCS_1800 	"0b00000010: DCS 1800 is supported, shall be scanned"
+VAL 	0x04 	BAND_PCS_1900 	"0b00000100: PCS 1900 is supported, shall be scanned"
+VAL 	0x08 	BAND_E_GSM 	"0b00001000: Extended GSM is supported, shall be scanned"
+VAL 	0x10 	BAND_GSM_850 	"0b00010000: GSM 850 is supported, shall be scanned"
+VAL 	0x20 	BAND_GSM_450 	"0b00100000: GSM 450 is supported, shall be scanned"
+VAL 	0x40 	BAND_GSM_480 	"0b01000000: GSM 480 is supported, shall be scanned"
+VAL 	0x80 	BAND_R_GSM 	"0b10000000: R-GSM is supported, shall be scanned"
+VAL 	0x03 	BAND_DUAL 	"0b00000011: GSM 900 and DCS 1800 is supported, shall be scanned"
+VAL 	0x0B 	BAND_DUAL_EXT 	"0b00001011: GSM 900, E-GSM and DCS 1800 is supported, shall be scanned"
+VAL 	0x14 	BAND_DUAL_US 	"0b00010100: GSM 850 and PCS 1900 is supported, shall be scanned"
+
+VALTAB 	VAL_egsm
+VAL 	0 	EGSM_NOT_SUPPORTED 	"The mobile station does not support the extension band."
+VAL 	1 	EGSM_SUPPORTED 	"The mobile station does support the extension band (E-GSM or R-GSM)."
+
+VALTAB 	VAL_freq_scroll 	%REL99%
+VAL 	0 	SCROL_NO 	"Frequency scrolling is not used"
+VAL 	1 	SCROL_YES 	"Frequency scrolling is used"
+
+VALTAB 	VAL_gsm400_supp
+VAL 	0 	 	"reserved (if neither GSM 480 nor GSM 450 is supported the whole gsm400_struct is omitted)"
+VAL 	1 	GSM480 	"GSM 480 supported but GSM 450 not supported"
+VAL 	2 	GSM450 	"GSM 450 supported but GSM 480 not supported"
+VAL 	3 	GSM450_480 	"GSM 450 supported and GSM 480 supported"
+
+VALTAB 	VAL_pow_8psk_cap
+VAL 	0 	 	"Reserved"
+VAL 	1 	POWER_CLASS_E1 	""
+VAL 	2 	POWER_CLASS_E2 	""
+VAL 	3 	POWER_CLASS_E3 	""
+
+VALTAB 	VAL_mod_cap
+VAL 	0 	DL_ONLY_8PSK 	"8-PSK supported for downlink reception only"
+VAL 	1 	FULL_8PSK 	"8-PSK supported for uplink transmission and downlink reception"
+
+VALTAB 	VAL_mb_value
+VAL 	DEF 	 	"Reserved"
+VAL 	0 	MB_NO_EUROPEAN_BAND 	"0b000: neither GSM 900, E-GSM or DCS 1800 supported"
+VAL 	1 	MB_GSM900 	"0b001: GSM 900 is supported"
+VAL 	2 	MB_EGSM 	"0b010: E-GSM is supported"
+VAL 	4 	MB_DCS1800 	"0b100: DCS 1800 is supported"
+VAL 	5 	MB_DUAL 	"0b101: GSM 900 and DCS 1800 is supported"
+VAL 	6 	MB_DUAL_EXT 	"0b110: E-GSM and DCS 1800 is supported"
+
+VALTAB 	VAL_ms_class
+VAL 	1 	MSLOT_CLASS_1 	"Multi Slot Class 1"
+VAL 	2 	MSLOT_CLASS_2 	"Multi Slot Class 2"
+VAL 	3 	MSLOT_CLASS_3 	"Multi Slot Class 3"
+VAL 	4 	MSLOT_CLASS_4 	"Multi Slot Class 4"
+VAL 	5 	MSLOT_CLASS_5 	"Multi Slot Class 5"
+VAL 	6 	MSLOT_CLASS_6 	"Multi Slot Class 6"
+VAL 	7 	MSLOT_CLASS_7 	"Multi Slot Class 7"
+VAL 	8 	MSLOT_CLASS_8 	"Multi Slot Class 8"
+VAL 	9 	MSLOT_CLASS_9 	"Multi Slot Class 9"
+VAL 	10 	MSLOT_CLASS_10 	"Multi Slot Class 10"
+VAL 	11 	MSLOT_CLASS_11 	"Multi Slot Class 11"
+VAL 	12 	MSLOT_CLASS_12 	"Multi Slot Class 12"
+VAL 	13 	MSLOT_CLASS_13 	"Multi Slot Class 13"
+VAL 	14 	MSLOT_CLASS_14 	"Multi Slot Class 14"
+VAL 	15 	MSLOT_CLASS_15 	"Multi Slot Class 15"
+VAL 	16 	MSLOT_CLASS_16 	"Multi Slot Class 16"
+VAL 	17 	MSLOT_CLASS_17 	"Multi Slot Class 17"
+VAL 	18 	MSLOT_CLASS_18 	"Multi Slot Class 18"
+VAL 	19 	MSLOT_CLASS_19 	"Multi Slot Class 19"
+VAL 	20 	MSLOT_CLASS_20 	"Multi Slot Class 20 (not for HSCSD)"
+VAL 	21 	MSLOT_CLASS_21 	"Multi Slot Class 21 (not for HSCSD)"
+VAL 	22 	MSLOT_CLASS_22 	"Multi Slot Class 22 (not for HSCSD)"
+VAL 	23 	MSLOT_CLASS_23 	"Multi Slot Class 23 (not for HSCSD)"
+VAL 	24 	MSLOT_CLASS_24 	"Multi Slot Class 24 (not for HSCSD)"
+VAL 	25 	MSLOT_CLASS_25 	"Multi Slot Class 25 (not for HSCSD)"
+VAL 	26 	MSLOT_CLASS_26 	"Multi Slot Class 26 (not for HSCSD)"
+VAL 	27 	MSLOT_CLASS_27 	"Multi Slot Class 27 (not for HSCSD)"
+VAL 	28 	MSLOT_CLASS_28 	"Multi Slot Class 28 (not for HSCSD)"
+VAL 	29 	MSLOT_CLASS_29 	"Multi Slot Class 29 (not for HSCSD)"
+
+VALTAB 	VAL_nmo
+VAL 	0b00 	 	"Network Mode 1"
+VAL 	0b01 	 	"Network Mode 2"
+VAL 	0b10 	 	"Network Mode 3"
+VAL 	0b11 	 	"reserved"
+
+VALTAB 	VAL_pfc_feature_mode 	%REL99%
+VAL 	0 	PFC_NOT_SUPPORTED 	"The network does not support packet flow context procedures."
+VAL 	1 	PFC_SUPPORTED 	"The network supports packet flow context procedures."
+
+VALTAB 	VAL_rep_priority 	%REL99%
+VAL 	0 	NORMAL_PRIO 	"Normal reporting priority"
+VAL 	1 	HIGH_PRIO 	"High reporting priority"
+
+VALTAB 	VAL_rf_pow_cap
+VAL 	0 	RF_CLASS_1 	"class 1 for GSM 850, 900P+E, DCS 1800 and PCS 1900"
+VAL 	1 	RF_CLASS_2 	"class 2 for GSM 850, 900P+E, DCS 1800 and PCS 1900"
+VAL 	2 	RF_CLASS_3 	"class 3 for GSM 850, 900P+E, DCS 1800 and PCS 1900"
+VAL 	3 	RF_CLASS_4 	"class 4 for GSM 850, 900P+E (reserved for DCS 1800 and PCS 1900)"
+VAL 	4 	RF_CLASS_5 	"class 5 for GSM 850, 900P+E (reserved for DCS 1800 and PCS 1900)"
+VAL 	5 	 	"reserved"
+VAL 	6 	 	"reserved"
+VAL 	7 	RF_CLASS_IRRELEVANT 	"irrelevant for this IE (multiband GSM MS)"
+
+VALTAB 	VAL_rev_lev
+VAL 	DEF 	 	"Reserved by future use"
+VAL 	0 	REV_LEV_PHASE_1 	"Reserved for GSM phase 1"
+VAL 	1 	REV_LEV_PHASE_2 	"Used by GSM phase 2 mobile stations"
+VAL 	2 	REV_LEV_R99_SUPPORT 	"Used by mobile stations supporting R99 or later versions"
+
+VALTAB 	VAL_rev99 	%REL99%
+VAL 	0 	PHASE_1 	"Release ?98 or older"
+VAL 	1 	RELEASE99 	"Release ?99 onwards"
+
+VALTAB 	VAL_single_band
+VAL 	DEF 	 	"Reserved"
+VAL 	0 	SINGLE_EGSM 	"Extended GSM is supported"
+VAL 	1 	SINGLE_GSM900 	"GSM 900 is supported"
+VAL 	2 	SINGLE_DCS1800 	"DCS 1800 is supported"
+VAL 	3 	SINGLE_GSM450 	"GSM 450 is supported"
+VAL 	4 	SINGLE_GSM480 	"GSM 480 is supported"
+VAL 	5 	SINGLE_GSM850 	"GSM 850 is supported"
+VAL 	6 	SINGLE_PCS1900 	"PCS 1900 is supported"
+
+VALTAB 	VAL_sms_val
+VAL 	0 	SM_1 	"1/4  timeslot (~144 micro sec)"
+VAL 	1 	SM_2 	"2/4 timeslot (~288 micro sec)"
+VAL 	2 	SM_3 	"3/4 timeslot (~433 micro sec)"
+VAL 	3 	SM_4 	"4/4 timeslot"
+VAL 	4 	SM_5 	"5/4 timeslot"
+VAL 	5 	SM_6 	"6/4 timeslot"
+VAL 	6 	SM_7 	"7/4 timeslot"
+VAL 	7 	SM_8 	"8/4 timeslot"
+VAL 	8 	SM_9 	"9/4 timeslot"
+VAL 	9 	SM_10 	"10/4 timeslot"
+VAL 	10 	SM_11 	"11/4 timeslot"
+VAL 	11 	SM_12 	"12/4 timeslot"
+VAL 	12 	SM_13 	"13/4 timeslot"
+VAL 	13 	SM_14 	"14/4 timeslot"
+VAL 	14 	SM_15 	"15/4 timeslot"
+VAL 	15 	SM_16 	"16/4 timeslot (~2307 micro sec)"
+
+VALTAB 	VAL_ss_screen
+VAL 	DEF 	 	"for future use (The network shall interpret these values the same as ?1?)"
+VAL 	0 	SS_SCREEN_DEFAULT 	"default value of phase 1"
+VAL 	1 	SS_SCREEN_PHASE_2 	"capability of handling of ellipsis notation and phase 2 error handling"
+
+VALTAB 	VAL_ucs2_treat
+VAL 	0 	DEFAULT_PREF 	"the ME has a preference for the default alphabet (defined in GSM 03.38) over UCS2."
+VAL 	1 	NO_PREF 	"the ME has no preference between the use of the default alphabet and the use of UCS2."
+
+VALTAB 	VAL_rep_offset_900 	%REL99%
+VAL 	0 	ZERO_DB 	"Apply an offset of 0 dB to the reported value"
+VAL 	1 	SIX_DB 	"Apply an offset of 6 dB to the reported value"
+VAL 	2 	TWELVE_DB 	"Apply an offset of 12 dB to the reported value"
+VAL 	3 	EIGHTEEN_DB 	"Apply an offset of 18 dB to the reported value"
+VAL 	4 	TWENTYFOUR_DB 	"Apply an offset of 24 dB to the reported value"
+VAL 	5 	THIRTY_DB 	"Apply an offset of 30 dB to the reported value"
+VAL 	6 	THIRTYSIX_DB 	"Apply an offset of 36 dB to the reported value"
+VAL 	7 	FORTYTWO_DB 	"Apply an offset of 42 dB to the reported value"
+
+VALTAB 	VAL_th_rep_900 	%REL99%
+VAL 	0 	ZERO 	"Apply priority reporting if the reported value is above 0 dB"
+VAL 	1 	SIX 	"Apply priority reporting if the reported value is above 6 dB"
+VAL 	2 	TWELVE 	"Apply priority reporting if the reported value is above 12 dB"
+VAL 	3 	EIGHTEEN 	"Apply priority reporting if the reported value is above 18 dB"
+VAL 	4 	TWENTYFOUR 	"Apply priority reporting if the reported value is above 24 dB"
+VAL 	5 	THIRTY 	"Apply priority reporting if the reported value is above 30 dB"
+VAL 	6 	THIRTYSIX 	"Apply priority reporting if the reported value is above 36 dB"
+VAL 	7 	INDEFINITELY 	"Never apply priority reporting"
+
+VALTAB 	VAL_ccn_active 	%REL99%
+VAL 	0 	 	"The Cell has not enabled CCN procedure.(but if received on PMO/ PCCO then follow the one received on broadcast)"
+VAL 	1 	 	"The Cell has enabled CCN procedure."
+
+VALTAB 	VAL_nw_ext_ul_tbf 	%REL99%
+VAL 	0 	EXT_UL_TBF_NOT_SUPPORTED 	"The network does not support Extended UL TBF procedures."
+VAL 	1 	EXT_UL_TBF_SUPPORTED 	"The network does support Extended UL TBF procedures."
+
+VALTAB 	VAL_ccn_supported 	%REL99%
+VAL 	0 	CCN_SUPPORTED 	"CCN is enabled towards the corresponding cell"
+VAL 	1 	CCN_NOT_SUPPORTED 	"CCN is disabled towards the corresponding cell"
+
+VALTAB 	VAL_ms_pwr_profile 	%TI_PS_FF_REL99_AND_ABOVE%
+VAL 	0 	MS_PWR_PROF0 	"MULTISLOT_POWER_PROFILE 0"
+VAL 	1 	MS_PWR_PROF1 	"MULTISLOT_POWER_PROFILE 1"
+VAL 	2 	MS_PWR_PROF2 	"MULTISLOT_POWER_PROFILE 2"
+VAL 	3 	MS_PWR_PROF3 	"MULTISLOT_POWER_PROFILE 3"
+
+VALTAB 	VAL_rep_acch_cap 	%TI_PS_FF_REL99_AND_ABOVE%
+VAL 	0 	REP_DL_FACCH 	"MS supports Repeated Downlink FACCH"
+VAL 	1 	REP_SACCH_DL_FACCH 	"MS supports Repeated SACCH and Repeated Downlink FACCH"
+
+VALTAB 	VAL_dl_adv_rx_per 	%TI_PS_FF_REL99_AND_ABOVE%
+VAL 	0 	DL_ADVANC_RX_PERF_NOT_SUPPORT 	"Downlink Advanced Receiver Performance not supported"
+VAL 	1 	DL_ADVANC_RX_PERF_PHASE1_SUPPORT 	"Downlink Advanced Receiver Performance – phase I supported"
+VAL 	2 	DL_ADVANC_RX_PERF_RESERVE_VALUE1 	"If value is received by the network, they shall be interpreted as ‘01’."
+VAL 	3 	DL_ADVANC_RX_PERF_RESERVE_VALUE2 	"If value is received by the network, they shall be interpreted as ‘01’."
+
+
+
+
+VAR 	ab_type 	"Access Burst Type" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_ab_type@ 	
+
+VAR 	acc_tech_typ 	"Access Technology Type" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_acc_tech_typ@ 	
+
+VAR 	pow_class 	"RF Power Capability" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	radio_cap_1 	"Associated Radio Capability 1" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	radio_cap_2 	"Associated Radio Capability 2" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	rgsm_class 	"R Support (R-GSM Class)" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	gsm400_cap 	"GSM 400 Associated Radio Capability" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	t_gsm400_cap 	%TI_PS_FF_REL99_AND_ABOVE% 	"T-GSM 400 Associated Radio Capability" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	t_gsm900_cap 	%TI_PS_FF_REL99_AND_ABOVE% 	"T-GSM 400 Associated Radio Capability" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	gsm850_cap 	"GSM 850 Associated Radio Capability" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	pcs1900_cap 	"PCS 1900 Associated Radio Cap." 	
+ 	4
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	ba_start_rtd 	"BA Index Start RTD" 	
+ 	5
+
+
+VAR 	ba_start_bsic 	"BA Index Start BSIC" 	
+ 	5
+
+
+VAR 	bep_period 	"BEP Period" 	
+ 	4
+
+
+VAR 	bool 	"Boolean; the value is set (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	support 	"Feature Support; MS does supports a feature (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	es_ind 	"Early Classmark Sending; 'controlled early classmark sending' option is implemented (1) or not (0) in the MS" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	ps 	"Pseudo Synchronisation capability; Pseudo synchronisation capabilty is present (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	mt_pp_sms 	"Short Message capability; MS does supports (1) MT point to point SMS or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	vgcs 	"Voice Group Call Service; VGCS capability and notification wanted (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	vbs 	"Voice Broadcast Service; VBS capability and notification wanted (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	class3 	"Classmark 3; The MS supports options that are indicated in classmark 3 (1) or it does not support any classmark 3 options (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	lcsva 	"LCSVA capability; LCS value added location request notification supported (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	solsa 	"SoLSA Supported; MS does supports SoLSA (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	cmsp 	"CMSP Supported; MS does supports (1) CM service Prompt (network initiated MO CM connection request) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	ext_meas 	"Extended Measurement Capability; MS does supports 'extended measurements`(1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	meas 	"Measurement Capability; Indicates whether the IE contains any value about the measurement capabilities or not" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	pos 	"MS Positioning Method Capability; Indicates whether MS does supports positioning method or not" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	edge 	"EDGE Structure; Indicates whether MS does supports the EDGE or not" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	edge_ms 	"Multi Slot Capability; Indicates whether MS does supports the use of multiple timeslots or not" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	ms 	"Multi Slot Capability; indicates whether MS does supports the use of multiple timeslots or not" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	hscsd_ms 	"HSCSD Multi Slot Capability; indicates whether MS supports the use of multiple timeslots or not" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	gprs_ms 	"GPRS Multi Slot Capability; indicates whether MS supports the use of multiple timeslots or not" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	ecsd_ms 	"ECSD Multi Slot Capability; indicates whether MS supports the use of multiple timeslots or not" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	egprs_ms 	"EGPRS Multi Slot Capability; indicates whether MS supports the use of multiple timeslots or not" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	mod 	"Modulation Capability; MS does supports 8-PSK modulation for uplink and downlink (1) or only for downlink (0) in addition to GSMK" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	assist_eotd 	"MS assisted E-OTD; MS does supports assisted E-OTD (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	based_eotd 	"MS based E-OTD; MS does supports based E-OTD (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	assist_gps 	"MS assisted GPS; MS does supports assisted GPS (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	based_gps 	"MS based GPS; MS does supports based GPS (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	conv_gps 	"MS conventional GPS; MS does supports conventional GPS (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	umts_fdd 	"UMTS FDD Radio Access Technology; MS does supports  UMTS FDD (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	umts_tdd 	"UMTS 3.84 Mcps TDD Radio Access Technology; MS does supports UMTS TDD (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	cdma2000 	"CDMA 2000 Radio Access Technology; MS does supports CDMA 2000 (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	mac_support 	"MAC Mode support; MS does supports dynamice and fixed allocation (1) or only exclusive allocation (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	compact 	"COMPACT Interference Measurement Capability; COMPACT Interference Measurement Capability is implemented (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	gprs_eda 	"GPRS Extended Dynamic Allocation Capability; MS does supports dynamice and fixed allocation (1) or only exclusive allocation (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	egprs_eda 	"EGPRS Extended Dynamic Allocation Capability; MS does supports dynamice and fixed allocation (1) or only exclusive allocation (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	a5_1 	"A5/1; Encryption algorithm A5/1.  Note inverse logic for the A5/1 encryption algorithm between classmark 1 and 2 on the one hand  (available=0 or not=1) and radio access capability on the other hand (available=1 or not=0)." 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	a5_2 	"A5/2; Encryption algorithm A5/2 available (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	a5_3 	"A5/3; Encryption algorithm A5/3 available (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	a5_4 	"A5/4; Encryption algorithm A5/4 available (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	a5_5 	"A5/5; Encryption algorithm A5/5 available (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	a5_6 	"A5/6; Encryption algorithm A5/6 available (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	a5_7 	"A5/7; Encryption algorithm A5/7 available (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	dtm_g 	"DTM GPRS Multi Slot Capability; GPRS MS does supports dual transfer mode (DTM)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	dtm_e 	"DTM EGPRS Multi Slot Capability; EGPRS MS does supports dual transfer mode (DTM)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	dummy_r99_ind 	"Dummy R99 inclusion indicator; A dummy field to suppress R99 fields (esp.in MS RACAP)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	flag 	"Flag" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_flag@ 	
+
+VAR 	bsic 	"BSIC" 	
+ 	6
+
+
+VAR 	bss_paging_coord 	"BSS paging co-ordination" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bss_paging_coord@ 	
+
+VAR 	bs_cv_max 	"BS_CV_MAX" 	
+ 	4
+
+
+VAR 	ctrl_ack_type 	"CONTROL_ACK_TYPE" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_ctrl_ack_type@ 	
+
+VAR 	drx_t_max 	"DRX_TIMER_MAX" 	
+ 	3
+
+
+VAR 	dtm_g_ms_class 	"DTM GPRS Multi Slot Sub-Class" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_dtm_g_ms_class@ 	
+
+VAR 	dtm_e_ms_class 	"DTM EGPRS Multi Slot Sub-Class; only if the MS supports EGPRS DTM" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_dtm_g_ms_class@ 	
+
+VAR 	dtm_g_high_ms_class 	%TI_PS_FF_REL99_AND_ABOVE% 	"DTM GPRS High Multi Slot Sub-Class" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_dtm_g_high_ms_class@ 	
+
+VAR 	dtm_e_high_ms_class 	"DTM EGPRS High Multi Slot Sub-Class; only if the MS supports EGPRS DTM" 	
+ 	3
+
+
+VAR 	rep_acch_cap 	%TI_PS_FF_REL99_AND_ABOVE% 	"Indicates whether the MS supports Repeated SACCH and Repeated FACCH" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_rep_acch_cap@ 	
+
+VAR 	dtm_support 	"DTM support by the cell" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_dtm_support@ 	
+
+VAR 	ext_len 	"Extension Length" 	
+ 	6
+
+
+VAR 	spare_ext 	"Spare bits(s)" 	
+ 	1
+
+
+VAR 	egprs_packet_channel_request 	"EGPRS packet channel request message sent" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_egprs_packet_channel_request@ 	
+
+VAR 	bands 	"Supported Frequency Bands; bitmask of all available frequency bands" 	
+ 	8
+
+VAL 	@m_rr_com - VAL_bands@ 	
+
+VAR 	setbands 	"Set Frequency Bands; bitmask of set frequency bands" 	
+ 	8
+
+VAL 	@m_rr_com - VAL_bands@ 	
+
+VAR 	egsm 	"Frequency capability" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_egsm@ 	
+
+VAR 	freq_scroll 	"Frequency Scrolling" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_freq_scroll@ 	
+
+VAR 	gsm400_supp 	"GSM 400 Bands Supported" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_gsm400_supp@ 	
+
+VAR 	t_gsm400_supp 	%TI_PS_FF_REL99_AND_ABOVE% 	"T-GSM 400 Bands Supported" 	
+ 	2
+
+
+VAR 	msg_type 	"Message Type" 	
+ 	8
+
+
+VAR 	pow_8psk_cap 	"8-PSK Power Capability" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_pow_8psk_cap@ 	
+
+VAR 	egde_pow1 	"EGDE RF Power Capability 1" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_pow_8psk_cap@ 	
+
+VAR 	egde_pow2 	"EGDE RF Power Capability 2" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_pow_8psk_cap@ 	
+
+VAR 	mod_cap 	"Modulation Capability" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_mod_cap@ 	
+
+VAR 	mb_value 	"Multiband Support" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_mb_value@ 	
+
+VAR 	ms_class 	"Multi Slot Class" 	
+ 	5
+
+VAL 	@m_rr_com - VAL_ms_class@ 	
+
+VAR 	gsm_ms_class 	"GSM Multi Slot Class" 	
+ 	5
+
+VAL 	@m_rr_com - VAL_ms_class@ 	
+
+VAR 	edge_ms_class 	"EDGE Multi Slot Class" 	
+ 	5
+
+VAL 	@m_rr_com - VAL_ms_class@ 	
+
+VAR 	hscsd_ms_class 	"HSCSD Multi Slot Class" 	
+ 	5
+
+VAL 	@m_rr_com - VAL_ms_class@ 	
+
+VAR 	gprs_ms_class 	"GPRS Multi Slot Class" 	
+ 	5
+
+VAL 	@m_rr_com - VAL_ms_class@ 	
+
+VAR 	ecsd_ms_class 	"ECSD Multi Slot Class" 	
+ 	5
+
+VAL 	@m_rr_com - VAL_ms_class@ 	
+
+VAR 	egprs_ms_class 	"EGPRS Multi Slot Class" 	
+ 	5
+
+VAL 	@m_rr_com - VAL_ms_class@ 	
+
+VAR 	nmo 	"NMO" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_nmo@ 	
+
+VAR 	num_cells 	"Number of Cells" 	
+ 	7
+
+
+VAR 	rem_bsic 	"Number Remaining BSIC" 	
+ 	7
+
+
+VAR 	dec 	"PAN_DEC" 	
+ 	3
+
+
+VAR 	inc 	"PAN_INC" 	
+ 	3
+
+
+VAR 	pmax 	"PAN_MAX" 	
+ 	3
+
+
+VAR 	pfc_feature_mode 	"PFC feature support by the N/W" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_pfc_feature_mode@ 	
+
+VAR 	rtd6 	"Real Time Difference 6 Bit" 	
+ 	6
+
+
+VAR 	rtd12 	"Real Time Difference 12 Bit" 	
+ 	12
+
+
+VAR 	rep_priority 	"Reporting Priority" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_rep_priority@ 	
+
+VAR 	rf_pow_cap 	"RF power capability" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_rf_pow_cap@ 	
+
+VAR 	rev_lev 	"Revision Level" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_rev_lev@ 	
+
+VAR 	rev99 	%REL99% 	"Revision Level" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_rev99@ 	
+
+VAR 	single_band 	"Single GSM Band Support" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_single_band@ 	
+
+VAR 	sms_val 	"Switch-Measure-Switch-Value" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_sms_val@ 	
+
+VAR 	sm_val 	"Switch-Measure-Value" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_sms_val@ 	
+
+VAR 	ss_screen 	"SS Screening Indicator" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_ss_screen@ 	
+
+VAR 	t3168 	"T3168" 	
+ 	3
+
+
+VAR 	t3192 	"T3192" 	
+ 	3
+
+
+VAR 	ucs2_treat 	"UCS2 treatment" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_ucs2_treat@ 	
+
+VAR 	rep_offset_900 	"900 reporting offset" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_rep_offset_900@ 	
+
+VAR 	rep_offset_1800 	"1800 reporting offset" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_rep_offset_900@ 	
+
+VAR 	rep_offset_400 	"400 reporting offset" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_rep_offset_900@ 	
+
+VAR 	rep_offset_1900 	"1900 reporting offset" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_rep_offset_900@ 	
+
+VAR 	rep_offset_850 	"850 reporting offset" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_rep_offset_900@ 	
+
+VAR 	th_rep_900 	"900 reporting threshold" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_th_rep_900@ 	
+
+VAR 	th_rep_1800 	"1800 reporting threshold" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_th_rep_900@ 	
+
+VAR 	th_rep_400 	"400 reporting threshold" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_th_rep_900@ 	
+
+VAR 	th_rep_1900 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"1900 reporting threshold" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_th_rep_900@ 	
+
+VAR 	th_rep_850 	"850 reporting threshold" 	
+ 	3
+
+VAL 	@m_rr_com - VAL_th_rep_900@ 	
+
+VAR 	ccn_active 	"Indicates NACC support by rel 4 network" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_ccn_active@ 	
+
+VAR 	nw_ext_ul_tbf 	"Indicates Extended UL TBF support by rel 4 network" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_nw_ext_ul_tbf@ 	
+
+VAR 	gsm700_cap 	"GSM 700 Associated Radio Capability" 	
+ 	4
+
+VAL 	@m_rr_com - VAL_pow_class@ 	
+
+VAR 	umts_tdd_128 	%REL99 OR TI_PS_FF_REL99_AND_ABOVE% 	"UMTS 1.28 Mcps TDD Radio Access Technology; MS does supports UMTS TDD (1) or not (0)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	geran_feat_pack_1 	%REL99 OR TI_PS_FF_REL99_AND_ABOVE% 	"Network Support for GERAN Feature 1 Package" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	ext_dtm_g_ms_class 	%REL99 OR TI_PS_FF_REL99_AND_ABOVE% 	"Extended DTM GPRS Multi Slot Sub-Class" 	
+ 	2
+
+
+VAR 	ext_dtm_e_ms_class 	%REL99 OR TI_PS_FF_REL99_AND_ABOVE% 	"Extended DTM EGPRS Multi Slot Sub-Class" 	
+ 	2
+
+
+VAR 	dummy_r4_ind 	"Dummy R4 inclusion indicator; A dummy field to suppress R4 fields (esp.in MS RACAP)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	ccn_support 	%REL99% 	"CCN is supported towards the corresponding cell" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_ccn_supported@ 	
+
+VAR 	mod_ms_sup 	%REL99% 	"Modulation based multislot class support" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	tdd_indic0 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD_Indic0" 	
+ 	1
+
+
+VAR 	tdd_ncell_data 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"bits 1-7 are the Cell Parameter, bit 8 is the Sync Case and bit 9 is the Diversity bit. " 	
+ 	9
+
+
+VAR 	fdd_indic0 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD_Indic0" 	
+ 	1
+
+
+VAR 	fdd_ncell_data 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"bits 1-9 are the Scrambling Code and bit 10 is the corresponding Diversity Parameter" 	
+ 	10
+
+
+VAR 	index_start_3g 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Index Start 3G" 	
+ 	7
+
+
+VAR 	abs_index_emr 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Absolute Index start EMR" 	
+ 	7
+
+
+VAR 	bw_fdd 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Bandwidth FDD" 	
+ 	3
+
+
+VAR 	bw_tdd 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Bandwidth TDD" 	
+ 	3
+
+
+VAR 	fdd_arfcn 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD_ARFCN" 	
+ 	14
+
+
+VAR 	fdd_arfcn_index 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD ARFCN index" 	
+ 	3
+
+
+VAR 	tdd_arfcn 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD_ARFCN" 	
+ 	14
+
+
+VAR 	tdd_arfcn_index 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD ARFCN index" 	
+ 	3
+
+
+VAR 	cdma2000_frequency_band  	"cdma2000 frequency band " 	
+ 	5
+
+
+VAR 	cdma2000_frequency 	"cdma2000 frequency" 	
+ 	11
+
+
+VAR 	number_cdma2000_cells 	"number_cdma2000_cells" 	
+ 	5
+
+
+VAR 	pilot_PN_offset 	"Pilot PN offset" 	
+ 	9
+
+
+VAR 	td_mode 	"TD_MODE" 	
+ 	2
+
+
+VAR 	td_power_level 	"TD_POWER_LEVEL " 	
+ 	3
+
+
+VAR 	qof 	"QOF" 	
+ 	2
+
+
+VAR 	walsh_len_a 	"WALSH_LEN_A" 	
+ 	3
+
+
+VAR 	aux_pilot_walsh 	"AUX_PILOT_WALSH" 	
+ 	1
+
+
+VAR 	walsh_len_b 	"WALSH_LEN_B " 	
+ 	3
+
+
+VAR 	aux_td_walsh 	"AUX_TD_WALSH" 	
+ 	1
+
+
+VAR 	aux_td_power_level 	"AUX_TD_POWER_LEVEL" 	
+ 	2
+
+
+VAR 	sr3_prim_pilot 	"SR3_PRIM_PILOT" 	
+ 	2
+
+
+VAR 	sr3_pilot_power1 	"SR3_PILOT_POWER1" 	
+ 	3
+
+
+VAR 	sr3_pilot_power2 	"SR3_PILOT_POWER2" 	
+ 	3
+
+
+VAR 	walsh_len_c 	"WALSH_LEN_C" 	
+ 	3
+
+
+VAR 	aux_walsh_len 	"AUX_WALSH_LEN " 	
+ 	1
+
+
+VAR 	qof1 	"QOF1" 	
+ 	2
+
+
+VAR 	walsh_length1 	"WALSH_LENGTH1" 	
+ 	3
+
+
+VAR 	aux_pilot_walsh1 	"AUX_PILOT_WALSH1" 	
+ 	1
+
+
+VAR 	qof2 	"QOF2" 	
+ 	2
+
+
+VAR 	walsh_length2 	"WALSH_LENGTH2 " 	
+ 	3
+
+
+VAR 	aux_pilot_walsh2 	"AUX_PILOT_WALSH2" 	
+ 	1
+
+
+VAR 	flag_3bit 	"FLAG 3 bits" 	
+ 	3
+
+
+VAR 	search_prio_3g 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Search Prio 3G" 	
+ 	1
+
+
+VAR 	tdd_multirat_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD Multirat Reporting" 	
+ 	2
+
+
+VAR 	cdma2000_multirat_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"CDMA2000 Multirat Reporting" 	
+ 	2
+
+
+VAR 	fdd_rep_quant 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD REP Quant" 	
+ 	1
+
+
+VAR 	fdd_multi_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD MULTI Reporting Struct" 	
+ 	2
+
+
+VAR 	fdd_rep_offset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Reporting Offset" 	
+ 	3
+
+
+VAR 	fdd_rep_thres 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Reporting Threshold" 	
+ 	3
+
+
+VAR 	tdd_rep_offset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD Reporting Offset" 	
+ 	3
+
+
+VAR 	cdma2000_rep_offset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"CDMA2000 Reporting Offset" 	
+ 	3
+
+
+VAR 	tdd_rep_thres 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD Reporting Threshold" 	
+ 	3
+
+
+VAR 	cdma2000_rep_thres 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"CDMA2000 Reporting Threshold" 	
+ 	3
+
+
+VAR 	qsearch_c 	"Qsearch C" 	
+ 	4
+
+
+VAR 	flag_ra_cap2 	%!REL99% 	"Valid flag for MS RA capability value part II; Second part of MS RA capability is available (1) or not (1)" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	high_ms_cap 	%TI_PS_FF_REL99_AND_ABOVE% 	"High Multislot Capability" 	
+ 	2
+
+
+VAR 	geran_iu_mod_cap 	%TI_PS_FF_REL99_AND_ABOVE% 	"GERAN Iu Mode Capabilities" 	
+ 	1
+
+
+VAR 	geran_feat_pack_2 	%TI_PS_FF_REL99_AND_ABOVE% 	"GERAN Feature Package 2" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	gmsk_ms_pwr_prof 	%TI_PS_FF_REL99_AND_ABOVE% 	"GMSK Multislot Power Profile" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_ms_pwr_profile@ 	
+
+VAR 	psk8_ms_pwr_prof 	%TI_PS_FF_REL99_AND_ABOVE% 	"8-PSK Multislot Power Profile" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_ms_pwr_profile@ 	
+
+VAR 	dl_adv_rx_per 	%TI_PS_FF_REL99_AND_ABOVE% 	"Downlink Advanced Receiver Performance" 	
+ 	2
+
+VAL 	@m_rr_com - VAL_dl_adv_rx_per@ 	
+
+VAR 	dtm_enhance_cap 	%TI_PS_FF_REL99_AND_ABOVE% 	"DTM Enhancements Capability" 	
+ 	1
+
+VAL 	@m_rr_com - VAL_bool@ 	
+
+VAR 	offset_required 	%TI_PS_FF_REL99_AND_ABOVE% 	"Offset required" 	
+ 	1
+
+
+
+
+
+COMP 	a5_bits 	"A5 bits"
+{
+ 	 	a5_1 	 ; A5/1; Encryption algorithm A5/1.  Note inverse logic for the A5/1 encryption algorithm between classmark 1 and 2 on the one hand  (available=0 or not=1) and radio access capability on the other hand (available=1 or not=0).
+ 	 	a5_2 	 ; A5/2; Encryption algorithm A5/2 available (1) or not (0)
+ 	 	a5_3 	 ; A5/3; Encryption algorithm A5/3 available (1) or not (0)
+ 	 	a5_4 	 ; A5/4; Encryption algorithm A5/4 available (1) or not (0)
+ 	 	a5_5 	 ; A5/5; Encryption algorithm A5/5 available (1) or not (0)
+ 	 	a5_6 	 ; A5/6; Encryption algorithm A5/6 available (1) or not (0)
+ 	 	a5_7 	 ; A5/7; Encryption algorithm A5/7 available (1) or not (0)
+}
+
+
+
+COMP 	acc_tech_req 	%REL99% 	"Access Technologies Request"
+{
+ 	CSN1_S1  	acc_tech_typ 	[0..MAX_NUM_ACC_TYPE] 	 ; Access Technology Type
+}
+
+
+
+COMP 	add_acc_tech_elem 	%REL99% 	"Additonal Access Technologies Element"
+{
+ 	 	acc_tech_typ 	 ; Access Technology Type
+ 	 	pow_class 	 ; GMSK Power Class
+ 	 	pow_8psk_cap 	 ; 8PSK Power Class
+}
+
+
+
+COMP 	add_acc_tech 	%REL99% 	"Additonal Access Technologies"
+{
+ 	CSN1_S1  	add_acc_tech_elem 	[1.. MAX_ADD_RA_CAP] 	 ; Additional Access Technology Element
+}
+
+
+
+COMP 	bsic_struct 	%REL99% 	"BSIC Structure"
+{
+ 	 	freq_scroll 	 	%REL99% ; Frequency Scrolling
+ 	 	bsic 	 ; BSIC
+}
+
+
+
+COMP 	gprs_bsic 	%REL99% 	"GPRS BSIC Description"
+{
+ 	CSN1_S1  	ba_start_bsic 	 ; BA Index Start BSIC
+ 	 	bsic 	 ; BSIC
+ 	 	rem_bsic 	 	%REL99% ; Number Remaining BSIC
+ 	 	bsic_struct 	[rem_bsic.. MAX_BSIC] 	 ; BSIC Structure
+}
+
+
+
+COMP 	mob_class_1 	"Mobile Station Classmark 1"
+{
+ 	.0  ; Spare
+ 	 	rev_lev 	 ; Revision level
+ 	 	es_ind 	 ; Early Classmark Sending
+ 	 	a5_1 	 ; A5/1; Encryption algorithm A5/1 available (0) or not (1).  Please note the inverse logic!
+ 	 	rf_pow_cap 	 ; RF power capability
+}
+
+
+
+COMP 	mob_class_2 	"Mobile Station Classmark 2"
+{
+ 	.0  ; spare
+ 	 	rev_lev 	 ; Revision level; Indicates the revision level of the MS
+ 	 	es_ind 	 ; Early Classmark Sending; 'Controlled Early Classmark Sending' option is implementation (1) or not (0)
+ 	 	a5_1 	 ; A5/1; Encryption algorithm A5/1 available (0) or not (1). Please note the inverse logic!
+ 	 	rf_pow_cap 	 ; RF power capability (CM2); Indication of the RF power capabilities corresponding to the supported band
+ 	.0  ; spare
+ 	 	ps 	 ; Pseudo Synchronisation capability; PS capability present (1) or not present (0)
+ 	 	ss_screen 	 ; SS Screen. Indicator
+ 	 	mt_pp_sms 	 ; Short Message capability; MS does supports (1) MT point to point SMS or not (0)
+ 	 	vbs 	 ; VBS Notification Reception; VBS capability and notifications wanted (1) or vice versa (0)
+ 	 	vgcs 	 ; VGCS Notification Reception; VGCS capability and notifications wanted (1) or vice versa (0)
+ 	 	egsm 	 ; Frequency capability; When the GSM 850 or DCS 1800 or PCS 1900 band is used, this bit shall be sent with the value '0'. When a GSM 900 band is used, this bit describes the support of the extension band
+ 	 	class3 	 ; Classmark 3; The MS supports options that are indicated in classmark 3 (1) or it does not support any classmark 3 options (0)
+ 	.0  ; spare
+ 	 	lcsva 	 ; LCSVA capability; LCS value added location request notification supported (1) or not (0)
+ 	 	ucs2_treat 	 ; UCS2 treatment; Indicates the likely treatment by the MS of UCS2 encoded
+ 	 	solsa 	 ; SoLSA Supported; MS supports SoLSA (1) or not (0)
+ 	 	cmsp 	 ; CMSP Supported; MS supports (1) CM service Prompt (network initiated MO CM connection request) or not (0)
+ 	 	a5_3 	 ; A5/3; Encryption algorithm A5/3 available (1) or not (0)
+ 	 	a5_2 	 ; A5/2; Encryption algorithm A5/2 available (1) or not (0)
+}
+
+
+
+COMP 	dtm_ms 	"DTM Multislot Structure"
+{
+ 	 	dtm_g_ms_class 	 ; DTM GPRS Multi Slot Sub-Class
+ 	 	mac_support 	 ; MAC Mode support
+ 	CSN1_S1  	dtm_e_ms_class 	 ; DTM EGPRS Multi Slot Sub-Class
+}
+
+
+
+COMP 	dtm_high_ms 	%TI_PS_FF_REL99_AND_ABOVE% 	"DTM High Multislot Structure"
+{
+ 	 	dtm_g_high_ms_class 	 ; DTM GPRS High Multi Slot Sub-Class
+ 	 	offset_required 	 ; Offset Required
+ 	CSN1_S1  	dtm_e_high_ms_class 	 ; DTM EGPRS High Multi Slot Sub-Class
+}
+
+
+
+COMP 	egde_struct 	"EGDE Structure"
+{
+ 	 	mod 	 ; EDGE Modulation Capability
+ 	CSN1_S1  	egde_pow1 	 ; EGDE RF Power Capability 1
+ 	CSN1_S1  	egde_pow2 	 ; EGDE RF Power Capability 2
+}
+
+
+
+COMP 	gprs_rep_prio 	%REL99% 	"GPRS REPORT PRIORITY Description"
+{
+ 	 	num_cells 	 	%REL99% ; Number cells
+ 	 	rep_priority 	[num_cells.. MAX_NNC] 	 	%REL99% ; Reporting Priority
+}
+
+
+
+COMP 	gsm400_struct 	"GSM 400 Bands Supported Structure"
+{
+ 	 	gsm400_supp 	 ; GSM 400 Bands Supported
+ 	 	gsm400_cap 	 ; GSM 400 Associated Radio Capability
+}
+
+
+
+COMP 	t_gsm400_struct 	%TI_PS_FF_REL99_AND_ABOVE% 	"GSM 400 Bands Supported Structure"
+{
+ 	 	t_gsm400_supp 	 ; T-GSM 400 Bands Supported
+ 	 	t_gsm400_cap 	 ; T-GSM 400 Associated Radio Capability
+}
+
+
+
+COMP 	measurement 	"Measurement Capability"
+{
+ 	 	sms_val 	 ; Switch-Measure-Switch-Value
+ 	 	sm_val 	 ; Switch-Measure-Value
+}
+
+
+
+COMP 	pos_method 	"MS Positioning Method"
+{
+ 	 	assist_eotd 	 ; MS assisted E-OTD; bit 5
+ 	 	based_eotd 	 ; MS based E-OTD; bit 4
+ 	 	assist_gps 	 ; MS assisted GPS; bit 3
+ 	 	based_gps 	 ; MS based GPS; bit 2
+ 	 	conv_gps 	 ; MS conventional GPS; bit 1
+}
+
+
+
+COMP 	pow_class4 	"RF Power Capability (4 bits); Power Class of GSM 400, GSM 850, GSM 900, DCS 1800, PCS 1900"
+{
+ 	.0  ; spare
+ 	 	pow_class 	 ; RF Power Capability
+}
+
+
+
+COMP 	dtm_struct 	%REL99% 	"DTM (E-)GPRS Multislot Sub-Class and MAC Mode Support"
+{
+ 	 	dtm_g_ms_class 	 ; DTM GPRS Multi Slot Sub-Class
+ 	 	mac_support 	 ; MAC Mode support
+ 	CSN1_S1  	dtm_e_ms_class 	 ; DTM EGPRS Multi Slot Sub-Class
+}
+
+
+
+COMP 	egprs_struct 	%REL99% 	"GPRS Multislot Class and Extended Dynamic Allocation Capability"
+{
+ 	 	egprs_ms_class 	 ; EGPRS multislot class
+ 	 	egprs_eda 	 ; EGPRS Extended Dynamic Allocation Capability
+}
+
+
+
+COMP 	gprs_struct 	"GPRS Multislot Class and Extended Dynamic Allocation Capability"
+{
+ 	 	gprs_ms_class 	 ; GPRS multislot class
+ 	 	gprs_eda 	 ; GPRS Extended Dynamic Allocation Capability
+}
+
+
+
+COMP 	rf_ms 	"MS RF Multi Slot Capability"
+{
+ 	 	gsm_ms_class 	 ; GSM Multi Slot Class; Zero indicates that MS doesn?t supports the use of multiple timeslots
+ 	.000  ; spare
+ 	 	edge_ms_class 	 ; EDGE Multi Slot Class; Zero indicates that MS doesn?t supports the use of multiple timeslots
+ 	.000  ; spare
+ 	 	hscsd_ms_class 	 ; HSCSD Multi Slot Class; Zero indicates that MS doesn?t supports the use of multiple timeslots
+ 	.000  ; spare
+ 	 	gprs_ms_class 	 ; GPRS Multi Slot Class; Zero indicates that MS doesn?t supports the use of multiple timeslots
+ 	 	dtm_g 	 ; DTM GPRS Multi Slot Capability; GPRS MS does supports dual transfer mode (DTM)
+ 	 	dtm_g_ms_class 	 ; DTM GPRS Multi Slot Sub-Class; DTM GPRS Multi Slot Sub-Class (independent from the Multi Slot Capabilities field.)
+ 	 	ecsd_ms_class 	 ; ECSD Multi Slot Class; Zero indicates that MS doesn?t supports the use of multiple timeslots
+ 	.000  ; spare
+ 	 	egprs_ms_class 	 ; EGPRS Multi Slot Class; Zero indicates that MS doesn?t supports the use of multiple timeslots
+ 	 	dtm_e 	 ; DTM EGPRS Multi Slot Capability; Enhanced GPRS MS does supports dual transfer mode (DTM)
+ 	 	dtm_e_ms_class 	 ; DTM EGPRS Multi Slot Sub-Class; DTM EGPRS Multi Slot Sub-Class (independent from the Multi Slot Capabilities field.)
+}
+
+
+
+COMP 	rtds6 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Real Time Difference Structure 6 Bit"
+{
+ 	CSN1_S0  	rtd6 	[0..MAXRTD6] 	 ; Real Time Difference 6 Bit
+}
+TYPEDEF COMP rtds6 	rtds6_add 	"Real Time Difference Structure 6 Bit"
+
+
+
+COMP 	rtdd6 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Real Time Difference Description 6 Bit"
+{
+ 	CSN1_S1  	ba_start_rtd 	 ; BA Index Start RTD
+ 	 	rtds6 	 ; Real Time Difference Structure 6 Bit
+ 	CSN1_S0  	rtds6_add 	[0..MAXRTDS6] 	 ; Real Time Difference Structure 6 Bit
+}
+
+
+
+COMP 	rtds12 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Real Time Difference Structure 12 Bit"
+{
+ 	CSN1_S0  	rtd12 	[0..MAXRTD12] 	 ; Real Time Difference 12 Bit
+}
+TYPEDEF COMP rtds12 	rtds12_add 	"Real Time Difference Structure 12 Bit"
+
+
+
+COMP 	rtdd12 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Real Time Difference Description 12 Bit"
+{
+ 	CSN1_S1  	ba_start_rtd 	 ; BA Index Start RTD
+ 	 	rtds12 	 ; Real Time Difference Structure 12 Bit
+ 	CSN1_S0  	rtds12_add 	[0..MAXRTDS12] 	 ; Real Time Difference Structure 12 Bit
+}
+
+
+
+COMP 	rtdd 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS Real Time Difference Description"
+{
+ 	CSN1_S1  	rtdd6 	 ; Real Time Difference Description 6 Bit
+ 	CSN1_S1  	rtdd12 	 ; Real Time Difference Description 12 Bit
+}
+
+
+
+COMP 	report_900 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 900"
+{
+ 	 	rep_offset_900 	 ; Reporting Offset 900
+ 	 	th_rep_900 	 ; Reporting Threshold 900
+}
+
+
+
+COMP 	report_1800 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 1800"
+{
+ 	 	rep_offset_1800 	 ; Reporting Offset 1800
+ 	 	th_rep_1800 	 ; Reporting Threshold 1800
+}
+
+
+
+COMP 	report_400 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 400"
+{
+ 	 	rep_offset_400 	 ; Reporting Offset 400
+ 	 	th_rep_400 	 ; Reporting Treshold 400
+}
+
+
+
+COMP 	report_1900 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 1900"
+{
+ 	 	rep_offset_1900 	 ; Reporting Offset 1900
+ 	 	th_rep_1900 	 ; Reporting Threshold 1900
+}
+
+
+
+COMP 	report_850 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting 850"
+{
+ 	 	rep_offset_850 	 ; Reporting Offset 850
+ 	 	th_rep_850 	 ; Reporting Threshold 850
+}
+
+
+
+COMP 	sms_sm_value 	"MS Measurement Capability"
+{
+ 	 	sms_val 	 ; Switch-Mesure-Switch Value
+ 	 	sm_val 	 ; Switch-Measure-Value
+}
+
+
+
+COMP 	ms_struct 	"Multislot Capability Struct"
+{
+ 	CSN1_S1  	hscsd_ms_class 	 ; HSCSD multislot class
+ 	CSN1_S1  	gprs_struct 	 ; GPRS multislot class and Extended Dynamic Allocation Capability
+ 	CSN1_S1  	sms_sm_value 	 ; MS Measurement Capability
+ 	CSN1_S1  	ecsd_ms_class 	 	%REL99% ; ECSD multislot class
+ 	CSN1_S1  	egprs_struct 	 	%REL99% ; EGPRS multislot class and Extended Dynamic Allocation Capability
+ 	CSN1_S1  	dtm_struct 	 	%REL99% ; DTM (E-)GPRS Multislot Sub-Class and MAC Mode Support
+}
+
+
+
+COMP 	acc_cap 	"Access capabilities"
+{
+ 	 	pow_class 	 ; RF Power Capability
+ 	CSN1_S1  	a5_bits 	 ; A5 bits
+ 	 	es_ind 	 ; Early Classmark Sending
+ 	 	ps 	 ; Pseudo Synchronisation capability
+ 	 	vgcs 	 ; Voice Group Call Service
+ 	 	vbs 	 ; Voice Broadcast Service
+ 	CSN1_S1  	ms_struct 	 ; Multi Slot Capability Struct
+ 	CSN1_S1  	pow_8psk_cap 	 	%REL99% ; Modulation 8-PSK Power Capabilty
+ 	 	compact 	 	%REL99% ; COMPACT Interference Measurement Capability
+ 	 	rev99 	 	%REL99% ; Revision Level Indicator (R99)
+ 	 	umts_fdd 	 	%REL99% ; UMTS FDD Radio Access Technology
+ 	 	umts_tdd 	 	%REL99% ; UMTS TDD 3.84 Radio Access Technology
+ 	 	cdma2000 	 	%REL99% ; CDMA 2000 Radio Access Technology
+}
+
+
+
+COMP 	ra_cap2 	%!REL99% 	"RAC structure for R97"
+{
+ 	 	acc_tech_typ 	 ; Access Technology Type
+ 	GSM7_LV  	acc_cap 	 ; Access Capabilities
+ 	.0  ; Spare
+}
+
+
+
+COMP 	ra_cap_values 	%REL99% 	"Actual MS RA capability value part"
+{
+ 	 	acc_tech_typ 	 ; Access Technology Type
+ 	< (acc_tech_typ # 15) 	GSM7_LV  	acc_cap 	> 	 ; Access Capabilities
+ 	< (acc_tech_typ = 15) 	GSM7_LV  	add_acc_tech 	> 	 ; Additional Access Technologies
+}
+
+
+
+COMP 	ra_cap_r 	%REL99% 	"Recursive MS RA capability value part"
+{
+ 	 	ra_cap_values 	 ; Actual MS RA capability value part
+}
+
+
+
+COMP 	ra_cap 	"MS RA capability value part"
+{
+ 	 	ra_cap_values 	 	%REL99% ; Actual MS RA capability value part
+ 	CSN1_S1  	ra_cap_r 	[0.. MAX_ADD_RA_CAP] 	 	%REL99% ; Recursive MS RA capability value
+ 	 	acc_tech_typ 	 	%!REL99% ; Access Technology Type
+ 	GSM7_LV  	acc_cap 	 	%!REL99% ; Access Capabilities
+ 	 	flag_ra_cap2 	 	%!REL99% ; Valid flag for MS RA capability value part II
+ 	< (flag_ra_cap2=1) 	 	ra_cap2 	> 	 	%!REL99% ; MS RA capability value part II
+}
+
+
+
+COMP 	rf_power 	"MS RF Power Classes"
+{
+ 	 	pow_class4 	[5] 	 ; RF Power Capability (4 bits); Power Class of GSM 400, GSM 850, GSM 900, DCS 1800, PCS 1900
+ 	 	egde_pow1 	 ; EGDE RF Power Capability 1; 8-PSK Power Class of GSM 400, GSM 850, GSM 900
+ 	 	egde_pow2 	 ; EGDE RF Power Capability 2; 8-PSK Power Class of DCS 1800, PCS 1900
+}
+
+
+
+COMP 	rf_cap 	"MS RF Capability"
+{
+ 	 	setbands 	 ; Set Frequency Bands; bitmask of set frequency bands
+ 	 	bands 	 ; Supported Frequency Bands; bitmask of all available frequency bands
+ 	 	rf_power 	 ; MS RF Power Classes; MS RF Power Classes
+ 	 	rf_ms 	 ; MS RF Multi Slot Capability
+ 	 	es_ind 	 ; Early Classmark Sending; 'Controlled Early Classmark Sending' option is implementation (1) or not (0)
+ 	 	ps 	 ; Pseudo Synchronisation capability; PS capability present (1) or not present (0)
+ 	 	mt_pp_sms 	 ; Short Message capability; MS does supports (1) MT point to point SMS or not (0)
+ 	 	lcsva 	 ; LCSVA capability; LCS value added location request notification supported (1) or not (0)
+ 	 	solsa 	 ; SoLSA Supported; MS does supports SoLSA (1) or not (0)
+ 	 	cmsp 	 ; CMSP Supported; MS does supports (1) CM service Prompt (network initiated MO CM connection request) or not (0)
+ 	 	mod 	 ; EDGE Modulation Capability; The Modulation Capability field indicates the supported modulation scheme by MS in addition to GMSK. 8-PSK supported for downlink reception only (0) or for for uplink transmission and downlink reception (1)
+ 	 	mac_support 	 ; MAC Mode support; MS does supports Dynamic and Fixed Allocation (1) or only supports Exclusive Allocation (0)
+ 	 	meas 	 ; Measurement Capability; Indicates whether a IE shall contain any value about the measurement capabilities (1) or not (0).
+ 	 	ext_meas 	 ; Extended Measurement Capability; The MS does supports 'Extended Measurement' (1) or not (0)
+ 	 	compact 	 ; COMPACT Interference Measurement Capability; The MS does support COMPACT Interference Measurement (1) or not (0)
+ 	 	vbs 	 ; VBS Notification Reception; VBS capability and notifications wanted (1) or vice versa (0)
+ 	 	vgcs 	 ; VGCS Notification Reception; VGCS capability and notifications wanted (1) or vice versa (0)
+ 	 	ucs2_treat 	 ; UCS2 treatment; Indicates the likely treatment by the MS of UCS2 encoded
+ 	 	ss_screen 	 ; SS Screen. Indicator
+ 	 	sms_val 	 ; Switch-Measure-Switch-Value
+ 	 	sm_val 	 ; Switch-Measure-Value
+ 	 	a5_bits 	 ; A5 bits; Encryption algorithm A5/n available (0) or not (1)
+ 	.0  ; spare
+ 	 	assist_eotd 	 ; MS assisted E-OTD; bit 5
+ 	 	based_eotd 	 ; MS based E-OTD; bit 4
+ 	 	assist_gps 	 ; MS assisted GPS; bit 3
+ 	 	based_gps 	 ; MS based GPS; bit 2
+ 	 	conv_gps 	 ; MS conventional GPS; bit 1
+ 	 	gprs_eda 	 ; GPRS Extended Dynamic Allocation Capability; Extended Dynamic Allocation Capability
+ 	 	egprs_eda 	 ; EGPRS Extended Dynamic Allocation Capability; Extended Dynamic Allocation Capability
+ 	.0  ; spare
+}
+
+
+
+COMP 	pan_struct 	"PAN Structure"
+{
+ 	 	dec 	 ; PAN_DEC
+ 	 	inc 	 ; PAN_INC
+ 	 	pmax 	 ; PAN_MAX
+}
+
+
+
+COMP 	ccn_support_description 	%REL99% 	"ccn support description towards all neighbour"
+{
+ 	 	num_cells 	 ; Num of Cells
+ 	 	ccn_support 	[num_cells..BIT7_MAX] 	 ; CCN support
+}
+
+
+
+COMP 	ext_dtm_ms 	%REL99 OR TI_PS_FF_REL99_AND_ABOVE% 	"Extended DTM Multislot Structure "
+{
+ 	 	ext_dtm_g_ms_class 	 ; Extended DTM GPRS Multi Slot Sub-Class
+ 	 	ext_dtm_e_ms_class 	 ; Extended DTM EGPRS Multi Slot Sub-Class
+}
+
+
+
+COMP 	mob_class_3 	"Mobile Station Classmark 3"
+{
+ 	.0  ; Spare
+ 	 	mb_value 	 ; Multiband Support
+ 	 	a5_7 	 ; A5/7
+ 	 	a5_6 	 ; A5/6
+ 	 	a5_5 	 ; A5/5
+ 	 	a5_4 	 ; A5/4
+ 	< (mb_value=5 OR mb_value=6) 	 	radio_cap_2 	> 	 ; Associated Radio Capability 2
+ 	< (mb_value=1 OR mb_value=2 OR mb_value=4) 	.0000 > 	 ; Spare
+ 	< (mb_value=1 OR mb_value=2 OR mb_value=4 OR mb_value=5 OR mb_value=6) 	 	radio_cap_1 	> 	 ; Associated Radio Capability 1
+ 	CSN1_S1  	rgsm_class 	 ; R Support (R-GSM Class)
+ 	CSN1_S1  	ms_class 	 ; Multi Slot Capability
+ 	 	ucs2_treat 	 ; UCS2 Treatment
+ 	 	ext_meas 	 ; Extended Measurement Capability
+ 	CSN1_S1  	measurement 	 ; Measurement Capability
+ 	CSN1_S1  	pos_method 	 ; MS Positioning Method Capability
+ 	CSN1_S1  	edge_ms_class 	 ; EGDE Multi Slot Capability
+ 	CSN1_S1  	egde_struct 	 ; EGDE Structure
+ 	CSN1_S1  	gsm400_struct 	 ; GSM 400 Bands Supported Structure
+ 	CSN1_S1  	gsm850_cap 	 ; GSM 850 Associated Radio Capability
+ 	CSN1_S1  	pcs1900_cap 	 ; PCS 1900 Associated Radio Cap.
+ 	 	umts_fdd 	 ; UMTS FDD Radio Access Technology
+ 	 	umts_tdd 	 ; UMTS TDD Radio Access Technology
+ 	 	cdma2000 	 ; CDMA 2000 Radio Access Technology
+ 	CSN1_S1  	dtm_ms 	 ; DTM Multislot Structure
+ 	CSN1_S1  	single_band 	 ; Single Band Support
+ 	CSN1_S1  	gsm700_cap 	 ; GSM 700 Associated Radio Capability
+ 	 	umts_tdd_128 	 ; UMTS 1.28 TDD Radio Access Technology
+ 	 	geran_feat_pack_1 	 ; GERAN Feature 1 Package
+ 	CSN1_S1  	ext_dtm_ms 	 ; Extended DTM Multislot Structure 
+ 	CSN1_S1  	high_ms_cap 	 ; High Multislot Capability
+ 	CSN1_S1  	geran_iu_mod_cap 	 ; GERAN Iu Mode Capabilities
+ 	 	geran_feat_pack_2 	 ; GERAN Feature Package 2
+ 	 	gmsk_ms_pwr_prof 	 ; GMSK Multislot Power Profile
+ 	 	psk8_ms_pwr_prof 	 ; 8-PSK Multislot Power Profile
+ 	CSN1_S1  	t_gsm400_struct 	 ; T-GSM 400 Bands Supported Structure
+ 	CSN1_S1  	t_gsm900_cap 	 ; T-GSM 900 Associated Radio Capability
+ 	 	dl_adv_rx_per 	 ; Downlink Advanced Receiver Performance
+ 	 	dtm_enhance_cap 	 ; DTM Enhancements Capability
+ 	CSN1_S1  	dtm_high_ms 	 ; DTM (E)GPRS High Multi Slot Class 
+ 	 	rep_acch_cap 	 ; Repeated ACCH Capability : bit
+ 	S_PADDING .00000000 (0) ; N Spare Padding
+}
+
+
+
+COMP 	tdd_ci_struct 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD Neighbour cell information"
+{
+ 	 	tdd_indic0 	 ; Structured Element Item
+ 	TDD_CI  	tdd_ncell_data 	[0..MAX_TDD_CELLS] 	 ; Structured Element Item
+}
+
+
+
+COMP 	fdd_ci_struct 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Neighbour cell information"
+{
+ 	 	fdd_indic0 	 ; Structured Element Item
+ 	FDD_CI  	fdd_ncell_data 	[0..MAX_FDD_CELLS] 	 ; Structured Element Item
+}
+
+
+
+COMP 	rep_u_tdd_cells 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Repeated UTRAN TDD Neighbour cells"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	tdd_arfcn 	> 	 ; TDD_ARFCN
+ 	< (flag=1) 	 	tdd_arfcn_index 	> 	 ; TDD ARFCN index
+ 	 	tdd_ci_struct 	 ; TDD neighbour cell info
+}
+
+
+
+COMP 	rep_u_fdd_cells 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Repeated UTRAN FDD Neighbour cells"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	fdd_arfcn 	> 	 ; FDD_ARFCN
+ 	< (flag=1) 	 	fdd_arfcn_index 	> 	 ; FDD ARFCN index
+ 	 	fdd_ci_struct 	 ; FDD neighbour cell info
+}
+
+
+
+COMP 	utran_tdd 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"UTRAN TDD description"
+{
+ 	CSN1_S1  	bw_tdd 	 ; Bandwidth TDD
+ 	CSN1_S1  	rep_u_tdd_cells 	[0..MAX_TDD] 	 ; Repeated UTRAN TDD Neighbour cells
+}
+
+
+
+COMP 	utran_fdd 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"UTRAN FDD description"
+{
+ 	CSN1_S1  	bw_fdd 	 ; Bandwidth FDD
+ 	CSN1_S1  	rep_u_fdd_cells 	[0..MAX_FDD] 	 ; Repeated UTRAN FDD Neighbour cells
+}
+
+
+
+COMP 	threeg_cells 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"3G Neighbour Cell Description"
+{
+ 	CSN1_S1  	index_start_3g 	 ; Index Start 3G
+ 	CSN1_S1  	abs_index_emr 	 ; Absolute Index start EMR
+ 	CSN1_S1  	utran_fdd 	 ; UTRAN FDD description
+ 	CSN1_S1  	utran_tdd 	 ; UTRAN TDD description
+}
+
+
+
+COMP 	cd2k_str_000 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	td_mode 	 ; Structured Element Item
+ 	 	td_power_level 	 ; Structured Element Item
+}
+
+
+
+COMP 	cd2k_str_001 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	qof 	 ; Structured Element Item
+ 	 	walsh_len_a 	 ; Structured Element Item
+ 	 	aux_pilot_walsh 	[.walsh_len_a+6..8] 	 ; Structured Element Item
+}
+
+
+
+COMP 	cd2k_str_010 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	qof 	 ; Structured Element Item
+ 	 	walsh_len_b 	 ; Structured Element Item
+ 	 	aux_td_walsh 	[.walsh_len_b+6..8] 	 ; Structured Element Item
+ 	 	aux_td_power_level 	 ; Structured Element Item
+ 	 	td_mode 	 ; Structured Element Item
+}
+
+
+
+COMP 	cd2k_str_011 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	sr3_prim_pilot 	 ; Structured Element Item
+ 	 	sr3_pilot_power1 	 ; Structured Element Item
+ 	 	sr3_pilot_power2 	 ; Structured Element Item
+}
+
+
+
+COMP 	cd2k_str_110_1 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	qof1 	 ; Structured Element Item
+ 	 	walsh_length1 	 ; Structured Element Item
+ 	 	aux_pilot_walsh1 	[.walsh_length1+6..8] 	 ; Structured Element Item
+}
+
+
+
+COMP 	cd2k_str_110_2 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	qof2 	 ; Structured Element Item
+ 	 	walsh_length2 	 ; Structured Element Item
+ 	 	aux_pilot_walsh2 	[.walsh_length2+6..8] 	 ; Structured Element Item
+}
+
+
+
+COMP 	cd2k_str_110 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	cd2k_str_011 	 ; Structured Element Item
+ 	 	qof 	 ; Structured Element Item
+ 	 	walsh_len_c 	 ; Structured Element Item
+ 	 	aux_walsh_len 	[.walsh_len_c+6..8] 	 ; Structured Element Item
+ 	 	cd2k_str_110_1 	 ; Structured Element Item
+ 	 	cd2k_str_110_2 	 ; Structured Element Item
+}
+
+
+
+COMP 	cd2k_str_all 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	flag_3bit 	 ; Structured Element Item
+ 	< (flag_3bit=000) 	 	cd2k_str_000 	> 	 ; Structured Element Item
+ 	< (flag_3bit=001) 	 	cd2k_str_001 	> 	 ; Structured Element Item
+ 	< (flag_3bit=010) 	 	cd2k_str_010 	> 	 ; Structured Element Item
+ 	< (flag_3bit=011) 	 	cd2k_str_011 	> 	 ; Structured Element Item
+ 	< (flag_3bit=110) 	 	cd2k_str_110 	> 	 ; Structured Element Item
+}
+
+
+
+COMP 	cd2k_cell_str 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	pilot_PN_offset 	 ; Structured Element Item
+ 	CSN1_S1  	cd2k_str_all 	 ; Structured Element Item
+}
+
+
+
+COMP 	cdma2000_cell_desc 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"CDMA2000 neighbour cell description structure"
+{
+ 	 	cdma2000_frequency_band  	 ; Structured Element Item
+ 	 	cdma2000_frequency 	 ; Structured Element Item
+ 	 	number_cdma2000_cells 	 ; Structured Element Item
+ 	 	cd2k_cell_str 	[number_cdma2000_cells..MAX_CDMA2K_NEIGH_CELLS] 	 ; Structured Element Item
+}
+
+
+
+COMP 	fdd_report 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"FDD Reporting"
+{
+ 	 	fdd_rep_offset 	 ; FDD Reporting Offset
+ 	 	fdd_rep_thres 	 ; FDD Reporting Threshold
+}
+
+
+
+COMP 	tdd_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"TDD Reporting"
+{
+ 	 	tdd_rep_offset 	 ; TDD Reporting Offset
+ 	 	tdd_rep_thres 	 ; TDD Reporting Threshold
+}
+
+
+
+COMP 	cdma2000_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Structured Element"
+{
+ 	 	cdma2000_rep_offset 	 ; CDMA2000 Reporting Offset
+ 	 	cdma2000_rep_thres 	 ; CDMA2000 Reporting Threshold
+}
+
+
+
+COMP 	egprs_pck_ch_req_bep_per 	%REL99% 	"EGPRS packet channel and BEP period structure"
+{
+ 	 	egprs_packet_channel_request 	 ; EGPRS packet channel request message sent
+ 	 	bep_period 	 ; Packet channel request message in two phase packet access
+}
+
+
+
+COMP 	gprs_ext_info 	%REL99% 	"GPRS cell options Extension Information"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	egprs_pck_ch_req_bep_per 	> 	 ; EGPRS packet channel and BEP period structure
+ 	< ( (TAKE, 1) >0 AND flag=0 OR (TAKE, 1) >5) 	 	pfc_feature_mode 	> 	 ; PFC feature support by the N/W
+ 	< ( (TAKE, 1) >1 AND flag=0 OR (TAKE, 1) >6) 	 	dtm_support 	> 	 ; DTM support by the cell
+ 	< ((TAKE, 1) >2 AND flag=0 OR (TAKE, 1) >7) 	 	bss_paging_coord 	> 	 ; BSS paging co-ordination
+ 	< ((TAKE, 1) >3 AND flag=0 OR (TAKE, 1) >8) 	 	ccn_active 	> 	 ; CCN_ACTIVE
+ 	< ((TAKE, 1) >4 AND flag=0 OR (TAKE, 1) >9) 	 	nw_ext_ul_tbf 	> 	 ; NW_EXT_UTBF
+}
+
+
+
+COMP 	gprs_ext_bits 	"GPRS cell options extensions Bits IE"
+{
+ 	 	ext_len 	(KEEP,1) 	%REL99% ; Extension length
+ 	 	gprs_ext_info 	[.ext_len+1..64] 	 	%REL99% ; GPRS cell options extension Information and spare bit(s)
+ 	 	ext_len 	 	%!REL99% ; Extension length
+ 	 	spare_ext 	[ext_len+1..64] 	 	%!REL99% ; spare bit extensions IE
+}
+
+
+
+COMP 	gprs_cell_opt 	"GPRS Cell Options"
+{
+ 	 	nmo 	 ; NMO
+ 	 	t3168 	 ; T3168
+ 	 	t3192 	 ; T3192
+ 	 	drx_t_max 	 ; DRX_TIMER_MAX
+ 	 	ab_type 	 ; ACCESS_BURST_TYPE
+ 	 	ctrl_ack_type 	 ; CONTROL_ACK_TYPE
+ 	 	bs_cv_max 	 ; BS_CV_MAX
+ 	CSN1_S1  	pan_struct 	 ; PAN Structure
+ 	CSN1_S1  	gprs_ext_bits 	 ; GPRS cell options extension Bits IE
+}
+
+
+
+
+
+
+MSG 	ms_rf_capability 	downlink 	0b00000001 ; Mobile Station RF Capabilities
+{
+ 	GSM3_V  	msg_type 	 ; Message type
+ 	GSM3_V  	rf_cap 	 ; MS RF capability
+}
+
+
+
+
+
+

@@ -1,0 +1,1430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">aci</DocName>
+        <DocNum Number="105" Project="8411"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for fax and data transmission consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity. The entity, which is described in this document, is coloured grey in the following figure :</Section>
+            <Section>Figure 1-1: Architecture of the fax and data protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the fax and data protocol stack are:</Section>
+            <Section>1.1 RA - Rate Adaptation</Section>
+            <Section>This entity performs an adaptation between an asynchronous or synchronous data stream with several bit rates on to the fixed bit rate used at the TCH. This is performed by the rate adaptation functions RA1' and RA0 described in GSM 04.21.</Section>
+            <Section>1.2 RLP - Radio Link Protocol</Section>
+            <Section>This entity provides a Layer 2 protocol for asynchronous reliable data transfer as specified in GSM 04.22. It includes error correction, sequence numbers and a mechanism for repeating corrupted and lost messages.</Section>
+            <Section>1.3 L2R - Layer 2 Relay Functionality</Section>
+            <Section>The L2R provides relay functions in order to adapt the character-oriented data received from the TE via USART to the bit-oriented RLP protocol.</Section>
+            <Section>1.4 FAD 03.45 - Fax Adaptation Protocol</Section>
+            <Section>The fax adaptation protocol, as specified in GSM 03.45, provides synchronisation with the BCS and MSG modems of the peer entity. It uses byte repetition in conjunction with a voting algorithm to handle corruption on the TCH data stream. The non-transparent fax protocol in accordance with GSM 03.46 is not part of this implementation.</Section>
+            <Section>The fax adapter enables T.30 to send BCS at 300 BPS and T.4 MSG in 2400, 4800, 7200 and 9600 BPS.</Section>
+            <Section>1.5 T.30 - Fax Protocol Entity</Section>
+            <Section>The protocol uses binary coded signals packed in HDLC frames to set up and release a connection in the message phase of the FAX transmission. This entity is specified in the ITU-T.30. The main tasks of this unit are:</Section>
+            <Section>? Building the HDLC frames with CRC.</Section>
+            <Section>? Performing bit stuffing/de-stuffing.</Section>
+            <Section>? Executing a sequence of 5 phases: 1.) set up, 2.) pre-message procedures, 3.) transmission/reception, 4.) post message procedures, 5.) waiting for call release.</Section>
+            <Section>1.6 ACI - AT Command Interpreter</Section>
+            <Section>The ACI is specified in GSM 07.07. It is responsible for call establishment via the GSM voice protocol stack and terminal adaptation for asynchronous transparent character-oriented data transmission. The ACI is able to receive AT commands and send the replies over the USART driver to a remote PC. This makes it possible to control the voice and data protocol stack from a remote application running on a PC. The ACI also provides a unique interface for an internal MMI in the MS.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the F&amp;D. The driver has to be able to perform flow control.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="98"/>
+            <Date Day="25" Month="3" Year="1998"/>
+            <Author>Joachim</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Pilz Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="200" Year="98"/>
+            <Date Day="30" Month="7" Year="1998"/>
+            <Author>Joachim</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Pilz AT command list revised and compression values added. Compression mechanism changed for AT command sequences.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="201" Year="00"/>
+            <Date Day="8" Month="3" Year="2000"/>
+            <Author>Manfred</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Gutheins Primitves added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="202" Year="00"/>
+            <Date Day="5" Month="4" Year="2000"/>
+            <Author>Manfred</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Gutheins ACI_ABORT_CNF added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="203" Year="00"/>
+            <Date Day="26" Month="5" Year="2000"/>
+            <Author>Manfred</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Gutheins ACI_INIT_REQ/CNF changed to ACI_INIT_IND/RES</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="204" Year="00"/>
+            <Date Day="22" Month="1" Year="2003"/>
+            <Author>MSB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>ACI_TRC_IND Primitve added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="205" Year="00"/>
+            <Date Day="01" Month="06" Year="2004"/>
+            <Author>Liyi Yu</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>ACI_EXT_IND Primitve added</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>Rec. T.4 Standardisation of group 3 facsimile apparatus for document transmission;(CCITT-T.4, 1984)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>ITU-T Recommendation T.30; Series T: Terminal equipments and protocols for telematic services;Procedures for document facsimile transmission in the general switchedtelephone network;(ITU-T.30, 1996)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>ITU-T Recommendation T.31; Terminals for telematic services;Asynchronous facsimile DCE control - service class 1(ITU-T.31, 1995)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>ITU-T Recommendation T.32; Terminals for telematic services;Asynchronous facsimile DCE control - service class 2(ITU-T.32, 1995)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>Rec. T.35; Terminal equipment and protocols for telematic services;Procedures for the allocation of CCITT definde codes for non-standard facilities;(CCITT-T.35, 1991)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>ITU-T Recommendation V.25 ter; Series V: data communication over the telephone network;Interfaces and voiceband modems; Serial asynchronous automatic dialling and control(ITU-T V.25 ter, 1997)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>Rec. V.42 bis Data compression procedures for data circuit terminating equipment (DCE) using error correction procedures;(CCITT-V.42 bis, 1990)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>Rec. V.110 (Blue book, Vol. VIII, Fascicle VIII.1) Support of data terminal equipments (DTEs) with V-series type interfaces by an integrated services digital network (ISDN);(CCITT-V.110, 1988)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);GSM Public Land Mobile Network (PLMN) connection types;(GSM 3.10, September 1994, version 4.3.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Technical realisation of facsimile group 3 transparent;(GSM 3.45, September 1995, version 4.5.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Mobile radio interface layer 3 specification;(GSM 4.08, November 1996, version 4.17.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Rate adaptation on the Mobile Station - Base Station System (MS - BSS) Interface;(GSM 4.21, May 1995, version 4.6.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Radio Link Protocol (RLP) for data and telematic services on the Mobile Station - Base Station System (MS - BSS) interface and the Base Station System - Mobile-service Switching Centre (BSS - MSC) interface(GSM 4.22, September 1994, version 4.3.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Radio Link Protocol (RLP) for data and telematic services on the Mobile Station - Base Station System (MS - BSS) interface and the Base Station System - Mobile-service Switching Centre (BSS - MSC) interface(Amendment prA1 for GSM 4.22, version 4.3.0)(GSM 4.22, March 1995, version 4.4.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);General on Terminal Adaptation Functions (TAF) for Mobile Stations (MS);(GSM 7.01, December 1995, version 4.10.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Terminal Adaptation Functions (TAF) for services using asynchronous bearer capabilities;(GSM 7.02, September 1994, version 4.5.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Terminal Adaptation Functions (TAF) for services using synchronous bearer capabilities;(GSM 7.03, September 1994, version 4.5.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Use of Data Terminal Equipment - Data Circuit terminating Equipment (DTE - DCE) interface for Short Message Service (SMS) and Cell Broadcast Services (CBS);(GSM 7.05, November 1996, version 4.8.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);AT command set for GSM Mobile Equipment (ME)(GSM 7.07, May 1996, version 4.1.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>Digital cellular telecommunication system (Phase 2);Mobile Station (MS) conformance specification;Part 1: Conformance specification(GSM 11.10-1, November 1996, version 4.17.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Mobile Station (MS) conformance specification;Part 2: Protocol Implementation Conformance Statement (PICS)proforma specification(GSM 11.10-2, May 1996, version 4.15.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Mobile Station (MS) conformance specification;Part 3: Layer 3 (L3) Abstract Test Suite (ATS)(GSM 11.10-3, November 1996, version 4.17.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>Proposal for Rate Adaptation implemented on a DSP;(C. Bianconi, Texas Instruments, January 1998, version 1.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>MCU-DSP Interfaces for Data Applications;Specification S844(C. Bianconi, Texas Instruments, March 1998, version 0.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>Users Guide6147.300.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>Service Access Point RA8411.100.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[27]</RefId>
+            <RefTitle>Service Access Point RLP8411.101.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[28]</RefId>
+            <RefTitle>Service Access Point L2R8411.102.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[29]</RefId>
+            <RefTitle>Service Access Point FAD8411.103.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[30]</RefId>
+            <RefTitle>Service Access Point T308411.104.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[31]</RefId>
+            <RefTitle>Service Access Point ACI8411.105.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[32]</RefId>
+            <RefTitle>Message Sequence Charts RLP8411.201.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[33]</RefId>
+            <RefTitle>Message Sequence Charts L2R8411.202.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[34]</RefId>
+            <RefTitle>Message Sequence Charts FAD8411.203.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[35]</RefId>
+            <RefTitle>Message Sequence Charts T308411.204.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[36]</RefId>
+            <RefTitle>Message Sequence Charts ACI8411.205.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[37]</RefId>
+            <RefTitle>Proposal for Fax &amp; Data Integration; March 19988411.300.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[38]</RefId>
+            <RefTitle>Test Specification RLP8411.401.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[39]</RefId>
+            <RefTitle>Test Specification L2R8411.402.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[40]</RefId>
+            <RefTitle>Test Specification FAD8411.403.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[41]</RefId>
+            <RefTitle>Test Specification T308411.404.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[42]</RefId>
+            <RefTitle>Test Specification ACI8411.405.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[43]</RefId>
+            <RefTitle>SDL Specification RLP8411.501.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[44]</RefId>
+            <RefTitle>SDL Specification L2R8411.502.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[45]</RefId>
+            <RefTitle>SDL Specification FAD8411.503.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[46]</RefId>
+            <RefTitle>SDL Specification T308411.504.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[47]</RefId>
+            <RefTitle>SDL Specification ACI8411.505.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[48]</RefId>
+            <RefTitle>Technical Documentation RLP8411.701.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[49]</RefId>
+            <RefTitle>Technical Documentation L2R8411.702.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[50]</RefId>
+            <RefTitle>Technical Documentation FAD8411.703.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[51]</RefId>
+            <RefTitle>Technical Documentation T308411.704.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[52]</RefId>
+            <RefTitle>Technical Documentation ACI8411.705.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the ACI SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>MAX_CMD_LEN</Alias>
+            <Value ValueType="DEC">380</Value>
+            <Comment>length of one ACI command sequence</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_TRC_LEN</Alias>
+            <Value ValueType="DEC">80</Value>
+            <Comment>Max. length of one ACI trace buffer</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_DATA_LEN</Alias>
+            <Value ValueType="DEC">200</Value>
+            <Comment>length of the signal data</Comment>
+        </Constant>
+        <History>
+            <Date Day="25" Month="3" Year="1998"/>
+            <Author>PZ</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="21">
+        <Description>
+            <Section>This section contains all primitives that are defined for the ACI SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The ACI_CMD_REQ is used to pass a AT command to ACI. The command is defined as a string (defined in GSM 07.07/07.05). The attention prefix AT must be included in this primitive. In case of reading command sequences from a serial interface an ACI_CMD_REQ should only be generated for a complete input line which is terminated with e.g. CR/LF. The line termination characters should not be included in the command parameter.</Section>
+                <Section>Every ACI_CMD_REQ must be acknowledged with a ACI_CMD_CNF by the ACI. After sending an ACI_CMD_REQ the MMI must wait for the corresponding ACI_CMD_CNF, before another ACI_CMD_REQ can be sent.</Section>
+                <Section>For further studies:</Section>
+                <Section>In a future implementation the AT command can be coded binary as an option.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CMD_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_src</Name>
+                </ItemLink>
+                <Comment>Command source</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_len</Name>
+                </ItemLink>
+                <Comment>length of command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_seq</Name>
+                </ItemLink>
+                <Control>[MAX_CMD_LEN]</Control>
+                <Comment>Command</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="3" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_CMD_IND primitive indicates a result of a ACI_CMD_REQ to the MMI. Only after receiving the ACI_CMD_CNF, the MMI can send the next ACI_CMD_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CMD_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_len</Name>
+                </ItemLink>
+                <Comment>length of the command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_seq</Name>
+                </ItemLink>
+                <Control>[MAX_CMD_LEN]</Control>
+                <Comment>command</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="1" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_CMD_IND primitive indicates a command or a result of a ACI_CMD_REQ to the MMI. The result codes like OK, CONNECT etc. must be indicated with the ACI_CMD_CNF primitive.</Section>
+                <Section>Every ACI_CMD_IND must be acknowledged with a ACI_CMD_RES by the MMI. After sending an ACI_CMD_IND the ACI must wait for the corresponding ACI_CMD_RES, before another ACI_CMD_IND or ACI_CMD_CNF can be sent.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CMD_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_len</Name>
+                </ItemLink>
+                <Comment>length of the command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_seq</Name>
+                </ItemLink>
+                <Control>[MAX_CMD_LEN]</Control>
+                <Comment>command</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="3" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_CMD_RES primitive is used as an acknowledgement of a previous ACI_CMD_IND. After receiving the ACI_CMD_RES the ACI can send another ACI_CMD_IND or an ACI_CMD_CNF .</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CMD_RES</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="1" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_ABORT_REQ should be used to abort the execution of the last send ACI_CMD_REQ primitive. If the last AT sequence is already processed this primitive will be discarded by the ACI. ACI does not send any result of the aborted command, but acknowledges the ACI_ABORT_REQ with an ACI_ABORT_CNF. All unsolicited results which will be received by the user of the SAP before the ACI_ABORT_CNF must be discarded. They are not acknowledged by an ACI_CMD_RES.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_ABORT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_src</Name>
+                </ItemLink>
+                <Comment>Command source</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Abort cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="3" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="4" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>ACI_ABORT_CNF added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_URT_STATUS_IND primitive indicates a change of state of the URT device.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_URT_STAT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>urt_stat</Name>
+                </ItemLink>
+                <Comment>status of URT</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="3" Year="1999"/>
+                <Author>AK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by ACI to indicate initialisation to a client.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_INIT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>CLIENT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="8" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>ACI_INIT_REQ changed to ACI_INIT_IND</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the acknowledgement for a previous ACI_INIT_IND.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_INIT_RES</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>CLIENT</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>ackflg</Name>
+                </ItemLink>
+                <Comment>Acknowledge</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>ACI_INIT_CNF changed to ACI_INIT_RES</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="8" Year="2000"/>
+                <Author>Mvi</Author>
+                <Comment>Acknowledge added for Bluetooth interface</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by a client of the ACI at the time of deinitialisation of the client.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_DEINIT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>CLIENT</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="8" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the acknowledgement for a ACI_DEINIT_REQ. It can be used to unregister ACI with the client.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_DEINIT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>CLIENT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="8" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by a client of the ACI in order to open a port.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_OPEN_PORT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>CLIENT</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>port_nb</Name>
+                </ItemLink>
+                <Comment>port number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Updated port number</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the acknowledgement for a ACI_OPEN_PORT_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_OPEN_PORT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>CLIENT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>port_nb</Name>
+                </ItemLink>
+                <Comment>port number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>ackflg</Name>
+                </ItemLink>
+                <Comment>result</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Updated port number</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by a client of the ACI in order to close a port.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CLOSE_PORT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>CLIENT</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>port_nb</Name>
+                </ItemLink>
+                <Comment>port number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Updated port number</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the acknowledgement for a ACI_CLOSE_PORT_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CLOSE_PORT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>CLIENT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>port_nb</Name>
+                </ItemLink>
+                <Comment>port number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Updated port number</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_ABORT_CNF is an acknowledgement for a previous ACI_ABORT_REQ. It always contains the result string "OK". All unsolicited results, which have been received prior to the ACI_ABORT_CNF are discarded and not acknowledged with an ACI_CMD_RES.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_ABORT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_len</Name>
+                </ItemLink>
+                <Comment>length of the command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_seq</Name>
+                </ItemLink>
+                <Control>[MAX_CMD_LEN]</Control>
+                <Comment>command</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="3" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_CMD_REQ_BT is a temporary substitute for ACI_CMD_REQ in case that BT software is used.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CMD_REQ_BT</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_src</Name>
+                </ItemLink>
+                <Comment>Command source</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_len</Name>
+                </ItemLink>
+                <Comment>length of command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_seq</Name>
+                </ItemLink>
+                <Control>[MAX_CMD_LEN]</Control>
+                <Comment>Command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>src_id</Name>
+                </ItemLink>
+                <Comment>ACI source</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="31" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>BT version of ACI_CMD_CNF.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CMD_CNF_BT</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_len</Name>
+                </ItemLink>
+                <Comment>length of the command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_seq</Name>
+                </ItemLink>
+                <Control>[MAX_CMD_LEN]</Control>
+                <Comment>command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>src_id</Name>
+                </ItemLink>
+                <Comment>ACI source</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="31" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>BT version of ACI_CMD_IND.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CMD_IND_BT</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_len</Name>
+                </ItemLink>
+                <Comment>length of the command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_seq</Name>
+                </ItemLink>
+                <Control>[MAX_CMD_LEN]</Control>
+                <Comment>command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>src_id</Name>
+                </ItemLink>
+                <Comment>ACI source</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="31" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>BT version of ACI_CMD_RES.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_CMD_RES_BT</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>src_id</Name>
+                </ItemLink>
+                <Comment>ACI source</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="31" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_ABORT_REQ_BT is the temporary adaption of ACI_ABORT_REQ for BT</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_ABORT_REQ_BT</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_src</Name>
+                </ItemLink>
+                <Comment>Command source</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Abort cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>src_id</Name>
+                </ItemLink>
+                <Comment>ACI source</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="3" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_ABORT_CNF is an acknowledgement for a previous ACI_ABORT_REQ. It always contains the result string "OK". All unsolicited results, which have been received prior to the ACI_ABORT_CNF are discarded and not acknowledged with an ACI_CMD_RES.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_ABORT_CNF_BT</Name>
+                <PrimID Direction="DOWNLINK" Number="16"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>src_id</Name>
+                </ItemLink>
+                <Comment>ACI source</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="9" Month="8" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI_TRC_IND is used to pass a trace string to ACI. An ACI_TRC_IND will be not acknowledged with a response by the ACI. The Command source should be ever 1.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_TRC_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>PS</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_src</Name>
+                </ItemLink>
+                <Comment>Command source</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>trc_len</Name>
+                </ItemLink>
+                <Comment>length of trace</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>trc_buf</Name>
+                </ItemLink>
+                <Control>[MAX_TRC_LEN]</Control>
+                <Comment>trace</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="22" Month="1" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>xxxxx.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_RIV_CMD_REQ</Name>
+                <PrimID Direction="UPLINK" Number="16"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>cmd_ptr</Name>
+                </ItemLink>
+                <Comment>Command index</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>RIE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="4" Year="2003"/>
+                <Author>NM</Author>
+                <Comment>changed UBYTE -&gt; ULONG</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is for the extension mechanism.</Section>
+            </Description>
+            <PrimDef>
+                <Name>ACI_EXT_IND</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>signal_id</Name>
+                </ItemLink>
+                <Comment>Signal Id</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">aci</DocName>
+                    <Name>data</Name>
+                </ItemLink>
+                <Control>[MAX_DATA_LEN]</Control>
+                <Comment>data of the signal</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>Liyi Yu</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the initiator's location of ACI_CMD_REQ. Possible location are an internal or an external application. Normally the application like an MMI runs on the same microprocessor like the protocol stack. In this case the application must set this parameter to CMD_SRC_INT. Command sequences which are received via the serial interface are converted into ACI_CMD_REQ primitives and were send via IPC mechanism from the serial driver software to the ACI entity. In this case the driver will send this parameter to CMD_SRC_EXT.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cmd_src</Name>
+                <Type>U8</Type>
+                <Comment>Command source</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">aci</DocName>
+                <Name>VAL_cmd_src</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="27" Month="3" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>CMD_SRC_MMI changed to CMD_SRC_INT</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the length in byte of the command parameter in the ACI_CMD_REQ/IND primitives. A null termination of strings is not possible because in the compressed representation of commands the command parameter may contain non-ASCII characters.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cmd_len</Name>
+                <Type>U16</Type>
+                <Comment>Length of command</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="3" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>If the command parameter is used in a ACI_CMD_REQ primitive it contains a non-empty sequence of AT commands. The command sequence contains a leading "AT" but not a trailing line termination e.g. CR/LF. The processing of each command may lead to one ore more ACI_CMD_IND primitives and to a final ACI_CMD_CNF. The AT commands should be separated as described in GSM07.05. If the command parameter is used in a ACI_CMD_IND or ACI_CMD_CNF primitive it contains the results of the ACI like requested parameters or state indications.</Section>
+                <Section>For further study:</Section>
+                <Section>In an future implementation the command/response sequence can be defined in a compressed format to reduce the ROM space. Therefore, each command and response will have a unique numeric representation. The numeric format makes it possible to implement a quick command scheduler which uses e.g. a switch statement to recognise the command. The binary format has not been defined yet. A list of constants which denote AT commands and their according values can be found in the values section of the cmd_seq parameter. NOTE: The numeric values which are defined at the moment may vary in the future. Always the symbolic constant should be used.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cmd_seq</Name>
+                <Type>U8</Type>
+                <Comment>Command sequence</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="29" Month="3" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>AT command values for compression mode added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the current status of the URT device.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>urt_stat</Name>
+                <Type>U8</Type>
+                <Comment>URT status</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">aci</DocName>
+                <Name>VAL_urt_stat</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="26" Month="3" Year="1999"/>
+                <Author>AK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the cause for the abortion.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U8</Type>
+                <Comment>Cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">aci</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="26" Month="3" Year="1999"/>
+                <Author>AK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used to indicate acknowledgements.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ackflg</Name>
+                <Type>U8</Type>
+                <Comment>Acknowledge flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">aci</DocName>
+                <Name>VAL_ackflg</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="22" Month="8" Year="2000"/>
+                <Author>MVi</Author>
+                <Comment>Added for Bluetooth interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used to indicate the port number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>port_nb</Name>
+                <Type>U32</Type>
+                <Comment>port pumber</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Added for Bluetooth interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used to indicate the ACI instance (aka source ID).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>src_id</Name>
+                <Type>U8</Type>
+                <Comment>ACI source ID</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="10" Month="7" Year="2001"/>
+                <Author>KK</Author>
+                <Comment>Added for Bluetooth interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the length in byte of the trace buffer in the ACI_TRC_IND primitives..</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>trc_len</Name>
+                <Type>U16</Type>
+                <Comment>Length of trace</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="22" Month="1" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the byte buffer of the trace string in the ACI_TRC_IND primitives..</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>trc_buf</Name>
+                <Type>U8</Type>
+                <Comment>Trace buffer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="22" Month="1" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used as index for a command table inside ACIA.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cmd_ptr</Name>
+                <Type>U32</Type>
+                <Comment>Command index</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>RIE</Author>
+                <Comment>Added for Riviera interface</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="4" Year="2003"/>
+                <Author>NM</Author>
+                <Comment>changed UBYTE -&gt; ULONG</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used as internal Id for the extension signal.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>signal_id</Name>
+                <Type>U16</Type>
+                <Comment>Signal Id</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>Liyi</Author>
+                <Comment>Added for Extension Mechanism</Comment>
+            </History>
+        </PrimBasicElem>
+        
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter carries the data of the primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data</Name>
+                <Type>U32</Type>
+                <Comment>Signal data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>Liyi</Author>
+                <Comment>Added for Extension Mechanism</Comment>
+            </History>
+        </PrimBasicElem>
+
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the ACI SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cmd_src</Name>
+                <Comment>values for cmd_src</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CMD_SRC_INT</Alias>
+                <Comment>Command from internal application</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CMD_SRC_EXT</Alias>
+                <Comment>Command from external application</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>CMD_SRC_UNKNOWN</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_urt_stat</Name>
+                <Comment>values for urt_stat</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>URT_RDY_TO_SEND</Alias>
+                <Comment>URT is ready to accept new data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>URT_DATA_AVAIL</Alias>
+                <Comment>URT has data available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>URT_STAT_UNKNOWN</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ABT_ABORT_DATA</Alias>
+                <Comment>Abort data mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ABT_ABORT_CMD</Alias>
+                <Comment>Abort current command</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ackflg</Name>
+                <Comment>values for ackflg</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ACI_NAK</Alias>
+                <Comment>Not Acknowledge</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ACI_ACK</Alias>
+                <Comment>Acknowledge</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

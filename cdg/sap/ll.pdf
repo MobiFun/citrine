@@ -1,0 +1,731 @@
+;********************************************************************************
+;*** File           : ll.pdf
+;*** Creation       : Wed Mar 11 09:58:15 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : ll
+;*** Document No.   : 8441.104.99.017
+;*** Document Date  : 2003-02-04
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: UT
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:44:38 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-02-04"
+PRAGMA 	ID_AND_VERSION 	"8441.104.99.017"
+
+
+
+CONST 	N202 	4 	; maximum number of octets in the layer-3 header, Requirements: <R.LLC.LLC_PAR.A.008>, <R.LLC.TXUI_ADM.A.003>, <R.LLC.RXUI_ADM.A.003>
+CONST 	LLC_SDU_OFFSET 	37 	; number of octets that have to be reserved at the beginning of an SDU when an upper layer allocates an SDU for uplink data transfer; these octets are the maximum number of octets that the LLC header can occupy, they have to be skipped when upper layers write / read the contents of the SDU
+CONST 	LLC_SDU_OFFSET_BITS 	296 	; LLC_SDU_OFFSET in bits. NOTE: When this definition is changed, upper layer SAPs may also need to be changed!
+CONST 	LLC_MAX_L3_XID_LEN 	255 	; Maximum byte length of  the L3 XID parameter.
+CONST 	LLC_MAX_L3_XID_LEN 	255 	; Maximum byte length of  the L3 XID parameter.
+CONST 	LLC_MAX_CNF 	32 	; Maximum number of L3-PDU confirmations included in one LL_DATA_CNF
+EXTERN CONST 	@p_gsmcom - LLC_ORIGINATING_ENTITY@ 	LLC_ORIGINATING_ENTITY 	; mask for indicating the originating entity of a cause is LLC
+
+
+
+VALTAB 	VAL_sapi
+VAL 	1 	LL_SAPI_1 	"SAP for GMM"
+VAL 	3 	LL_SAPI_3 	"SAP 1 for SNDCP"
+VAL 	5 	LL_SAPI_5 	"SAP 2 for SNDCP"
+VAL 	7 	LL_SAPI_7 	"SAP for SMS"
+VAL 	9 	LL_SAPI_9 	"SAP 3 for SNDCP"
+VAL 	11 	LL_SAPI_11 	"SAP 4 for SNDCP"
+VAL 	255 	LL_SAPI_INVALID 	"invalid SAPI identifier"
+
+VALTAB 	VAL_tlli
+VAL 	0xFFFFFFFF 	LL_TLLI_INVALID 	"invalid TLLI value"
+
+VALTAB 	VAL_xid_valid
+VAL 	0 	LL_XID_INVALID 	"layer-3 XID parameters are not valid"
+VAL 	1 	LL_XID_VALID 	"layer-3 XID parameters are valid"
+
+VALTAB 	VAL_local
+VAL 	0 	LL_REL_NOTLOCAL 	"release both sides of the connection"
+VAL 	1 	LL_REL_LOCAL 	"local release only (no notification of the peer LLC)"
+
+VALTAB 	VAL_cause
+VAL 	0b0101000000000000 	LL_RELCS_INVALID_XID 	"invalid XID response"
+VAL 	0b0101000000000001 	LL_RELCS_DM_RECEIVED 	"DM received"
+VAL 	0b0101000000000010 	LL_RELCS_NO_PEER_RES 	"no peer response"
+VAL 	0b0101000000000100 	LL_RELCS_NORMAL 	"normal release"
+
+VALTAB 	VAL_cipher
+VAL 	0 	LL_CIPHER_OFF 	"UI frame not ciphered"
+VAL 	1 	LL_CIPHER_ON 	"UI frame ciphered"
+
+VALTAB 	VAL_radio_prio
+VAL 	0 	LL_RADIO_PRIO_1 	"Radio Priority Level 1 (higest)"
+VAL 	1 	LL_RADIO_PRIO_2 	"Radio Priority Level 2"
+VAL 	2 	LL_RADIO_PRIO_3 	"Radio Priority Level 3"
+VAL 	3 	LL_RADIO_PRIO_4 	"Radio Priority Level 4 (lowest)"
+
+VALTAB 	VAL_peak
+VAL 	0 	LL_PEAK_SUB 	"Subscribed peak throughput"
+VAL 	1 	LL_PEAK_1K 	"Up to 1 000 octet/s"
+VAL 	2 	LL_PEAK_2K 	"Up to 2 000 octet/s"
+VAL 	3 	LL_PEAK_4K 	"Up to 4 000 octet/s"
+VAL 	4 	LL_PEAK_8K 	"Up to 8 000 octet/s"
+VAL 	5 	LL_PEAK_16K 	"Up to 16 000 octet/s"
+VAL 	6 	LL_PEAK_32K 	"Up to 32 000 octet/s"
+VAL 	7 	LL_PEAK_64K 	"Up to 64 000 octet/s"
+VAL 	8 	LL_PEAK_128K 	"Up to 128 000 octet/s"
+VAL 	9 	LL_PEAK_256K 	"Up to 256 000 octet/s"
+
+VALTAB 	VAL_relclass
+VAL 	0 	LL_RELCLASS_SUB 	"Subscribed reliability class"
+VAL 	1 	LL_GTP_LLC_RLC_PROT 	"Acknowledged GTP, LLC, and RLC; Protected data"
+VAL 	2 	LL_LLC_RLC_PROT 	"Unacknowledged GTP; Acknowledged LLC and RLC, Protected data"
+VAL 	3 	LL_RLC_PROT 	"Unacknowledged GTP and LLC; Acknowledged RLC, Protected data"
+VAL 	4 	LL_PROT 	"Unacknowledged GTP, LLC, and RLC, Protected data"
+VAL 	5 	LL_NO_REL 	"Unacknowledged GTP, LLC, and RLC, Unprotected data"
+
+VALTAB 	VAL_delay
+VAL 	0 	LL_DELAY_SUB 	"Subscribed delay class"
+VAL 	1 	LL_DELAY_1 	"Delay class 1"
+VAL 	2 	LL_DELAY_2 	"Delay class 2"
+VAL 	3 	LL_DELAY_3 	"Delay class 3"
+VAL 	4 	LL_DELAY_4 	"Delay class 4 (best effort)"
+
+VALTAB 	VAL_mean
+VAL 	0 	LL_MEAN_SUB 	"Subscribed mean throughput"
+VAL 	1 	LL_MEAN_100 	"100 octet/h"
+VAL 	2 	LL_MEAN_200 	"200 octet/h"
+VAL 	3 	LL_MEAN_500 	"500 octet/h"
+VAL 	4 	LL_MEAN_1K 	"1 000 octet/h"
+VAL 	5 	LL_MEAN_2K 	"2 000 octet/h"
+VAL 	6 	LL_MEAN_5K 	"5 000 octet/h"
+VAL 	7 	LL_MEAN_10K 	"10 000 octet/h"
+VAL 	8 	LL_MEAN_20K 	"20 000 octet/h"
+VAL 	9 	LL_MEAN_50K 	"50 000 octet/h"
+VAL 	10 	LL_MEAN_100K 	"100 000 octet/h"
+VAL 	11 	LL_MEAN_200K 	"200 000 octet/h"
+VAL 	12 	LL_MEAN_500K 	"500 000 octet/h"
+VAL 	13 	LL_MEAN_1M 	"1 000 000 octet/h"
+VAL 	14 	LL_MEAN_2M 	"2 000 000 octet/h"
+VAL 	15 	LL_MEAN_5M 	"5 000 000 octet/h"
+VAL 	16 	LL_MEAN_10M 	"10 000 000 octet/h"
+VAL 	17 	LL_MEAN_20M 	"20 000 000 octet/h"
+VAL 	18 	LL_MEAN_50M 	"50 000 000 octet/h"
+VAL 	31 	LL_MEAN_BEST 	"Best effort"
+
+VALTAB 	VAL_preced
+VAL 	0 	LL_PRECED_SUB 	"Subscribed precedence"
+VAL 	1 	LL_PRIO_HIGH 	"High priority"
+VAL 	2 	LL_PRIO_NORM 	"Normal priority"
+VAL 	3 	LL_PRIO_LOW 	"Low priority"
+
+VALTAB 	VAL_error_cause
+VAL 	0b0101000000000000 	LL_ERRCS_INVALID_XID 	"invalid XID response"
+VAL 	0b0101000000000010 	LL_ERRCS_NO_PEER_RES 	"no peer response"
+
+VALTAB 	VAL_attached_counter
+VAL 	0 	LLC_NO_ATTACHE 	"no entity/service is attached to the primitive"
+
+VALTAB 	VAL_seg_pos
+VAL 	0 	LL_SEG_POS_NONE 	"In between"
+VAL 	1 	LL_SEG_POS_FIRST 	"first"
+VAL 	2 	LL_SEG_POS_LAST 	"last"
+VAL 	3 	LL_SEG_POS_FIRST_LAST 	"both"
+
+VALTAB 	VAL_pkt_flow_id 	%REL99%
+VAL 	0x00 	LL_PFI_BEST_EFFORT 	%REL99% 	"best effort"
+VAL 	0x01 	LL_PFI_SIGNALING 	%REL99% 	"signalling"
+VAL 	0x02 	LL_PFI_SMS 	%REL99% 	"SMS"
+VAL 	0xFF 	LL_PKT_FLOW_ID_NOT_PRES 	%REL99% 	"value FF is used to indicate when packet flwo identifier is not present"
+
+
+
+
+VAR 	sapi 	"service access point identifier" 	B
+
+VAL 	@p_ll - VAL_sapi@ 	
+
+VAR 	tlli 	"temporary logical link identifier" 	L
+
+VAL 	@p_ll - VAL_tlli@ 	
+
+VAR 	xid_valid 	"layer-3 XID parameters valid or not" 	B
+
+VAL 	@p_ll - VAL_xid_valid@ 	
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"buffer content" 	B
+
+
+VAR 	n201_u 	"maximum number of octets in an U or UI frame information field" 	S
+
+
+VAR 	n201_i 	"maximum number of octets in an I frame information field" 	S
+
+
+VAR 	local 	"local release or release both sides" 	B
+
+VAL 	@p_ll - VAL_local@ 	
+
+VAR 	cause 	"cause of ABM termination" 	S
+
+VAL 	@p_ll - VAL_cause@ 	
+
+VAR 	ref_nsapi 	"ref_nsapi" 	B
+
+
+VAR 	ref_npdu_num 	"ref_npdu_num" 	S
+
+
+VAR 	ref_seg_num 	"ref_seg_num" 	B
+
+
+VAR 	cipher 	"ciphering indicator" 	B
+
+VAL 	@p_ll - VAL_cipher@ 	
+
+VAR 	radio_prio 	"Radio Priority" 	B
+
+VAL 	@p_ll - VAL_radio_prio@ 	
+
+VAR 	delay 	"delay class" 	B
+
+VAL 	@p_ll - VAL_delay@ 	
+
+VAR 	relclass 	"reliability class" 	B
+
+VAL 	@p_ll - VAL_relclass@ 	
+
+VAR 	peak 	"peak throughput" 	B
+
+VAL 	@p_ll - VAL_peak@ 	
+
+VAR 	preced 	"precedence class" 	B
+
+VAL 	@p_ll - VAL_preced@ 	
+
+VAR 	mean 	"main throughput" 	B
+
+VAL 	@p_ll - VAL_mean@ 	
+
+VAR 	reserved_1 	"reserved" 	B
+
+
+VAR 	reserved_2 	"reserved" 	B
+
+
+VAR 	reserved_3 	"reserved" 	B
+
+
+VAR 	reserved_release_cnf 	"reserved octets for release confirm" 	B
+
+
+VAR 	reserved_data_req1 	"reserved octets" 	B
+
+
+VAR 	reserved_data_req4 	"reserved octets for data request" 	L
+
+
+VAR 	reserved_data_req5 	%!REL99% 	"reserved octets" 	S
+
+
+VAR 	reserved_unitdata_req4 	"reserved octets for unitdata request" 	L
+
+
+VAR 	reserved_unitdata_req5 	%!REL99% 	"reserved octets" 	S
+
+
+VAR 	reserved_data_ind1 	"reserved octets for data indication" 	L
+
+
+VAR 	reserved_data_ind3 	"reserved octets for data indication" 	B
+
+
+VAR 	reserved_data_ind4 	"reserved octets for data indication" 	B
+
+
+VAR 	reserved_data_ind5 	"reserved octets for data indication" 	B
+
+
+VAR 	reserved_data_ind6 	"reserved octets for data indication" 	B
+
+
+VAR 	reserved_unitdata_ind1 	"reserved octets" 	L
+
+
+VAR 	reserved_unitdata_ind3 	"reserved octets" 	B
+
+
+VAR 	reserved_unitdata_ind4 	"reserved octets" 	B
+
+
+VAR 	reserved_unitdata_ind5 	"reserved octets" 	B
+
+
+VAR 	error_cause 	"error cause" 	S
+
+VAL 	@p_ll - VAL_error_cause@ 	
+
+VAR 	attached_counter 	"attached to primitive data counter" 	B
+
+VAL 	@p_ll - VAL_attached_counter@ 	
+
+VAR 	seg_pos 	"First and/or last segment of N-PDU?" 	B
+
+VAL 	@p_ll - VAL_seg_pos@ 	
+
+VAR 	list_len 	"length in octets of whole data" 	S
+
+
+VAR 	first 	"pointer to first generic data descriptor" 	L
+
+
+VAR 	next 	"next generic data descriptor" 	L
+
+
+VAR 	offset 	"offset in octets" 	S
+
+
+VAR 	len 	"length of content in octets" 	S
+
+
+VAR 	buffer 	"pointer to buffer" 	L
+
+
+VAR 	pkt_flow_id 	%REL99% 	"packet flow identifier" 	S
+
+VAL 	@p_ll - VAL_pkt_flow_id@ 	
+
+
+
+
+COMP 	sdu 	 "service data unit"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[1] 	 ; buffer content
+}
+
+
+
+COMP 	reference1 	 "to the segment to be confirmed"
+{
+ 	ref_nsapi 	 ; ref_nsapi
+ 	ref_npdu_num 	 ; ref_npdu_num
+ 	ref_seg_num 	 ; ref_seg_num
+}
+TYPEDEF COMP reference1 	reserved_unitdata_req1 	 "reserved octets"
+TYPEDEF COMP reference1 	reserved_data_ind2 	 "reserved octets"
+TYPEDEF COMP reference1 	reserved_unitdata_ind2 	 "reserved octets"
+
+
+
+COMP 	ll_qos 	 "quality of service"
+{
+ 	delay 	 ; delay class
+ 	relclass 	 ; reliability class
+ 	peak 	 ; peak throughput
+ 	preced 	 ; precedence class
+ 	mean 	 ; main throughput
+ 	reserved_1 	 ; reserved
+ 	reserved_2 	 ; reserved
+ 	reserved_3 	 ; reserved
+}
+
+
+
+COMP 	desc_list3 	 "List of generic data descriptors"
+{
+ 	list_len 	 ; length in octets of whole data
+ 	first 	 ; pointer to first generic data descriptor
+}
+
+
+
+COMP 	desc3 	 "generic data descriptor"
+{
+ 	next 	 ; next generic data descriptor
+ 	offset 	 ; offset in octets
+ 	len 	 ; length of content in octets
+ 	buffer 	 ; pointer to buffer
+}
+
+
+
+
+
+
+; LL_RESET_IND 	0x6200
+; LL_ESTABLISH_REQ 	0x2200
+; LL_ESTABLISH_CNF 	0x6201
+; LL_ESTABLISH_IND 	0x6202
+; LL_ESTABLISH_RES 	0x2201
+; LL_RELEASE_REQ 	0x2202
+; LL_RELEASE_CNF 	0x6203
+; LL_RELEASE_IND 	0x6204
+; LL_XID_REQ 	0x2203
+; LL_XID_CNF 	0x6205
+; LL_XID_IND 	0x6206
+; LL_XID_RES 	0x2204
+; LL_READY_IND 	0x6207
+; LL_UNITREADY_IND 	0x6208
+; LL_GETDATA_REQ 	0x2205
+; LL_GETUNITDATA_REQ 	0x2206
+; LL_DATA_REQ 	0x2207
+; LL_DATA_CNF 	0x6209
+; LL_DATA_IND 	0x620A
+; LL_UNITDATA_REQ 	0x2208
+; LL_UNITDATA_IND 	0x620B
+; LL_STATUS_IND 	0x620C
+; LL_DESC_REQ 	0x2209
+; LL_UNITDESC_REQ 	0x220A
+; LLC_DUMMY_REQ 	0x220B
+
+
+
+PRIM 	LL_RESET_IND 	0x6200
+{
+ 	sapi 	 ; service access point identifier
+}
+
+
+
+
+
+
+PRIM 	LL_ESTABLISH_REQ 	0x2200
+{
+ 	sapi 	 ; service access point identifier
+ 	sdu 	 ; layer-3 XID parameters to be negotiated
+}
+
+
+
+
+
+
+PRIM 	LL_ESTABLISH_CNF 	0x6201
+{
+ 	sapi 	 ; service access point identifier
+ 	n201_u 	 ; unacknowledged information field length
+ 	n201_i 	 ; acknowledged information field length
+ 	xid_valid 	 ; layer-3 XID parameters valid
+ 	sdu 	 ; negotiated layer-3 XID parameters
+}
+
+
+
+
+
+
+PRIM 	LL_ESTABLISH_IND 	0x6202
+{
+ 	sapi 	 ; service access point identifier
+ 	n201_u 	 ; unacknowledged information field length
+ 	n201_i 	 ; acknowledged information field length
+ 	xid_valid 	 ; layer-3 XID parameters valid
+ 	sdu 	 ; layer-3 XID parameters to be negotiated
+}
+
+
+
+
+
+
+PRIM 	LL_ESTABLISH_RES 	0x2201
+{
+ 	sapi 	 ; service access point identifier
+ 	xid_valid 	 ; layer-3 XID parameters valid
+ 	sdu 	 ; negotiated layer-3 XID parameters
+}
+
+
+
+
+
+
+PRIM 	LL_RELEASE_REQ 	0x2202
+{
+ 	sapi 	 ; service access point identifier
+ 	local 	 ; local release
+}
+
+
+
+
+
+
+PRIM 	LL_RELEASE_CNF 	0x6203
+{
+ 	sapi 	 ; service access point identifier
+ 	reserved_release_cnf 	 ; reserved octets for release confirm
+}
+
+
+
+
+
+
+PRIM 	LL_RELEASE_IND 	0x6204
+{
+ 	sapi 	 ; service access point identifier
+ 	cause 	 ; cause of ABM termination
+}
+
+
+
+
+
+
+PRIM 	LL_XID_REQ 	0x2203
+{
+ 	sapi 	 ; service access point identifier
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	LL_XID_CNF 	0x6205
+{
+ 	sapi 	 ; service access point identifier
+ 	n201_u 	 ; unacknowledged information field length
+ 	n201_i 	 ; acknowledged information field length
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	LL_XID_IND 	0x6206
+{
+ 	sapi 	 ; service access point identifier
+ 	n201_u 	 ; unacknowledged information field length
+ 	n201_i 	 ; acknowledged information field length
+ 	xid_valid 	 ; layer-3 XID parameters valid
+ 	sdu 	 ; layer-3 XID parameters to be negotiated
+}
+
+
+
+
+
+
+PRIM 	LL_XID_RES 	0x2204
+{
+ 	sapi 	 ; service access point identifier
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	LL_READY_IND 	0x6207
+{
+ 	sapi 	 ; service access point identifier
+}
+
+
+
+
+
+
+PRIM 	LL_UNITREADY_IND 	0x6208
+{
+ 	sapi 	 ; service access point identifier
+}
+
+
+
+
+
+
+PRIM 	LL_GETDATA_REQ 	0x2205
+{
+ 	sapi 	 ; service access point identifier
+}
+
+
+
+
+
+
+PRIM 	LL_GETUNITDATA_REQ 	0x2206
+{
+ 	sapi 	 ; service access point identifier
+ 	tlli 	 ; temporary logical link entity
+}
+
+
+
+
+
+
+PRIM 	LL_DATA_REQ 	0x2207
+{
+ 	sapi 	 ; service access point identifier
+ 	tlli 	 ; temporary logical link entity
+ 	ll_qos 	 ; quality of service
+ 	radio_prio 	 ; radio priority
+ 	reserved_data_req1 	 ; reserved octet
+ 	reference1 	 ; reference to the PDU
+ 	seg_pos 	 ; reserved octets
+ 	attached_counter 	 ; attached to primitive counter
+ 	reserved_data_req4 	 ; reserved octets for data request
+ 	pkt_flow_id 	 	%REL99% ; packet flow identifier
+ 	reserved_data_req5 	 	%!REL99% ; reserved octets for data request
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	LL_DATA_CNF 	0x6209
+{
+ 	sapi 	 ; service access point identifier
+ 	reference1 	[1..LLC_MAX_CNF] 	 ; reference to the PDU
+}
+
+
+
+
+
+
+PRIM 	LL_DATA_IND 	0x620A
+{
+ 	sapi 	 ; service access point identifier
+ 	tlli 	 ; temporary logical link entity
+ 	reserved_data_ind1 	 ; reserved octets
+ 	reserved_data_ind2 	 ; reserved octets
+ 	reserved_data_ind3 	 ; reserved octets
+ 	reserved_data_ind4 	 ; reserved octets
+ 	reserved_data_ind5 	 ; reserved octets
+ 	reserved_data_ind6 	 ; reserved octets
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	LL_UNITDATA_REQ 	0x2208
+{
+ 	sapi 	 ; service access point identifier
+ 	tlli 	 ; temporary logical link entity
+ 	ll_qos 	 ; quality of service
+ 	radio_prio 	 ; radio priority
+ 	cipher 	 ; ciphering indicator
+ 	reserved_unitdata_req1 	 ; reserved octets
+ 	seg_pos 	 ; reserved octets
+ 	attached_counter 	 ; attached to primitive counter
+ 	reserved_unitdata_req4 	 ; reserved octets for unitdata request
+ 	pkt_flow_id 	 	%REL99% ; packet flow identifier
+ 	reserved_unitdata_req5 	 	%!REL99% ; reserved octets
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	LL_UNITDATA_IND 	0x620B
+{
+ 	sapi 	 ; service access point identifier
+ 	tlli 	 ; temporary logical link entity
+ 	reserved_unitdata_ind1 	 ; reserved octets
+ 	reserved_unitdata_ind2 	 ; reserved octets
+ 	reserved_unitdata_ind3 	 ; reserved octets
+ 	reserved_unitdata_ind4 	 ; reserved octets
+ 	reserved_unitdata_ind5 	 ; reserved octets
+ 	cipher 	 ; ciphering indicator
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	LL_STATUS_IND 	0x620C
+{
+ 	sapi 	 ; service access point identifier
+ 	error_cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	LL_DESC_REQ 	0x2209
+{
+ 	sapi 	 ; service access point identifier
+ 	tlli 	 ; temporary logical link entity
+ 	ll_qos 	 ; quality of service
+ 	radio_prio 	 ; radio priority
+ 	reserved_data_req1 	 ; reserved octet
+ 	reference1 	 ; reference to the PDU
+ 	seg_pos 	 ; reserved octets
+ 	attached_counter 	 ; attached to primitive counter
+ 	reserved_data_req4 	 ; reserved octets for data request
+ 	pkt_flow_id 	 	%REL99% ; packet flow identifier
+ 	reserved_data_req5 	 	%!REL99% ; reserved octets for data request
+ 	desc_list3 	 ; List of generic data descriptors
+}
+
+
+
+
+
+
+PRIM 	LL_UNITDESC_REQ 	0x220A
+{
+ 	sapi 	 ; service access point identifier
+ 	tlli 	 ; temporary logical link entity
+ 	ll_qos 	 ; quality of service
+ 	radio_prio 	 ; radio priority
+ 	cipher 	 ; ciphering indicator
+ 	reserved_unitdata_req1 	 ; reserved octets
+ 	seg_pos 	 ; reserved octets
+ 	attached_counter 	 ; attached to primitive counter
+ 	reserved_unitdata_req4 	 ; reserved octets for unitdata request
+ 	pkt_flow_id 	 	%REL99% ; packet flow identifier
+ 	reserved_unitdata_req5 	 	%!REL99% ; reserved octets
+ 	desc_list3 	 ; List of generic data descriptors
+}
+
+
+
+
+
+
+PRIM 	LLC_DUMMY_REQ 	0x220B
+{
+ 	desc3 	 ; generic data descriptor
+}
+
+
+
+
+
+
+
+
+

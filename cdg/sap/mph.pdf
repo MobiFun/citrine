@@ -1,0 +1,1903 @@
+;********************************************************************************
+;*** File           : mph.pdf
+;*** Creation       : Wed Mar 11 09:58:29 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mph
+;*** Document No.   : 6148.109.01.207
+;*** Document Date  : 2003-02-04
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: LG
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Mon Aug 11 13:32:48 2008"
+PRAGMA 	LAST_MODIFIED 	"2003-02-04"
+PRAGMA 	ID_AND_VERSION 	"6148.109.01.207"
+
+
+
+CONST 	MAX_MA_CHANNELS 	64 	; determines the (maximum) size of mobile allocation list; the list is delimited with 0xFFFF = NOT_PRESENT_16BIT (except if all entries are used)
+CONST 	MAX_NEIGHBOURCELLS 	33 	; determines the (maximum) size of neighbourcell list (maximal case is 32 neighbour cells and the serving cell); the list is delimited with 0xFFFF = NOT_PRESENT_16BIT (except if all entries are used)
+CONST 	MAX_CHANNELS 	100 	; used for power measurements (sum of a maximum of 25 GSM 900 / 850 channels and a maximum of 40 DCS 1800 / PCS 1900 channels)
+CONST 	MAX_NCELL_EOTD_ALR 	15 	; number of neighbour cells the layer 1 is able to perform EOTD measurements for
+CONST 	MAX_NCELL_EOTD_RES 	12 	; number of ncells returned
+CONST 	XCOR_NO 	18 	; number of cross correlation values
+CONST 	STD_900 	1 	; Frequency band GSM 900
+CONST 	STD_EGSM 	2 	; Frequency band extended GSM 900
+CONST 	STD_1900 	3 	; Frequency band PCS 1900 (US band)
+CONST 	STD_1800 	4 	; Frequency band DCS 1800
+CONST 	STD_DUAL 	5 	; Dual frequency band GSM 900 and DCS 1800
+CONST 	STD_DUAL_EGSM 	6 	; Dual frequency band extended GSM 900 and DCS 1800
+CONST 	STD_850 	7 	; Frequency band GSM 850 (US band)
+CONST 	STD_DUAL_US 	8 	; Dual frequency band GSM 850 and PCS 1900 (US bands)
+CONST 	STD_850_1800 	9 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	; Dual frequency band GSM 850 and DCS 1800
+CONST 	STD_900_1900 	10 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	; Dual frequency band GSM 900 and PCS 1900
+CONST 	STD_850_900_1800 	11 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	; Tri frequency band GSM 850, GSM 900 and DCS 1800
+CONST 	STD_850_900_1900 	12 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	; Tri frequency band GSM 850, GSM 900 and PCS 1900
+CONST 	US_BIT 	0x8000 	; the most significant bit is set for channel numbers of the united states to differentiate them from european channel numbers
+CONST 	STD_BIT_MASK 	0x7800 	; bit mask (bits 11..14 in the range 0..15) for  discriminate the std value from arfcn;                                             std =((arfcn&STD_BIT_MASK)>>STD_BIT_SHIFT)+1; value range range 1..16
+CONST 	STD_BIT_SHIFT 	11 	; bit mask to eleminate the channel numbers without the US_BIT and the std bits
+CONST 	ARFCN_MASK 	0x07FF 	; bit mask to eleminate the channel numbers without the US_BIT and the std bits
+CONST 	EUROPEAN_FREQ_AREA 	1 	; search frequencies from the american frequency bands at power request
+CONST 	AMERICAN_FREQ_AREA 	2 	; search frequencies from the europeanfrequency bands at power request
+CONST 	ALL_FREQ_AREA 	3 	; search frequencies from all frequency bands at power request
+CONST 	NEXT_AMERICAN_AREA 	0x80 	; search frequencies from the american frequency bands at next scan part
+CONST 	LOW_CHANNEL_900 	1 	; Low border channel of the GSM 900 band
+CONST 	HIGH_CHANNEL_900 	124 	; High border channel of the GSM 900 band
+CONST 	LOW_CHANNEL_EGSM 	975 	; Low border channel of the extended GSM 900 band
+CONST 	HIGH_CHANNEL_EGSM 	1024 	; High border channel of the extended GSM 900 band
+CONST 	CHANNEL_0 	0 	; Channel 0 of the extended GSM 900 band
+CONST 	CHANNEL_0_INTERNAL 	1024 	; Channel 0 of the extended GSM 900 band in internal representation
+CONST 	LOW_CHANNEL_1900 	512 	; Low border channel of the OCS 1900 band
+CONST 	HIGH_CHANNEL_1900 	810 	; High border channel of the OCS 1900 band
+CONST 	LOW_CHANNEL_1800 	512 	; Low border channel of the DCS 1800 band
+CONST 	HIGH_CHANNEL_1800 	885 	; High border channel of the DCS 1800 band
+CONST 	LOW_CHANNEL_850 	128 	; Low border channel of the GSM 850 band
+CONST 	HIGH_CHANNEL_850 	251 	; High border channel of the GSM 850 band
+CONST 	LOW_CHANNEL_1900_INTERNAL 	1024 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	; Low border channel of the PCS 1900 band used in L1
+CONST 	MAX_CARRIERS_GSM900 	124 	; Maximally number of carriers for GSM 900
+CONST 	MAX_CARRIERS_EGSM900 	174 	; Maximally number of carriers for extended GSM 900
+CONST 	MAX_CARRIERS_PCS1900 	299 	; Maximally number of carriers for PCS 1900
+CONST 	MAX_CARRIERS_DCS1800 	374 	; Maximally number of carriers for DCS 1800
+CONST 	MAX_CARRIERS_DUAL 	498 	; Maximally number of carriers for dual band with GSM 900 and DCS 1800
+CONST 	MAX_CARRIERS_DUAL_EGSM 	548 	; Maximally number of carriers for dual band with extended GSM 900 and DCS 1800
+CONST 	MAX_CARRIERS_GSM850 	124 	; Maximally number of carriers for GSM 850
+CONST 	MAX_CARRIERS_DUAL_US 	423 	; Maximally number of carriers for dual band with GSM 850 and PCS 1900
+CONST 	MAX_EMO_CHANNELS 	21 	; 21 ARFCN for Extended Measurement Order (SACCH)
+CONST 	RR_BA_HIGH 	255 	; maximum BA_ID used by RR
+CONST 	RR_BA_LOW 	128 	; minimum BA_ID used by RR
+CONST 	ALR_BA_HIGH 	127 	; maximum BA_ID used by ALR
+CONST 	ALR_BA_LOW 	0 	; minimum BA_ID used by ALR
+CONST 	KC_STRING_SIZE 	16 	; Maximum KC string length
+CONST 	MAX_RACH_REQ 	8 	; Maximum number of RACH Requests
+CONST 	RR_ALR_MEAS_REPORT_SIZE 	7 	; Measurement report size(1 serving cell and 6 nc)
+CONST 	LIST_MAX_SIZE 	128 	; maximum arfcns 128x8-1024 carriers
+CONST 	MAX_REGIONS 	2 	; maximum regions European and American
+CONST 	MAX_NUM_BANDS 	5 	; Maximum number of frequency bands
+CONST 	LOWER_RXLEV_THRESHOLD 	4 	; lower rxlevel thershold below this value cells are not selected
+CONST 	LOWER_RXLEV_THRESHOLD_850 	7 	; lower rxlevel thershold for GSM 850 band
+CONST 	B_GSM_850 	0 	; Band index for GSM 850 band threshold rxlevel
+CONST 	B_GSM_900 	1 	; Band index for GSM 900 band threshold rxlevel
+CONST 	B_DCS_1800 	2 	; Band index for DCS 1800 band threshold rxlevel
+CONST 	B_PCS_1900 	3 	; Band index for PCS 1900 band threshold rxlevel
+CONST 	B_E_GSM 	4 	; Band index for EGSM band threshold rxlevel
+CONST 	FULL_SEARCH_MODE_ATTEMPTS 	5 	; Number of power measurement attempts for Full search mode
+CONST 	NORMAL_SEARCH_MODE_ATTEMPTS 	5 	; Number of power measurement attempts for Normal search mode
+CONST 	TIM_FULL_SEARCH_POWERMEAS_VAL 	4000 	; Maximum amount of time for full search power measurement 
+CONST 	TIM_NORMAL_SEARCH_POWERMEAS_VAL 	4000 	; Maximum amount of time for Normal search power measurement 
+CONST 	MIN_CHANNELS_PER_BAND 	25 	; Minimum number of channels per band should be added in MPH_POWER_CNF
+CONST 	MAX_CHANNELS_PER_BAND 	30 	; Maximum number of channels per band should be added in MPH_POWER_CNF
+CONST 	MAX_NUM_CELLS_IN_REPORT 	32 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	; Maximum number of cells reported by ALR.
+CONST 	MAX_NUM_CELLS_IN_REPORT 	6 	%!REL99 OR !(TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	; Constant element
+CONST 	MAX_NUM_OF_RTD_VALUES 	3 	%REL99 AND TI_PS_FF_RTD% 	; Maximum number of RTD values available for an neighbour cell arfcn
+
+
+
+VALTAB 	VAL_arfcn
+VAL 	1 - 124 	"GSM 900 without extension band"
+VAL 	975 - 1023 	"E-GSM 900"
+VAL 	512 - 810 	"DCS 1800 or PCS 1900 (without US_BIT)"
+VAL 	811 - 885 	"DCS 1800"
+VAL 	128 - 256 	"GSM 850 without US_BIT"
+VAL 	2048 - 2048 	"GSM 900 without extension band (single mode, std=1)"
+VAL 	4097 - 4220 	"GSM 900 (E-GSM mode, std=2)"
+VAL 	5071 - 5119 	"E-GSM 900 (E-GSM mode, std=2)"
+VAL 	39424 - 39722 	"PCS 1900 (US single mode, std=3)"
+VAL 	8704 - 9077 	"DCS 1800 (single mode, std=4)"
+VAL 	10241 - 10364 	"GSM 900 (Dual mode, std=5)"
+VAL 	10752 - 11125 	"DCS 1800 (Dual mode, std=5)"
+VAL 	12288 - 12412 	"GSM 900 (Extended dual mode, std=6)"
+VAL 	13263 - 13311 	"E-GSM 900 (Extended dual mode, std=6)"
+VAL 	12800 - 13173 	"DCS 1800 (Extended dual mode, std=6)"
+VAL 	47232 - 47355 	"GSM 850 (US single mode, std=7)"
+VAL 	49280 - 49403 	"GSM 850 (US dual mode, std=8)"
+VAL 	49664 - 49962 	"PCS 1900 (US dual mode, std=8)"
+VAL 	0 	 	"E-GSM 900"
+VAL 	4096 	 	"E-GSM 900 (E-GSM mode, std=2)"
+VAL 	12288 	 	"E-GSM 900 (Extended dual mode, std=6)"
+
+VALTAB 	VAL_comb_ccch
+VAL 	0 	COMB_CCCH_NOT_COMB 	"CCCH not combined with SDCCH"
+VAL 	1 	COMB_CCCH_COMB 	"CCCH combined with SDCCH"
+
+VALTAB 	VAL_tn
+VAL 	0 - 7 	"timeslot number 0-7"
+
+VALTAB 	VAL_dlt
+VAL 	10 - 45 	"initial value"
+
+VALTAB 	VAL_pg
+VAL 	0 - 80 	"paging group number"
+
+VALTAB 	VAL_bs_ag_blocks_res
+VAL 	0 - 7 	"number of blocks reserved for AGCH"
+
+VALTAB 	VAL_bs_pa_mfrms
+VAL 	0 	 	"2 Multiframe Periods"
+VAL 	1 	 	"3 Multiframe Periods"
+VAL 	2 	 	"4 Multiframe Periods"
+VAL 	3 	 	"5 Multiframe Periods"
+VAL 	4 	 	"6 Multiframe Periods"
+VAL 	5 	 	"7 Multiframe Periods"
+VAL 	6 	 	"8 Multiframe Periods"
+VAL 	7 	 	"9 Multiframe Periods"
+
+VALTAB 	VAL_power
+VAL 	0 - 31 	"transmission power level"
+
+VALTAB 	VAL_rx_lev
+VAL 	0 - 63 	"received field strength"
+
+VALTAB 	VAL_rx_qual_full
+VAL 	0 - 7 	"received quality"
+
+VALTAB 	VAL_bsic
+VAL 	0 - 63 	"base station identification code"
+VAL 	64 	MPH_BSIC_UNKNOWN 	"Cell is removed from list (GPRS)"
+
+VALTAB 	VAL_dtx
+VAL 	0 	DTX_NOT_USED 	"DTX is not used"
+VAL 	1 	DTX_USED 	"DTX is used"
+
+VALTAB 	VAL_otd
+VAL 	0 - 63 	"timing advance"
+
+VALTAB 	VAL_ta
+VAL 	0 - 63 	"timing advance"
+VAL 	255 	TA_NOT_AVAIL 	"timing advance is not available in Idle Mode"
+
+VALTAB 	VAL_v_start
+VAL 	0 	 	"not valid"
+VAL 	1 	 	"valid"
+
+VALTAB 	VAL_ch
+VAL 	1 	CH_TCH_F 	"TCH/F, FACCH Full Rate"
+VAL 	2 	CH_TCH_H_1 	"TCH/H(1), FACCH Half Rate"
+VAL 	3 	CH_TCH_H_2 	"TCH/H(2), FACCH Half Rate"
+VAL 	4 	CH_SDCCH_4_0 	"SDCCH/4(0)"
+VAL 	5 	CH_SDCCH_4_1 	"SDCCH/4(1)"
+VAL 	6 	CH_SDCCH_4_2 	"SDCCH/4(2)"
+VAL 	7 	CH_SDCCH_4_3 	"SDCCH/4(3)"
+VAL 	8 	CH_SDCCH_8_0 	"SDCCH/8(0)"
+VAL 	9 	CH_SDCCH_8_1 	"SDCCH/8(1)"
+VAL 	10 	CH_SDCCH_8_2 	"SDCCH/8(2)"
+VAL 	11 	CH_SDCCH_8_3 	"SDCCH/8(3)"
+VAL 	12 	CH_SDCCH_8_4 	"SDCCH/8(4)"
+VAL 	13 	CH_SDCCH_8_5 	"SDCCH/8(5)"
+VAL 	14 	CH_SDCCH_8_6 	"SDCCH/8(6)"
+VAL 	15 	CH_SDCCH_8_7 	"SDCCH/8(7)"
+
+VALTAB 	VAL_tsc
+VAL 	0 - 7 	"training sequence code, coded as in GSM 04.08 / 05.02"
+
+VALTAB 	VAL_h
+VAL 	0 	H_NO 	"no hopping"
+VAL 	1 	H_FREQ 	"frequency hopping"
+
+VALTAB 	VAL_maio
+VAL 	0 - 63 	"mobile allocation index offset, coded as in GSM 04.08 / 05.02"
+
+VALTAB 	VAL_hsn
+VAL 	0 - 63 	"hopping sequence number, coded as in GSM 04.08 / 05.02"
+
+VALTAB 	VAL_rlt
+VAL 	0 - 15 	"code point allocation according to GSM 04.08, ch. 10.5.2.3a; mapping to values 4, 8, 12, ... 60, 64 has to be done by PL"
+
+VALTAB 	VAL_pwrc
+VAL 	0 	PWRC_NOT_SET 	"PWRC is not set, exact meaning is defined in GSM 05.08"
+VAL 	1 	PWRC_SET 	"PWRC is set, exact meaning is defined in GSM 05.08"
+
+VALTAB 	VAL_tav
+VAL 	0 - 31 	"timing advance, coding as in GSM 04.08, ch. 10.5.2.40, bit periods"
+
+VALTAB 	VAL_algo
+VAL 	0 	ALGO_A5_1 	"A5/1"
+VAL 	1 	ALGO_A5_2 	"A5/2"
+VAL 	2 	ALGO_A5_3 	"A5/3"
+VAL 	3 	ALGO_A5_4 	"A5/4"
+VAL 	4 	ALGO_A5_5 	"A5/5"
+VAL 	5 	ALGO_A5_6 	"A5/6"
+VAL 	6 	ALGO_A5_7 	"A5/7"
+
+VALTAB 	VAL_mod
+VAL 	0 	MODE_CELL_SELECTION 	"cell selection"
+VAL 	1 	MODE_CELL_RESELECTION 	"cell reselection"
+VAL 	2 	 	"unused"
+VAL 	3 	MODE_IMM_ASSIGN 	"immediate assignment"
+VAL 	4 	MODE_CHAN_ASSIGN 	"channel assignment"
+VAL 	5 	MODE_ASYNC_HANDOVER 	"asynchronous handover"
+VAL 	6 	MODE_SYNC_HANDOVER 	"synchronous handover"
+VAL 	7 	MODE_PRE_SYNC_HANDOVER 	"pre synchronous handover"
+VAL 	8 	MODE_PSEUDO_SYNC_HANDOVER 	"pseudo synchronous handover"
+VAL 	9 	MODE_SYS_INFO_CHANGE 	"sys info has changed"
+VAL 	10 	MODE_PACKET_TRANSFER 	"enter packet transfer mode"
+VAL 	11 	MODE_PDCH_ASSIGN 	"PDCH assignment"
+VAL 	12 	MODE_CELL_CHANGE_ORDER 	"network controlled cell change"
+VAL 	13 	MODE_CELL_RESELECTION_SYNC_ONLY 	"Sync only"
+VAL 	14 	MODE_CONFIG_PL 	"Config idle mode params, but don't start processes in L1"
+
+VALTAB 	VAL_mode
+VAL 	0b00000000 	MODE_SIG_ONLY 	"signalling only"
+VAL 	0b00000001 	MODE_SPEECH_VER1 	"speech (full rate or half rate), version 1"
+VAL 	0b00100001 	MODE_SPEECH_VER2 	"speech (full rate or half rate), version 2"
+VAL 	0b01000001 	MODE_SPEECH_VER3 	"speech (full rate or half rate), version 3"
+VAL 	0b00001111 	MODE_DATA_14_5 	"data, 14.5 kbit/s radio interface rate, corresponds to 14.4 kbit/s user rate"
+VAL 	0b00000011 	MODE_DATA_12_0 	"data, 12.0 kbit/s radio interface rate, corresponds to 9.6 kbit/s user rate"
+VAL 	0b00001011 	MODE_DATA_6_0 	"data, 6.0 kbit/s radio interface rate, corresponds to 4.8 kbit/s user rate"
+VAL 	0b00010011 	MODE_DATA_3_6 	"data, 3.6 kbit/s radio interface rate, corresponds to 2.4 kbit/s user rate"
+
+VALTAB 	VAL_st_mode
+VAL 	0 	CODEC_MODE_1 	"lowest codec mode"
+VAL 	1 	CODEC_MODE_2 	"second lowest mode"
+VAL 	2 	CODEC_MODE_3 	"third lowest mode"
+VAL 	3 	CODEC_MODE_4 	"highest mode"
+
+VALTAB 	VAL_cs
+VAL 	0 	CS_NO_BCCH_AVAIL 	"no BCCH available"
+VAL 	1 	CS_DOWN_LINK_FAIL 	"down link failure"
+VAL 	2 	CS_RADIO_LINK_FAIL 	"radio link failure"
+VAL 	3 	CS_NO_HBCCH_AVAIL 	"no HPLMN BCCH available"
+VAL 	8 	CS_BCCH_READ_ERROR 	"error during BCCH reading"
+VAL 	10 	CS_STOP_BCCH_READING 	"stop BCCH reading"
+VAL 	11 	CS_STOP_PLMN_SEARCH 	"Stop PLMN search"
+VAL 	12 	CS_CLEAN_SYS_INFO 	"Clean System Information buffer"
+VAL 	13 	CS_SYS_INFO_1_NOT_NEEDED 	"System info 1 is not needed"
+VAL 	14 	CS_RXLEV_VAL_REQ 	"Rxlev values are requested"
+VAL 	15 	CS_STOP_PLMN_SEARCH_AND_DEACTIVATE 	"Stop PLMN search and enter sleep mode"
+VAL 	16 	CS_SCELL_IS_SYNCED 	"Synchronization done"
+VAL 	17 	CS_START_PCCO 	"start of packet cell change order and the cell is not in the BA list"
+VAL 	18 	CS_NC_SYNC_FAILED 	"Lost synchronization with neighbour cell"
+VAL 	19 	CS_SYS_INFO_2BIS_SUPPORT_CHANGED 	"Started/stopped broadcasting of SI2bis in idle"
+VAL 	20 	CS_SYS_INFO_2TER_SUPPORT_CHANGED 	"Started/stopped broadcasting of SI2ter in idle"
+VAL 	255 	CS_NO_ERROR 	"no error occurred"
+
+VALTAB 	VAL_pclass
+VAL 	0 	CLASS_1 	"class 1"
+VAL 	1 	CLASS_2 	"class 2"
+VAL 	2 	CLASS_3 	"class 3"
+VAL 	3 	CLASS_4 	"class 4"
+VAL 	4 	CLASS_5 	"class 5"
+
+VALTAB 	VAL_tch_loop
+VAL 	0x00 - 0xFE 	"values correspond to GSM 04.14, sub-channel IE of the CLOSE_TCH_LOOP_CMD message"
+VAL 	0xFF 	 	"NOT_PRESENT_8BIT, open TCH loop, valid OPEN_LOOP_CMD message has been received"
+VAL 	0 	TCH_LOOP_A 	"Internal test TCH loop command A"
+VAL 	1 	TCH_LOOP_B 	"Internal test TCH loop command B"
+VAL 	2 	TCH_LOOP_C 	"Internal test TCH loop command C"
+VAL 	3 	TCH_LOOP_D 	"Internal test TCH loop command D"
+VAL 	4 	TCH_LOOP_E 	"Internal test TCH loop command E"
+VAL 	5 	TCH_LOOP_F 	"Internal test TCH loop command F"
+VAL 	6 	TCH_LOOP_I 	"Internal test TCH loop command I"
+
+VALTAB 	VAL_dedi_res
+VAL 	0 	DEDI_RES_OK 	"success"
+VAL 	1 	DEDI_RES_TIMEOUT 	"timeout"
+VAL 	2 	DEDI_RES_TA_OUT_OF_RANGE 	"timing advance out of range"
+VAL 	3 	DEDI_RES_CELL_NOT_SYNC 	"cell not sync by ALR"
+
+VALTAB 	VAL_device
+VAL 	0 	DAI_NO_TEST 	"normal operation (no tested device via DAI)"
+VAL 	1 	DAI_SPEECH_DL 	"test of speech decoder / DTX downlink"
+VAL 	2 	DAI_SPEECH_UL 	"test of speech decoder / DTX uplink"
+VAL 	4 	DAI_AD_DA 	"test of acoustic devicesand A/D and D/A"
+
+VALTAB 	VAL_ho_pow
+VAL 	0 - 31 	"transmission power level; e.g. from a Power Command IE of a HANDOVER COMMAND"
+
+VALTAB 	VAL_ho_acc_type
+VAL 	0 	 	"sending of HANDOVER ACCESS is mandatory"
+VAL 	1 	 	"sending of HANDOVER ACCESS is optional"
+
+VALTAB 	VAL_ho_nci
+VAL 	0 	NCI_TA_OUT_OF_RANGE_OK 	"timing advance out of range allowed"
+VAL 	1 	NCI_TA_OUT_OF_RANGE_NOT_ALLOWED 	"timing advance out of range not allowed"
+
+VALTAB 	VAL_multi_band
+VAL 	0 	MULTI_BAND_0 	"normal operation"
+VAL 	1 	MULTI_BAND_1 	"one cell of the non-serving cell band"
+VAL 	2 	MULTI_BAND_2 	"two cells of the non-serving cell band"
+VAL 	3 	MULTI_BAND_3 	"three cells of the non-serving cell band"
+
+VALTAB 	VAL_len_imsi
+VAL 	1 - 15 	"indicates length of IMSI"
+VAL 	0 	 	"indicates not valid"
+
+VALTAB 	VAL_identity_type
+VAL 	1 	ID_IMSI 	"Paged by IMSI"
+VAL 	4 	ID_TMSI 	"Paged by TMSI"
+VAL 	8 	ID_PTMSI 	"Paged by PTMSI"
+
+VALTAB 	VAL_channel_needed
+VAL 	0 	CN_ANY 	"Any channel"
+VAL 	1 	CN_SDCCH 	"SDCCH"
+VAL 	2 	CN_TCH_FULL 	"TCH Full Rate"
+VAL 	3 	CN_TCH_H_OR_F 	"TCH Half Rate or Full Rate"
+VAL 	4 	CN_PACKET 	"Packet Channel (GPRS only)"
+
+VALTAB 	VAL_pch_interrupt
+VAL 	0 	NO_PCH_INTERRUPT 	"Power measurements with PCH listening"
+VAL 	1 	PCH_INTERRUPT 	"Power measurements without PCH listening"
+
+VALTAB 	VAL_freq_bands
+VAL 	0x00 	BAND_AUTO 	"0b00000000: All bands shall be scanned"
+VAL 	0x01 	BAND_GSM_900 	"0b00000001: GSM 900 is supported, shall be scanned"
+VAL 	0x02 	BAND_DCS_1800 	"0b00000010: DCS 1800 is supported, shall be scanned"
+VAL 	0x04 	BAND_PCS_1900 	"0b00000100: PCS 1900 is supported, shall be scanned"
+VAL 	0x08 	BAND_E_GSM 	"0b00001000: Extended GSM is supported, shall be scanned"
+VAL 	0x10 	BAND_GSM_850 	"0b00010000: GSM 850 is supported, shall be scanned"
+VAL 	0x20 	BAND_GSM_450 	"0b00100000: GSM 450 is supported, shall be scanned"
+VAL 	0x40 	BAND_GSM_480 	"0b01000000: GSM 480 is supported, shall be scanned"
+VAL 	0x80 	BAND_R_GSM 	"0b10000000: R-GSM is supported, shall be scanned"
+VAL 	0x03 	BAND_DUAL 	"0b00000011: GSM 900 and DCS 1800 is supported, shall be scanned"
+VAL 	0x0B 	BAND_DUAL_EXT 	"0b00001011: GSM 900, E-GSM and DCS 1800 is supported, shall be scanned"
+VAL 	0x14 	BAND_DUAL_US 	"0b00010100: GSM 850 and PCS 1900 is supported, shall be scanned"
+VAL 	0x12 	BAND_850_1800 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"0b00010010: GSM 850 and DCS 1800 is supported, shall be scanned"
+VAL 	0x0D 	BAND_900_1900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"0b00001101:  GSM 900, E-GSM and PCS 1900 is supported, shall be scanned"
+VAL 	0x1B 	BAND_850_900_1800 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"0b00011011: GSM 850, GSM 900, E-GSM and DCS 1800 is supported, shall be scanned"
+VAL 	0x1D 	BAND_850_900_1900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"0b00011101: GSM 850, GSM 900, E-GSM and PCS 1900 is supported, shall be scanned"
+
+VALTAB 	VAL_no
+VAL 	1 - 8 	"valid values for number of RACH bursts to be sent"
+VAL 	0 	NO_STP_SND_CONT_SND 	"stop sending of RACH bursts"
+
+VALTAB 	VAL_t1
+VAL 	0 - 31 	"frame number modulo 32"
+
+VALTAB 	VAL_t2
+VAL 	0 - 25 	"frame number modulo 26"
+
+VALTAB 	VAL_t3
+VAL 	0 - 50 	"frame number modulo 51"
+
+VALTAB 	VAL_action
+VAL 	0x00 	START_MON_NBCCH 	"start reading of BCCH, excluding ext BCCH"
+VAL 	0x01 	START_MON_EBCCH 	"start reading of ext BCCH, excluding BCCH"
+VAL 	0x02 	STOP_MON_BCCH 	"stop reading of BCCH, including both BCCH and ext BCCH (if previously requested)"
+VAL 	0x03 	START_MON_CCCH 	"start reading of CCCH"
+VAL 	0x04 	STOP_MON_CCCH 	"stop reading of CCCH"
+VAL 	0x05 	LEAVING_PIM_PBCCH 	"Leave PIM"
+VAL 	0x06 	LEAVING_PAM_PBCCH 	"Leave PAM"
+VAL 	0x07 	LEAVING_PTM_PBCCH 	"Leave PTM"
+VAL 	0x08 	ENTER_PTM_PBCCH 	"Enter PTM"
+VAL 	0x09 	ENTER_PIM_PBCCH 	"Enter PIM"
+VAL 	0x0A 	ENTER_PTM_BCCH 	"Enter PTM for BCCH"
+
+VALTAB 	VAL_si_to_read
+VAL 	0 	UNSPECIFIED_SI 	"Update of unspecified SI message or SI messages"
+VAL 	1 	UPDATE_SI1 	"Update of SI1 message"
+VAL 	2 	UPDATE_SI2_SI2BIS_OR_SI2TER 	"Update of SI2, SI2 bis or SI2 ter message"
+VAL 	3 	UPDATE_SI3_SI4_SI7_OR_SI8 	"Update of SI3, SI4, SI7 or SI8 message"
+VAL 	4 	UPDATE_SI9 	"Update of SI9 message"
+VAL 	5 	COMPLETE_SI 	"Read complete SI"
+VAL 	6 	UPDATE_SI13_GSM 	"Read SI13 during GPRS activation"
+VAL 	7 	UPDATE_SI2QUATER 	"Request to update SI-2quater"
+VAL 	8 	UPDATE_SI2QUATER_AGAIN 	"Request to update SI-2quater again as the prev si-2quater BA-IND was not correct"
+VAL 	255 	UPDATE_SI13 	"Update SI13"
+
+VALTAB 	VAL_reorg_only
+VAL 	0 	NORMAL_PGM 	"ignore this parameter (and do not ignore Page Mode IE in PAGING REQUEST messages); used to switch off REORG_ONLY"
+VAL 	1 	REORG_ONLY 	"set page mode to paging reorganisation"
+
+VALTAB 	VAL_sync_only
+VAL 	0 	NORMAL_BA 	"normal GSM behaviour"
+VAL 	1 	SYNC_LIST 	"GPRS sync only"
+VAL 	2 	RECONFIRM_SYNC_LIST 	"Reconfirm Sync 10 sec timer for Pbcch Cells"
+
+VALTAB 	VAL_gprs_sync
+VAL 	0 	NORMAL_MEAS_REP 	"normal GSM behaviour"
+VAL 	1 	SYNC_RESULTS 	"GPRS sync only"
+
+VALTAB 	VAL_ba_id
+VAL 	0 - 127 	"used by PL"
+VAL 	128 - 255 	"used by RR"
+
+VALTAB 	VAL_stat
+VAL 	0 	STAT_INACT 	"inactive"
+VAL 	1 	STAT_ACT 	"active"
+VAL 	0 	STAT_CIPH_OFF 	"ciphering off"
+VAL 	1 	STAT_CIPH_ON 	"ciphering on"
+
+VALTAB 	VAL_eotd_res
+VAL 	0 	EOTD_SUCC 	"success"
+VAL 	1 	EOTD_REF 	"wrong reference BTS"
+
+VALTAB 	VAL_mfrm_offset
+VAL 	0 - 51 	"multiframes/ 51 is interpreted as 0"
+
+VALTAB 	VAL_otd_type
+VAL 	0 	ROUGH_OTD 	"only roughOTD has been provided by the NW"
+VAL 	1 	EXPECTED_OTD 	"only expectedOTD has been provided by the NW"
+VAL 	2 	BOTH_OTD 	"Both OTD type have been provided by the NW"
+
+VALTAB 	VAL_exp_otd
+VAL 	0 - 1250 	"The used resolution is 1 bits. This OTD value is the OTD value of TS0s (i.e. the difference in starting of TS0), not only the OTD between starts of bursts expected OTD between the scell and the specified cell. Note: 1250 is interpreted as 0"
+
+VALTAB 	VAL_uncertainty
+VAL 	0 	UNC_MAX_2BIT 	"uncertainty in bits. 0 - 2 bits"
+VAL 	1 	UNC_MAX_4BIT 	"uncertainty in bits. 3 - 4 bits"
+VAL 	2 	UNC_MAX_8BIT 	"uncertainty in bits. 5 - 8 bits"
+VAL 	3 	UNC_MAX_12BIT 	"uncertainty in bits. 9 - 12 bits"
+VAL 	4 	UNC_MAX_16BIT 	"uncertainty in bits. 13 - 16 bits"
+VAL 	5 	UNC_MAX_22BIT 	"uncertainty in bits. 17 - 22 bits"
+VAL 	6 	UNC_MAX_30BIT 	"uncertainty in bits. 23 - 30 bits"
+VAL 	7 	UNC_GT_30BIT 	"uncertainty in bits.  > 30 bits"
+
+VALTAB 	VAL_rough_rtd
+VAL 	0 	 	"roughRTD in bits (see expected OTD)"
+
+VALTAB 	VAL_eotd_avail
+VAL 	0 	 	"EOTD is not available"
+VAL 	1 	 	"EOTD is available"
+
+VALTAB 	VAL_gprs_support
+VAL 	1 	MPH_GPRS_PROCS_USED 	"yes"
+VAL 	0 	MPH_GPRS_PROCS_NOT_USED 	"no"
+
+VALTAB 	VAL_si_to_clean
+VAL 	0x0001 	IND_SI_1 	"Clean SI 1 buffer"
+VAL 	0x0002 	IND_SI_2 	"Clean SI 2 buffer"
+VAL 	0x0004 	IND_SI_2BIS 	"Clean SI 2bis buffer"
+VAL 	0x0008 	IND_SI_2TER 	"Clean SI 2ter buffer"
+VAL 	0x0010 	IND_SI_3 	"Clean SI 3 buffer"
+VAL 	0x0020 	IND_SI_4 	"Clean SI 4 buffer"
+VAL 	0x0040 	IND_SI_13 	"Clean SI 13 buffer"
+VAL 	0x0080 	IND_SI_2QUATER 	"Clean SI 2quater buffer"
+VAL 	0x0100 	IND_SI_5 	"Clean SI 5 buffer"
+VAL 	0x0200 	IND_SI_5BIS 	"Clean SI 5bis buffer"
+VAL 	0x0400 	IND_SI_5TER 	"Clean SI 5ter buffer"
+VAL 	0x0800 	IND_SI_6 	"Clean SI 6 buffer"
+VAL 	0x007F 	IND_ALL_IDLE_SI 	"Clean all SI of idle mode"
+VAL 	0x000E 	IND_ALL_IDLE_BA 	"Clean all SI of idle mode BA list"
+VAL 	0x0F00 	IND_ALL_DEDI_SI 	"Clean all SI of dedicated  mode"
+VAL 	0x0700 	IND_ALL_DEDI_BA 	"Clean all SI of dedicated  mode BA list"
+VAL 	0x0F7F 	IND_ALL_SI 	"Clean all SI buffers"
+
+VALTAB 	VAL_cause
+VAL 	0x0 	NC_STOP_MEAS 	"Stop the measurement"
+VAL 	0x1 	NC_START_MEAS 	"Start Averaging the measurements"
+VAL 	0x2 	NC_REPORT_MEAS  	"get the meas report from RR"
+
+VALTAB 	VAL_region
+VAL 	0 	EUROPEAN_REGION 	"Indicates European region"
+VAL 	1 	AMERICAN_REGION 	"Indicates American region"
+VAL 	2 	BOTH_REGIONS 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"Indicates both European and American region"
+
+VALTAB 	VAL_search_mode
+VAL 	0x00 	FULL_SEARCH_MODE 	"Identifies 'Full Search' mode, default mode"
+VAL 	0x01 	NORMAL_SEARCH_MODE 	"Identifies 'Normal Search' mode"
+VAL 	0x02 	FAST_SEARCH_MODE 	"Identifies 'Fast Search' mode"
+VAL 	0x03 	BLACK_LIST_SEARCH_MODE 	"Identifies 'Black List Search' mode"
+
+VALTAB 	VAL_whitelist_valid
+VAL 	0 	WHITELIST_NOT_VALID 	"not valid"
+VAL 	1 	WHITELIST_VALID 	"valid"
+
+VALTAB 	VAL_rep_rate 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0x00 	NORMAL_REP_RATE 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Normal(SACCH)reporting rate"
+VAL 	0x01 	REDUCED_REP_RATE 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reduced reporting rate"
+
+VALTAB 	Val_inv_bsic 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0x00 	INV_BSIC_REPORTING_DISABLED 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Invalid BSIC reporting not enabled"
+VAL 	0x01 	INV_BSIC_REPORTING_ENABLED 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Invalid BSIC reporting enabled"
+
+VALTAB 	Val_si2quater_status 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	SI2QUATER_ABSENT 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Not present/Not required"
+VAL 	1 	SI2QUATER_CONFIGURE 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Has to be configured"
+VAL 	2 	SI2QUATER_ACQ_PENDING 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Acquisition is pending."
+VAL 	3 	SI2QUATER_ACQ_COMP 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Acquisition is complete"
+VAL 	4 	SI2QUATER_ACQ_FULL_BCCH 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Acquisition is on going as part of full BCCH reading"
+VAL 	5 	SI2QUATER_ACQ_WRONG_BAIND 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Acquired with wrong BA-IND"
+
+VALTAB 	Val_si2quater_pos 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	SI2QUATER_ON_NBCCH 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"SI-2quater on NBCCH"
+VAL 	1 	SI2QUATER_ON_EBCCH 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"SI-2quater on EBCCH"
+
+VALTAB 	Val_mean_bep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0x00 	MEAN_BEP_0 	"mapped value"
+VAL 	0x01 	MEAN_BEP_1 	"mapped value"
+VAL 	0x02 	MEAN_BEP_2 	"mapped value"
+VAL 	0x03 	MEAN_BEP_3 	"mapped value"
+VAL 	0x04 	MEAN_BEP_4 	"mapped value"
+VAL 	0x05 	MEAN_BEP_5 	"mapped value"
+VAL 	0x06 	MEAN_BEP_6 	"mapped value"
+VAL 	0x07 	MEAN_BEP_7 	"mapped value"
+VAL 	0x08 	MEAN_BEP_8 	"mapped value"
+VAL 	0x09 	MEAN_BEP_9 	"mapped value"
+VAL 	0x0a 	MEAN_BEP_10 	"mapped value"
+VAL 	0x0b 	MEAN_BEP_11 	"mapped value"
+VAL 	0x0c 	MEAN_BEP_12 	"mapped value"
+VAL 	0x0d 	MEAN_BEP_13 	"mapped value"
+VAL 	0x0e 	MEAN_BEP_14 	"mapped value"
+VAL 	0x0f 	MEAN_BEP_15 	"mapped value"
+VAL 	0x10 	MEAN_BEP_16 	"mapped value"
+VAL 	0x11 	MEAN_BEP_17 	"mapped value"
+VAL 	0x12 	MEAN_BEP_18 	"mapped value"
+VAL 	0x13 	MEAN_BEP_19 	"mapped value"
+VAL 	0x14 	MEAN_BEP_20 	"mapped value"
+VAL 	0x15 	MEAN_BEP_21 	"mapped value"
+VAL 	0x16 	MEAN_BEP_22 	"mapped value"
+VAL 	0x17 	MEAN_BEP_23 	"mapped value"
+VAL 	0x18 	MEAN_BEP_24 	"mapped value"
+VAL 	0x19 	MEAN_BEP_25 	"mapped value"
+VAL 	0x1a 	MEAN_BEP_26 	"mapped value"
+VAL 	0x1b 	MEAN_BEP_27 	"mapped value"
+VAL 	0x1c 	MEAN_BEP_28 	"mapped value"
+VAL 	0x1d 	MEAN_BEP_29 	"mapped value"
+VAL 	0x1e 	MEAN_BEP_30 	"mapped value"
+VAL 	0x1f 	MEAN_BEP_31 	"mapped value"
+
+VALTAB 	Val_cv_bep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	CV_BEP_0 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Values Item"
+VAL 	1 	CV_BEP_1 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Values Item"
+VAL 	2 	CV_BEP_2 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Values Item"
+VAL 	3 	CV_BEP_3 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Values Item"
+VAL 	4 	CV_BEP_4 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Values Item"
+VAL 	5 	CV_BEP_5 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Values Item"
+VAL 	6 	CV_BEP_6 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Values Item"
+VAL 	7 	CV_BEP_7 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Values Item"
+
+VALTAB 	Val_scale_ord 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0x00 	SCALE_0dB 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Scaling by 0dB"
+VAL 	0x01 	SCALE_10dB 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Scaling by 10dB"
+VAL 	0x02 	SCALE_AUTO 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Automatic scaling"
+
+VALTAB 	VAL_rep_priority 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0x00 	REP_PRIOR_NORM 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Normal reporting priority"
+VAL 	0x01 	REP_PRIOR_HIGH 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"High reporting priority"
+
+VALTAB 	Val_rep_threshold 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0x00 	REP_THRESHOLD_0 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"0 dB"
+VAL 	0x01 	REP_THRESHOLD_6 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"6 dB"
+VAL 	0x02 	REP_THRESHOLD_12 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"12 dB"
+VAL 	0x03 	REP_THRESHOLD_18 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"18 dB"
+VAL 	0x04 	REP_THRESHOLD_24 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"24 dB"
+VAL 	0x05 	REP_THRESHOLD_30 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"30 dB"
+VAL 	0x06 	REP_THRESHOLD_36 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"36 dB"
+VAL 	0x07 	REP_THRESHOLD_INF 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Report Never"
+VAL 	0xff 	REP_THRESHOLD_NONE 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Report Always, default value"
+
+VALTAB 	Val_rep_offset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0x00 	REP_OFFSET_0 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"0dB (Default)"
+VAL 	0x01 	REP_OFFSET_6 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"6 dB"
+VAL 	0x02 	REP_OFFSET_12 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"12 dB"
+VAL 	0x03 	REP_OFFSET_18 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"18 dB"
+VAL 	0x04 	REP_OFFSET_24 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"24 dB"
+VAL 	0x05 	REP_OFFSET_30 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"30 dB"
+VAL 	0x06 	REP_OFFSET_36 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"36 dB"
+VAL 	0x07 	REP_OFFSET_42 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"42 dB"
+
+VALTAB 	Val_rep_type 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0x0 	REP_TYPE_ENH 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Report type is 'Enhanced'"
+VAL 	0x1 	REP_TYPE_NORM 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Report type is 'Normal'"
+
+
+
+
+VAR 	arfcn 	"channel number" 	S
+
+VAL 	@p_mph - VAL_arfcn@ 	
+
+VAR 	ma 	"channel number in the mobile allocation list (used with frequency hopping)" 	S
+
+VAL 	@p_mph - VAL_arfcn@ 	
+
+VAR 	ext_bcch 	"unused, reserved" 	B
+
+
+VAR 	comb_ccch 	"extended BCCH listening" 	B
+
+VAL 	@p_mph - VAL_comb_ccch@ 	
+
+VAR 	tn 	"timeslot number" 	B
+
+VAL 	@p_mph - VAL_tn@ 	
+
+VAR 	dlt 	"downlink initial value" 	B
+
+VAL 	@p_mph - VAL_dlt@ 	
+
+VAR 	pg 	"paging group" 	B
+
+VAL 	@p_mph - VAL_pg@ 	
+
+VAR 	bs_ag_blocks_res 	"blocks reserved for AGCH" 	B
+
+VAL 	@p_mph - VAL_bs_ag_blocks_res@ 	
+
+VAR 	bs_pa_mfrms 	"Multiframe Period" 	B
+
+VAL 	@p_mph - VAL_bs_pa_mfrms@ 	
+
+VAR 	power 	"transmission power level" 	B
+
+VAL 	@p_mph - VAL_power@ 	
+
+VAR 	rx_lev 	"received field strength" 	B
+
+VAL 	@p_mph - VAL_rx_lev@ 	
+
+VAR 	rx_lev_full 	"received field strength" 	B
+
+
+VAR 	rx_lev_sub 	"received field strength" 	B
+
+
+VAR 	rx_qual_full 	"received quality" 	B
+
+VAL 	@p_mph - VAL_rx_qual_full@ 	
+
+VAR 	rx_qual_sub 	"received quality" 	B
+
+
+VAR 	bsic 	"base station identification code" 	B
+
+VAL 	@p_mph - VAL_bsic@ 	
+
+VAR 	dtx 	"discontinuous transmission" 	B
+
+VAL 	@p_mph - VAL_dtx@ 	
+
+VAR 	otd 	"timing advance" 	S
+
+VAL 	@p_mph - VAL_otd@ 	
+
+VAR 	ta 	"timing advance" 	B
+
+VAL 	@p_mph - VAL_ta@ 	
+
+VAR 	time_alignmt 	"timing alignment; refers to difference in time between serving and neighbour cell" 	L
+
+
+VAR 	frame_offset 	"frame offset; refers to difference in time between serving and neighbour cell" 	L
+
+
+VAR 	v_start 	"starting time valid" 	B
+
+VAL 	@p_mph - VAL_v_start@ 	
+
+VAR 	ch 	"channel type" 	B
+
+VAL 	@p_mph - VAL_ch@ 	
+
+VAR 	tsc 	"trainings sequence code" 	B
+
+VAL 	@p_mph - VAL_tsc@ 	
+
+VAR 	h 	"hopping" 	B
+
+VAL 	@p_mph - VAL_h@ 	
+
+VAR 	maio 	"mobile allocation index offset" 	B
+
+VAL 	@p_mph - VAL_maio@ 	
+
+VAR 	hsn 	"hopping sequence number" 	B
+
+VAL 	@p_mph - VAL_hsn@ 	
+
+VAR 	rlt 	"radio link timeout" 	B
+
+VAL 	@p_mph - VAL_rlt@ 	
+
+VAR 	tav 	"timing advance" 	B
+
+VAL 	@p_mph - VAL_tav@ 	
+
+VAR 	pwrc 	"power control indicator" 	B
+
+VAL 	@p_mph - VAL_pwrc@ 	
+
+VAR 	algo 	"Algorithm" 	B
+
+VAL 	@p_mph - VAL_algo@ 	
+
+VAR 	kc 	"Kc value; the format in the GTI case is as on the SIM; the least significant bit of kc is the least significant bit of the eighth byte; the most significant bit of kc is the most significant bit of the first byte." 	B
+
+
+VAR 	mod 	"idle / dedicated mode scenario" 	B
+
+VAL 	@p_mph - VAL_mod@ 	
+
+VAR 	mode 	"channel mode" 	B
+
+VAL 	@p_mph - VAL_mode@ 	
+
+VAR 	nscb 	"noise suppression control bit" 	B
+
+
+VAR 	icmi 	"initial code mode indicator" 	B
+
+
+VAR 	st_mode 	"initial code mode" 	B
+
+VAL 	@p_mph - VAL_st_mode@ 	
+
+VAR 	acs 	"active codec set" 	B
+
+
+VAR 	v_cod_prop 	"valid flag codec properties" 	B
+
+
+VAR 	c_cod_prop 	"counter" 	B
+
+
+VAR 	codec_thr 	"Codec threshold" 	B
+
+
+VAR 	codec_hyst 	"Codec hysteresis" 	B
+
+
+VAR 	cs 	"cause" 	B
+
+VAL 	@p_mph - VAL_cs@ 	
+
+VAR 	pclass 	"power class" 	B
+
+VAL 	@p_mph - VAL_pclass@ 	
+
+VAR 	pclass2 	"power class 2" 	B
+
+
+VAR 	fn_offset 	"TDMA Frame Offset" 	S
+
+
+VAR 	tch_loop 	"TCH loop command" 	B
+
+VAL 	@p_mph - VAL_tch_loop@ 	
+
+VAR 	dedi_res 	"dedicated configuration result" 	B
+
+VAL 	@p_mph - VAL_dedi_res@ 	
+
+VAR 	device 	"DAI testing device" 	B
+
+VAL 	@p_mph - VAL_device@ 	
+
+VAR 	ho_ref 	"reference" 	B
+
+
+VAR 	ho_pow 	"transmission power level" 	B
+
+VAL 	@p_mph - VAL_ho_pow@ 	
+
+VAR 	ho_acc_type 	"access type" 	B
+
+VAL 	@p_mph - VAL_ho_acc_type@ 	
+
+VAR 	ho_nci 	"normal cell indication" 	B
+
+VAL 	@p_mph - VAL_ho_nci@ 	
+
+VAR 	param 	"dummy parameter" 	B
+
+
+VAR 	valid 	"valid flag" 	B
+
+
+VAR 	multi_band 	"multiband report parameter" 	B
+
+VAL 	@p_mph - VAL_multi_band@ 	
+
+VAR 	len_imsi 	"Length of IMSI" 	B
+
+VAL 	@p_mph - VAL_len_imsi@ 	
+
+VAR 	imsi 	"IMSI digits" 	B
+
+
+VAR 	v_tmsi 	"Valid TMSI flag" 	B
+
+
+VAR 	tmsi 	"Binary TMSI representatino" 	L
+
+
+VAR 	v_ptmsi 	"Valid PTMSI flag; can indicate'valid'only for the GPRS supporting terminal" 	B
+
+
+VAR 	ptmsi 	"Binary PTMSI representatino" 	L
+
+
+VAR 	v_ptmsi2 	"Valid PTMSI flag; can indicate'valid'only for the GPRS supporting terminal" 	B
+
+
+VAR 	ptmsi2 	"Binary PTMSI representatino" 	L
+
+
+VAR 	identity_type 	"Identity type" 	B
+
+VAL 	@p_mph - VAL_identity_type@ 	
+
+VAR 	channel_needed 	"Channel needed" 	B
+
+VAL 	@p_mph - VAL_channel_needed@ 	
+
+VAR 	pch_interrupt 	"PCH Interrupt" 	B
+
+VAL 	@p_mph - VAL_pch_interrupt@ 	
+
+VAR 	freq_bands 	"Bitmap of frequency bands" 	B
+
+VAL 	@p_mph - VAL_freq_bands@ 	
+
+VAR 	num_of_chan 	"Number of detected channels" 	B
+
+
+VAR 	c 	"dummy; unused, reserved" 	B
+
+
+VAR 	no 	"number of RACH messages; this number includes re-transmissions and the first, initial RACH burst, i.e. no = M +1, where M is as defined in GSM 04.08's specification of the initiation of the immediate assignment procedure" 	B
+
+VAL 	@p_mph - VAL_no@ 	
+
+VAR 	delta 	"time in TDMA frames between bursts; delta[0]corresponds to the time between MPH_RANDOM_ACCESS_REQ and the first RACH burst, delta[1]to the time between the first and the 2nd RACH burst and so on" 	B
+
+
+VAR 	rach 	"channel request content burst n; rach[0]corresponds to the contents of the first RACH burst, rach[1]to the 2nd and so on" 	B
+
+
+VAR 	t1 	"reduced frame number modula 32" 	B
+
+VAL 	@p_mph - VAL_t1@ 	
+
+VAR 	t2 	"reduced frame number modula 26" 	B
+
+VAL 	@p_mph - VAL_t2@ 	
+
+VAR 	t3 	"reduced frame number modula 51" 	B
+
+VAL 	@p_mph - VAL_t3@ 	
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"buffer content; comment as in PH SAP" 	B
+
+
+VAR 	ncc_permitted 	"NCC permitted bitmap" 	B
+
+
+VAR 	action 	"start or stop reading of BCCH resp. CCCH" 	B
+
+VAL 	@p_mph - VAL_action@ 	
+
+VAR 	si_to_read 	"SI to read" 	B
+
+VAL 	@p_mph - VAL_si_to_read@ 	
+
+VAR 	fn 	"full frame number; format: absolute frame number" 	L
+
+
+VAR 	no_of_ncells 	"Number of ncells" 	B
+
+
+VAR 	reorg_only 	"specifies if reorg should be used" 	B
+
+VAL 	@p_mph - VAL_reorg_only@ 	
+
+VAR 	sync_only 	"specifies if only sync is used" 	B
+
+VAL 	@p_mph - VAL_sync_only@ 	
+
+VAR 	gprs_sync 	"specifies sync results" 	B
+
+VAL 	@p_mph - VAL_gprs_sync@ 	
+
+VAR 	ba_id 	"link frequency list and measurement report" 	B
+
+VAL 	@p_mph - VAL_ba_id@ 	
+
+VAR 	stat 	"status" 	B
+
+VAL 	@p_mph - VAL_stat@ 	
+
+VAR 	eotd_crosscor 	"Cross correlation" 	T
+
+
+VAR 	eotd_res 	"EOTD Result" 	B
+
+VAL 	@p_mph - VAL_eotd_res@ 	
+
+VAR 	req_id 	"Request Identifier" 	S
+
+
+VAR 	d_eotd_nrj 	"Sum of Amplitudes" 	L
+
+
+VAR 	time_tag 	"Time tag" 	L
+
+
+VAR 	sb_flag 	"Valid flag" 	B
+
+
+VAR 	mfrm_offset 	"multiframe offset" 	B
+
+VAL 	@p_mph - VAL_mfrm_offset@ 	
+
+VAR 	otd_type 	"OTD type" 	B
+
+VAL 	@p_mph - VAL_otd_type@ 	
+
+VAR 	exp_otd 	"expectedOTD" 	S
+
+VAL 	@p_mph - VAL_exp_otd@ 	
+
+VAR 	uncertainty 	"Uncertainty of expected OTD" 	B
+
+VAL 	@p_mph - VAL_uncertainty@ 	
+
+VAR 	rough_rtd 	"rough RTD" 	S
+
+VAL 	@p_mph - VAL_rough_rtd@ 	
+
+VAR 	eotd_avail 	"eotd avail" 	B
+
+VAL 	@p_mph - VAL_eotd_avail@ 	
+
+VAR 	gprs_support 	"GPRS" 	B
+
+VAL 	@p_mph - VAL_gprs_support@ 	
+
+VAR 	si_to_clean 	"SI to clean" 	S
+
+VAL 	@p_mph - VAL_si_to_clean@ 	
+
+VAR 	cause 	"Meas report" 	B
+
+VAL 	@p_mph - VAL_cause@ 	
+
+VAR 	bcch_rxlev_of_sc 	"This is the rxlev of BCCH channel. Used only in dedicated mode" 	B
+
+
+VAR 	region 	"Indicates whether 'White List'belongs to European or American region" 	B
+
+VAL 	@p_mph - VAL_region@ 	
+
+VAR 	search_mode 	"Basic Element" 	B
+
+VAL 	@p_mph - VAL_search_mode@ 	
+
+VAR 	white_list_valid 	"Indicates whether 'White List' is valid or not" 	B
+
+VAL 	@p_mph - VAL_whitelist_valid@ 	
+
+VAR 	channels 	"Stores list of ARFCNS" 	B
+
+
+VAR 	num_of_white_list_chan 	"The number of 'White List'carriers included in the list" 	B
+
+
+VAR 	num_of_carriers 	"Number of carriers to be removed from the Black List" 	B
+
+
+VAR 	lower_rxlevel_threshold 	"lower rxlevel thershold for GSM channels" 	B
+
+
+VAR 	si2quater_status 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"SI-2quater configuration status" 	B
+
+VAL 	@p_mph - Val_si2quater_status@ 	
+
+VAR 	si2quater_pos 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"on N-BCCH or E-BCCH" 	B
+
+VAL 	@p_mph - Val_si2quater_pos@ 	
+
+VAR 	nbr_rcvd_blks 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Number of received blocks" 	B
+
+
+VAR 	mean_bep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"mapped value of mean BEP" 	B
+
+VAL 	@p_mph - Val_mean_bep@ 	
+
+VAR 	cv_bep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"CV BEP" 	B
+
+VAL 	@p_mph - Val_cv_bep@ 	
+
+VAR 	nc_index 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GSM Neighbour cell index /index to enhanced cell list" 	B
+
+
+VAR 	bsic_seen 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Indicates if a GSM cell with invalid BSIC and allowed NCC part of the BSIC is one of the six strongest cells. " 	B
+
+
+VAR 	num_valid_cells 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Indicates number of cells valid in cell list in enh para" 	B
+
+
+VAR 	rep_rate 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting rate" 	B
+
+VAL 	@p_mph - VAL_rep_rate@ 	
+
+VAR 	inv_bsic_enabled 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Is Invalid BSIC reporting enabled?" 	B
+
+VAL 	@p_mph - Val_inv_bsic@ 	
+
+VAR 	multiband_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Number of cells, in each non-serving cell band, to be reported " 	B
+
+
+VAR 	servingband_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Number of cells, in serving cell band, to be reported" 	B
+
+
+VAR 	scale_order 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Basic Element" 	B
+
+VAL 	@p_mph - Val_scale_ord@ 	
+
+VAR 	rep_priority 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting priority of a cell" 	B
+
+VAL 	@p_mph - VAL_rep_priority@ 	
+
+VAR 	rtd 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Real Time Difference value for all the neighbour cells " 	S
+
+
+VAR 	rep_threshold 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting threshold" 	B
+
+VAL 	@p_mph - Val_rep_threshold@ 	
+
+VAR 	rep_offset 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting offset" 	B
+
+VAL 	@p_mph - Val_rep_offset@ 	
+
+VAR 	rtd 	%REL99 AND TI_PS_FF_RTD% 	"Real Time Difference value for all the neighbour cells " 	S
+
+
+VAR 	rep_type 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Report type" 	B
+
+VAL 	@p_mph - Val_rep_type@ 	
+
+VAR 	pclass_900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"Power Class GSM 900" 	B
+
+
+VAR 	pclass_850 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"Power Class 850" 	B
+
+
+VAR 	pclass_1900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"Power Class 1900" 	B
+
+
+VAR 	pclass_1800 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"Power Class 1800" 	B
+
+
+
+
+
+COMP 	cbch 	 "cell broadcast channel"
+{
+ 	stat 	 ; CBCH status; binary state
+ 	ch 	 ; channel type
+ 	tn 	 ; timeslot number
+ 	tsc 	 ; training sequence code
+ 	h 	 ; hopping
+ 	arfcn 	 ; channel number; valid only if h=0
+ 	maio 	 ; mobile allocation index offset; valid only if h=1
+ 	hsn 	 ; hopping sequence number; valid only if h=1
+ 	ma 	[MAX_MA_CHANNELS] 	 ; mobile allocation list; valid only if h=1; coding as arfcn field above; determines the (maximum) size of mobile allocation list; the list is delimited with 0xFFFF = NOT_PRESENT_16BIT (except if all entries are used)
+}
+
+
+
+COMP 	ncells 	 "neighbour cell measurement results"
+{
+ 	no_of_ncells 	 ; number of neighbour cells; semantics as in 47
+ 	arfcn 	[MAX_NUM_CELLS_IN_REPORT] 	 ; channel number; semantics as in 4.1
+ 	rx_lev 	[MAX_NUM_CELLS_IN_REPORT] 	 ; received field strength; semantics as in 4.11
+ 	bsic 	[MAX_NUM_CELLS_IN_REPORT] 	 ; base station identification code; semantics as in 4.13
+ 	time_alignmt 	[MAX_NUM_CELLS_IN_REPORT] 	 ; timing alignment; refers to difference in time between serving and neighbour cell
+ 	frame_offset 	[MAX_NUM_CELLS_IN_REPORT] 	 ; frame offset; refers to difference in time between serving and neighbour cell
+}
+
+
+
+COMP 	start 	 "starting time"
+{
+ 	v_start 	 ; starting time valid
+ 	t1 	 ; frame number modulo 32
+ 	t2 	 ; frame number modulo 26
+ 	t3 	 ; frame number modulo 51
+}
+
+
+
+COMP 	ch_type 	 "channel type configuration"
+{
+ 	ch 	 ; channel type
+ 	tn 	 ; timeslot number
+ 	tsc 	 ; training sequence code
+ 	h 	 ; hopping
+ 	arfcn 	 ; channel number; valid only if h=0
+ 	maio 	 ; mobile allocation index offset; valid only if h=1
+ 	hsn 	 ; hopping sequence number; valid only if h=1
+ 	ma 	[MAX_MA_CHANNELS] 	 ; mobile allocation list; valid  only if h=1; coding as arfcn field above; determines the (maximum) size of mobile allocation list; the list is delimited with 0xFFFF = NOT_PRESENT_16BIT (except if all entries are used)
+}
+TYPEDEF COMP ch_type 	ch_type2 	 "channel type"
+
+
+
+COMP 	tr_para 	 "transmission parameter"
+{
+ 	power 	 ; transmission power level
+ 	dtx 	 ; discontinuous transmission
+ 	rlt 	 ; radio link timeout
+ 	tav 	 ; timing advance
+ 	pwrc 	 ; power control indicator
+ 	mode 	 ; channel mode
+}
+
+
+
+COMP 	ciph 	 "ciphering parameters"
+{
+ 	stat 	 ; Ciphering Status; binary state
+ 	algo 	 ; Algorithm
+ 	kc 	[KC_STRING_SIZE] 	 ; Kc value; the format in the GTI case is as on the SIM; the least significant bit of kc is the least significant bit of the eighth byte; the most significant bit of kc is the most significant bit of the first byte.
+}
+
+
+
+COMP 	cod_prop 	 "codec properties"
+{
+ 	codec_thr 	 ; Codec threshold
+ 	codec_hyst 	 ; Codec hysteresis
+}
+
+
+
+COMP 	amr_conf 	 "Parameters for AMR"
+{
+ 	nscb 	 ; noise suppression control bit
+ 	icmi 	 ; initial code mode indicator
+ 	st_mode 	 ; initial code mode
+ 	acs 	 ; active codec set
+ 	v_cod_prop 	 ; valid flag codec properties
+ 	c_cod_prop 	 ; counter
+ 	cod_prop 	[3] 	 ; codec properties
+}
+
+
+
+COMP 	classmark 	 "classmark"
+{
+ 	pclass 	 ; power class
+ 	pclass2 	 ; power class 2
+}
+
+
+
+COMP 	ho_param 	 "handover parameter"
+{
+ 	ho_ref 	 ; reference
+ 	ho_pow 	 ; transmission power level
+ 	ho_acc_type 	 ; access type
+ 	ho_nci 	 ; normal cell indication
+}
+
+
+
+COMP 	mid 	 "Mobile identities"
+{
+ 	len_imsi 	 ; Length of IMSI
+ 	imsi 	[15] 	 ; IMSI digits
+ 	v_tmsi 	 ; Valid TMSI flag
+ 	tmsi 	 ; Binary TMSI representatino
+ 	v_ptmsi 	 ; Valid PTMSI flag; can indicate'valid'only for the GPRS supporting terminal
+ 	ptmsi 	 ; Binary PTMSI representatino
+ 	v_ptmsi2 	 ; Valid PTMSI flag; can indicate'valid'only for the GPRS supporting terminal
+ 	ptmsi2 	 ; Binary PTMSI representatino
+}
+
+
+
+COMP 	send_mode 	 "RACH sending mode"
+{
+ 	c 	 ; dummy; unused, reserved
+ 	no 	 ; number of RACH messages; this number includes re-transmissions and the first, initial RACH burst, i.e. no = M +1, where M is as defined in GSM 04.08's specification of the initiation of the immediate assignment procedure
+ 	delta 	[MAX_RACH_REQ] 	 ; time in TDMA frames between bursts; delta[0]corresponds to the time between MPH_RANDOM_ACCESS_REQ and the first RACH burst, delta[1]to the time between the first and the 2nd RACH burst and so on
+ 	rach 	[MAX_RACH_REQ] 	 ; channel request content burst n; rach[0]corresponds to the contents of the first RACH burst, rach[1]to the 2nd and so on
+}
+
+
+
+COMP 	frame_no 	 "reduced frame number"
+{
+ 	t1 	 ; frame number modulo 32
+ 	t2 	 ; frame number modulo 26
+ 	t3 	 ; frame number modulo 51
+}
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[1] 	 ; buffer content; comment as in PH SAP
+}
+
+
+
+COMP 	meas_results 	 "neighbourcell measurement results"
+{
+ 	arfcn 	 ; channel number
+ 	rx_lev 	 ; received field strength
+}
+
+
+
+COMP 	eotd_sc_res 	 "EOTD SC Results at start of measurement"
+{
+ 	sb_flag 	 ; Valid flag; named 'Data Valid' by cursor task
+ 	bsic 	 ; base station identity code
+ 	arfcn 	 ; channel number
+ 	eotd_crosscor 	[XCOR_NO] 	 ; Cross correlation
+ 	d_eotd_nrj 	 ; Sum of Amplitudes; named 'RSSI' by cursor task
+ 	time_tag 	 ; Time tag; named 'Nominal Position' by cursor task
+}
+TYPEDEF COMP eotd_sc_res 	eotd_sc_res1 	 "EOTD SC Results at stop of measurement"
+TYPEDEF COMP eotd_sc_res 	eotd_nc_res 	 "EOTD NC Results"
+
+
+
+COMP 	ncell_eotd 	 "Parameters of a neighbour cell"
+{
+ 	arfcn 	 ; channel number
+ 	bsic 	 ; Bsic
+ 	mfrm_offset 	 ; multiframe offset
+ 	otd_type 	 ; otd type
+ 	exp_otd 	 ; expected otd
+ 	uncertainty 	 ; uncertainty of exp. otd
+ 	rough_rtd 	 ; rough rtd
+}
+
+
+
+COMP 	meas_rep 	 "meas report to RR"
+{
+ 	arfcn 	 ; channel number
+ 	bsic 	 ; values for bsic
+ 	rx_lev 	 ; received field strength
+}
+
+
+
+COMP 	list 	 "stores a list of frequencies"
+{
+ 	channels 	[LIST_MAX_SIZE] 	 ; stores a list of frequencies
+}
+
+
+
+COMP 	black_list 	 "Contains a separate  bit map of  Black Listed carries for Euro / American regions"
+{
+ 	list 	[MAX_REGIONS] 	 ; Primitive structure element item
+}
+
+
+
+COMP 	white_list 	 "contains the bitmap of carriers present in the 'White List'"
+{
+ 	white_list_valid 	 ; Indicates whether 'White List' is valid or not
+ 	region 	 ; Indicates whether 'White List'belongs to European or American region
+ 	list 	 ; stores a list of frequencies
+}
+
+
+
+COMP 	inactive_carrier_list 	 "Contains the bitmap of inactive carriers in the current location"
+{
+ 	list 	[MAX_REGIONS] 	 ; Bitmap of GSM channels
+}
+
+
+
+COMP 	enh_cell_list 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% "Enhanced cell list"
+{
+ 	arfcn 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; ARFCN of the cell
+ 	bsic 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; BSIC of the cell
+ 	rep_priority 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Reporting priority of this cell
+ 	< () 	rtd 	[0..MAX_NUM_OF_RTD_VALUES] 	> 	 	%REL99 AND TI_PS_FF_RTD% ; Primitive structure element item
+}
+
+
+
+COMP 	enh_rep_data 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% "Enhanced data for reporting"
+{
+ 	rep_threshold 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Reporting threshold
+ 	rep_offset 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Reporting offset
+}
+
+
+
+COMP 	enh_para_struct 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% "Enhanced measurement parameters"
+{
+ 	num_valid_cells 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; number of cells in the list below
+ 	enh_cell_list 	[MAX_NEIGHBOURCELLS] 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; List of enhanced cell information
+ 	rep_rate 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Reorting rate for low priority cells
+ 	inv_bsic_enabled 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Is invalid BSIC reporting enabled?
+ 	ncc_permitted 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; When Invalid BSIC reporting is enables, the NCC part that is permitted
+ 	multiband_rep 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Num cells in each Non serving band for reporting
+ 	servingband_rep 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Num cells in serving band for reporting
+ 	scale_order 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Scaling ordered by NW
+ 	enh_rep_data 	[MAX_NUM_BANDS] 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Info per band in the order:900,1800,400,1900,850
+}
+
+
+
+
+
+
+; MPH_POWER_REQ 	0x5715
+; MPH_POWER_CNF 	0x1707
+; MPH_BSIC_REQ 	0x5716
+; MPH_BSIC_CNF 	0x1708
+; MPH_UNITDATA_IND 	0x1709
+; MPH_RANDOM_ACCESS_REQ 	0x5717
+; MPH_RANDOM_ACCESS_CNF 	0x170A
+; MPH_IDLE_REQ 	0x5703
+; MPH_MEASUREMENT_IND 	0x1701
+; MPH_NEIGHBOURCELL_REQ 	0x5704
+; MPH_DEDICATED_REQ 	0x5706
+; MPH_DEDICATED_CNF 	0x1702
+; MPH_DEDICATED_FAIL_REQ 	0x5707
+; MPH_DEDICATED_FAIL_CNF 	0x1703
+; MPH_CIPHERING_REQ 	0x5708
+; MPH_FREQ_REDEF_REQ 	0x5709
+; MPH_CHANNEL_MODE_REQ 	0x570A
+; MPH_ERROR_IND 	0x1704
+; MPH_DEACTIVATE_REQ 	0x570B
+; MPH_CLASSMARK_REQ 	0x570C
+; MPH_TCH_LOOP_REQ 	0x5711
+; MPH_DAI_REQ 	0x5712
+; MPH_CBCH_REQ 	0x5713
+; MPH_IDENTITY_REQ 	0x5714
+; MPH_PAGING_IND 	0x1706
+; MPH_MON_CTRL_REQ 	0x5718
+; MPH_SYNC_REQ 	0x5719
+; MPH_SYNC_IND 	0x170B
+; MPH_MEAS_ORDER_CNF 	0x170C
+; MPH_EMO_REQ 	0x5705
+; MPH_EMO_MEAS_IND 	0x1705
+; MPH_EXT_MEAS_REQ 	0x570D
+; MPH_EXT_MEAS_CNF 	0x170D
+; MPH_NCELL_POS_REQ 	0x570E
+; MPH_NCELL_POS_IND 	0x170E
+; MPH_CLEAN_BUF_REQ 	0x571A
+; MPH_STOP_DEDICATED_REQ 	0x571B
+; MPH_STOP_DEDICATED_CNF 	0x170F
+; MPH_MEAS_REP_REQ 	0x571C
+; MPH_MEAS_REP_CNF 	0x1710
+; MPH_ENHPARA_UPDATE_REQ 	0x571D
+; MPH_INIT_RR_IND 	0x1711
+
+
+
+PRIM 	MPH_POWER_REQ 	0x5715
+{
+ 	pch_interrupt 	 ; pch interrupt
+ 	freq_bands 	 ; frequency bands; used since support of 'PCS 1900 channels'
+ 	search_mode 	 ; Search mode 
+ 	lower_rxlevel_threshold 	[MAX_NUM_BANDS] 	 ; Lower Rxlev Threshold
+ 	black_list 	 ; List of Black Listed carriers
+ 	white_list 	 ; List of carriers in White List
+}
+
+
+
+
+
+
+PRIM 	MPH_POWER_CNF 	0x1707
+{
+ 	num_of_chan 	 ; Number of channels
+ 	num_of_white_list_chan 	 ; Number of White list channels
+ 	arfcn 	[MAX_CHANNELS] 	 ; cell channel numbers
+ 	rx_lev 	[MAX_CHANNELS] 	 ; field strength
+ 	inactive_carrier_list 	 ; List of inactive carriers
+}
+
+
+
+
+
+
+PRIM 	MPH_BSIC_REQ 	0x5716
+{
+ 	arfcn 	 ; channel number
+}
+
+
+
+
+
+
+PRIM 	MPH_BSIC_CNF 	0x1708
+{
+ 	arfcn 	 ; channel number
+ 	bsic 	 ; base station identification code
+ 	cs 	 ; cause / error code; The following causes can occur within this primitive: CS_NO_ERROR, CS_NO_BCCH_AVAIL
+}
+
+
+
+
+
+
+PRIM 	MPH_UNITDATA_IND 	0x1709
+{
+ 	arfcn 	 ; channel number
+ 	fn 	 ; full frame number
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MPH_RANDOM_ACCESS_REQ 	0x5717
+{
+ 	send_mode 	 ; RACH sending mode
+}
+
+
+
+
+
+
+PRIM 	MPH_RANDOM_ACCESS_CNF 	0x170A
+{
+ 	frame_no 	 ; reduced frame number
+}
+
+
+
+
+
+
+PRIM 	MPH_IDLE_REQ 	0x5703
+{
+ 	mod 	 ; idle mode scenario; the following mod values can occur within this primitive: MODE_CELL_SELECTION, MODE_CELL_RESELECTION, MODE_SYS_INFO_CHANGE, MODE_PACKET_TRANSFER (GPRS only), MODE_CELL_CHANGE_ORDER (GPRS only)
+ 	arfcn 	 ; channel number
+ 	ext_bcch 	 ; dummy; unused, reserved
+ 	comb_ccch 	 ; combined CCCH
+ 	tn 	 ; timeslot
+ 	dlt 	 ; downlink timeout
+ 	pg 	 ; paging group
+ 	bs_ag_blocks_res 	 ; AGCH blocks reserved
+ 	bs_pa_mfrms 	 ; multiframe period
+ 	power 	 ; transmission power level
+ 	ncc_permitted 	 ; NCC permitted
+ 	reorg_only 	 ; page mode override; for a GSM only terminal the value is always NORMAL_PGM
+ 	eotd_avail 	 ; EOTD available
+ 	gprs_support 	 ; Cell supports GPRS; (GPRS only)
+ 	si2quater_status 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Indicates status of SI-2quater in serving cell
+ 	si2quater_pos 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Indicates position of SI-2quater (Normal or Extended BCCH)
+}
+
+
+
+
+
+
+PRIM 	MPH_MEASUREMENT_IND 	0x1701
+{
+ 	arfcn 	 ; channel number; refers to serving cell
+ 	rx_lev_full 	 ; received full field strength; refers to serving cell
+ 	rx_lev_sub 	 ; received sub field strength; refers to serving cell
+ 	rx_qual_full 	 ; received full quality; refers to serving cell
+ 	rx_qual_sub 	 ; received sub quality; refers to serving cell
+ 	dtx 	 ; use of DTX; refers to serving cell
+ 	otd 	 ; timing advance; refers to serving cell (short name otd, although misleading, is kept only for backwards compatibility reasons); used in GSM dedicated mode
+ 	valid 	 ; valid flag; refers to both serving and neighbour cells, i.e. the entire report; set to valid except for first measurement indications after an update of the BA list
+ 	fn_offset 	 ; TDMA frame offset; used for  C2 calculation
+ 	ncells 	 ; neighbour cell measurement results; referring to neighbour cells
+ 	gprs_sync 	 ; GPRS synchronisation results; referring to neighbour cells; for a GSM only terminal the value is always NORMAL_MEAS_REP
+ 	rx_lev_full AS rxlev_val 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; RXLEV VAL on SACCH, valid only for EMR 
+ 	nbr_rcvd_blks 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Number of blocks received, valid only for EMR
+ 	mean_bep 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Mean BEP, valid only for EMR
+ 	cv_bep 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; CV BEP, valid only for EMR
+ 	scale_order AS scale_used 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Indicates the scale used. Valid values are 0(0dB) and 1(10dB), valid only for EMR
+ 	nc_index 	[MAX_NUM_CELLS_IN_REPORT] 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; One-One correspondence with info in ncells: assistance data for RR during EMR
+ 	bsic_seen 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; TRUE / FALSE
+ 	bcch_rxlev_of_sc 	 ; rxlev of SC BCCH channel. Used in dedicated mode, to distinguish between rxlev of traffic channel and BCCH channel.
+}
+
+
+
+
+
+
+PRIM 	MPH_NEIGHBOURCELL_REQ 	0x5704
+{
+ 	multi_band 	 ; multi-band report parameter; fed from SYSTEM INFORMATION 2ter's / 5ter's neighbour cell description 2 IE
+ 	arfcn 	[MAX_NEIGHBOURCELLS] 	 ; neighbour cell channel numbers; the list is delimited with 0xFFFF = NOT_PRESENT_16BIT (except if all entries are used)
+ 	sync_only 	 ; GPRS synchronisation only; for a GSM only terminal the value is always NORMAL_BA
+}
+
+
+
+
+
+
+PRIM 	MPH_DEDICATED_REQ 	0x5706
+{
+ 	mod 	 ; dedicated mode scenario; the following mod values can occur within this primitive: MODE_IMM_ASSIGN, MODE_CHAN_ASSIGN, MODE_ASYNC_HANDOVER, MODE_SYNC_HANDOVER, MODE_PRE_SYNC_HANDOVER, MODE_PSEUDO_SYNC_HANDOVER, MODE_SYS_INFO_CHANGE, MODE_PDCH_ASSIGN (GPRS only)
+ 	start 	 ; starting time; validity can be indicated within the element by a valid flag
+ 	ch_type 	 ; channel type after time
+ 	ch_type2 	 ; channel type before time; invalidity of the entire element including sub-elements can be indicated by a sub-element channel type ch being equal to 0xFF = NOT_PRESENT_8BIT
+ 	arfcn 	 ; BCCH channel number
+ 	bsic 	 ; base station identification code
+ 	ho_param 	 ; handover parameter
+ 	tr_para 	 ; transmission parameter
+ 	ciph 	 ; ciphering parameters
+ 	amr_conf 	 ; AMR configuration
+}
+
+
+
+
+
+
+PRIM 	MPH_DEDICATED_CNF 	0x1702
+{
+ 	dedi_res 	 ; dedicated result
+}
+
+
+
+
+
+
+PRIM 	MPH_DEDICATED_FAIL_REQ 	0x5707
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPH_DEDICATED_FAIL_CNF 	0x1703
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPH_CIPHERING_REQ 	0x5708
+{
+ 	ciph 	 ; ciphering parameters
+}
+
+
+
+
+
+
+PRIM 	MPH_FREQ_REDEF_REQ 	0x5709
+{
+ 	start 	 ; starting time
+ 	ch_type 	 ; channel description
+}
+
+
+
+
+
+
+PRIM 	MPH_CHANNEL_MODE_REQ 	0x570A
+{
+ 	mode 	 ; channel mode
+ 	ch 	 ; channel type
+ 	amr_conf 	 ; AMR configuration
+}
+
+
+
+
+
+
+PRIM 	MPH_ERROR_IND 	0x1704
+{
+ 	cs 	 ; cause; The following causes can occur within this primitive: CS_DOWN_LINK_FAIL, CS_RADIO_LINK_FAIL, CS_BCCH_READ_ERROR
+ 	arfcn 	 ; channel number
+}
+
+
+
+
+
+
+PRIM 	MPH_DEACTIVATE_REQ 	0x570B
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPH_CLASSMARK_REQ 	0x570C
+{
+ 	classmark 	 ; classmark
+}
+
+
+
+
+
+
+PRIM 	MPH_TCH_LOOP_REQ 	0x5711
+{
+ 	tch_loop 	 ; loop command
+}
+
+
+
+
+
+
+PRIM 	MPH_DAI_REQ 	0x5712
+{
+ 	device 	 ; dai device
+}
+
+
+
+
+
+
+PRIM 	MPH_CBCH_REQ 	0x5713
+{
+ 	cbch 	 ; cell broadcast channel
+}
+
+
+
+
+
+
+PRIM 	MPH_IDENTITY_REQ 	0x5714
+{
+ 	mid 	 ; Mobile identities
+}
+
+
+
+
+
+
+PRIM 	MPH_PAGING_IND 	0x1706
+{
+ 	identity_type 	 ; Identity type
+ 	channel_needed 	 ; Channel needed
+}
+
+
+
+
+
+
+PRIM 	MPH_MON_CTRL_REQ 	0x5718
+{
+ 	action 	 ; Control action
+ 	si_to_read 	 ; SI to read
+}
+
+
+
+
+
+
+PRIM 	MPH_SYNC_REQ 	0x5719
+{
+ 	cs 	 ; Cause; The following causes can occur within this primitive: CS_STOP_BCCH_READING, CS_STOP_PLMN_SEARCH, CS_STOP_PLMN_SEARCH_AND_DEACTIVATE, CS_CLEAN_SYS_INFO, CS_RXLEV_VAL_REQ (GPRS only)
+}
+
+
+
+
+
+
+PRIM 	MPH_SYNC_IND 	0x170B
+{
+ 	cs 	 ; cause; The following causes can occur within this primitive: CS_SYS_INFO_1_NOT_NEEDED
+ 	arfcn 	 ; Channel number
+}
+
+
+
+
+
+
+PRIM 	MPH_MEAS_ORDER_CNF 	0x170C
+{
+ 	no_of_ncells 	 ; number of ncells
+ 	meas_results 	[MAX_NEIGHBOURCELLS] 	 ; measurement results; the list is delimited with 0xFFFF = NOT_PRESENT_16BIT (except if all entries are used)
+}
+
+
+
+
+
+
+PRIM 	MPH_EMO_REQ 	0x5705
+{
+ 	ba_id 	 ; reference number
+ 	arfcn 	[0..MAX_EMO_CHANNELS] 	 ; frequencies to be measured
+}
+
+
+
+
+
+
+PRIM 	MPH_EMO_MEAS_IND 	0x1705
+{
+ 	ba_id 	 ; reference number
+ 	dtx 	 ; discontinuous transmission
+ 	meas_results 	[0..MAX_EMO_CHANNELS+1] 	 ; measurement results
+}
+
+
+
+
+
+
+PRIM 	MPH_EXT_MEAS_REQ 	0x570D
+{
+ 	pch_interrupt 	 ; pch interrupt
+ 	freq_bands 	 ; frequency bands
+ 	num_of_chan 	 ; Number of channels
+ 	arfcn 	[MAX_CHANNELS] 	 ; cell channel numbers
+}
+
+
+
+
+
+
+PRIM 	MPH_EXT_MEAS_CNF 	0x170D
+{
+ 	num_of_chan 	 ; Number of channels
+ 	num_of_white_list_chan 	 ; Number of White list channels
+ 	arfcn 	[MAX_CHANNELS] 	 ; cell channel numbers
+ 	rx_lev 	[MAX_CHANNELS] 	 ; field strength
+ 	inactive_carrier_list 	 ; List of inactive carriers
+}
+
+
+
+
+
+
+PRIM 	MPH_NCELL_POS_REQ 	0x570E
+{
+ 	req_id 	 ; Request Ident
+ 	ncell_eotd 	[1..MAX_NCELL_EOTD_ALR] 	 ; Neighbour Cell List
+}
+
+
+
+
+
+
+PRIM 	MPH_NCELL_POS_IND 	0x170E
+{
+ 	req_id 	 ; Request Ident
+ 	eotd_res 	 ; EOTD Result
+ 	ta 	 ; Timing Advance
+ 	fn 	 ; Frame Number
+ 	eotd_sc_res 	 ; EOTD SC Results
+ 	eotd_sc_res1 	 ; EOTD SC Results
+ 	eotd_nc_res 	[1.. MAX_NCELL_EOTD_RES] 	 ; EOTD NC Results
+}
+
+
+
+
+
+
+PRIM 	MPH_CLEAN_BUF_REQ 	0x571A
+{
+ 	si_to_clean 	 ; SI to clean
+}
+
+
+
+
+
+
+PRIM 	MPH_STOP_DEDICATED_REQ 	0x571B
+{
+ 	param 	 ; dummy
+}
+
+
+
+
+
+
+PRIM 	MPH_STOP_DEDICATED_CNF 	0x170F
+{
+ 	param 	 ; dummy
+}
+
+
+
+
+
+
+PRIM 	MPH_MEAS_REP_REQ 	0x571C
+{
+ 	cause 	 ; Meas req to ALR
+}
+
+
+
+
+
+
+PRIM 	MPH_MEAS_REP_CNF 	0x1710
+{
+ 	meas_rep 	[RR_ALR_MEAS_REPORT_SIZE] 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MPH_ENHPARA_UPDATE_REQ 	0x571D 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+{
+ 	rep_type 	 ; Report type :'Enhanced' or 'Normal'
+ 	enh_para_struct AS enh_para 	 ; Parameters valid when report type is 'Enhanced'
+}
+
+
+
+
+
+
+PRIM 	MPH_INIT_RR_IND 	0x1711 	%TI_PS_FF_QUAD_BAND_SUPPORT%
+{
+ 	pclass_900 	 ; Power Class GSM 900
+ 	pclass_850 	 ; Power Class GSM 850
+ 	pclass_1800 	 ; Power Class DCS 1800
+ 	pclass_1900 	 ; Power Class PCS 1900
+ 	freq_bands 	 ; Frequency bands
+}
+
+
+
+
+
+
+
+
+

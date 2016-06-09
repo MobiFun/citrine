@@ -1,0 +1,38 @@
+CCD (Condat Coder and Decoder) is yet another component needed in order to
+produce a functional GSM/GPRS MS (mobile station) firmware image based on the
+TI/Condat architecture.  We got the C source for this component from the
+LoCosto find.
+
+CCD code that went into TI's firmware builds (as opposed to TI/Condat's
+Windows-based tools etc) has two subdivisions:
+
+1. The main CCD library - ccd_na7_db.lib in the case of our Leonardo reference
+   firmware.  The C modules compiled into this library must be very independent,
+   as it's one of the "frozen" GPF libs - it appears that GPF was maintained by
+   a separate group inside TI, and the builders of actual GSM/GPRS firmwares
+   used that group's GPF (and CCD) binary lib deliverables as untouched blobs.
+
+2. The ccddata component is meant to be compiled as part of the product firmware
+   build process, in both TCS211 and LoCosto versions.  Our Leonardo reference
+   version has it in a binary lib too, but it's one of those "unprivileged
+   customer" libs, and one can see from the makefiles that it was meant to be
+   compiled the same way as L1 and L23 etc.  The LoCosto version came with the
+   full source for all of CCD, but the build system is set up to only compile
+   ccddata, whereas the rest of CCD is used in the form of an imported GPF
+   binary lib, just like GPF proper, just like in TCS211.
+
+It appears, however, that the C source for both above-listed parts of CCD has
+always been maintained in a single directory, and that is how it appears in the
+LoCosto find.
+
+The true reason for the subdivision became apparent when we went through the
+process of integrating CCD into FreeCalypso.  The C modules that comprise
+ccddata include cdginc headers (see ../cdg/README to learn what a nightmare
+that is), require these headers to be present in order to pass compilation, and
+depend on any changes in these headers, whereas the "base" part of CCD (the one
+that was maintained as a GPF stable lib inside TI) has no dependency on cdginc.
+
+For our use in FreeCalypso we shall compile all of CCD (both subdivisions) into
+a single library in this directory - in this project we always compile
+everything from source anyway, so we may as well simplify the build process in
+this regard.

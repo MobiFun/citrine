@@ -1,0 +1,1125 @@
+;********************************************************************************
+;*** File           : mphp.pdf
+;*** Creation       : Wed Mar 11 09:58:33 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mphp
+;*** Document No.   : 8441.100.03.011
+;*** Document Date  : 2003-01-13
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SAB
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:50:10 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-01-13"
+PRAGMA 	ID_AND_VERSION 	"8441.100.03.011"
+
+
+
+CONST 	MAX_L2_FRAME_SIZE 	23 	; 
+CONST 	MAX_RELATIVE_POS 	20 	; 
+CONST 	MPHP_NUMC_MA 	64 	; Maximum number of carriers in the mobile allocation list handled by L1.
+CONST 	MAX_USF_TABLE 	8 	; 
+CONST 	MAX_ALLOC_BITMAP 	127 	; 
+CONST 	MPHP_NUMC_BA_GPRS_SC 	33 	; Maximum number of carriers in the BA(GPRS) list plus the serving cell carrier handled by L1.
+
+
+
+VALTAB 	VAL_psi_nr
+VAL 	1 - 20 	"specifies the relative position array"
+VAL 	0 	 	"read all PSI"
+
+VALTAB 	VAL_bs_pbcch_blks
+VAL 	0b00 	 	"B0 is used for PBCCH"
+VAL 	0b01 	 	"B0, B6 is used for PBCCH"
+VAL 	0b10 	 	"B0, B6, B3 is used for PBCCH"
+VAL 	0b11 	 	"B0, B6, B3, B9 is used for PBCCH"
+
+VALTAB 	VAL_psi1_rep_period
+VAL 	1 - 16 	"PSI is repeated every 'value' multiframes"
+
+VALTAB 	VAL_relative_pos_array
+VAL 	0 - 64 	"index"
+
+VALTAB 	VAL_hopping
+VAL 	0 	 	"static"
+VAL 	1 	 	"hopping"
+VAL 	2 	MPHP_INT_MEAS_STATIC 	"static"
+VAL 	3 	MPHP_INT_MEAS_HOPPING 	"hopping"
+VAL 	4 	 	"static"
+VAL 	5 	 	"hopping"
+
+VALTAB 	VAL_tsc
+VAL 	0 - 7 	"see 05.02, Annex A"
+
+VALTAB 	VAL_tn
+VAL 	0 - 7 	"timeslot number"
+VAL 	255 	 	"Value not present"
+
+VALTAB 	VAL_l2_channel
+VAL 	1 	L2_PCHANNEL_PCCCH 	"PCCCH block"
+VAL 	2 	L2_PCHANNEL_PBCCH 	"PBCCH block"
+VAL 	3 	L2_PCHANNEL_PPCH 	"PPCH block"
+VAL 	4 	L2_PCHANNEL_PEPCH 	"PEPCH block"
+VAL 	5 	L2_PCHANNEL_PACCH 	"PACCH block"
+
+VALTAB 	VAL_error_flag
+VAL 	1 	 	"valid block info"
+VAL 	0 	 	"invalid block info"
+
+VALTAB 	VAL_bs_pag_blks_res
+VAL 	0 - 12 	"number blocks for PAGCH, PDTCH and PACCH"
+
+VALTAB 	VAL_page_mode
+VAL 	0 	PAGE_NORMAL 	"normal paging"
+VAL 	1 	PAGE_EXT 	"extended paging"
+VAL 	2 	PAGE_REORG 	"paging reorganisation"
+
+VALTAB 	VAL_nb_carrier
+VAL 	1 - 65 	"_"
+
+VALTAB 	VAL_nmeas
+VAL 	1 - 65 	"_"
+
+VALTAB 	VAL_fn_offset
+VAL 	0 - 2715647 	"max. GSM frames -1"
+
+VALTAB 	VAL_time_alignment
+VAL 	0 - 4999 	"_"
+
+VALTAB 	VAL_bs_prach_blks
+VAL 	0b0000 	 	"No block is reserved for PRACH (default)"
+VAL 	0b0001 	 	"B0 is used for PRACH"
+VAL 	0b0010 	 	"B0, B6 is used for PRACH"
+VAL 	0b0011 	 	"B0, B6, B3 is used for PRACH"
+VAL 	0b0100 	 	"B0, B6, B3, B9 is used for PRACH"
+VAL 	0b0101 	 	"B0, B6, B3, B9, B1 is used for PRACH"
+VAL 	0b0110 	 	"B0, B6, B3, B9, B1, B7 is used for PRACH"
+VAL 	0b0111 	 	"B0, B6, B3, B9, B1, B7, B4 is used for PRACH"
+VAL 	0b1000 	 	"B0, B6, B3, B9, B1, B7, B4, B10 is used for PRACH"
+VAL 	0b1001 	 	"B0, B6, B3, B9, B1, B7, B4, B10, B2 is used for PRACH"
+VAL 	0b1010 	 	"B0, B6, B3, B9, B1, B7, B4, B10, B2, B8 is used for PRACH"
+VAL 	0b1011 	 	"B0, B6, B3, B9, B1, B7, B4, B10, B2, B8, B5 is used for PRACH"
+VAL 	0b1100 	 	"B0, B6, B3, B9, B1, B7, B4, B10, B2, B8, B5, B11 is used for PRACH"
+
+VALTAB 	VAL_burst_type
+VAL 	0 	ACCESS_8_BIT 	""
+VAL 	1 	ACCESS_11_BIT 	""
+
+VALTAB 	VAL_assign_cmd
+VAL 	0 	DL_ASSIGNMENT 	"Downlink assignment"
+VAL 	1 	UL_ASSIGNMENT 	"Uplink assignment"
+VAL 	2 	UL_DL_ASSIGNMENT 	"Uplink and downlink assignment"
+VAL 	5 	UL_TP_ACCESS 	"Uplink Two Phase Access"
+
+VALTAB 	VAL_m_class
+VAL 	1 - 12 	"Speech mode"
+
+VALTAB 	VAL_repeat_alloc
+VAL 	0 	 	"cancel any pending repeat allocation"
+VAL 	1 	 	"repeat the current fixed allocation when it ends"
+
+VALTAB 	VAL_purpose
+VAL 	0 	 	"reserved"
+VAL 	1 	 	"reserved"
+VAL 	2 	 	"reserved"
+VAL 	3 	SINGLE_BLOCK_TRANSFER_DL 	"todo ??? reception?"
+VAL 	4 	SINGLE_BLOCK_TRANSFER_UL 	"i.e. measurement report"
+VAL 	5 	TWO_PHASE_ACESS 	"two phases access"
+
+VALTAB 	VAL_ta_value
+VAL 	0 - 63 	"Speech mode"
+VAL 	255 	 	"value not present"
+
+VALTAB 	VAL_ta_index
+VAL 	0 - 15 	"_"
+VAL 	255 	 	"value not present"
+
+VALTAB 	VAL_ul_tfi
+VAL 	0 - 127 	"_"
+
+VALTAB 	VAL_dl_tfi
+VAL 	0 - 31 	"_"
+
+VALTAB 	VAL_mac_mode
+VAL 	0 	DA 	"Dynamic allocation"
+VAL 	1 	EDA 	"Extended Dynamic allocation"
+VAL 	2 	FA 	"Fixed allocation, not half duplex mode"
+VAL 	3 	FA_HD 	"Fixed allocation, half duplex mode"
+
+VALTAB 	VAL_usf_gran
+VAL 	0 	 	"the ms shall transmit one RLC/MAC-Block"
+VAL 	1 	 	"the ms shall transmit four consecutive RLC/MAC-Block"
+
+VALTAB 	VAL_dl_ctrl_ts
+VAL 	0 - 7 	"_"
+
+VALTAB 	VAL_size_bitmap
+VAL 	0 - 127 	"_"
+
+VALTAB 	VAL_tbf_start_present
+VAL 	0 	 	"not present"
+VAL 	1 	 	"present"
+
+VALTAB 	VAL_pc_meas_chan
+VAL 	0 	MEAS_BCCH 	""
+VAL 	1 	MEAS_PDCH 	""
+
+VALTAB 	VAL_tbf_type
+VAL 	0 	REL_DL_TBF 	"Release only the downlink TBF"
+VAL 	1 	REL_UL_TBF 	"Release only the uplink TBF"
+VAL 	2 	REL_ALL_TBF 	"Release both uplink and downlink TBFs"
+
+VALTAB 	VAL_poll_resp_type
+VAL 	3 	POLL_RESP_NB_CS1 	"normal burst"
+VAL 	7 	POLL_RESP_AB_8_BIT 	"access burst"
+VAL 	8 	POLL_RESP_AB_11_BIT 	"access burst"
+
+VALTAB 	VAL_sb_status
+VAL 	0 	SB_STAT_OK 	"In uplink, indicates that the single block was sent."
+VAL 	0 	SB_STAT_DL_CRC_ERROR 	"In downlink, indicates that the downlink single block was received with no CRC_ERROR."
+VAL 	1 	SB_STAT_STIME_PASSED 	"Starting time is passed. Single block uplink/downlink was not sent/received."
+VAL 	2 	SB_STAT_TA_INVALID 	"No valid timing advance. Single block was not sent."
+VAL 	3 	SB_STAT_DL_OK 	"Valid downlink single block received ( NO CRC_ERROR)."
+
+VALTAB 	VAL_if_meas_enable
+VAL 	0 	MPHP_IM_DISABLED 	"interference measurement processing disabled"
+VAL 	1 	MPHP_IM_ENABLED 	"interference measurement processing enabled"
+
+
+
+
+VAR 	psi_nr 	"Specifies the number of PSI to read" 	B
+
+VAL 	@p_mphp - VAL_psi_nr@ 	
+
+VAR 	bs_pbcch_blks 	"Number of PBCCH per multiframe" 	B
+
+VAL 	@p_mphp - VAL_bs_pbcch_blks@ 	
+
+VAR 	psi1_rep_period 	"psi1 repeat period" 	B
+
+VAL 	@p_mphp - VAL_psi1_rep_period@ 	
+
+VAR 	relative_pos_array 	"relative position to B0" 	B
+
+VAL 	@p_mphp - VAL_relative_pos_array@ 	
+
+VAR 	hopping 	"hopping indicator" 	B
+
+VAL 	@p_mphp - VAL_hopping@ 	
+
+VAR 	arfcn 	"channel number" 	S
+
+
+VAR 	tsc 	"training sequence number" 	B
+
+VAL 	@p_mphp - VAL_tsc@ 	
+
+VAR 	tn 	"timeslot number" 	B
+
+VAL 	@p_mphp - VAL_tn@ 	
+
+VAR 	l2_channel 	"layer 2 channel type" 	B
+
+VAL 	@p_mphp - VAL_l2_channel@ 	
+
+VAR 	error_flag 	"validity of the data block" 	B
+
+VAL 	@p_mphp - VAL_error_flag@ 	
+
+VAR 	l2_frame 	"decoded data" 	B
+
+
+VAR 	relative_pos 	"relative position" 	B
+
+
+VAR 	fn 	"full frame number" 	L
+
+
+VAR 	imsi_mod 	"see description" 	S
+
+
+VAR 	split_pg_cycle 	"SPLIT_PG_CYCLE" 	S
+
+
+VAR 	bs_pag_blks_res 	"BS_PAG_BLKS_RES" 	B
+
+VAL 	@p_mphp - VAL_bs_pag_blks_res@ 	
+
+VAR 	page_mode 	"PAGE_MODE" 	B
+
+VAL 	@p_mphp - VAL_page_mode@ 	
+
+VAR 	nb_carrier 	"neighbour cell carrier" 	B
+
+VAL 	@p_mphp - VAL_nb_carrier@ 	
+
+VAR 	carrier_list 	"List of carrier" 	S
+
+
+VAR 	list_id 	"List identifier" 	B
+
+
+VAR 	nmeas 	"Number of measurements" 	B
+
+VAL 	@p_mphp - VAL_nmeas@ 	
+
+VAR 	reporting_period 	"Reporting period" 	S
+
+
+VAR 	carrier_id 	"Measurement Carrier Identifier" 	B
+
+
+VAR 	fn_offset 	"Frame number offset" 	L
+
+VAL 	@p_mphp - VAL_fn_offset@ 	
+
+VAR 	time_alignment 	"Time alignment" 	L
+
+VAL 	@p_mphp - VAL_time_alignment@ 	
+
+VAR 	txpwr 	"" 	B
+
+
+VAR 	rand 	"" 	S
+
+
+VAR 	channel_request_data 	"" 	S
+
+
+VAR 	poll_data 	"" 	B
+
+
+VAR 	bs_prach_blks 	"" 	B
+
+VAL 	@p_mphp - VAL_bs_prach_blks@ 	
+
+VAR 	burst_type 	"" 	B
+
+VAL 	@p_mphp - VAL_burst_type@ 	
+
+VAR 	assign_cmd 	"" 	B
+
+VAL 	@p_mphp - VAL_assign_cmd@ 	
+
+VAR 	m_class 	"" 	B
+
+VAL 	@p_mphp - VAL_m_class@ 	
+
+VAR 	repeat_alloc 	"" 	B
+
+VAL 	@p_mphp - VAL_repeat_alloc@ 	
+
+VAR 	ts_mask 	"" 	B
+
+
+VAR 	ts_override 	"" 	B
+
+
+VAR 	purpose 	"" 	B
+
+VAL 	@p_mphp - VAL_purpose@ 	
+
+VAR 	ta_value 	"" 	B
+
+VAL 	@p_mphp - VAL_ta_value@ 	
+
+VAR 	ta_index 	"" 	B
+
+VAL 	@p_mphp - VAL_ta_index@ 	
+
+VAR 	ul_tfi 	"" 	B
+
+VAL 	@p_mphp - VAL_ul_tfi@ 	
+
+VAR 	dl_tfi 	"" 	B
+
+VAL 	@p_mphp - VAL_dl_tfi@ 	
+
+VAR 	mac_mode 	"" 	B
+
+VAL 	@p_mphp - VAL_mac_mode@ 	
+
+VAR 	usf_table 	"" 	B
+
+
+VAR 	usf_gran 	"" 	B
+
+VAL 	@p_mphp - VAL_usf_gran@ 	
+
+VAR 	dl_ctrl_ts 	"" 	B
+
+VAL 	@p_mphp - VAL_dl_ctrl_ts@ 	
+
+VAR 	size_bitmap 	"" 	B
+
+VAL 	@p_mphp - VAL_size_bitmap@ 	
+
+VAR 	bitmap 	"" 	B
+
+
+VAR 	tbf_start_present 	"" 	B
+
+VAL 	@p_mphp - VAL_tbf_start_present@ 	
+
+VAR 	pb 	"" 	B
+
+
+VAR 	pc_meas_chan 	"" 	B
+
+VAL 	@p_mphp - VAL_pc_meas_chan@ 	
+
+VAR 	tbf_type 	"" 	B
+
+VAL 	@p_mphp - VAL_tbf_type@ 	
+
+VAR 	pccch_lev 	"" 	B
+
+
+VAR 	kcn 	"" 	S
+
+
+VAR 	acc_nbr 	"" 	B
+
+
+VAR 	rxlev 	"" 	B
+
+
+VAR 	poll_resp_type 	"" 	B
+
+VAL 	@p_mphp - VAL_poll_resp_type@ 	
+
+VAR 	acc_level 	"" 	S
+
+
+VAR 	assign_id 	"" 	B
+
+
+VAR 	p0 	"" 	B
+
+
+VAR 	bts_pwr_ctl_mode 	"should be BOOL, but BOOL is not valid in SAP" 	B
+
+
+VAR 	pr_mode 	"should be BOOL, but BOOL is not valid in SAP" 	B
+
+
+VAR 	sb_status 	"" 	B
+
+VAL 	@p_mphp - VAL_sb_status@ 	
+
+VAR 	if_meas_enable 	"" 	B
+
+VAL 	@p_mphp - VAL_if_meas_enable@ 	
+
+VAR 	dl_error 	"" 	B
+
+
+VAR 	rx_lev 	"" 	B
+
+
+VAR 	p_rf_chan_cnt 	"Number of channels" 	S
+
+
+VAR 	bcch_carrier 	"BCCH Carrier" 	S
+
+
+VAR 	p_radio_freq 	"Absolute Radio Frequency Number" 	S
+
+
+
+
+
+COMP 	int_meas_rxlev 	 "Idle Int. Meas. Level"
+{
+ 	rx_lev 	[2] 	 ; Downlink Control Timeslot
+}
+
+
+
+COMP 	p_timing_advance 	 ""
+{
+ 	ta_value 	 ; timing advance value
+ 	ta_index 	 ; timing advance index
+ 	tn 	 ; timing advance timeslot number
+}
+
+
+
+COMP 	p_dl_alloc 	 ""
+{
+ 	dl_tfi 	 ; Downlink TFI
+ 	ts_mask 	 ; Downlink Timeslot Allocation
+}
+
+
+
+COMP 	p_dynamic_alloc 	 ""
+{
+ 	usf_table 	[MAX_USF_TABLE] 	 ; USF Index Table
+ 	usf_gran 	 ; USF granularity
+}
+
+
+
+COMP 	p_fixed_alloc 	 ""
+{
+ 	dl_ctrl_ts 	 ; Downlink Control Timeslot
+ 	size_bitmap 	 ; Allocation Bitmap Length
+ 	bitmap 	[MAX_ALLOC_BITMAP] 	 ; Allocation Bitmap
+}
+
+
+
+COMP 	p_ul_alloc 	 ""
+{
+ 	ul_tfi 	 ; Uplink TFI
+ 	ts_mask 	 ; Uplink Timeslot Allocation
+ 	p_dynamic_alloc 	 ; Dynamic Allocation
+ 	p_fixed_alloc 	 ; Fixed Allocation
+}
+
+
+
+COMP 	p_tbf_start 	 ""
+{
+ 	tbf_start_present 	 ; Starting time present
+ 	fn 	 ; Full frame number
+}
+
+
+
+COMP 	p_ncell_meas 	 ""
+{
+ 	rxlev 	 ; RX-Level
+}
+
+
+
+COMP 	p_rf_ch 	 ""
+{
+ 	arfcn 	 ; Absolute RF
+}
+
+
+
+COMP 	p_chan_sel 	 ""
+{
+ 	hopping 	 ; Hopping flag
+ 	p_rf_ch 	 ; Channel Selection Choice
+}
+
+
+
+COMP 	p_ch_des 	 ""
+{
+ 	p_chan_sel 	 ; Channel Selection
+ 	tn 	 ; Timeslot number
+ 	tsc 	 ; Training sequence code
+}
+
+
+
+COMP 	p_dl_power 	 ""
+{
+ 	p0 	 ; P0
+ 	bts_pwr_ctl_mode 	 ; BTS_PWR_CTL_MODE
+ 	pr_mode 	 ; PR_MODE
+}
+
+
+
+COMP 	p_rf_chan_no 	 "Frequency list"
+{
+ 	p_radio_freq 	[MPHP_NUMC_MA] 	 ; Radio Frequency List
+}
+
+
+
+COMP 	p_freq_list 	 "list of frequencies"
+{
+ 	p_rf_chan_cnt 	 ; Number of channels
+ 	p_rf_chan_no 	 ; Radio Frequency List
+}
+
+
+
+COMP 	p_frequency_par 	 ""
+{
+ 	p_chan_sel 	 ; Channel Selection
+ 	p_freq_list 	 ; Mobile Allocation
+}
+
+
+
+
+
+
+; MPHP_SCELL_PBCCH_REQ 	0x021C
+; MPHP_DATA_IND 	0x0228
+; MPHP_SCELL_PBCCH_STOP_REQ 	0x021D
+; MPHP_SCELL_PBCCH_STOP_CON 	0x021E
+; MPHP_START_PCCCH_REQ 	0x0219
+; MPHP_STOP_PCCCH_REQ 	0x021A
+; MPHP_STOP_PCCCH_CON 	0x021B
+; MPHP_CR_MEAS_REQ 	0x021F
+; MPHP_CR_MEAS_IND 	0x0229
+; MPHP_CR_MEAS_STOP_REQ 	0x0220
+; MPHP_CR_MEAS_STOP_CON 	0x0221
+; MPHP_INT_MEAS_REQ 	0x0222
+; MPHP_INT_MEAS_IND 	0x022A
+; MPHP_INT_MEAS_STOP_REQ 	0x0223
+; MPHP_INT_MEAS_STOP_CON 	0x0224
+; MPHP_NCELL_PBCCH_REQ 	0x0225
+; MPHP_NCELL_PBCCH_IND 	0x022C
+; MPHP_NCELL_PBCCH_STOP_REQ 	0x0226
+; MPHP_NCELL_PBCCH_STOP_CON 	0x0227
+; MPHP_RA_REQ 	0x0212
+; MPHP_RA_CON 	0x0213
+; MPHP_RA_STOP_REQ 	0x0214
+; MPHP_RA_STOP_CON 	0x0215
+; MPHP_POLLING_RESPONSE_REQ 	0x0216
+; MPHP_POLLING_IND 	0x0217
+; MPHP_ASSIGNMENT_REQ 	0x0206
+; MPHP_ASSIGNMENT_CON 	0x0207
+; MPHP_REPEAT_UL_FIXED_ALLOC_REQ 	0x020A
+; MPHP_REPEAT_UL_FIXED_ALLOC_CON 	0x020B
+; MPHP_SINGLE_BLOCK_REQ 	0x0201
+; MPHP_SINGLE_BLOCK_CON 	0x0202
+; MPHP_STOP_SINGLE_BLOCK_REQ 	0x0203
+; MPHP_STOP_SINGLE_BLOCK_CON 	0x0204
+; MPHP_TBF_RELEASE_REQ 	0x0208
+; MPHP_TBF_RELEASE_CON 	0x0209
+; MPHP_PDCH_RELEASE_REQ 	0x020C
+; MPHP_PDCH_RELEASE_CON 	0x020D
+; MPHP_TIMING_ADVANCE_REQ 	0x020E
+; MPHP_TIMING_ADVANCE_CON 	0x020F
+; MPHP_UPDATE_PSI_PARAM_REQ 	0x0210
+; MPHP_UPDATE_PSI_PARAM_CON 	0x0211
+; MPHP_TCR_MEAS_REQ 	0x022D
+; MPHP_TCR_MEAS_IND 	0x022E
+; MPHP_TINT_MEAS_IND 	0x022B
+
+
+
+PRIM 	MPHP_SCELL_PBCCH_REQ 	0x021C
+{
+ 	psi_nr 	 ; PSI number
+ 	bs_pbcch_blks 	 ; Number of PBCCH blocks
+ 	pb 	 ; Power reduction value
+ 	psi1_rep_period 	 ; Occurrence of PSI1
+ 	relative_pos_array 	[MAX_RELATIVE_POS] 	 ; Position of other PSIs
+ 	p_ch_des 	 ; Packet Channel Description
+ 	p_freq_list 	 ; Mobile allocation
+}
+
+
+
+
+
+
+PRIM 	MPHP_DATA_IND 	0x0228
+{
+ 	arfcn 	 ; Radio frequency; belongs to BCCH !! not to any GPRS channel
+ 	l2_channel 	 ; Layer2 channel
+ 	error_flag 	 ; Error flag
+ 	l2_frame 	[MAX_L2_FRAME_SIZE] 	 ; Decoded data
+ 	relative_pos 	 ; Relative position
+ 	pccch_lev 	 ; PCCCH_LEV
+ 	fn 	 ; Full frame number
+}
+
+
+
+
+
+
+PRIM 	MPHP_SCELL_PBCCH_STOP_REQ 	0x021D
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_SCELL_PBCCH_STOP_CON 	0x021E
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_START_PCCCH_REQ 	0x0219
+{
+ 	imsi_mod 	 ; IMSImod
+ 	kcn 	 ; KCN
+ 	split_pg_cycle 	 ; SPLIT_PG_CYCLE
+ 	bs_pag_blks_res 	 ; BS_PAG_BLKS_RES
+ 	bs_pbcch_blks 	 ; BS_PBCCH_BLKS
+ 	pb 	 ; Power reduction value
+ 	page_mode 	 ; Page mode
+ 	p_ch_des 	 ; Packet Channel Description
+ 	p_freq_list 	 ; Mobile allocation
+}
+
+
+
+
+
+
+PRIM 	MPHP_STOP_PCCCH_REQ 	0x021A
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_STOP_PCCCH_CON 	0x021B
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_CR_MEAS_REQ 	0x021F
+{
+ 	nb_carrier 	 ; Number of neighbour cell carrier
+ 	carrier_list 	[MPHP_NUMC_BA_GPRS_SC] 	 ; List of carrier
+ 	list_id 	 ; List identifier
+}
+
+
+
+
+
+
+PRIM 	MPHP_CR_MEAS_IND 	0x0229
+{
+ 	nmeas 	 ; Number of measurements reported
+ 	p_ncell_meas 	[MPHP_NUMC_BA_GPRS_SC] 	 ; NCELL Measurements
+ 	list_id 	 ; List identifier
+ 	reporting_period 	 ; Reporting period
+}
+
+
+
+
+
+
+PRIM 	MPHP_CR_MEAS_STOP_REQ 	0x0220
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_CR_MEAS_STOP_CON 	0x0221
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_INT_MEAS_REQ 	0x0222
+{
+ 	p_frequency_par 	 ; Frequency parameter
+ 	carrier_id 	 ; Measurement Carrier Identifier
+ 	ts_mask 	 ; Timeslot number
+ 	m_class 	 ; Multislot class
+}
+
+
+
+
+
+
+PRIM 	MPHP_INT_MEAS_IND 	0x022A
+{
+ 	int_meas_rxlev 	[8] 	 ; Idle Int. Meas. Level
+ 	carrier_id 	 ; Measurement carrier identifier
+}
+
+
+
+
+
+
+PRIM 	MPHP_INT_MEAS_STOP_REQ 	0x0223
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_INT_MEAS_STOP_CON 	0x0224
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_NCELL_PBCCH_REQ 	0x0225
+{
+ 	bs_pbcch_blks 	 ; Number of PBCCH blocks
+ 	pb 	 ; PB
+ 	psi1_rep_period 	 ; Occurrence of PSI1
+ 	relative_pos 	 ; Relative position
+ 	p_ch_des 	 ; Packet Channel Description
+ 	p_freq_list 	 ; Mobile allocation list
+ 	bcch_carrier 	 ; BCCH Carrier
+ 	fn_offset 	 ; Frame number offset
+ 	time_alignment 	 ; Time alignment
+}
+
+
+
+
+
+
+PRIM 	MPHP_NCELL_PBCCH_IND 	0x022C
+{
+ 	arfcn 	 ; Radio frequency
+ 	l2_channel 	 ; Layer2 channel
+ 	error_flag 	 ; Error flag
+ 	l2_frame 	[MAX_L2_FRAME_SIZE] 	 ; Decoded data
+ 	relative_pos 	 ; Relative position
+ 	pccch_lev 	 ; PCCCH_LEV
+ 	fn 	 ; Full frame number
+}
+
+
+
+
+
+
+PRIM 	MPHP_NCELL_PBCCH_STOP_REQ 	0x0226
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_NCELL_PBCCH_STOP_CON 	0x0227
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_RA_REQ 	0x0212
+{
+ 	txpwr 	 ; Transmit power
+ 	rand 	 ; Delay
+ 	channel_request_data 	 ; Channel request data
+ 	bs_prach_blks 	 ; BS_PRACH_BLKS
+ 	burst_type 	 ; Access burst type
+}
+
+
+
+
+
+
+PRIM 	MPHP_RA_CON 	0x0213
+{
+ 	fn 	 ; Full frame number
+ 	channel_request_data 	 ; Channel request data
+}
+
+
+
+
+
+
+PRIM 	MPHP_RA_STOP_REQ 	0x0214
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_RA_STOP_CON 	0x0215
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_POLLING_RESPONSE_REQ 	0x0216
+{
+ 	poll_resp_type 	 ; Polling Response Type
+ 	poll_data 	[MAX_L2_FRAME_SIZE+1] 	 ; polling request data
+ 	fn 	 ; Full frame number
+ 	ta_index 	 ; timing advance index
+ 	txpwr 	 ; Transmit power
+}
+
+
+
+
+
+
+PRIM 	MPHP_POLLING_IND 	0x0217
+{
+ 	fn 	 ; Frame number
+}
+
+
+
+
+
+
+PRIM 	MPHP_ASSIGNMENT_REQ 	0x0206
+{
+ 	assign_id 	 ; Assignment ID
+ 	assign_cmd 	 ; Assignment command
+ 	m_class 	 ; Multislot class
+ 	if_meas_enable 	 ; INTERF_MEAS_ENABLE
+ 	pc_meas_chan 	 ; PC_MEAS_CHAN
+ 	burst_type 	 ; Access burst type
+ 	p_timing_advance 	 ; Packet timing advance
+ 	p_dl_power 	 ; Downlink Power Control
+ 	tsc 	 ; Training sequence code
+ 	p_frequency_par 	 ; Frequency parameter
+ 	p_tbf_start 	 ; TBF starting time
+ 	mac_mode 	 ; MAC Mode
+ 	p_dl_alloc 	 ; Downlink resource allocation
+ 	p_ul_alloc 	 ; Uplink resource allocation
+}
+
+
+
+
+
+
+PRIM 	MPHP_ASSIGNMENT_CON 	0x0207
+{
+ 	assign_id 	 ; Assignment ID
+}
+
+
+
+
+
+
+PRIM 	MPHP_REPEAT_UL_FIXED_ALLOC_REQ 	0x020A
+{
+ 	repeat_alloc 	 ; Repeat allocation
+ 	ts_override 	 ; Timeslot override
+ 	p_tbf_start 	 ; TBF starting time
+}
+
+
+
+
+
+
+PRIM 	MPHP_REPEAT_UL_FIXED_ALLOC_CON 	0x020B
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_SINGLE_BLOCK_REQ 	0x0201
+{
+ 	assign_id 	 ; Assignment ID
+ 	purpose 	 ; Single Block Purpose
+ 	pc_meas_chan 	 ; PC_MEAS_CHAN
+ 	burst_type 	 ; Access burst type
+ 	p_timing_advance 	 ; Packet timing advance
+ 	p_dl_power 	 ; Downlink Power Control
+ 	tsc 	 ; Training sequence code
+ 	p_frequency_par 	 ; Frequency parameter
+ 	p_tbf_start 	 ; TBF starting time
+ 	tn 	 ; Timeslot number
+ 	l2_frame 	[MAX_L2_FRAME_SIZE] 	 ; Decoded data
+}
+
+
+
+
+
+
+PRIM 	MPHP_SINGLE_BLOCK_CON 	0x0202
+{
+ 	assign_id 	 ; Assignment ID
+ 	purpose 	 ; Single Block Purpose
+ 	sb_status 	 ; Single Block Status
+ 	dl_error 	 ; Downlink Error Flag
+ 	l2_frame 	[MAX_L2_FRAME_SIZE] 	 ; Decoded data
+}
+
+
+
+
+
+
+PRIM 	MPHP_STOP_SINGLE_BLOCK_REQ 	0x0203
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_STOP_SINGLE_BLOCK_CON 	0x0204
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_TBF_RELEASE_REQ 	0x0208
+{
+ 	tbf_type 	 ; TBF Type
+}
+
+
+
+
+
+
+PRIM 	MPHP_TBF_RELEASE_CON 	0x0209
+{
+ 	tbf_type 	 ; TBF Type
+}
+
+
+
+
+
+
+PRIM 	MPHP_PDCH_RELEASE_REQ 	0x020C
+{
+ 	assign_id 	 ; Assignment ID
+ 	ts_mask 	 ; Timeslots available
+}
+
+
+
+
+
+
+PRIM 	MPHP_PDCH_RELEASE_CON 	0x020D
+{
+ 	assign_id 	 ; Assignment ID
+}
+
+
+
+
+
+
+PRIM 	MPHP_TIMING_ADVANCE_REQ 	0x020E
+{
+ 	assign_id 	 ; Assignment ID
+ 	p_timing_advance 	 ; Packet timing advance
+}
+
+
+
+
+
+
+PRIM 	MPHP_TIMING_ADVANCE_CON 	0x020F
+{
+ 	assign_id 	 ; Assignment ID
+}
+
+
+
+
+
+
+PRIM 	MPHP_UPDATE_PSI_PARAM_REQ 	0x0210
+{
+ 	pb 	 ; Pb
+ 	burst_type 	 ; Access burst type
+}
+
+
+
+
+
+
+PRIM 	MPHP_UPDATE_PSI_PARAM_CON 	0x0211
+{
+}
+
+
+
+
+
+
+PRIM 	MPHP_TCR_MEAS_REQ 	0x022D
+{
+ 	nb_carrier 	 ; Number of neighbour cell carrier
+ 	carrier_list 	[MPHP_NUMC_BA_GPRS_SC] 	 ; List of carrier
+ 	list_id 	 ; List identifier
+}
+
+
+
+
+
+
+PRIM 	MPHP_TCR_MEAS_IND 	0x022E
+{
+ 	acc_level 	[MPHP_NUMC_BA_GPRS_SC] 	 ; Power strength level N-Cell
+ 	acc_nbr 	[MPHP_NUMC_BA_GPRS_SC] 	 ; Frequency Channel Number
+ 	list_id 	 ; List identifier
+}
+
+
+
+
+
+
+PRIM 	MPHP_TINT_MEAS_IND 	0x022B
+{
+ 	int_meas_rxlev 	[8] 	 ; Idle Int. Meas. Level
+ 	carrier_id 	 ; Measurement carrier identifier
+}
+
+
+
+
+
+
+
+
+

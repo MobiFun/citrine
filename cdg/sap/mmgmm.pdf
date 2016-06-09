@@ -1,0 +1,859 @@
+;********************************************************************************
+;*** File           : mmgmm.pdf
+;*** Creation       : Wed Mar 11 09:58:19 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mmgmm
+;*** Document No.   : 8441.114.99.021
+;*** Document Date  : 2002-08-09
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:46:12 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-08-09"
+PRAGMA 	ID_AND_VERSION 	"8441.114.99.021"
+
+
+
+CONST 	MAX_PLMN_ID 	12 	; The maximum number of different PLMN in some pimitives
+CONST 	MMR_MAX_TEXT_LEN 	40 	; The maximum length of a PLMN's name in MMGMM_INFO_IND
+CONST 	SIZE_MCC 	3 	; The number of MCC digits
+CONST 	SIZE_MNC 	3 	; The number of MNC digits
+CONST 	SIZE_MNC_MIN 	2 	; 
+CONST 	SIZE_MNC_MAX 	3 	; 
+EXTERN CONST 	@p_gsmcom - MM_ORIGINATING_ENTITY@ 	MM_ORIGINATING_ENTITY 	; 
+EXTERN CONST 	@p_gsmcom - GMM_ORIGINATING_ENTITY@ 	GMM_ORIGINATING_ENTITY 	; 
+CONST 	MIN_EQ_PLMN_ID 	1 	; The minimum number of allowed equivalent PLMN's
+CONST 	MAX_EQ_PLMN_ID 	5 	; The maximum number of allowed equivalent PLMN's
+
+
+
+VALTAB 	VAL_mode
+VAL 	0 	MODE_AUTO 	"automatic mode"
+VAL 	1 	MODE_MAN 	"manual mode"
+
+VALTAB 	VAL_v_tmsi
+VAL 	0 	MMGMM_TMSI_NOT_USED 	"TMSI not used"
+VAL 	1 	MMGMM_TMSI_USED 	"TMSI used"
+
+VALTAB 	VAL_tmsi
+VAL 	DEF 	 	"All other values are a valid TMSI"
+VAL 	4294967295 	MMGMM_TMSI_INVALID 	"TMSI invalidated"
+
+VALTAB 	VAL_cause
+VAL 	0x0402 	MMCS_IMSI_IN_HLR 	"IMSI unknown in HLR"
+VAL 	0x0403 	MMCS_ILLEGAL_MS 	"Illegal MS"
+VAL 	0x0404 	MMCS_IMSI_IN_VLR 	"IMSI unknown in VLR"
+VAL 	0x0405 	MMCS_IMEI_NOT_ACCEPTED 	"IMEI not accepted"
+VAL 	0x0406 	MMCS_ILLEGAL_ME 	"Illegal ME"
+VAL 	0x040B 	MMCS_PLMN_NOT_ALLOWED 	"PLMN not allowed"
+VAL 	0x040C 	MMCS_LA_NOT_ALLOWED 	"Location Area not allowed"
+VAL 	0x040D 	MMCS_ROAMING_NOT_ALLOWED 	"Roaming not allowed in this location area"
+VAL 	0x040F 	MMCS_NO_SUITABLE_CELL_IN_LA 	%REL99% 	"Find another allowed location area in the same PLMN"
+VAL 	0x0411 	MMCS_NETWORK_FAILURE 	"Network failure"
+VAL 	0x0416 	MMCS_CONGESTION 	"Congestion"
+VAL 	0x0420 	MMCS_SERVICE_NOT_SUPPORTED 	"Service option not supported"
+VAL 	0x0421 	MMCS_SERVICE_NOT_SUBSCRIBED 	"Requested service option not subscribed"
+VAL 	0x0422 	MMCS_SERVICE_ORDER 	"Service option temporarily out of order"
+VAL 	0x0426 	MMCS_IDENTIFIY 	"Call cannot be identified"
+VAL 	0x0430 	MMCS_RETRY_IN_NEW_CELL 	"retry upon entry into a new cell (mapped 0x0430..0x043f -> 0x0430)"
+VAL 	0x045F 	MMCS_INCORRECT_MESSAGE 	"Semantically incorrect message"
+VAL 	0x0460 	MMCS_INVALID_MAND_MESSAGE 	"Invalid mandatory information"
+VAL 	0x0461 	MMCS_MESSAGE_TYPE_NOT_IMPLEM 	"Message type non-existent or not implemented"
+VAL 	0x0462 	MMCS_MESSAGE_TYPE_INCOMPAT 	"Message type not compatible with the protocol state"
+VAL 	0x0463 	MMCS_IE_NOT_IMPLEM 	"Information element non-existent or not implemented"
+VAL 	0x0464 	MMCS_CONDITIONAL_IE 	"Conditional IE error"
+VAL 	0x0465 	MMCS_MESSAGE_INCOMPAT 	"Message not compatible with the protocol state"
+VAL 	0x046F 	MMCS_UNSPECIFIED 	"Protocol error, unspecified"
+VAL 	0xC400 	MMCS_SUCCESS 	"No error, successful operation (MM)"
+VAL 	0xC480 	MMCS_NO_REGISTRATION 	"MS is not registered or deregistration started"
+VAL 	0xC481 	MMCS_TIMER_RECOVERY 	"time-out in MM during establishment"
+VAL 	0xC482 	MMCS_NO_REESTABLISH 	"Cell does not support call reestablishment"
+VAL 	0xC483 	MMCS_INT_PREEM 	"Preemptive release, e.g. MO-MT clash in MM"
+VAL 	0xC484 	MMCS_PLMN_NOT_IDLE_MODE 	"reject, not in idle mode (MMR_PLMN_IND)"
+VAL 	0xC488 	MMCS_AUTHENTICATION_REJECTED 	"AUTHENTICATION REJECT received"
+VAL 	0xC489 	MMCS_SIM_REMOVED 	"A valid SIM is not present"
+VAL 	0xC4FF 	MMCS_INT_NOT_PRESENT 	"No error cause (MM)"
+VAL 	0x0A02 	GMMCS_IMSI_UNKNOWN 	"IMSI unknown in HLR"
+VAL 	0x0A03 	GMMCS_ILLEGAL_MS 	"Illegal MS"
+VAL 	0x0A06 	GMMCS_ILLEGAL_ME 	"Illegal ME"
+VAL 	0x0A07 	GMMCS_GPRS_NOT_ALLOWED 	"GPRS services not allowed"
+VAL 	0x0A08 	GMMCS_GSM_GPRS_NOT_ALLOWED 	"GPRS services and non-GPRS services not allowed"
+VAL 	0x0A09 	GMMCS_NO_MS_ID 	"MS identity cannot be derived by the network"
+VAL 	0x0A0A 	GMMCS_IMPLICIT_DETACHED 	"Implicitly detached"
+VAL 	0x0A0B 	GMMCS_PLMN_NOT_ALLOWED 	"PLMN not allowed"
+VAL 	0x0A0C 	GMMCS_LA_NOT_ALLOWED 	"Location Area not allowed"
+VAL 	0x0A0D 	GMMCS_ROAMING_NOT_ALLOWED 	"Roaming not allowed in this location area"
+VAL 	0x0A0E 	GMMCS_GPRS_NOT_ALLOWED_IN_PLMN 	"GPRS services not allowed in this PLMN"
+VAL 	0x0A0F 	GMMCS_NO_SUITABLE_CELL_IN_LA 	%REL99% 	"No suitable cell"
+VAL 	0x0A10 	GMMCS_MSC_TEMP_NOT_REACHABLE 	"MSC temporarily not reachable"
+VAL 	0x0A11 	GMMCS_NET_FAIL 	"Network failure"
+VAL 	0x0A16 	GMMCS_CONGESTION 	"Congestion"
+VAL 	0x0A30 	GMMCS_RETRY_IN_NEW_CELL 	"retry upon entry into a new cell (- 0x0A3F)"
+VAL 	0x0A5F 	GMMCS_SEMANTIC_INCORRECT 	"Semantically incorrect message"
+VAL 	0x0A60 	GMMCS_INVALID_M_INFO 	"Invalid mandatory information"
+VAL 	0x0A61 	GMMCS_TYPE_INVALID 	"Message type non-existent or not implemented"
+VAL 	0x0A62 	GMMCS_TYPE_INCOMPATIBLE 	"Message type not compatible with the protocol state"
+VAL 	0x0A63 	GMMCS_IE_INVALID 	"Information element non-existent or not implemented"
+VAL 	0x0A64 	GMMCS_COND_IE_ERROR 	"Conditional IE error"
+VAL 	0x0A65 	GMMCS_MESSAGE_INVALID 	"Message not compatible with the protocol state"
+VAL 	0x0A6F 	GMMCS_PROTOCOL_ERROR 	"Protocol error, unspecified"
+VAL 	0x4A07 	GMMCS_INT_PROTOCOL_ERROR 	"GPRS services not allowed (MS MM originated)"
+VAL 	0x4A0A 	GMMCS_INT_IMPLICIT_DETACHED 	"Implicitely detached (MS MM originated)"
+VAL 	0x4A6F 	GNMCS_INT_PROTOCOL_ERROR 	"Protocol error, unspecified (MS MM originated)"
+VAL 	0x8AFF 	GMMCS_NET_CAUSE_NOT_PRESENT 	"Network send message without cause information element"
+VAL 	0xCA00 	GMMCS_SUCCESS 	"No error, successful operation (GMM)"
+VAL 	0xCA80 	GMMCS_AAC_OVER_5 	"attach_attempt counter over or equal 5"
+VAL 	0xCA81 	GMMCS_AAC_UNDER_5 	"attach_attempt counter under 5"
+VAL 	0xCA88 	GMMCS_AUTHENTICATION_REJECTED 	"AUTHENTICATION REJECT received"
+VAL 	0xCA89 	GMMCS_SIM_REMOVED 	"reserved for GACI"
+VAL 	0xCA8A 	GMMCS_POWER_OFF 	"reserved for GACI"
+VAL 	0xCA8B 	GMMCS_NO_SERVICE 	"reserved for GACI, no service available"
+VAL 	0xCA8C 	GMMCS_LIMITED_SERVICE 	"reserved for GACI"
+VAL 	0xCA90 	GMMCS_ROAMING_NOT_ALLOWED_WITH_RAU_REJ 	%REL99% 	"Roaming not allowed in this location area."
+VAL 	0xCA91 	GMMCS_NO_SUITABLE_CELL_IN_LA_WITH_RAU_REJ 	%REL99% 	"Find another allowed location area in the same PLMN."
+VAL 	0xCAFF 	GMMCS_INT_NOT_PRESENT 	"No error cause (GMM)"
+
+VALTAB 	VAL_forb_ind
+VAL 	0 	FORB_PLMN_NOT_INCLUDED 	"Not member of the forbidden PLMN list"
+VAL 	1 	FORB_PLMN_INCLUDED 	"Member of the forbidden PLMN list"
+
+VALTAB 	VAL_gprs_status
+VAL 	DEF 	 	"PLMN supports GPRS and GSM"
+VAL 	0 	MMGMM_GPRS_GSM 	"PLMN supports GPRS and GSM"
+VAL 	1 	MMGMM_GPRS_ONLY 	"PLMN supports only GPRS"
+VAL 	2 	MMGMM_GSM_ONLY 	"PLMN supports only GSM"
+
+VALTAB 	VAL_service
+VAL 	0 	NREG_NO_SERVICE 	"no service available"
+VAL 	1 	NREG_LIMITED_SERVICE 	"limited service available"
+
+VALTAB 	VAL_search_running
+VAL 	0 	SEARCH_NOT_RUNNING 	"Network search not running anymore"
+VAL 	1 	SEARCH_RUNNING 	"Network search still running"
+
+VALTAB 	VAL_resumption
+VAL 	0 	MMGMM_RESUMPTION_FAILURE 	"Resumption failure"
+VAL 	1 	MMGMM_RESUMPTION_OK 	"Resumption ok"
+
+VALTAB 	VAL_detach_cause
+VAL 	0 	CS_SIM_REM 	"Consider SIM as removed or not valid"
+VAL 	1 	CS_POW_OFF 	"Power off and delete SIM data"
+VAL 	2 	CS_SOFT_OFF 	"Power off and keep SIM data"
+VAL 	3 	CS_DISABLE 	"disable GSM"
+
+VALTAB 	VAL_detach_done
+VAL 	0 	MMGMM_PERFORM_DETACH 	"detach not done"
+VAL 	1 	MMGMM_DETACH_DONE 	"detach done"
+
+VALTAB 	VAL_reg_type
+VAL 	0 	REG_GPRS_INACTIVE 	"MM acts as an normal GSM mobile"
+VAL 	1 	REG_REMOTE_CONTROLLED 	"GPRS requests MM to perform olny LAU procedure"
+VAL 	2 	REG_CELL_SEARCH_ONLY 	"MM is not allowed to start lau procedure"
+
+VALTAB 	VAL_service_mode
+VAL 	0 	SERVICE_MODE_LIMITED 	"Search for limited service required"
+VAL 	1 	SERVICE_MODE_FULL 	"Search for full service required"
+
+VALTAB 	VAL_cm_establish_res
+VAL 	0 	MMGMM_ESTABLISH_OK 	"establishing allowed"
+VAL 	1 	MMGMM_ESTABLISH_REJECT 	"establishing rejected"
+
+VALTAB 	VAL_tz
+VAL 	0 	TIMEZONE_GMT 	"GMT"
+VAL 	0x40 	TIMEZONE_GMT_PLS_1HR 	"GMT + 1 hour"
+VAL 	0x80 	TIMEZONE_GMT_PLS_2HR 	"GMT + 2 hours"
+VAL 	0x48 	TIMEZONE_GMT_MIN_1HR 	"GMT - 1 hour"
+VAL 	0x88 	TIMEZONE_GMT_MIN_2HR 	"GMT - 2 hours"
+
+VALTAB 	VAL_month
+VAL 	1 - 12 	"month"
+
+VALTAB 	VAL_second
+VAL 	0 - 59 	"second"
+
+VALTAB 	VAL_minute
+VAL 	0 - 59 	"minute"
+
+VALTAB 	VAL_hour
+VAL 	0 - 23 	"hour"
+
+VALTAB 	VAL_day
+VAL 	1 - 31 	"day"
+
+VALTAB 	VAL_year
+VAL 	0 - 99 	"year"
+
+VALTAB 	VAL_status
+VAL 	0 	MMGMM_LIMITED_SERVICE 	"limited service only"
+VAL 	1 	MMGMM_FULL_SERVICE 	"full service, no LUP necessary"
+VAL 	2 	MMGMM_CELL_SELECTED 	"Cell selected, indifferent"
+VAL 	3 	MMGMM_WAIT_FOR_UPDATE 	"waiting for remote controlled LUP"
+
+VALTAB 	VAL_gprs_indicator
+VAL 	0 	MMGMM_GPRS_SUPP_NO 	"GPRS is not supported by the cell"
+VAL 	1 	MMGMM_GPRS_SUPP_YES 	"GPRS is supported by the cell"
+
+VALTAB 	VAL_reason
+VAL 	0 	MMGMM_T3212 	"T3212 has expired"
+VAL 	1 	MMGMM_T_ACCEPT 	"T_ACCEPT has expired"
+VAL 	2 	MMGMM_IMSI_IN_VLR 	"IMSI unknown in VLR received"
+VAL 	3 	MMGMM_RXLEV_JUMP 	"RR indicated an increased RX level"
+VAL 	4 	MMGMM_REG_TIMER 	"Registration timer in MM expired"
+
+VALTAB 	VAL_ciph
+VAL 	0 	CIPH_OFF 	"ciphering off"
+VAL 	1 	CIPH_ON 	"ciphering on"
+
+VALTAB 	VAL_mobile_class
+VAL 	DEF 	 	"Combined GPRS attach"
+VAL 	1 	MMGMM_CLASS_A 	"Combined GPRS"
+VAL 	2 	MMGMM_CLASS_B 	"GPRS and GSM"
+VAL 	3 	MMGMM_CLASS_BC 	"Combined GPRS if possible, otherwise GSM only"
+VAL 	4 	MMGMM_CLASS_BG 	"Combined GPRS if possible, otherwise GPRS only"
+VAL 	5 	MMGMM_CLASS_CC 	"GSM-only"
+VAL 	6 	MMGMM_CLASS_CG 	"GPRS-only"
+
+VALTAB 	VAL_daylight_save_time 	%REL99%
+VAL 	0 	MMR_ADJ_NO 	"No adjustment for Daylight Saving Time"
+VAL 	1 	MMR_TIME_ADJ_1 	"+1 hour adjustment for Daylight Saving Time"
+VAL 	2 	MMR_TIME_ADJ_2 	"+2 hours adjustment for Daylight Saving Time"
+
+VALTAB 	VAL_bootup_act
+VAL 	0 	NORMAL_REG 	"Normal Registration"
+VAL 	1 	QUICK_REG 	"Fast Registration"
+
+VALTAB 	VAL_bootup_cause
+VAL 	0 	REG_END 	"end of registration"
+VAL 	1 	PWR_SCAN_START 	"power scanning started"
+
+
+
+
+VAR 	mode 	"network selction mode" 	B
+
+VAL 	@p_mmgmm - VAL_mode@ 	
+
+VAR 	v_tmsi 	"TMSI available or not" 	B
+
+VAL 	@p_mmgmm - VAL_v_tmsi@ 	
+
+VAR 	tmsi 	"TMSI" 	L
+
+VAL 	@p_mmgmm - VAL_tmsi@ 	
+
+VAR 	lac 	"location area code" 	S
+
+
+VAR 	cause 	"MM or GMM error cause" 	S
+
+VAL 	@p_mmgmm - VAL_cause@ 	
+
+VAR 	v_plmn 	"valid flag" 	B
+
+
+VAR 	forb_ind 	"Forbidden PLMN indicator" 	B
+
+VAL 	@p_mmgmm - VAL_forb_ind@ 	
+
+VAR 	rxlevel 	"Fieldstrength" 	B
+
+
+VAR 	gprs_status 	"GPRS Status" 	B
+
+VAL 	@p_mmgmm - VAL_gprs_status@ 	
+
+VAR 	t3212_val 	"value of T3212" 	L
+
+
+VAR 	service 	"service (either no or limited service)" 	B
+
+VAL 	@p_mmgmm - VAL_service@ 	
+
+VAR 	search_running 	"Search is still running" 	B
+
+VAL 	@p_mmgmm - VAL_search_running@ 	
+
+VAR 	resumption 	"Resumption ok or not" 	B
+
+VAL 	@p_mmgmm - VAL_resumption@ 	
+
+VAR 	detach_cause 	"Detach cause" 	B
+
+VAL 	@p_mmgmm - VAL_detach_cause@ 	
+
+VAR 	detach_done 	"Detach done" 	B
+
+VAL 	@p_mmgmm - VAL_detach_done@ 	
+
+VAR 	reg_type 	"Reg type" 	B
+
+VAL 	@p_mmgmm - VAL_reg_type@ 	
+
+VAR 	service_mode 	"Required service mode" 	B
+
+VAL 	@p_mmgmm - VAL_service_mode@ 	
+
+VAR 	cm_establish_res 	"cm establish response" 	B
+
+VAL 	@p_mmgmm - VAL_cm_establish_res@ 	
+
+VAR 	v_name 	"valid flag" 	B
+
+
+VAR 	dcs 	"data coding scheme" 	B
+
+
+VAR 	add_ci 	"add ci indicator" 	B
+
+
+VAR 	num_spare 	"num spare bits" 	B
+
+
+VAR 	text 	"name" 	B
+
+
+VAR 	v_tz 	"timezone valid" 	B
+
+
+VAR 	tz 	"timezone" 	B
+
+VAL 	@p_mmgmm - VAL_tz@ 	
+
+VAR 	v_time 	"time valid" 	B
+
+
+VAR 	year 	"year" 	B
+
+VAL 	@p_mmgmm - VAL_year@ 	
+
+VAR 	month 	"month" 	B
+
+VAL 	@p_mmgmm - VAL_month@ 	
+
+VAR 	day 	"day" 	B
+
+VAL 	@p_mmgmm - VAL_day@ 	
+
+VAR 	hour 	"hour" 	B
+
+VAL 	@p_mmgmm - VAL_hour@ 	
+
+VAR 	minute 	"minute" 	B
+
+VAL 	@p_mmgmm - VAL_minute@ 	
+
+VAR 	second 	"second" 	B
+
+VAL 	@p_mmgmm - VAL_second@ 	
+
+VAR 	status 	"Activation status" 	B
+
+VAL 	@p_mmgmm - VAL_status@ 	
+
+VAR 	gprs_indicator 	"GPRS indicator" 	B
+
+VAL 	@p_mmgmm - VAL_gprs_indicator@ 	
+
+VAR 	reason 	"Location updating needed reason" 	B
+
+VAL 	@p_mmgmm - VAL_reason@ 	
+
+VAR 	ciph 	"cipher mode" 	B
+
+VAL 	@p_mmgmm - VAL_ciph@ 	
+
+VAR 	mobile_class 	"mobile class" 	B
+
+VAL 	@p_mmgmm - VAL_mobile_class@ 	
+
+VAR 	cid 	"cell id" 	S
+
+
+VAR 	lac_list 	"LACs of found PLMNs" 	S
+
+
+VAR 	v_equ_plmn_list 	"Validity of equivalent plmn list" 	B
+
+
+VAR 	mcc 	"Mobile country code." 	B
+
+
+VAR 	mnc 	"Mobile network code." 	B
+
+
+VAR 	daylight_save_time 	%REL99% 	"network daylight saving time" 	B
+
+VAL 	@p_mmgmm - VAL_daylight_save_time@ 	
+
+VAR 	bootup_act 	"bootup action" 	B
+
+VAL 	@p_mmgmm - VAL_bootup_act@ 	
+
+VAR 	bootup_cause 	"bootup cause" 	B
+
+VAL 	@p_mmgmm - VAL_bootup_cause@ 	
+
+
+
+
+COMP 	plmn 	 "plmn identification"
+{
+ 	v_plmn 	 ; valid flag
+ 	mcc 	[SIZE_MCC] 	 ; mobile country code
+ 	mnc 	[SIZE_MNC] 	 ; mobile network code
+}
+TYPEDEF COMP plmn 	new_forb_plmn 	 "plmn identification"
+TYPEDEF COMP plmn 	ahplmn 	 "ahplmn identification"
+
+
+
+COMP 	full_name 	 "Network name, long format"
+{
+ 	v_name 	 ; valid flag
+ 	dcs 	 ; data coding scheme
+ 	add_ci 	 ; add ci indicator
+ 	num_spare 	 ; num spare bits
+ 	text 	[0..MMR_MAX_TEXT_LEN] 	 ; name
+}
+TYPEDEF COMP full_name 	short_name 	 "Network name, short format"
+
+
+
+COMP 	ntz 	 "Network time zone"
+{
+ 	v_tz 	 ; timezone valid
+ 	tz 	 ; timezone
+}
+
+
+
+COMP 	time 	 "Network time"
+{
+ 	v_time 	 ; time valid
+ 	year 	 ; year
+ 	month 	 ; month
+ 	day 	 ; day
+ 	hour 	 ; hour
+ 	minute 	 ; minute
+ 	second 	 ; second
+}
+
+
+
+COMP 	equ_plmn 	 "Equivalent plmn identification"
+{
+ 	mcc 	[SIZE_MCC] 	 ; mobile country code
+ 	mnc 	[SIZE_MNC_MIN..SIZE_MNC_MAX] 	 ; mobile network code
+}
+
+
+
+COMP 	equ_plmn_list 	 "Equivalent plmn List"
+{
+ 	equ_plmn 	[MIN_EQ_PLMN_ID.. MAX_EQ_PLMN_ID] 	 ; Equivalent PLMN
+}
+
+
+
+
+
+
+; MMGMM_REG_REQ 	0x2E00
+; MMGMM_REG_CNF 	0x6E00
+; MMGMM_REG_REJ 	0x6E01
+; MMGMM_NREG_IND 	0x6E02
+; MMGMM_NREG_REQ 	0x2E01
+; MMGMM_NREG_CNF 	0x6E03
+; MMGMM_NET_REQ 	0x2E02
+; MMGMM_PLMN_IND 	0x6E04
+; MMGMM_PLMN_RES 	0x2E03
+; MMGMM_PLMN_MODE_REQ 	0x2E04
+; MMGMM_AUTH_REJ_REQ 	0x2E05
+; MMGMM_AUTH_REJ_IND 	0x6E05
+; MMGMM_CM_ESTABLISH_IND 	0x6E06
+; MMGMM_CM_ESTABLISH_RES 	0x2E06
+; MMGMM_CM_RELEASE_IND 	0x6E07
+; MMGMM_ACTIVATE_IND 	0x6E08
+; MMGMM_ATTACH_STARTED_REQ 	0x2E07
+; MMGMM_ATTACH_ACC_REQ 	0x2E08
+; MMGMM_ATTACH_REJ_REQ 	0x2E09
+; MMGMM_DETACH_STARTED_REQ 	0x2E0A
+; MMGMM_START_T3212_REQ 	0x2E0B
+; MMGMM_T3212_VAL_IND 	0x6E09
+; MMGMM_INFO_IND 	0x6E0A
+; MMGMM_CM_EMERGENCY_IND 	0x6E0B
+; MMGMM_CM_EMERGENCY_RES 	0x2E0C
+; MMGMM_LUP_ACCEPT_IND 	0x6E0C
+; MMGMM_LUP_NEEDED_IND 	0x6E0D
+; MMGMM_CIPHERING_IND 	0x6E0E
+; MMGMM_ALLOWED_REQ 	0x2E0D
+; MMGMM_TMSI_IND 	0x6E0F
+; MMGMM_TRIGGER_REQ 	0x2E0E
+; MMGMM_AHPLMN_IND 	0x6E10
+
+
+
+PRIM 	MMGMM_REG_REQ 	0x2E00
+{
+ 	service_mode 	 ; registration mode
+ 	reg_type 	 ; Reg type
+ 	mobile_class 	 ; Mobile class
+ 	bootup_act 	 ; bootup action
+}
+
+
+
+
+
+
+PRIM 	MMGMM_REG_CNF 	0x6E00
+{
+ 	plmn 	 ; PLMN
+ 	lac 	 ; Location area code
+ 	cid 	 ; Cell id
+ 	resumption 	 ; GPRS resumption
+ 	gprs_indicator 	 ; GPRS indicator
+ 	bootup_cause 	 ; bootup cause
+}
+
+
+
+
+
+
+PRIM 	MMGMM_REG_REJ 	0x6E01
+{
+ 	service 	 ; Service
+ 	search_running 	 ; Search running
+ 	new_forb_plmn 	 ; PLMN
+ 	cause 	 ; Cause for limited or no service
+ 	resumption 	 ; GPRS resumption
+}
+
+
+
+
+
+
+PRIM 	MMGMM_NREG_IND 	0x6E02
+{
+ 	service 	 ; Service
+ 	search_running 	 ; Search running
+ 	new_forb_plmn 	 ; PLMN
+ 	cause 	 ; Cause for limited or no service
+}
+
+
+
+
+
+
+PRIM 	MMGMM_NREG_REQ 	0x2E01
+{
+ 	detach_cause 	 ; Detach cause
+ 	detach_done 	 ; detach procedure done
+ 	cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	MMGMM_NREG_CNF 	0x6E03
+{
+ 	detach_cause 	 ; Detach cause
+}
+
+
+
+
+
+
+PRIM 	MMGMM_NET_REQ 	0x2E02
+{
+}
+
+
+
+
+
+
+PRIM 	MMGMM_PLMN_IND 	0x6E04
+{
+ 	cause 	 ; network search result
+ 	plmn 	[MAX_PLMN_ID] 	 ; found plmns
+ 	forb_ind 	[MAX_PLMN_ID] 	 ; Forbidden PLMN
+ 	lac_list 	[MAX_PLMN_ID] 	 ; List of LACs
+ 	rxlevel 	[MAX_PLMN_ID] 	 ; Fieldstrength
+ 	gprs_status 	[MAX_PLMN_ID] 	 ; GPRS valid
+}
+
+
+
+
+
+
+PRIM 	MMGMM_PLMN_RES 	0x2E03
+{
+ 	plmn 	 ; selected plmn
+ 	reg_type 	 ; Reg type
+ 	mobile_class 	 ; Mobile class
+}
+
+
+
+
+
+
+PRIM 	MMGMM_PLMN_MODE_REQ 	0x2E04
+{
+ 	mode 	 ; network selected mode
+}
+
+
+
+
+
+
+PRIM 	MMGMM_AUTH_REJ_REQ 	0x2E05
+{
+}
+
+
+
+
+
+
+PRIM 	MMGMM_AUTH_REJ_IND 	0x6E05
+{
+}
+
+
+
+
+
+
+PRIM 	MMGMM_CM_ESTABLISH_IND 	0x6E06
+{
+}
+
+
+
+
+
+
+PRIM 	MMGMM_CM_ESTABLISH_RES 	0x2E06
+{
+ 	cm_establish_res 	 ; Establish responce
+}
+
+
+
+
+
+
+PRIM 	MMGMM_CM_RELEASE_IND 	0x6E07
+{
+ 	resumption 	 ; GPRS resumption
+}
+
+
+
+
+
+
+PRIM 	MMGMM_ACTIVATE_IND 	0x6E08
+{
+ 	plmn 	 ; PLMN
+ 	lac 	 ; Location area code
+ 	cid 	 ; Cell id
+ 	t3212_val 	 ; value of T3212
+ 	status 	 ; Activation status
+ 	gprs_indicator 	 ; GPRS indicator
+}
+
+
+
+
+
+
+PRIM 	MMGMM_ATTACH_STARTED_REQ 	0x2E07
+{
+}
+
+
+
+
+
+
+PRIM 	MMGMM_ATTACH_ACC_REQ 	0x2E08
+{
+ 	plmn 	 ; PLMN
+ 	lac 	 ; Location area code
+ 	v_tmsi 	 ; TMSI valid
+ 	tmsi 	 ; TMSI
+ 	v_equ_plmn_list 	 ; EPLMN list validity
+ 	equ_plmn_list 	 ; EPLMN list
+}
+
+
+
+
+
+
+PRIM 	MMGMM_ATTACH_REJ_REQ 	0x2E09
+{
+ 	cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	MMGMM_DETACH_STARTED_REQ 	0x2E0A
+{
+}
+
+
+
+
+
+
+PRIM 	MMGMM_START_T3212_REQ 	0x2E0B
+{
+}
+
+
+
+
+
+
+PRIM 	MMGMM_T3212_VAL_IND 	0x6E09
+{
+ 	t3212_val 	 ; value of T3212
+}
+
+
+
+
+
+
+PRIM 	MMGMM_INFO_IND 	0x6E0A
+{
+ 	plmn 	 ; Public Land Mobile Network
+ 	full_name 	 ; full network name
+ 	short_name 	 ; short network name
+ 	ntz 	 ; network time zone
+ 	time 	 ; network time
+ 	daylight_save_time 	 ; network daylight saving time
+}
+
+
+
+
+
+
+PRIM 	MMGMM_CM_EMERGENCY_IND 	0x6E0B
+{
+}
+
+
+
+
+
+
+PRIM 	MMGMM_CM_EMERGENCY_RES 	0x2E0C
+{
+ 	cm_establish_res 	 ; Establish responce
+}
+
+
+
+
+
+
+PRIM 	MMGMM_LUP_ACCEPT_IND 	0x6E0C
+{
+ 	plmn 	 ; PLMN
+ 	lac 	 ; Location area code
+ 	cid 	 ; Cell id
+}
+
+
+
+
+
+
+PRIM 	MMGMM_LUP_NEEDED_IND 	0x6E0D
+{
+ 	reason 	 ; Update reason
+}
+
+
+
+
+
+
+PRIM 	MMGMM_CIPHERING_IND 	0x6E0E
+{
+ 	ciph 	 ; cipher mode
+}
+
+
+
+
+
+
+PRIM 	MMGMM_ALLOWED_REQ 	0x2E0D
+{
+ 	plmn 	 ; PLMN
+ 	lac 	 ; Location area code
+ 	v_equ_plmn_list 	 ; EPLMN list validity
+ 	equ_plmn_list 	 ; EPLMN list
+}
+
+
+
+
+
+
+PRIM 	MMGMM_TMSI_IND 	0x6E0F
+{
+ 	tmsi 	 ; TMSI
+}
+
+
+
+
+
+
+PRIM 	MMGMM_TRIGGER_REQ 	0x2E0E
+{
+}
+
+
+
+
+
+
+PRIM 	MMGMM_AHPLMN_IND 	0x6E10
+{
+ 	ahplmn 	 ; AHPLMN
+}
+
+
+
+
+
+
+
+
+

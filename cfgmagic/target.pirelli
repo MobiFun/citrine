@@ -1,0 +1,31 @@
+CONFIG_TARGET_PIRELLI=1
+export_to_c	CONFIG_TARGET_PIRELLI
+export_to_mk	CONFIG_TARGET_PIRELLI
+
+CONFIG_IRAM_SIZE=0x80000
+CONFIG_XRAM_SIZE=0x800000
+CONFIG_FWFLASH_SIZE=0x800000
+# the post-target fragment exports these
+
+# RAMFFS: default to 64 KiB x 8
+RAMFFS_BLKSIZE_LOG2=16
+RAMFFS_NBLOCKS=8
+
+# select the correct flash driver
+Flash_type=AMD-multibank
+
+# 2nd flash chip select
+FLASH2_BASE_ADDR=0x02000000
+export_to_c	FLASH2_BASE_ADDR
+
+DBB_type=751992A
+ABB_type=Iota3014
+RF_type=Rita
+# the post-target fragment will turn these into TI's voodoo numbers
+
+# For the RF PA we have to set TI's voodoo number directly, and we don't
+# even have a number for these Skyworks parts. :-(
+# The best we can do for now is lie and pretend to be Leonardo/Openmoko.
+RF_PA=2
+
+allow_target_feature	aftermarket-ffs

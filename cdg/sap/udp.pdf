@@ -1,0 +1,160 @@
+;********************************************************************************
+;*** File           : udp.pdf
+;*** Creation       : Wed Mar 11 09:58:55 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : udp
+;*** Document No.   : 8444.100.00.006
+;*** Document Date  : 2003-08-26
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: JK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:56:22 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-08-26"
+PRAGMA 	ID_AND_VERSION 	"8444.100.00.006"
+
+
+
+
+
+
+VALTAB 	VAL_port
+VAL 	0 	UDP_AUTOASSIGN_PORT 	"UDP must assign a free port number"
+
+VALTAB 	VAL_err
+VAL 	0 	UDP_BIND_NOERROR 	"no error"
+VAL 	1 	UDP_BIND_PORTINUSE 	"port already in use"
+VAL 	2 	UDP_BIND_UDPDOWN 	"udp is deactivated"
+
+
+
+
+VAR 	port 	"destination port" 	S
+
+VAL 	@p_udp - VAL_port@ 	
+
+VAR 	err 	"error code" 	B
+
+VAL 	@p_udp - VAL_err@ 	
+
+VAR 	dst_port 	"destination port" 	S
+
+
+VAR 	src_port 	"source port" 	S
+
+
+VAR 	err_msg 	"error message" 	B
+
+
+VAR 	src_addr 	"source address" 	L
+
+
+VAR 	dst_addr 	"destination address" 	L
+
+
+
+
+
+
+
+
+; UDP_BIND_REQ 	0x80000046
+; UDP_BIND_CNF 	0x80004046
+; UDP_CLOSEPORT_REQ 	0x80010046
+; UDP_CLOSEPORT_CNF 	0x80014046
+; UDP_ERROR_IND 	0x80024046
+; UDP_ERROR_RES 	0x80020046
+; UDP_SHUTDOWN_IND 	0x80034046
+; UDP_SHUTDOWN_RES 	0x80030046
+
+
+
+PRIM 	UDP_BIND_REQ 	0x80000046
+{
+ 	port 	 ; port
+}
+
+
+
+
+
+
+PRIM 	UDP_BIND_CNF 	0x80004046
+{
+ 	port 	 ; port
+ 	err 	 ; error code
+}
+
+
+
+
+
+
+PRIM 	UDP_CLOSEPORT_REQ 	0x80010046
+{
+ 	port 	 ; port
+}
+
+
+
+
+
+
+PRIM 	UDP_CLOSEPORT_CNF 	0x80014046
+{
+}
+
+
+
+
+
+
+PRIM 	UDP_ERROR_IND 	0x80024046
+{
+ 	dst_port 	 ; Destination port
+ 	src_port 	 ; source port
+ 	err_msg 	 ; error message
+ 	src_addr 	 ; source address
+ 	dst_addr 	 ; Destination address
+}
+
+
+
+
+
+
+PRIM 	UDP_ERROR_RES 	0x80020046
+{
+}
+
+
+
+
+
+
+PRIM 	UDP_SHUTDOWN_IND 	0x80034046
+{
+}
+
+
+
+
+
+
+PRIM 	UDP_SHUTDOWN_RES 	0x80030046
+{
+}
+
+
+
+
+
+
+
+
+

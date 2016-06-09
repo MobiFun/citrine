@@ -1,0 +1,174 @@
+;********************************************************************************
+;*** File           : mmss.pdf
+;*** Creation       : Wed Mar 11 09:58:23 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mmss
+;*** Document No.   : 6147.105.97.102
+;*** Document Date  : 2002-07-19
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:47:24 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-07-19"
+PRAGMA 	ID_AND_VERSION 	"6147.105.97.102"
+
+
+
+CONST 	MAX_SDU_LEN 	1 	; maximum service data unit length
+
+
+
+VALTAB 	VAL_ti
+VAL 	0 - 6 	"ms originated transaction"
+VAL 	8 - 14 	"ms originated transaction"
+VAL 	7 	TI_RES_MO 	"reserved"
+VAL 	15 	TI_RES_MT 	"reserved"
+
+
+
+
+VAR 	cause 	"MM cause" 	S
+
+
+VAR 	l_buf 	"length in bits" 	S
+
+
+VAR 	o_buf 	"offset in bits" 	S
+
+
+VAR 	buf 	"bit buffer" 	B
+
+
+VAR 	ti 	"transaction identifier" 	B
+
+VAL 	@p_mmss - VAL_ti@ 	
+
+VAR 	d1 	"dummy, not used" 	B
+
+
+VAR 	d2 	"dummy, not used" 	B
+
+
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length in bits
+ 	o_buf 	 ; offset in bits
+ 	buf 	[MAX_SDU_LEN] 	 ; bit buffer
+}
+
+
+
+
+
+
+; MMSS_ESTABLISH_REQ 	0x80000008
+; MMSS_RELEASE_REQ 	0x80010008
+; MMSS_DATA_REQ 	0x80020008
+; MMSS_DATA_IND 	0x80004008
+; MMSS_ERROR_IND 	0x80014008
+; MMSS_ESTABLISH_CNF 	0x80024008
+; MMSS_ESTABLISH_IND 	0x80034008
+; MMSS_RELEASE_IND 	0x80044008
+
+
+
+PRIM 	MMSS_ESTABLISH_REQ 	0x80000008
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMSS_RELEASE_REQ 	0x80010008
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMSS_DATA_REQ 	0x80020008
+{
+ 	d1 	 ; dummy
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMSS_DATA_IND 	0x80004008
+{
+ 	d1 	 ; dummy
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMSS_ERROR_IND 	0x80014008
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	MMSS_ESTABLISH_CNF 	0x80024008
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMSS_ESTABLISH_IND 	0x80034008
+{
+ 	d1 	 ; dummy
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMSS_RELEASE_IND 	0x80044008
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; release cause
+}
+
+
+
+
+
+
+
+
+

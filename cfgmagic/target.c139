@@ -1,0 +1,37 @@
+CONFIG_TARGET_C139=1
+CONFIG_TARGET_COMPAL=1
+export_to_c	CONFIG_TARGET_C139
+export_to_c	CONFIG_TARGET_COMPAL
+FLASH_BOOT_VIA_BOOTROM=0
+FLASHIMAGE_BASE_ADDR=0x10000
+
+CONFIG_IRAM_SIZE=0x40000
+CONFIG_XRAM_SIZE=0x80000
+CONFIG_FWFLASH_SIZE=0x400000
+# the post-target fragment exports these
+
+# RAMFFS: default to 8 KiB x 6
+RAMFFS_BLKSIZE_LOG2=13
+RAMFFS_NBLOCKS=6
+
+# select the correct flash driver
+Flash_type=Intel-onebank
+
+DBB_type=751749
+ABB_type=Iota3025
+RF_type=Rita
+# the post-target fragment will turn these into TI's voodoo numbers
+
+# For the RF PA we have to set TI's voodoo number directly, and we don't
+# even have a number for these Skyworks parts. :-(
+# The best we can do for now is lie and pretend to be Leonardo/Openmoko.
+RF_PA=2
+
+# To the best of our knowledge, the correct TSPACT signal to assert
+# for GSM low band transmission is TSPACT2 on this target.
+USE_TSPACT2_FOR_TXLOW=1
+export_to_c	USE_TSPACT2_FOR_TXLOW
+
+RVTMUX_UART_port=MODEM
+
+allow_target_feature	aftermarket-ffs

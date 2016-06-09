@@ -1,0 +1,5 @@
+check_target_feature "$1"
+
+CONFIG_FDMODEM=1
+export_to_c	CONFIG_FDMODEM
+export_to_mk	CONFIG_FDMODEM

@@ -1,0 +1,221 @@
+There exists a set of C header files, needed for TI's GSM firmware to build,
+called cdginc.  They are not needed for building everything up to and including
+GPF and L1, but they are needed in order to build the core G23 protocol stack
+components.
+
+However, these cdginc headers are generated files, not human-written sources,
+and the process by which they get created is very messy:
+
+1. Contained as part of the ultimate source for the firmware, there is a set of
+   XML files which give definitions for Air Interface Messages (AIMs) and
+   Service Access Points (SAPs).
+
+2. Each *.aim file is "compiled" into an MDF (message definition file) and each
+   *.sap file gets similarly "compiled" into a PDF (primitive definition file).
+   (Despite sharing the same acronym and filename suffix, these "primitive
+   definition files" have nothing to do with PDF as in Portable Document
+   Format.)  This "compilation" is done by way of XSLT: an XSLT processor is
+   invoked, its inputs being the source *.{aim,sap} files and a set of *.xsl
+   files defining the transformation.  (The latter can be found under
+   gpf/util/sape/xslt in the "peek" LoCosto source.)
+
+3. A special TI/Condat-developed program called ccdgen (which we only have in
+   the form of an M$ Windows binary sans source, ccdgen.exe) reads the *.mdf
+   and *.pdf files produced in the previous step, performs some unknown
+   processing (unknown because we have no source for this tool), and writes out
+   most of the C header files which appear in the cdginc directory.  (The
+   exception is that a few of these header files seem to be produced directly
+   by the XSLT step.)
+
+==================
+XSLT and Java woes
+==================
+
+When I (Space Falcon) tried to reproduce the above steps for FreeCalypso,
+problems began at the XSLT step.  The XSLT processor used in TI's build flow is
+an old version of Xalan-J from Apache.  J stands for Java - yikes.  Thus TI's
+build flow actually runs java with a set of *.jar files which comprise Xalan-J.
+
+I looked to see if the use of Xalan-J (and thus of Java) was required, or if
+one could use any XSLT processor, including non-Java implementations.  Not so
+fast: TI's *.xsl files for the needed transformation call some functions
+(please forgive my probably incorrect terminology: both XSLT and Java are as
+foreign and unfamiliar to me as Japanese or Arabic or ... - you get the idea)
+which seem to have been implemented by TI as custom Java classes, falling under
+com.ti.xslt.extension - the latter live in gpf/tools/lib/java/xalan-ext.jar in
+TI's semi-source trees (both Leonardo and LoCosto), if you would like to see
+for yourself.
+
+That xalan-ext.jar file with TI's "XSLT extension" classes contains Java
+bytecode, not source.  Thus one of the required pieces for the *.{aim,sap} ->
+*.{mdf,pdf} build step effectively exists only in the form of compiled code
+sans source.  It is of course an impairment to freedom, and as I quickly
+discovered, not only in philosophical terms, but also in practice: as I will
+show in a moment, there appears to be a bug in there which we lack the ability
+to fix.
+
+Of course TI ran their java invokation for XSLT under Winblows.  (As a side
+note, I successfully ran TI's entire Winblows environment, including this step,
+under Wine when I did leo2moko - but I wasn't trying to extract any individual
+step and get it to run by itself, instead I ran TI's *entire Winblows env*
+under a single top-level wine invokation.)  But Java bytecode is supposed to be
+platform-independent, right?  So I tried running the java command from pdt_*.mak
+makefiles in the Leonardo version, using their set of XSLT/xalan jars as-is,
+under Slackware Linux without Wine, using the Linux-native version of Java that
+came with Slackware.
+
+I started with the AIM->MDF part.  The operation succeeded on a few of the
+files, but then failed on others.  The error had something to do with filename
+and pathname manipulation.  Some of the com.ti.xslt.extension functions called
+by TI's xslt transforms seem to be responsible for turning short filenames into
+absolute pathnames and then into file:// URLs, and it appears that TI's
+implementation of these functions assumes that absolute pathnames will have
+Weendoze drive letters, and breaks on Unix absolute pathnames which lack that
+nonsense.  And the part responsible for the bug is a piece of Java bytecode in
+a jar sans source, remember?  I didn't get as far as trying the SAP->PDF part.
+
+I reason that someone who knows the world of Java could probably reverse-eng
+that bytecode and fix the bug with a binary patch, or rewrite an alternate
+implementation.  Reversing Java bytecode might not even be necessary: someone
+who understands XSLT could probably figure out what functionality is expected
+from these extension functions, and then reimplement that (most likely trivial)
+functionality anew.  But XSLT is just as foreign to me as Java; they both might
+as well be Japanese or Arabic or some other super-hard foreign language.
+
+Given that my goal is to produce free GSM firmware, I decided that taking a
+very long detour to learn XSLT and Java just so we can regenerate TI's *.[mp]df
+files from *.{aim,sap} is not worth it, and imported prebuilt *.[mp]df files
+from the LoCosto source along with *.{aim,sap}.
+
+============================
+Different versions of cdginc
+============================
+
+Most of the hard work in the FreeCalypso project involves reconciliation between
+our two reference versions: TCS211 (aka Leonardo) and LoCosto.  Our TCS211
+reference version (in the form of leo2moko) already runs on one of our target
+platforms and works beautifully, but it has the entire GSM protocol stack in
+binary-only libs.  The LoCosto version is full source (aside from Nucleus and
+some parts of GPF which have already been taken care of), but targets the wrong
+chipset, and has that nasty SBuild crap instead of pdt_*.mak.
+
+The versions of cdginc used in the TCS211 and LoCosto semi-src trees differ in
+the following ways:
+
+1. The starting *.aim and *.sap files are different: the LoCosto versions are
+   newer.
+
+2. Slightly different versions of ccdgen.exe are used: the version featured in
+   the TCS211 version from Sotovik identifies itself as 2.5.5, whereas the one
+   featured in the LoCosto "peek" find identifies itself as 2.5.5A.  Aside from
+   some cosmetic differences, one substantive difference was found in the
+   generated output: the so-called mtx tables (don't ask me what they are, as I
+   don't understand it myself) are emitted in a different format.  (Ccdgen
+   version 2.5.5A generates the new format by default, and has a command line
+   option to revert to the old format.)
+
+   These "mtx" generated header files are included by some ccddata modules (see
+   ../ccd/README for more info), and the only C source we have for these modules
+   (for all of CCD, in fact) comes from the LoCosto version.  This version of
+   the ccddata C source expects "mtx" cdginc headers in the new format, hence
+   that is the format we need to use.
+
+3. One additional input to ccdgen besides the *.[mp]df files is a "settings"
+   file called fflags.h.  It has the form of a C header file with #define and
+   #undef lines (the rest is just comments), but as far as I can tell, it never
+   gets fed to a C preprocessor, only to ccdgen.  The starting *.{aim,sap} files
+   contain some "options", and for each of these options, fflags.h must give a
+   yes/no answer in the form of $define or #undef.  This "settings" file is
+   mandatory: if it is not given on the ccdgen command line, or if it has
+   neither a #define nor a #undef for some "option" defined in the *.{aim,sap}
+   files, ccdgen aborts with an error.
+
+It appears that the version of *.{aim,sap} featured in the TCS211 fw has only
+one option named TI_DUAL_MODE, which needs to be disabled, as the version of
+fflags.h in that tree has only one non-comment line:
+
+#undef	TI_DUAL_MODE
+
+But the LoCosto version of fflags.h (which appears here as fflags-locosto.h) is
+much more extensive, and all of the options listed therein appear in the
+*.{aim,sap} files and are in need of explicit enabling or disabling - as I
+found out when I tried running ccdgen on LoCosto *.[mp]df files with the TCS211
+version of fflags.h - it immediately failed with a bunch of errors about certain
+options not being set one way or the other.
+
+============
+New features
+============
+
+It appears that all of the options enabled in the LoCosto version of fflags.h
+correspond to new features of the G23 protocol stack which do not exist at all
+in our TCS211 reference version (leo2moko).  How can we tell what features are
+present or absent in our TCS211 version if all we have is binary libs sans
+source?  For a long time I thought the problem was unsolvable, but then I found
+the answer in an obscure place: the "relic" pdt_*.mak files *other than* the
+actively used pdt_2091.mak present in the source from Sotovik.  The source we
+have is "sanitized" in that the C source files for all of L1 and G23 have been
+removed, and the makefile in pdt_2091.mak has no compilation stanzas for these
+modules either: this generated makefile is set up to take the corresponding
+binary-only libs as "sources".  However, the other (unused) pdt_*.mak files
+have been built (back in TI's development environment, presumably) in the "full
+source present" configuration, and list not only the names and paths for all of
+the deleted source files, but also their complete compilation lines with all -I
+directories and -D options!
+
+Looking at the latter compilation lines, one can see that none of the options
+related to GSM REL99 or TI's new "multiband" stuff (seen both in fflags.h and
+throughout the L1 and G23 sources we are back-porting from the LoCosto "peek"
+find) are present at all in our TCS211/leo2moko reference version.
+
+===============================
+Approach chosen for FreeCalypso
+===============================
+
+I have not yet figured out whether the new apparently-high-level GSM PS features
+found in the LoCosto version we are working with actually depend on some LoCosto
+hardware or DSP ROM code feature not present on the Calypso, or if they can be
+back-ported to the Calypso just fine.  I also currently have very little
+understanding as to their merit, i.e., practical value or usefulness for a GSM
+cellphone end user.
+
+The approach I'm taking for the initial version is to recreate the TCS211
+configuration that already works on the Neo Freerunner in the form of leo2moko
+as closely as possible, and that means setting all of the newer options to the
+disabled state.  Or at least that is the approach I am following until and
+unless I run into some problem with it; if and when the latter happens, I'll
+re-evaluate my course.
+
+However, simply using the set of cdginc files from TCS211 (or even regenerating
+them from the TCS211 versions of *.[mp]df with the new ccdgen.exe to get mtx
+tables in the format expected by our version of CCD source) with the G23
+protocol stack C sources from the LoCosto version will likely lead to problems,
+or least more hassle than it's worth, hence I decided to bite the bullet and
+use the *.{aim,sap} and *.[mp]df files from LoCosto.
+
+Using the LoCosto versions of *.[mp]df, I ran ccdgen.exe (version 2.5.5A, set
+to generate mtx tables in the new format) with two different fflags.h
+configurations: "locosto" (unchanged from the "peek" find) and "conservative".
+The latter is a configuration in which every existing option is set to disabled:
+I took fflags-locosto.h and changed every #define to #undef.
+
+The symlink is currently set to compile the GSM fw using the "conservative"
+version of cdginc headers.  As I said above, I'll proceed with this
+configuration until and unless I hit a problem, and then re-evaluate this
+course if need be.
+
+=====================
+ccdgen binary problem
+=====================
+
+We only have a ccdgen.exe binary, but no source.  The Winblows binary in
+question happens to run fine under Wine, at least on my Slackware machine, but
+needless to say, asking every FreeCalypso user who wishes to compile her own
+GSM fw from source to run a sans-source Weendoze binary under Wine and pray
+that it works is not an attractive proposition.  Therefore, as a workaround I
+have checked the generated cdginc files into Hg as if they were source files.
+
+Of course this workaround is not a proper solution either, but it is the best
+we can do for the time being, until and unless someone either finds the missing
+source for ccdgen or figures out its logic and writes a from-scratch functional
+replacement.

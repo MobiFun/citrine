@@ -1,0 +1,163 @@
+;********************************************************************************
+;*** File           : ipa.pdf
+;*** Creation       : Wed Mar 11 09:58:13 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : ipa
+;*** Document No.   : 8444.104.02.007
+;*** Document Date  : 2003-08-30
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: Jacek
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:43:54 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-08-30"
+PRAGMA 	ID_AND_VERSION 	"8444.104.02.007"
+
+
+
+CONST 	IPA_ENTITY_NAME_LEN 	6 	; maximum length of entity name including NULL
+
+
+
+VALTAB 	VAL_dti_conn
+VAL 	0 	IPA_CONNECT_DTI 	"Connect DTI2 to IP"
+VAL 	1 	IPA_DISCONNECT_DTI 	"Disconnect DTI2 from IP"
+
+VALTAB 	VAL_link_id
+VAL 	0 	IPA_LINK_ID_DEFAULT 	"Default link id"
+
+VALTAB 	VAL_dti_direction
+VAL 	0 	IPA_DTI_TO_HIGHER_LAYER 	"DTI2 used normally"
+VAL 	1 	IPA_DTI_TO_LOWER_LAYER 	"DTI2 is inverted"
+
+VALTAB 	VAL_cmd
+VAL 	0 	IPA_CONFIG_UP 	"enable the interface"
+VAL 	1 	IPA_CONFIG_DOWN 	"disable the interface"
+
+VALTAB 	VAL_ack_flag
+VAL 	0 	IPA_CONFIG_ACK 	"Acknowledged"
+VAL 	1 	IPA_CONFIG_NAK 	"not acknowledged"
+
+VALTAB 	VAL_all_down
+VAL 	0 	IPA_ALLDOWN_FALSE 	">= 1 Interface still up"
+VAL 	1 	IPA_ALLDOWN_TRUE 	"all interfaces down"
+
+
+
+
+VAR 	dti_conn 	"DTI2 connect" 	B
+
+VAL 	@p_ipa - VAL_dti_conn@ 	
+
+VAR 	link_id 	"Link identifier" 	L
+
+VAL 	@p_ipa - VAL_link_id@ 	
+
+VAR 	dti_direction 	"DTI2 direction" 	B
+
+VAL 	@p_ipa - VAL_dti_direction@ 	
+
+VAR 	ip 	"IP address" 	L
+
+
+VAR 	peer_ip 	"peer IP address" 	L
+
+
+VAR 	mtu 	"maximum transfer unit" 	S
+
+
+VAR 	cmd 	"Command" 	B
+
+VAL 	@p_ipa - VAL_cmd@ 	
+
+VAR 	ack_flag 	"acknowledge flag" 	B
+
+VAL 	@p_ipa - VAL_ack_flag@ 	
+
+VAR 	all_down 	"all interfaces down flag" 	B
+
+VAL 	@p_ipa - VAL_all_down@ 	
+
+VAR 	entity_name 	"name of an neighbour entity" 	B
+
+
+
+
+
+
+
+
+; IPA_DTI_REQ 	0x8000003C
+; IPA_DTI_CNF 	0x8000403C
+; IPA_DTI_IND 	0x8001403C
+; IPA_CONFIG_REQ 	0x8001003C
+; IPA_CONFIG_CNF 	0x8002403C
+
+
+
+PRIM 	IPA_DTI_REQ 	0x8000003C
+{
+ 	dti_conn 	 ; DTI connect
+ 	entity_name 	[IPA_ENTITY_NAME_LEN] 	 ; entity name
+ 	link_id 	 ; link identifier
+ 	dti_direction 	 ; DTI direction
+}
+
+
+
+
+
+
+PRIM 	IPA_DTI_CNF 	0x8000403C
+{
+ 	dti_conn 	 ; DTI connect
+ 	link_id 	 ; link identifier
+}
+
+
+
+
+
+
+PRIM 	IPA_DTI_IND 	0x8001403C
+{
+ 	link_id 	 ; link identifier
+}
+
+
+
+
+
+
+PRIM 	IPA_CONFIG_REQ 	0x8001003C
+{
+ 	ip 	 ; IP address
+ 	peer_ip 	 ; peer IP address
+ 	mtu 	 ; Maximum transfer unit
+ 	cmd 	 ; Command
+}
+
+
+
+
+
+
+PRIM 	IPA_CONFIG_CNF 	0x8002403C
+{
+ 	ack_flag 	 ; Acknowledge flag
+ 	all_down 	 ; all interfaces down flag
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,1636 @@
+;********************************************************************************
+;*** File           : em.pdf
+;*** Creation       : Wed Mar 11 09:58:00 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : em
+;*** Document No.   : 8304.129.96.103
+;*** Document Date  : 2002-02-25
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: Oliver
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:40:50 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-02-25"
+PRAGMA 	ID_AND_VERSION 	"8304.129.96.103"
+
+
+
+CONST 	MAX_SDU_LEN 	1 	; 
+CONST 	MAX_PDP_CTXT 	2 	; MAX number of PDP contexts supported
+
+
+
+VALTAB 	VAL_arfcn
+VAL 	1 - 124 	"GSM 900 without extension band"
+VAL 	0 - 124 	"GSM 900 with extension band"
+VAL 	975 - 1023 	"GSM 900 with extension band"
+VAL 	512 - 1023 	"DCS 1800"
+VAL 	0xFFFF 	 	"not present"
+
+VALTAB 	VAL_tn
+VAL 	0 - 7 	"timeslot number 0-7"
+
+VALTAB 	VAL_txlev
+VAL 	0 - 31 	"power level"
+
+VALTAB 	VAL_rxlev
+VAL 	0 - 63 	"received field strength"
+
+VALTAB 	VAL_rxqual_f
+VAL 	0 - 7 	"received quality"
+
+VALTAB 	VAL_bsic
+VAL 	0 - 63 	"base station identification code"
+VAL 	0xFF 	 	"not present"
+
+VALTAB 	VAL_t3212
+VAL 	0 - 255 	"value times 6minutes"
+
+VALTAB 	VAL_v_start
+VAL 	0 	 	"no starting time"
+VAL 	1 	 	"with starting time"
+
+VALTAB 	VAL_dtx_stat
+VAL 	0 	 	"without dtx"
+VAL 	1 	 	"with dtx"
+
+VALTAB 	VAL_bs_pa_mfrms
+VAL 	0 	 	"2 Multiframe Periods"
+VAL 	1 	 	"3 Multiframe Periods"
+VAL 	2 	 	"4 Multiframe Periods"
+VAL 	3 	 	"5 Multiframe Periods"
+VAL 	4 	 	"6 Multiframe Periods"
+VAL 	5 	 	"7 Multiframe Periods"
+VAL 	6 	 	"8 Multiframe Periods"
+VAL 	7 	 	"9 Multiframe Periods"
+
+VALTAB 	VAL_entity
+VAL 	1 	EM_L1 	"L1"
+VAL 	2 	EM_DL 	"DL"
+VAL 	3 	EM_RR 	"RR"
+VAL 	4 	EM_MM 	"MM"
+VAL 	5 	EM_CC 	"CC"
+VAL 	6 	EM_SS 	"SS"
+VAL 	7 	EM_SMS 	"SMS"
+VAL 	8 	EM_SIM 	"SIM"
+VAL 	9 	EM_GRR 	"GRR"
+VAL 	10 	EM_GMM 	"GMM"
+VAL 	11 	EM_GRLC 	"GRLC"
+
+VALTAB 	VAL_pco_bitmap
+VAL 	0x0001 	EM_PCO_SC_INFO 	"request RR SC information"
+VAL 	0x0002 	EM_PCO_GPRS_INFO 	"request GPRS SC information"
+VAL 	0x0004 	EM_PCO_NC_INFO 	"request RR NC information"
+VAL 	0x0008 	EM_PCO_LOC_PAG_INFO 	"request RR Location and Paging information"
+VAL 	0x0010 	EM_PCO_PLMN_INFO 	"request RR PLMN information"
+VAL 	0x0020 	EM_PCO_CIPH_HOP_DTX_INFO 	"request RR Ciphering Hopping and DTX information"
+VAL 	0x0040 	EM_PCO_POWER_INFO 	"request RR Power (Classmark) information"
+VAL 	0x0080 	EM_PCO_IDENTITY_INFO 	"request RR Identity information"
+VAL 	0x0100 	EM_PCO_SW_VERSION_INFO 	"request SW Version information"
+VAL 	0x0200 	EM_PCO_GMM_INFO 	"request GMM information"
+VAL 	0x0400 	EM_PCO_GRLC_INFO 	"request GRLC information"
+VAL 	0x0800 	EM_PCO_AMR_INFO 	"request AMR information"
+VAL 	0x1000 	EM_PCO_PDP_INFO 	"request PDP information"
+
+VALTAB 	VAL_hyst
+VAL 	0 	CELL_HYST_0_DB 	"0 dB RXLEV hysteresis for LA re-selection"
+VAL 	1 	CELL_HYST_2_DB 	"2 dB RXLEV hysteresis for LA re-selection"
+VAL 	2 	CELL_HYST_4_DB 	"4 dB RXLEV hysteresis for LA re-selection"
+VAL 	3 	CELL_HYST_6_DB 	"6 dB RXLEV hysteresis for LA re-selection"
+VAL 	4 	CELL_HYST_8_DB 	"8 dB RXLEV hysteresis for LA re-selection"
+VAL 	5 	CELL_HYST_10_DB 	"10 dB RXLEV hysteresis for LA re-selection"
+VAL 	6 	CELL_HYST_12_DB 	"12 dB RXLEV hysteresis for LA re-selection"
+VAL 	7 	CELL_HYST_14_DB 	"14 dB RXLEV hysteresis for LA re-selection"
+
+VALTAB 	VAL_gprs_prio_class
+VAL 	0xFF 	GPRS_PRIORITY_CLASS_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_tbf_trans_type
+VAL 	0x00 	EM_TBF_TYPE_NULL 	"No GPRS data transfer"
+VAL 	0x01 	EM_TBF_TYPE_SB 	""
+VAL 	0x02 	EM_TBF_TYPE_FA 	"Fixed Allocation"
+VAL 	0x03 	EM_TBF_TYPE_DA 	"Dynamic Allocation"
+VAL 	0x04 	EM_TBF_TYPE_DL 	"DL"
+VAL 	0x05 	EM_TBF_TYPE_DL_AND_DA 	"DL + Dynamic Allocation"
+VAL 	0x06 	EM_TBF_TYPE_DL_AND_FA 	"DL + Fixed Allocation"
+
+VALTAB 	VAL_nco
+VAL 	0x00 	FMM_NC0 	"NC0"
+VAL 	0x01 	FMM_NC1 	"NC1"
+VAL 	0x02 	FMM_NC2 	"NC2, network controlled"
+VAL 	0x03 	FMM_RESET 	"BCCH based reselection order"
+VAL 	0x04 	FMM_EMPTY 	"undefined"
+
+VALTAB 	VAL_grlc_state
+VAL 	0x00 	ACCESS_DISABLED 	"access disabled      "
+VAL 	0x01 	PIM 	"Packet idle mode"
+VAL 	0x02 	PAM 	"Packet access mode"
+VAL 	0x03 	PTM 	"Packet transfer mode"
+VAL 	0x04 	WAIT_4_PIM 	"wait for PIM"
+
+VALTAB 	VAL_cs
+VAL 	0x00 	CS_MODE_1 	"Values Item"
+VAL 	0x01 	CS_MODE_2 	"Values Item"
+VAL 	0x02 	CS_MODE_3 	"Values Item"
+VAL 	0x03 	CS_MODE_4 	"Values Item"
+
+VALTAB 	VAL_cell_type_ind
+VAL 	0 	EM_CELL_NA 	"Cell type is not available"
+VAL 	1 	EM_CELL_GSM 	"Cell supports GSM only"
+VAL 	2 	EM_CELL_GPRS 	"Cell supports GSM and GPRS"
+
+VALTAB 	VAL_cell_resel_offset
+VAL 	0 - 63 	"0   126 dB,2 dB steps, i.e. 0 = 0 dB, 1 = 2 dB, etc."
+
+VALTAB 	VAL_temp_offset
+VAL 	0 - 7 	"0   60 dB, 10 dB steps i.e. 0 = 0 dB,1 = 10 dB, etc. and 7 = infinity"
+
+VALTAB 	VAL_rxlev_acc_min
+VAL 	0 - 63 	"Values Range"
+
+VALTAB 	VAL_vocoder
+VAL 	0b00000000 	EM_VOC_SIG 	"Signalling only"
+VAL 	0b00000001 	EM_VOC_SPEECH 	"Speech"
+VAL 	0b00100001 	EM_VOC_EFR 	"Enhanced full rate"
+VAL 	0b01000001 	EM_VOC_AMR 	"Adaptive multi rate"
+VAL 	0b00001111 	EM_VOC_14_4 	"User data rate of 14.4 kbps "
+VAL 	0b00000011 	EM_VOC_9_6 	"User data rate of 9.6kbps/12kbps radio interface rate"
+VAL 	0b00001011 	EM_VOC_4_8 	"User data rate of 4.8kbps/6kbps radio interface rate"
+VAL 	0b00010011 	EM_VOC_2_4 	"User data rate of 2.4kbps/3.6 radio interface rate"
+VAL 	0b11111111 	EM_VOC_NA 	"Not applicable in this state"
+
+VALTAB 	VAL_t3312_state
+VAL 	0 	EM_T3312_ACTIVE 	"Periodic RAU timer is active"
+VAL 	1 	EM_T3312_DEACTIVE 	"Periodic RAU timer is de active"
+
+VALTAB 	VAL_amr_voc
+VAL 	1 	EM_AFS 	"AMR full rate speech"
+VAL 	2 	EM_AH0 	"AMR half speech on sub channel 0"
+VAL 	3 	EM_AH1 	"AMR half rate speech on sub channel 1"
+
+VALTAB 	VAL_amr_icmi
+VAL 	0 	EM_AMR_ICMI_IMP 	"The initial codec mode is defined by the implicit rule provided in 3GPP TS 05.09"
+VAL 	1 	EM_AMR_ICMI_SMF 	"The initial codec mode is defined by the Start Mode field"
+
+VALTAB 	VAL_amr_first_cod
+VAL 	0 	EM_AMR_MODE_4_75 	"4.75 kbps codec bit rate"
+VAL 	1 	EM_AMR_MODE_5_15 	"5.15 kbps codec bit rate"
+VAL 	2 	EM_AMR_MODE_5_9 	"5.9 kbps codec bit rate"
+VAL 	3 	EM_AMR_MODE_6_7 	"6.7 kbps codec bit rate"
+VAL 	4 	EM_AMR_MODE_7_4 	"7.4 kbps codec bit rate"
+VAL 	5 	EM_AMR_MODE_7_95 	"7.95 kbps codec bit rate"
+VAL 	6 	EM_AMR_MODE_10_2 	"10.2 kbps codec bit rate"
+VAL 	7 	EM_AMR_MODE_12_2 	"12.2 kbps codec bit rate"
+
+VALTAB 	VAL_hop
+VAL 	0 	EM_HOP_NO 	"Hopping is not present"
+VAL 	1 	EM_HOP 	"Hopping used"
+
+VALTAB 	VAL_sgsnr 	%REL99%
+VAL 	0 	EM_SGSNR_L98 	%REL99% 	"SGSN is R-98 or older"
+VAL 	1 	EM_SGSNR_G99 	%REL99% 	"SGSN is R-99 or later."
+
+VALTAB 	VAL_mscr 	%REL99%
+VAL 	0 	EM_MSCR_L98 	%REL99% 	"MSC release is 98 or older."
+VAL 	1 	EM_MSCR_G99 	%REL99% 	"MSC release is 99 or later."
+
+VALTAB 	VAL_net_rel 	%REL99%
+VAL 	0 	EM_BSS_L98 	%REL99% 	"BSS release version is 98 or older."
+VAL 	1 	EM_BSS_99 	%REL99% 	"BSS release version is 99"
+VAL 	2 	EM_BSS_R4 	%REL99% 	"BSS release verison is R4"
+VAL 	255 	EM_BSS_NOT_SET 	%REL99% 	"BSS release is not set."
+
+VALTAB 	Val_band_ind 	%REL99%
+VAL 	0 	EM_BAND_1800 	"ARFCN belongs to 1800 band"
+VAL 	1 	EM_BAND_1900 	"ARFCN belongs to 1900 band"
+VAL 	2 	EM_BAND_NOT_SET 	"Band Indicator Value is not set by serving cell"
+
+
+
+
+VAR 	arfcn 	"channel number" 	S
+
+VAL 	@p_em - VAL_arfcn@ 	
+
+VAR 	arfcn_nc 	"channel number" 	S
+
+
+VAR 	tn 	"timeslot number" 	B
+
+VAL 	@p_em - VAL_tn@ 	
+
+VAR 	txlev 	"Power Level" 	B
+
+VAL 	@p_em - VAL_txlev@ 	
+
+VAR 	txpwr_max 	"Max power level in a cell" 	B
+
+VAL 	@p_em - VAL_txlev@ 	
+
+VAR 	rxlev 	"received field strength" 	B
+
+VAL 	@p_em - VAL_rxlev@ 	
+
+VAR 	rxlev_nc 	"received field strength neighbour cell" 	B
+
+
+VAR 	rxlev_f 	"received field strength" 	B
+
+
+VAR 	rxlev_s 	"received field strength" 	B
+
+
+VAR 	rxlev_min 	"min. rxlev to access the cell" 	B
+
+
+VAR 	rxqual_f 	"received quality" 	B
+
+VAL 	@p_em - VAL_rxqual_f@ 	
+
+VAR 	rxqual_s 	"received quality" 	B
+
+
+VAR 	bsic 	"base station ID code" 	B
+
+VAL 	@p_em - VAL_bsic@ 	
+
+VAR 	bsic_nc 	"base station ID code neighbour cell" 	B
+
+
+VAR 	tav 	"timing advance" 	B
+
+
+VAR 	frame_offset 	"frame offset" 	L
+
+
+VAR 	time_alignmt 	"time alignment" 	L
+
+
+VAR 	cell_id 	"cell identity SC" 	S
+
+
+VAR 	cell_id_nc 	"cell identity neighbour cell" 	S
+
+
+VAR 	lac 	"location area code" 	S
+
+
+VAR 	lac_nc 	"location area code neighbour cells" 	S
+
+
+VAR 	c1 	"path loss criterion C1" 	T
+
+
+VAR 	c2 	"reselection criterion C2" 	T
+
+
+VAR 	c1_nc 	"path loss criterion C1 neighbour cells" 	T
+
+
+VAR 	c2_nc 	"reselection criterion C2 neighbour cells" 	T
+
+
+VAR 	c31 	"reselection criterion C31 (GPRS)" 	T
+
+
+VAR 	c32 	"reselection criterion C32 (GPRS)" 	T
+
+
+VAR 	c31_nc 	"reselection criterion C31 (GPRS) neighbour cells" 	T
+
+
+VAR 	c32_nc 	"reselection criterion C32 (GPRS) neighbour cells" 	T
+
+
+VAR 	dsc 	"actual downlink signalling counter" 	B
+
+
+VAR 	rlt 	"actual radiolink timeout counter" 	B
+
+
+VAR 	cba 	"cell bar access" 	B
+
+
+VAR 	cba_nc 	"cell bar access neighbour cells" 	B
+
+
+VAR 	cbq 	"cell bar  qualifier" 	B
+
+
+VAR 	cbq_nc 	"cell bar qualifier neighbour cells" 	B
+
+
+VAR 	nmo 	"network mode of operation" 	B
+
+
+VAR 	spgc_ccch_sup 	"SPLIT_PG_CYCLE_SUPPORT: whether it is supported or not - should be BOOL, but BOOL is not valid in SAP" 	B
+
+
+VAR 	priority_access_thr 	"packet access to the network according to priority level" 	B
+
+
+VAR 	rac 	"routing area code" 	B
+
+
+VAR 	rac_nc 	"routing area code" 	B
+
+
+VAR 	no_ncells 	"no of neighbour cells" 	B
+
+
+VAR 	t3212 	"Timer T3212" 	B
+
+VAL 	@p_em - VAL_t3212@ 	
+
+VAR 	ident_type 	"Type of identity" 	B
+
+
+VAR 	odd_even 	"Odd/ Even indication" 	B
+
+
+VAR 	v_ident_dig 	"valid-flag" 	B
+
+
+VAR 	c_ident_dig 	"counter" 	B
+
+
+VAR 	ident_dig 	"Identity digit" 	B
+
+
+VAR 	tmsi 	"binary representation TMSI" 	L
+
+
+VAR 	mcc 	"mobile country code" 	B
+
+
+VAR 	mnc 	"mobile network code" 	B
+
+
+VAR 	no_creq_max 	"mobile country code" 	B
+
+
+VAR 	ciph_stat 	"Cipher status" 	B
+
+
+VAR 	ma 	"MA list after time" 	S
+
+
+VAR 	ma2 	"MA list before  time" 	S
+
+
+VAR 	v_start 	"starting time valid" 	B
+
+VAL 	@p_em - VAL_v_start@ 	
+
+VAR 	hsn 	"Hopping sequence number" 	B
+
+
+VAR 	dtx_stat 	"DTX status" 	B
+
+VAL 	@p_em - VAL_dtx_stat@ 	
+
+VAR 	rev_lev 	"rev_lev" 	B
+
+
+VAR 	es_ind 	"es_ind" 	B
+
+
+VAR 	a5_1 	"a5_1" 	B
+
+
+VAR 	rf_pow_cap 	"rf_pow_cap" 	B
+
+
+VAR 	ps_cap 	"ps_cap" 	B
+
+
+VAR 	ss_screen 	"ss_screen" 	B
+
+
+VAR 	sm_cap 	"sm_cap" 	B
+
+
+VAR 	freq_cap 	"freq_cap" 	B
+
+
+VAR 	class_3 	"class_3" 	B
+
+
+VAR 	cmsp 	"cmsp" 	B
+
+
+VAR 	a5_3 	"a5_3" 	B
+
+
+VAR 	a5_2 	"a5_2" 	B
+
+
+VAR 	mb_sub 	"mb_sub" 	B
+
+
+VAR 	a5_7 	"a5_7" 	B
+
+
+VAR 	a5_6 	"a5_6" 	B
+
+
+VAR 	a5_5 	"a5_5" 	B
+
+
+VAR 	a5_4 	"a5_4" 	B
+
+
+VAR 	v_radio_cap_2 	"v_radio_cap_2" 	B
+
+
+VAR 	radio_cap_2 	"radio_cap_2" 	B
+
+
+VAR 	v_radio_cap_1 	"v_radio_cap_1" 	B
+
+
+VAR 	radio_cap_1 	"radio_cap_1" 	B
+
+
+VAR 	v_r_support 	"v_r_support" 	B
+
+
+VAR 	r_support 	"r_support" 	B
+
+
+VAR 	v_m_s_class 	"v_m_s_class" 	B
+
+
+VAR 	m_s_class 	"m_s_class" 	B
+
+
+VAR 	ucs2_treat 	"ucs2_treat" 	B
+
+
+VAR 	ext_meas_cap 	"ext_meas_cap" 	B
+
+
+VAR 	v_meas_cap 	"v_meas_cap" 	B
+
+
+VAR 	sw_time 	"sw_time" 	B
+
+
+VAR 	sws_time 	"sws_time" 	B
+
+
+VAR 	dummy1 	"dummy1" 	B
+
+
+VAR 	dummy2 	"dummy2" 	B
+
+
+VAR 	v_mmi 	"not implemented yet" 	S
+
+
+VAR 	v_sim 	"not implemented yet" 	S
+
+
+VAR 	v_cc 	"not implemented yet" 	S
+
+
+VAR 	v_ss 	"not implemented yet" 	S
+
+
+VAR 	v_sms 	"not implemented yet" 	S
+
+
+VAR 	v_mm 	"not implemented yet" 	S
+
+
+VAR 	v_rr 	"not implemented yet" 	S
+
+
+VAR 	v_dl 	"not implemented yet" 	S
+
+
+VAR 	v_l1 	"not implemented yet" 	S
+
+
+VAR 	rel_cause 	"release cause" 	S
+
+
+VAR 	bs_pa_mfrms 	"Multiframe Period" 	B
+
+VAL 	@p_em - VAL_bs_pa_mfrms@ 	
+
+VAR 	data 	"requested data" 	S
+
+
+VAR 	reest_flag 	"Re-establishment flag" 	B
+
+
+VAR 	max_dlt 	"maximum downlink timeout counter" 	B
+
+
+VAR 	act_dlt 	"actual downlink timeout counter" 	B
+
+
+VAR 	max_rlt 	"maximum radiolink timeout counter" 	B
+
+
+VAR 	act_rlt 	"actual radiolink timeout counter" 	B
+
+
+VAR 	bitmask_l1_h 	"bitmask for L1 higher bits" 	S
+
+
+VAR 	bitmask_l1_l 	"bitmask for L1 lower bits" 	L
+
+
+VAR 	bitmask_dl 	"bitmask for DL" 	S
+
+
+VAR 	bitmask_rr_h 	"bitmask for RR higher bits" 	S
+
+
+VAR 	bitmask_rr_l 	"bitmask for RR lower bits" 	L
+
+
+VAR 	bitmask_mm 	"bitmask for MM" 	L
+
+
+VAR 	bitmask_cc_h 	"bitmask for CC higher bits" 	L
+
+
+VAR 	bitmask_cc_l 	"bitmask for CC lower bits" 	L
+
+
+VAR 	bitmask_ss 	"bitmask for SS" 	S
+
+
+VAR 	bitmask_sms_h 	"bitmask for SMS higher bits" 	L
+
+
+VAR 	bitmask_sms_l 	"bitmask for SMS lower bits" 	L
+
+
+VAR 	bitmask_sim 	"bitmask for SIM" 	L
+
+
+VAR 	entity 	"Entity name" 	B
+
+VAL 	@p_em - VAL_entity@ 	
+
+VAR 	pco_bitmap 	"EM-Data output to PCO according to bitmap" 	L
+
+VAL 	@p_em - VAL_pco_bitmap@ 	
+
+VAR 	hyst 	"C2 / C32 Hysteresis" 	B
+
+VAL 	@p_em - VAL_hyst@ 	
+
+VAR 	gprs_prio_class 	"GPRS_PRIORITY_CLASS" 	B
+
+VAL 	@p_em - VAL_gprs_prio_class@ 	
+
+VAR 	gprs_prio_class_nc 	"GPRS_PRIORITY_CLASS" 	B
+
+VAL 	@p_em - VAL_gprs_prio_class@ 	
+
+VAR 	c31_hyst 	"C31_HYST" 	B
+
+
+VAR 	ra_re_hyst 	"RAC_HYSTERESIS" 	B
+
+
+VAR 	res_type 	"Reselection Type" 	B
+
+
+VAR 	tbf_trans_type 	"TBF unique ID" 	B
+
+VAL 	@p_em - VAL_tbf_trans_type@ 	
+
+VAR 	tbf_num_ults 	"number of assigned Timeslots" 	B
+
+
+VAR 	tbf_num_rlc 	"number of granted uplink RLC blocks" 	S
+
+
+VAR 	nco 	"Network Controlled reselection Order" 	B
+
+VAL 	@p_em - VAL_nco@ 	
+
+VAR 	rlc_num_retrans 	"Info about the number of retransmitted RLCs" 	B
+
+
+VAR 	rlc_num_trans 	"Info about the number of transmitted RLCs" 	S
+
+
+VAR 	rlc_pdu_cnt 	"Info about the number of transmitted RLCs" 	B
+
+
+VAR 	rlc_start_fn 	"Info about the number of transmitted RLCs" 	L
+
+
+VAR 	rlc_end_fn 	"Info about the number of transmitted RLCs" 	L
+
+
+VAR 	ul_nb_block 	"Number of blocks to be sent for uplink" 	S
+
+
+VAR 	grlc_state 	"grlc state" 	B
+
+VAL 	@p_em - VAL_grlc_state@ 	
+
+VAR 	cv 	"countdown value" 	B
+
+
+VAR 	cs 	"Basic Element" 	B
+
+VAL 	@p_em - VAL_cs@ 	
+
+VAR 	ready_state 	"ready-standby state" 	B
+
+
+VAR 	tlli 	"tlli" 	L
+
+
+VAR 	ptmsi 	"ptmsi" 	L
+
+
+VAR 	ptmsi_sig 	"ptmsi signature" 	L
+
+
+VAR 	ready_timer 	"ready timer T3314" 	L
+
+
+VAR 	ciphering_algorithm 	"ciphering algorithm" 	B
+
+
+VAR 	tbf_mod 	"Basic Element" 	B
+
+
+VAR 	mac_mod 	"Basic Element" 	B
+
+
+VAR 	tfi 	"Basic Element" 	B
+
+
+VAR 	gmm_state 	"codes the GPRS state" 	B
+
+
+VAR 	rlc_tbc 	"Number of rlc data blocks during the tbf, which is requested to send" 	S
+
+
+VAR 	cell_type_ind 	"Indicates the cell type GSM/GPRS" 	B
+
+VAL 	@p_em - VAL_cell_type_ind@ 	
+
+VAR 	cell_resel_offset 	"stores cell reselect offset" 	B
+
+VAL 	@p_em - VAL_cell_resel_offset@ 	
+
+VAR 	temp_offset 	"Stores temporary offset" 	B
+
+VAL 	@p_em - VAL_temp_offset@ 	
+
+VAR 	rxlev_acc_min 	"stores RXLEV_ACCESS_MIN" 	B
+
+VAL 	@p_em - VAL_rxlev_acc_min@ 	
+
+VAR 	vocoder 	"Vocoder type" 	B
+
+VAL 	@p_em - VAL_vocoder@ 	
+
+VAR 	t3312_deactivated 	"Periodic RAU timer state" 	B
+
+VAL 	@p_em - VAL_t3312_state@ 	
+
+VAR 	t3312_val 	"Periodic RAU timer value in seconds" 	L
+
+
+VAR 	amr_vocoder 	"AMR vocoder type" 	B
+
+VAL 	@p_em - VAL_amr_voc@ 	
+
+VAR 	amr_icmi 	"AMR initial codec mode indicator" 	B
+
+VAL 	@p_em - VAL_amr_icmi@ 	
+
+VAR 	amr_icm 	"AMR initial codec mode(index in the ACS)" 	B
+
+
+VAR 	amr_acs 	"AMR active codec set" 	B
+
+
+VAR 	amr_nr_modes 	"Number of AMR codec modes" 	B
+
+
+VAR 	amr_codec_thr 	"Lower thresholds for switching between mode j and j-1" 	B
+
+
+VAR 	amr_codec_hyst 	"Hysteresis values to obtain the higher thresholds for switching between mode j and j+1" 	B
+
+
+VAR 	amr_first_codec 	"Highest bit rate AMR codec mode" 	B
+
+VAL 	@p_em - VAL_amr_first_cod@ 	
+
+VAR 	maio 	"Mobile allocation index offset" 	B
+
+
+VAR 	nr_arfcns 	"Number of arfcns in hopping list" 	B
+
+
+VAR 	hop 	"Hopping valid or not flag" 	B
+
+VAL 	@p_em - VAL_hop@ 	
+
+VAR 	sgsnr_rel 	%REL99% 	"SGSNR release" 	B
+
+VAL 	@p_em - VAL_sgsnr@ 	
+
+VAR 	mscr_rel 	%REL99% 	"MSCR Release" 	B
+
+VAL 	@p_em - VAL_mscr@ 	
+
+VAR 	net_rel 	%REL99% 	"N/W Rel. information" 	B
+
+VAL 	@p_em - VAL_net_rel@ 	
+
+VAR 	band_ind 	%REL99% 	"Band Indicator" 	B
+
+VAL 	@p_em - Val_band_ind@ 	
+
+VAR 	bss_paging_coord 	%REL99% 	"BS paging coordination" 	B
+
+
+VAR 	ul_net_octet 	"octet count on up link" 	L
+
+
+VAR 	ul_gross_octet 	"Gross throughput octet count on up link" 	L
+
+
+VAR 	dl_gross_octet 	"Gross throughput octet count on down link" 	L
+
+
+VAR 	dl_net_octet 	"Net throughput octet count on down link" 	L
+
+
+VAR 	dl_crc_errors 	"CRC errors in Downlink" 	L
+
+
+VAR 	bitmask_grr 	"Bitmask for GRR " 	L
+
+
+VAR 	bitmask_gmm 	"GMM bitmask" 	L
+
+
+VAR 	bitmask_grlc 	"GRLC bitmask" 	L
+
+
+
+
+
+COMP 	net_ctrl 	 "Network control"
+{
+ 	spgc_ccch_sup 	 ; SPLIT_PG_CYCLE_SUPPORT: whether it is supported or not - should be BOOL, but BOOL is not valid in SAP
+ 	priority_access_thr 	 ; packet access to the network according to priority level
+}
+
+
+
+COMP 	em_imeisv 	 "IMEISV"
+{
+ 	ident_type 	 ; Type of identity
+ 	odd_even 	 ; Odd/ Even indication
+ 	v_ident_dig 	 ; valid-flag
+ 	c_ident_dig 	 ; counter
+ 	ident_dig 	[16] 	 ; Identity digit
+}
+TYPEDEF COMP em_imeisv 	em_imsi 	 "IMSI"
+
+
+
+COMP 	hop_chn 	 "frequency hopping channel list after time"
+{
+ 	maio 	 ; Mobile allocation index offset
+ 	nr_arfcns 	 ; Number of hopping channels
+ 	ma 	[65] 	 ; MA list after time
+}
+
+
+
+COMP 	classm2 	 "Classmark 2"
+{
+ 	rev_lev 	 ; rev_lev
+ 	es_ind 	 ; es_ind
+ 	a5_1 	 ; a5_1
+ 	rf_pow_cap 	 ; rf_pow_cap
+ 	ps_cap 	 ; ps_cap
+ 	ss_screen 	 ; ss_screen
+ 	sm_cap 	 ; sm_cap
+ 	freq_cap 	 ; freq_cap
+ 	class_3 	 ; class_3
+ 	cmsp 	 ; cmsp
+ 	a5_3 	 ; a5_3
+ 	a5_2 	 ; a5_2
+}
+
+
+
+COMP 	meas_cap 	 "meas_cap"
+{
+ 	sw_time 	 ; sw_time
+ 	sws_time 	 ; sws_time
+ 	dummy1 	 ; dummy1
+ 	dummy2 	 ; dummy2
+}
+
+
+
+COMP 	classm3 	 "Classmark 3"
+{
+ 	mb_sub 	 ; mb_sub
+ 	a5_7 	 ; a5_7
+ 	a5_6 	 ; a5_6
+ 	a5_5 	 ; a5_5
+ 	a5_4 	 ; a5_4
+ 	v_radio_cap_2 	 ; v_radio_cap_2
+ 	radio_cap_2 	 ; radio_cap_2
+ 	v_radio_cap_1 	 ; v_radio_cap_1
+ 	radio_cap_1 	 ; radio_cap_1
+ 	v_r_support 	 ; v_r_support
+ 	r_support 	 ; r_support
+ 	v_m_s_class 	 ; v_m_s_class
+ 	m_s_class 	 ; m_s_class
+ 	ucs2_treat 	 ; ucs2_treat
+ 	ext_meas_cap 	 ; ext_meas_cap
+ 	v_meas_cap 	 ; v_meas_cap
+ 	meas_cap 	 ; T_meas_cap
+}
+
+
+
+COMP 	ul_tbf_par 	 "ul tbf parameter"
+{
+ 	tfi 	 ; tfi
+ 	mac_mod 	 ; allocation type
+ 	ul_nb_block 	 ; Number of blocks to be sent for uplink
+ 	cv 	 ; countdown value
+ 	cs 	 ; coding scheme
+}
+
+
+
+COMP 	dl_tbf_par 	 "dl tbf parameters"
+{
+ 	tfi 	 ; temporary flow identifier
+ 	mac_mod 	 ; allocation type
+}
+
+
+
+COMP 	t3312 	 "Structured Element"
+{
+ 	t3312_deactivated 	 ; Primitive structure element item
+ 	t3312_val 	 ; Primitive structure element item
+}
+
+
+
+COMP 	amr_cod_prop 	 "Parameters for multirate speech field"
+{
+ 	amr_codec_thr 	 ; Primitive structure element item
+ 	amr_codec_hyst 	 ; Primitive structure element item
+}
+
+
+
+COMP 	hop_chn2 	 "Frequency channel hopping list before time"
+{
+ 	maio 	 ; Mobile allocation index offset
+ 	nr_arfcns 	 ; Number of hopping channels
+ 	ma 	[65] 	 ; Hopping channel list
+}
+
+
+
+
+
+
+; EM_SC_INFO_REQ 	0x3E00
+; EM_SC_INFO_CNF 	0x7E00
+; EM_SC_GPRS_INFO_REQ 	0x3E01
+; EM_SC_GPRS_INFO_CNF 	0x7E01
+; EM_NC_INFO_REQ 	0x3E02
+; EM_NC_INFO_CNF 	0x7E02
+; EM_LOC_PAG_INFO_REQ 	0x3E03
+; EM_LOC_PAG_INFO_CNF 	0x7E03
+; EM_PLMN_INFO_REQ 	0x3E04
+; EM_PLMN_INFO_CNF 	0x7E04
+; EM_CIP_HOP_DTX_INFO_REQ 	0x3E05
+; EM_CIP_HOP_DTX_INFO_CNF 	0x7E05
+; EM_POWER_INFO_REQ 	0x3E06
+; EM_POWER_INFO_CNF 	0x7E06
+; EM_IDENTITY_INFO_REQ 	0x3E07
+; EM_IDENTITY_INFO_CNF 	0x7E07
+; EM_SW_VERSION_INFO_REQ 	0x3E08
+; EM_SW_VERSION_INFO_CNF 	0x7E08
+; EM_COUNTER_IDLE_IND 	0x7E09
+; EM_COUNTER_DEDI_IND 	0x7E0A
+; EM_L1_EVENT_REQ 	0x3E09
+; EM_DL_EVENT_REQ 	0x3E0A
+; EM_RR_EVENT_REQ 	0x3E0B
+; EM_MM_EVENT_REQ 	0x3E0C
+; EM_CC_EVENT_REQ 	0x3E0D
+; EM_SS_EVENT_REQ 	0x3E0E
+; EM_SMS_EVENT_REQ 	0x3E0F
+; EM_SIM_EVENT_REQ 	0x3E10
+; EM_DATA_IND 	0x7E0B
+; EM_FMM_SC_INFO_REQ 	0x3E12
+; EM_FMM_SC_INFO_CNF 	0x7E12
+; EM_FMM_SC_GPRS_INFO_REQ 	0x3E13
+; EM_FMM_SC_GPRS_INFO_CNF 	0x7E13
+; EM_FMM_NC_INFO_REQ 	0x3E14
+; EM_FMM_NC_INFO_CNF 	0x7E14
+; EM_FMM_RLC_TRANS_INFO_REQ 	0x3E15
+; EM_FMM_RLC_TRANS_INFO_CNF 	0x7E15
+; EM_FMM_RESELECTION_START_IND 	0x7E0C
+; EM_FMM_RESELECTION_END_IND 	0x7E0D
+; EM_FMM_TBF_INFO_REQ 	0x3E16
+; EM_FMM_TBF_INFO_CNF 	0x7E16
+; EM_PCO_TRACE_REQ 	0x3E11
+; EM_GRLC_INFO_REQ 	0x3E18
+; EM_GRLC_INFO_CNF 	0x7E18
+; EM_GMM_INFO_REQ 	0x3E17
+; EM_GMM_INFO_CNF 	0x7E17
+; EM_AMR_INFO_REQ 	0x3E19
+; EM_AMR_INFO_CNF 	0x7E19
+; EM_THROUGHPUT_INFO_REQ 	0x3E1D
+; EM_THROUGHPUT_INFO_CNF 	0x7E1D
+; EM_GRR_EVENT_REQ 	0x3E1A
+; EM_GMM_EVENT_REQ 	0x3E1B
+; EM_GRLC_EVENT_REQ 	0x3E1C
+
+
+
+PRIM 	EM_SC_INFO_REQ 	0x3E00
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_SC_INFO_CNF 	0x7E00
+{
+ 	arfcn 	 ; Channel number
+ 	c1 	 ; Path loss criterion
+ 	c2 	 ; Cell reselection criterion
+ 	rxlev 	 ; Received field strength
+ 	bsic 	 ; Base station ID code
+ 	dsc 	 ; Downlink signalling counter
+ 	txlev 	 ; Transmit power level
+ 	tn 	 ; Timeslot number
+ 	rlt 	 ; Radio link timeout counter
+ 	tav 	 ; Timing advance
+ 	rxlev_f 	 ; Received field strength full
+ 	rxlev_s 	 ; Received field strength sub
+ 	rxqual_f 	 ; Received quality full
+ 	rxqual_s 	 ; Received quality sub
+ 	lac 	 ; Location area code
+ 	cba 	 ; Cell bar access
+ 	cbq 	 ; Cell bar qualifier
+ 	cell_id 	 ; Cell Identity
+ 	cell_type_ind 	 ; Cell type indicator
+ 	vocoder 	 ; vocoder type
+}
+
+
+
+
+
+
+PRIM 	EM_SC_GPRS_INFO_REQ 	0x3E01
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_SC_GPRS_INFO_CNF 	0x7E01
+{
+ 	gmm_state 	 ; GPRS state
+ 	tn 	 ; PCCCH_Timeslot
+ 	nmo 	 ; Network Mode of Operation
+ 	net_ctrl 	 ; Network control
+ 	cba 	 ; Cell bar access
+ 	rac 	 ; Routing area code
+ 	tav 	 ; Timing advance
+ 	dsc 	 ; Downlink signalling counter
+ 	c31 	 ; Cell reselection criterion c32
+ 	c32 	 ; Cell reselection criterion c32
+ 	nco 	 ; Network controlled order
+ 	bss_paging_coord 	 	%REL99% ; Primitive Item
+ 	band_ind 	 	%REL99% ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	EM_NC_INFO_REQ 	0x3E02
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_NC_INFO_CNF 	0x7E02
+{
+ 	no_ncells 	 ; Number of neighbour cells
+ 	arfcn_nc 	[6] 	 ; BCCH channel number
+ 	c1_nc 	[6] 	 ; Path loss criterion C1
+ 	c2_nc 	[6] 	 ; Reselection criterion C2
+ 	rxlev_nc 	[6] 	 ; Received field strength
+ 	bsic_nc 	[6] 	 ; Base station ID code
+ 	cell_id_nc 	[6] 	 ; Cell ID
+ 	lac_nc 	[6] 	 ; Location area code
+ 	frame_offset 	[6] 	 ; Frame offset
+ 	time_alignmt 	[6] 	 ; Time alignment
+ 	cba_nc 	[6] 	 ; Cell bar access
+ 	cbq_nc 	[6] 	 ; Cell bar qualifier
+ 	cell_type_ind 	[6] 	 ; cell type indicator
+ 	rac 	[6] 	 ; routing area code
+ 	temp_offset 	[6] 	 ; temporary offset
+ 	cell_resel_offset 	[6] 	 ; Cell reselect offset
+ 	rxlev_acc_min 	[6] 	 ; RXLEV_ACCESS_MIN
+}
+
+
+
+
+
+
+PRIM 	EM_LOC_PAG_INFO_REQ 	0x3E03
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_LOC_PAG_INFO_CNF 	0x7E03
+{
+ 	bs_pa_mfrms 	 ; Paging repeat period
+ 	t3212 	 ; Periodic location updating interval
+ 	mcc 	[3] 	 ; Mobile Country Code
+ 	mnc 	[3] 	 ; Mobile Network Code
+ 	tmsi 	 ; Temporary Mobile Subscriber Identity
+}
+
+
+
+
+
+
+PRIM 	EM_PLMN_INFO_REQ 	0x3E04
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_PLMN_INFO_CNF 	0x7E04
+{
+ 	no_creq_max 	 ; Max. no of retries for channel requests
+ 	reest_flag 	 ; Re-establishment flag
+ 	txpwr_max 	 ; MS TXPWR MAX CCCH
+ 	rxlev_min 	 ; Rxlev access min
+ 	rel_cause 	 ; Release cause
+ 	sgsnr_rel 	 	%REL99% ; SGSNR Release
+ 	mscr_rel 	 	%REL99% ; MSCR Release
+ 	net_rel 	 	%REL99% ; BSS Release
+}
+
+
+
+
+
+
+PRIM 	EM_CIP_HOP_DTX_INFO_REQ 	0x3E05
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_CIP_HOP_DTX_INFO_CNF 	0x7E05
+{
+ 	ciph_stat 	 ; Cipher status
+ 	hop 	 ; Hopping configuration
+ 	arfcn 	 ; ARFCN, valid if hop = 0
+ 	hsn 	 ; HSN, valid if hop = 1
+ 	dtx_stat 	 ; DTX status
+ 	v_start 	 ; Starting time valid or not
+ 	hop_chn 	 ; Hopping channels
+ 	hop_chn2 	 ; Hopping channels
+}
+
+
+
+
+
+
+PRIM 	EM_POWER_INFO_REQ 	0x3E06
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_POWER_INFO_CNF 	0x7E06
+{
+ 	classm2 	 ; Classmark 2
+ 	classm3 	 ; Classmark 3
+}
+
+
+
+
+
+
+PRIM 	EM_IDENTITY_INFO_REQ 	0x3E07
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_IDENTITY_INFO_CNF 	0x7E07
+{
+ 	em_imeisv 	 ; IMEISV
+ 	em_imsi 	 ; IMSI
+ 	tmsi 	 ; tmsi
+}
+
+
+
+
+
+
+PRIM 	EM_SW_VERSION_INFO_REQ 	0x3E08
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_SW_VERSION_INFO_CNF 	0x7E08
+{
+ 	v_mmi 	 ; Version MMI (SMI/ACI/MFW)
+ 	v_sim 	 ; Version SIM
+ 	v_cc 	 ; Version CC
+ 	v_ss 	 ; Version SS
+ 	v_sms 	 ; Version SMS
+ 	v_mm 	 ; Version MM
+ 	v_rr 	 ; Version RR
+ 	v_dl 	 ; Version DL
+ 	v_l1 	 ; Version Layer 1 (ALR)
+}
+
+
+
+
+
+
+PRIM 	EM_COUNTER_IDLE_IND 	0x7E09
+{
+ 	max_dlt 	 ; Maximum Downlink Counter
+ 	act_dlt 	 ; Actual Downlink Counter
+}
+
+
+
+
+
+
+PRIM 	EM_COUNTER_DEDI_IND 	0x7E0A
+{
+ 	max_rlt 	 ; Maximum Radiolink Timeout Counter
+ 	act_rlt 	 ; Actual Radiolink Timeout Counter
+}
+
+
+
+
+
+
+PRIM 	EM_L1_EVENT_REQ 	0x3E09
+{
+ 	bitmask_l1_h 	 ; Information bits high
+ 	bitmask_l1_l 	 ; Information bits low
+}
+
+
+
+
+
+
+PRIM 	EM_DL_EVENT_REQ 	0x3E0A
+{
+ 	bitmask_dl 	 ; Information bits
+}
+
+
+
+
+
+
+PRIM 	EM_RR_EVENT_REQ 	0x3E0B
+{
+ 	bitmask_rr_h 	 ; Information bits high
+ 	bitmask_rr_l 	 ; Information bits low
+}
+
+
+
+
+
+
+PRIM 	EM_MM_EVENT_REQ 	0x3E0C
+{
+ 	bitmask_mm 	 ; Information bits
+}
+
+
+
+
+
+
+PRIM 	EM_CC_EVENT_REQ 	0x3E0D
+{
+ 	bitmask_cc_h 	 ; Information bits high
+ 	bitmask_cc_l 	 ; Information bits low
+}
+
+
+
+
+
+
+PRIM 	EM_SS_EVENT_REQ 	0x3E0E
+{
+ 	bitmask_ss 	 ; Information bits
+}
+
+
+
+
+
+
+PRIM 	EM_SMS_EVENT_REQ 	0x3E0F
+{
+ 	bitmask_sms_h 	 ; Information bits high
+ 	bitmask_sms_l 	 ; Information bits low
+}
+
+
+
+
+
+
+PRIM 	EM_SIM_EVENT_REQ 	0x3E10
+{
+ 	bitmask_sim 	 ; Information bits
+}
+
+
+
+
+
+
+PRIM 	EM_DATA_IND 	0x7E0B
+{
+ 	entity 	 ; Entity information
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_SC_INFO_REQ 	0x3E12
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_SC_INFO_CNF 	0x7E12
+{
+ 	arfcn 	 ; Channel number
+ 	c1 	 ; Path loss criterion
+ 	c2 	 ; Cell reselection criterion
+ 	rac 	 ; Routing area code
+ 	hyst 	 ; C2/C32 hysteresis value
+ 	c32 	 ; Cell reselection criterion c32
+ 	gprs_prio_class 	 ; GPRS Priority Class
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_SC_GPRS_INFO_REQ 	0x3E13
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_SC_GPRS_INFO_CNF 	0x7E13
+{
+ 	c31_hyst 	 ; C31 Hysteresis Flag
+ 	ra_re_hyst 	 ; RAC hysteresis
+ 	nco 	 ; Network Controlled resel. Order
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_NC_INFO_REQ 	0x3E14
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_NC_INFO_CNF 	0x7E14
+{
+ 	no_ncells 	 ; Number of neighbour cells
+ 	arfcn_nc 	[6] 	 ; BCCH channel number
+ 	c2_nc 	[6] 	 ; Reselection criterion C2
+ 	rac_nc 	[6] 	 ; Routing Area Code
+ 	c31_nc 	[6] 	 ; C31 Measurement
+ 	c32_nc 	[6] 	 ; C32 Measurement
+ 	gprs_prio_class_nc 	[6] 	 ; GPRS Priority Class
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_RLC_TRANS_INFO_REQ 	0x3E15
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_RLC_TRANS_INFO_CNF 	0x7E15
+{
+ 	rlc_num_retrans 	 ; RLC Blocks retransmitted
+ 	rlc_num_trans 	 ; RLC Blocks successfull transmitted
+ 	rlc_pdu_cnt 	 ; PDU Counter
+ 	rlc_start_fn 	 ; Start Frame Number
+ 	rlc_end_fn 	 ; End Frame Number
+ 	rlc_tbc 	 ; Number of rlc data blocks during the tbf, which is requested to send
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_RESELECTION_START_IND 	0x7E0C
+{
+ 	arfcn 	 ; Channel number
+ 	rac 	 ; Routing area code
+ 	res_type 	 ; Reselection Type
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_RESELECTION_END_IND 	0x7E0D
+{
+ 	arfcn 	 ; Channel number
+ 	rac 	 ; Routing area code
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_TBF_INFO_REQ 	0x3E16
+{
+ 	data 	 ; Data bitmask
+}
+
+
+
+
+
+
+PRIM 	EM_FMM_TBF_INFO_CNF 	0x7E16
+{
+ 	tbf_trans_type 	 ; TBF transfer type
+ 	tbf_num_ults 	 ; Number of UL-Timeslots
+ 	tbf_num_rlc 	 ; Uplink RLC-Blocks
+}
+
+
+
+
+
+
+PRIM 	EM_PCO_TRACE_REQ 	0x3E11
+{
+ 	pco_bitmap 	 ; bitmap for requested EM information
+}
+
+
+
+
+
+
+PRIM 	EM_GRLC_INFO_REQ 	0x3E18
+{
+ 	data 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	EM_GRLC_INFO_CNF 	0x7E18
+{
+ 	grlc_state 	 ; grlc state
+ 	tbf_mod 	 ; tbf state
+ 	ul_tbf_par 	 ; ul tbf parameter
+ 	dl_tbf_par 	 ; dl tbf parameter
+}
+
+
+
+
+
+
+PRIM 	EM_GMM_INFO_REQ 	0x3E17
+{
+ 	data 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	EM_GMM_INFO_CNF 	0x7E17
+{
+ 	ready_state 	 ; ready-standby state
+ 	ciphering_algorithm 	 ; Primitive Item
+ 	tlli 	 ; Primitive Item
+ 	ptmsi 	 ; Primitive Item
+ 	ptmsi_sig 	 ; Primitive Item
+ 	ready_timer 	 ; Primitive Item
+ 	t3312 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	EM_AMR_INFO_REQ 	0x3E19
+{
+ 	data 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	EM_AMR_INFO_CNF 	0x7E19
+{
+ 	amr_vocoder 	 ; AMR vocoder type
+ 	amr_icmi 	 ; Initial codec mode indicator
+ 	amr_icm 	 ; Index into ACS
+ 	amr_acs 	 ; Active codec set
+ 	amr_first_codec 	 ; Highest bit rate codec mode
+ 	amr_nr_modes 	 ; Number of modes in ACS
+ 	amr_cod_prop 	[3] 	 ; codec mode properties
+}
+
+
+
+
+
+
+PRIM 	EM_THROUGHPUT_INFO_REQ 	0x3E1D
+{
+ 	data 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	EM_THROUGHPUT_INFO_CNF 	0x7E1D
+{
+ 	ul_net_octet 	 ; Primitive Item
+ 	ul_gross_octet 	 ; Primitive Item
+ 	dl_net_octet 	 ; Primitive Item
+ 	dl_gross_octet 	 ; Primitive Item
+ 	dl_crc_errors 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	EM_GRR_EVENT_REQ 	0x3E1A
+{
+ 	bitmask_grr 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	EM_GMM_EVENT_REQ 	0x3E1B
+{
+ 	bitmask_gmm 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	EM_GRLC_EVENT_REQ 	0x3E1C
+{
+ 	bitmask_grlc 	 ; Primitive Item
+}
+
+
+
+
+
+
+
+
+

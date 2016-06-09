@@ -1,0 +1,282 @@
+;********************************************************************************
+;*** File           : 8010_135_sn_sap.pdf
+;*** Creation       : Wed Mar 11 09:57:49 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_135_sn_sap
+;*** Document No.   : 8010.135.04.012
+;*** Document Date  : 2004-06-08
+;*** Document Status: APPROVED
+;*** Document Author: rpk
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:27:14 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-06-08"
+PRAGMA 	ID_AND_VERSION 	"8010.135.04.012"
+PRAGMA 	PREFIX 	SN 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+CONST 	MAX_UL_PDU 	255 	; Max number of unconfirmed PDUs transferred between RATs (in SN_GET_PENDING_PDU_CNF).
+EXTERN CONST 	@p_8010_137_nas_include - SIZE_NSAPI@ 	SIZE_NSAPI 	; Maximum NSAPI array index for SN_GET_PENDING_PDU_CNF
+
+
+
+VALTAB 	VAL_establish
+VAL 	0 	ACTIVE_ESTABLISHMENT 	"SNDCP shall send LL_ESTABLISH_REQ"
+VAL 	1 	PASSIVE_ESTABLISHMENT 	"SNDCP shall wait for LL_ESTABLISH_IND"
+
+
+
+
+VAR 	list_len 	"Octet count of data in all descriptors" 	S
+
+
+VAR 	first 	"Pointer to first descriptor in list" 	L
+
+
+VAR 	dl_sequence_number 	"Sequence number of last unacknowledged downlink PDU (used by the network)" 	B
+
+
+VAR 	establish 	"" 	B
+
+VAL 	@p_8010_135_sn_sap - VAL_establish@ 	
+
+VAR 	receive_no 	"Receive NPDU number" 	B
+
+
+VAR 	dti_neighbor 	"DTI neighbor entity name." 	L
+
+
+
+
+
+COMP 	desc_list2 	 "DTI parameters"
+{
+ 	list_len 	 ; Octet count of data in all descriptors
+ 	first 	 ; Pointer to first descriptor in list
+}
+
+
+
+COMP 	ul_pdus 	 "Sequence number and descriptor list handles pr. NSAPI"
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network Service Access Point Identifier
+ 	dl_sequence_number 	 ; Sequence number of last unacknowledged downlink PDU (used by the network)
+ 	desc_list2 	PTR [0 .. MAX_UL_PDU] 	 ; List of unconfirmed uplink PDUs
+}
+
+
+
+COMP 	receive_no_list 	 "Ssequence numbers and MEM  handles pr. NSAPI"
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer Service Access Point Identifier
+ 	receive_no 	 ; Receive NPDU number
+}
+
+
+
+
+
+
+; SN_ACTIVATE_CNF 	0x8000409E
+; SN_ACTIVATE_REQ 	0x8000009E
+; SN_DEACTIVATE_CNF 	0x8002409E
+; SN_DEACTIVATE_REQ 	0x8001009E
+; SN_GET_PENDING_PDU_CNF 	0x8003409E
+; SN_GET_PENDING_PDU_REQ 	0x8002009E
+; SN_MODIFY_CNF 	0x8004409E
+; SN_MODIFY_REQ 	0x8003009E
+; SN_STATUS_IND 	0x8005409E
+; SN_SEQUENCE_REQ 	0x8004009E
+; SN_SEQUENCE_CNF 	0x8006409E
+; SN_COUNT_REQ 	0x8005009E
+; SN_COUNT_CNF 	0x8008409E
+; SN_DTI_REQ 	0x8006009E
+; SN_DTI_CNF 	0x8009409E
+
+
+
+PRIM 	SN_ACTIVATE_CNF 	0x8000409E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	EXTERN @p_8010_137_nas_include - comp_params@ 	comp_params 	 ; Compression parameters
+}
+
+
+
+
+
+
+PRIM 	SN_ACTIVATE_REQ 	0x8000009E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 ; LLC service access point identifier
+ 	EXTERN @p_8010_152_ps_include - radio_prio@ 	radio_prio 	 ; Radio priority
+ 	EXTERN @p_8010_152_ps_include - qos_r97@ 	qos_r97 AS snsm_qos 	 ; Peak throughput and other qos
+ 	establish 	 ; Establish request
+ 	EXTERN @p_8010_137_nas_include - comp_params@ 	comp_params 	 ; Compression parameters
+ 	EXTERN @p_8010_152_ps_include - pkt_flow_id@ 	pkt_flow_id 	 ; Packet Flow Identifier
+}
+
+
+
+
+
+
+PRIM 	SN_DEACTIVATE_CNF 	0x8002409E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+}
+
+
+
+
+
+
+PRIM 	SN_DEACTIVATE_REQ 	0x8001009E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - rel_ind@ 	rel_ind 	 ; Local release indicator
+}
+
+
+
+
+
+
+PRIM 	SN_GET_PENDING_PDU_CNF 	0x8003409E
+{
+ 	ul_pdus 	[0..SIZE_NSAPI] 	 ; Array of DTI description lists and sequence numbers.
+}
+
+
+
+
+
+
+PRIM 	SN_GET_PENDING_PDU_REQ 	0x8002009E
+{
+}
+
+
+
+
+
+
+PRIM 	SN_MODIFY_CNF 	0x8004409E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+}
+
+
+
+
+
+
+PRIM 	SN_MODIFY_REQ 	0x8003009E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 ; LLC service access point identifier
+ 	EXTERN @p_8010_152_ps_include - radio_prio@ 	radio_prio 	 ; Radio priority
+ 	EXTERN @p_8010_152_ps_include - qos_r97@ 	qos_r97 AS snsm_qos 	 ; Reliability class and other qos
+ 	EXTERN @p_8010_152_ps_include - pkt_flow_id@ 	pkt_flow_id 	 ; Packet Flow Identifier
+}
+
+
+
+
+
+
+PRIM 	SN_STATUS_IND 	0x8005409E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi_set@ 	nsapi_set 	 ; Set of network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 ; LLC service access point identifier
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; Cause parameter
+}
+
+
+
+
+
+
+PRIM 	SN_SEQUENCE_REQ 	0x8004009E
+{
+ 	receive_no_list 	[0..SIZE_NSAPI] 	 ; Receive NDPU number list
+}
+
+
+
+
+
+
+PRIM 	SN_SEQUENCE_CNF 	0x8006409E
+{
+ 	receive_no_list 	[0..SIZE_NSAPI] 	 ; Receive NDPU number list
+}
+
+
+
+
+
+
+PRIM 	SN_COUNT_REQ 	0x8005009E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_137_nas_include - reset@ 	reset 	 ; shall counters be reset
+}
+
+
+
+
+
+
+PRIM 	SN_COUNT_CNF 	0x8008409E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_137_nas_include - octets_uplink@ 	octets_uplink 	 ; octets uplink
+ 	EXTERN @p_8010_137_nas_include - octets_downlink@ 	octets_downlink 	 ; octets  downlink
+ 	EXTERN @p_8010_137_nas_include - packets_uplink@ 	packets_uplink 	 ; packets uplink
+ 	EXTERN @p_8010_137_nas_include - packets_downlink@ 	packets_downlink 	 ; packets downlink
+}
+
+
+
+
+
+
+PRIM 	SN_DTI_REQ 	0x8006009E
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_137_nas_include - dti_conn@ 	dti_conn 	 ; dti connect
+ 	EXTERN @p_8010_137_nas_include - dti_linkid@ 	dti_linkid 	 ; dti linkid
+ 	dti_neighbor 	 ; dti neighbor
+ 	EXTERN @p_8010_137_nas_include - dti_direction@ 	dti_direction 	 ; dti direction
+}
+
+
+
+
+
+
+PRIM 	SN_DTI_CNF 	0x8009409E
+{
+ 	EXTERN @p_8010_137_nas_include - dti_linkid@ 	dti_linkid 	 ; dti linkid
+ 	EXTERN @p_8010_137_nas_include - dti_conn@ 	dti_conn 	 ; dti  connect
+}
+
+
+
+
+
+
+
+
+

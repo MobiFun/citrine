@@ -1,0 +1,158 @@
+;********************************************************************************
+;*** File           : 8010_128_sm_sap.pdf
+;*** Creation       : Wed Mar 11 09:57:47 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_128_sm_sap
+;*** Document No.   : 8010.128.02.009
+;*** Document Date  : 2004-06-08
+;*** Document Status: APPROVED
+;*** Document Author: rpk
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:26:48 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-06-08"
+PRAGMA 	ID_AND_VERSION 	"8010.128.02.009"
+PRAGMA 	PREFIX 	SM 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	YES 	; Compatible to the old #defines
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; SM_ACTIVATE_STARTED_IND 	0x80004090
+; SM_ACTIVATE_IND 	0x80014090
+; SM_ACTIVATE_RES 	0x80000090
+; SM_DEACTIVATE_IND 	0x80024090
+; SM_DEACTIVATE_RES 	0x80010090
+; SM_MODIFY_IND 	0x80034090
+; SM_MODIFY_RES 	0x80020090
+; SM_STATUS_REQ 	0x80030090
+; SM_COMPRESSION_REQ 	0x80040090
+
+
+
+PRIM 	SM_ACTIVATE_STARTED_IND 	0x80004090
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - rat@ 	rat 	 ; Radio Access Technology
+}
+
+
+
+
+
+
+PRIM 	SM_ACTIVATE_IND 	0x80014090
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 ; LLC service access point identifier
+ 	EXTERN @p_8010_152_ps_include - radio_prio@ 	radio_prio 	 ; radio priority
+ 	EXTERN @p_8010_152_ps_include - qos@ 	qos 	 ; quality of service
+ 	EXTERN @p_8010_152_ps_include - pkt_flow_id@ 	pkt_flow_id 	 ; packet flow identifier
+ 	< () 	EXTERN @p_8010_137_nas_include - comp_params@ 	comp_params 	> 	 ; compression parameters; GSM Only
+}
+
+
+
+
+
+
+PRIM 	SM_ACTIVATE_RES 	0x80000090
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	< () 	EXTERN @p_8010_137_nas_include - comp_params@ 	comp_params 	> 	 ; compression parameters; GSM Only
+}
+
+
+
+
+
+
+PRIM 	SM_DEACTIVATE_IND 	0x80024090
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi_set@ 	nsapi_set 	 ; set of network layer service access point identifiers
+ 	EXTERN @p_8010_152_ps_include - rel_ind@ 	rel_ind 	 ; LLC Release indicator
+}
+
+
+
+
+
+
+PRIM 	SM_DEACTIVATE_RES 	0x80010090
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi_set@ 	nsapi_set 	 ; set of network layer service access point identifier
+}
+
+
+
+
+
+
+PRIM 	SM_MODIFY_IND 	0x80034090
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 ; LLC service access point identifier
+ 	EXTERN @p_8010_152_ps_include - radio_prio@ 	radio_prio 	 ; radio priority
+ 	EXTERN @p_8010_152_ps_include - pkt_flow_id@ 	pkt_flow_id 	 ; packet flow identifier
+ 	EXTERN @p_8010_152_ps_include - qos@ 	qos 	 ; quality of service
+}
+
+
+
+
+
+
+PRIM 	SM_MODIFY_RES 	0x80020090
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+}
+
+
+
+
+
+
+PRIM 	SM_STATUS_REQ 	0x80030090
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi_set@ 	nsapi_set 	 ; set of network layer service access point identifiers
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 ; LLC service access point identifier
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; Cause of the error
+}
+
+
+
+
+
+
+PRIM 	SM_COMPRESSION_REQ 	0x80040090
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi_set@ 	nsapi_set 	 ; Set of network layer service access point identifiers
+ 	EXTERN @p_8010_137_nas_include - comp_params@ 	comp_params 	 ; compression parameters
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">ph</DocName>
+        <DocNum Number="112" Project="6147"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the physical layer to the data link layer.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="01"/>
+            <Date Day="27" Month="5" Year="1997"/>
+            <Author>LE</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="01"/>
+            <Date Day="1" Month="11" Year="1997"/>
+            <Author>LE</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>PH_EMPTY_FRAME_REQ removed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="01"/>
+            <Date Day="19" Month="2" Year="2001"/>
+            <Author>MSB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added PH_TRACE_IND</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="01"/>
+            <Date Day="22" Month="10" Year="2001"/>
+            <Author>SBK</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Proposed for review, minor improvements due to GTI, applied new template</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="100" Year="01"/>
+            <Date Day="26" Month="10" Year="2001"/>
+            <Author>SBK</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Review performed. Done changes discussed during review accordingly.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 1.04, Abbreviations and Acronyms</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 4.05, Data Link Layer General Aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 4.06, MS-BSS Interface Data Link Layer Specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 4.07, Mobile Radio Interface Signalling Layer 3 General Aspects</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the PH SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>DUMMY_PH</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>Dummy, not used, needed to satisfy tool chain which requires at least one constant definition in a SAP</Comment>
+        </Constant>
+        <History>
+            <Date Day="16" Month="12" Year="1996"/>
+            <Author>LE</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="27" Month="5" Year="1997"/>
+            <Author>MS</Author>
+            <Comment>Revised</Comment>
+        </History>
+        <History>
+            <Date Day="22" Month="10" Year="2001"/>
+            <Author>SBK</Author>
+            <Comment>Removed MAX_SDU_LEN, added dummy definition</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="1">
+        <Description>
+            <Section>This section contains all primitives that are defined for the PH SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The PH_READY_TO_SEND shall be sent by the physical layer when it is time to send a frame. This primitive is only used in the simulation (PC) environment, not in the target system.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PH_READY_TO_SEND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ph</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Comment>channel type</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="10" Year="2001"/>
+                <Author>SBK</Author>
+                <Comment>Clarified use</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PH_DATA_REQ shall be used by data link layer if it has data to send. It is used for acknowledged and unacknowledged data transfer. This primitive is only used in the simulation (PC) environment, not in the target system.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PH_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ph</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Comment>channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ph</DocName>
+                    <Name>dummy</Name>
+                </ItemLink>
+                <Comment>dummy not used; reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ph</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>message unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="10" Year="2001"/>
+                <Author>SBK</Author>
+                <Comment>Clarified use, added comment to dummy</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PH_TRACE_IND shall be sent by the physical layer regularly if it is in IDLE state. It indicates to DL that it can write out some DL traces.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PH_TRACE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ph</DocName>
+                    <Name>dummy</Name>
+                </ItemLink>
+                <Comment>dummy not used; not used</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="19" Month="2" Year="2001"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="10" Year="2001"/>
+                <Author>SBK</Author>
+                <Comment>Clarified use</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains a data link layer frame.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>message unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ph</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ph</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ph</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>buffer content; the actual size of buf is determined and allocated at run-time and not restricted to 1;</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="10" Year="2001"/>
+                <Author>SBK</Author>
+                <Comment>editorially changed the description, substituted MAX_SDU_LEN by 1</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the channel type.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l2_channel</Name>
+                <Type>U8</Type>
+                <Comment>Layer 2 channel-type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mphc</DocName>
+                <Name>VAL_l2_channel</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Halfrate included</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="10" Year="2001"/>
+                <Author>SBK</Author>
+                <Comment>Removed macros for values 3-6 which are not used at PH SAP</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a data link layer frame.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="10" Year="2001"/>
+                <Author>SBK</Author>
+                <Comment>editorially changed the description, substituted MAX_SDU_LEN by 1</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a data link layer frame.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="10" Year="2001"/>
+                <Author>SBK</Author>
+                <Comment>editorially changed the description, substituted MAX_SDU_LEN by 1</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a data link layer frame.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>buffer content; the actual size of buf is determined and allocated at run-time and not restricted to 1;</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="10" Year="2001"/>
+                <Author>SBK</Author>
+                <Comment>editorially changed the description, substituted MAX_SDU_LEN by 1</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is not used. It is a dummy for upper layers to avoid unnecessary copying of data or to avoid empty primitives (i.e. primitives without any parameter).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dummy</Name>
+                <Type>U8</Type>
+                <Comment>dummy not used</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the PH SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_type</Name>
+                <Comment>values for ch_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CH_TYPE_SACCH</Alias>
+                <Comment>SACCH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CH_TYPE_SDCCH</Alias>
+                <Comment>SDCCH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CH_TYPE_FACCH</Alias>
+                <Comment>FACCH Full Rate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias/>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias/>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias/>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias/>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>CH_TYPE_FACCH_HR</Alias>
+                <Comment>FACCH Half Rate</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

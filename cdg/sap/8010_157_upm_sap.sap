@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited  with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">8010_157_upm_sap</DocName>
+        <DocNum Number="157" Project="8010"/>
+        <Description>
+            <Section>This document is part of the High Level Design (HLD) for the Texas Instruments Dual-mode protocol stack. The document describes the service access point between the UPM entity and ACI.</Section>
+            <Section>This SAP is used by the DTI manager to control the UPM DTI connections and by ACI for getting information about the user plane data flow.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="04"/>
+            <Date Day="7" Month="1" Year="2004"/>
+            <Author>MVJ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="04"/>
+            <Date Day="12" Month="1" Year="2004"/>
+            <Author>MVJ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added UPM_COUNT_REQ, UPM_COUNT_CNF and associated imported types.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="04"/>
+            <Date Day="19" Month="1" Year="2004"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated after review.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[TI 8010.801]</RefId>
+            <RefTitle>8010.801, "References and Abbreviations (UMTS)", Texas InstrumentsTable of Contents1 Introduction 52 Constants 63 Primitives 73.1 UPM_DTI_REQ 73.2 UPM_DTI_CNF 73.3 UPM_COUNT_REQ 73.4 UPM_COUNT_CNF 84 Parameters 94.1 Imports from Common Include Documents 9</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the 8010_157_UPM_SAP SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">UPM</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="7" Month="1" Year="2004"/>
+            <Author>MVJ</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </PragmasSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="157">
+        <Description>
+            <Section>The following sections describe the primitives defined on the UPM SAP.</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by ACI's DTI manager to order DTI connection establishment or termination from UPM.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UPM_DTI_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>DTI direction</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_linkid</Name>
+                </ItemLink>
+                <Comment>DTI link ID</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_neighbor</Name>
+                </ItemLink>
+                <Comment>DTI neighbor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="1" Year="2004"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by UPM to inform ACI's DTI manager that a previously ordered connection establishment/termination is complete.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UPM_DTI_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_linkid</Name>
+                </ItemLink>
+                <Comment>DTI Link ID</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="1" Year="2004"/>
+                <Author>MVJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to get information about the amount of transferred data. Parameter 'nsapi' indicates the affected nsapi. If parameter 'reset'  is set to NAS_RESET, then the last values of all counters will be sent with the resulting UPM_COUNT_CNF and all counters for the affected nsapi will be set to 0. If parameter 'reset' is set to NAS_NO_RESET then then the last values of all counters will be sent with the resulting UPM_COUNT_CNF.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UPM_COUNT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>reset</Name>
+                </ItemLink>
+                <Comment>shall counters be reset</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="1" Year="2004"/>
+                <Author>MVJ</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to get information about the amount of transferred data. Parameter 'nsapi' indicates the affected nsapi. Parameter 'octets_uplink' indicates the number of transferred octets uplink. Only payload without layer 2 headers is computed. Parameter 'octets_downlink' indicates the number of transferred octets downlink. Parameter 'packets_uplink' indicates the number of transferred packets uplink. Parameter 'packets_downlink' indicates the number of transferred packets downlink.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UPM_COUNT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>octets_uplink</Name>
+                </ItemLink>
+                <Comment>octets uplink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>octets_downlink</Name>
+                </ItemLink>
+                <Comment>octets  downlink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>packets_uplink</Name>
+                </ItemLink>
+                <Comment>packets uplink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>packets_downlink</Name>
+                </ItemLink>
+                <Comment>packets downlink</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="1" Year="2004"/>
+                <Author>MVJ</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+</SAP>

@@ -1,0 +1,1784 @@
+;********************************************************************************
+;*** File           : fac.mdf
+;*** Creation       : Thu Jun 19 15:32:09 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : fac
+;*** Document No.   : 6147.608.00.205
+;*** Document Date  : 2002-01-14
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SBK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Mon Jan 14 11:02:22 2008"
+PRAGMA 	LAST_MODIFIED 	"2002-01-14"
+PRAGMA 	ID_AND_VERSION 	"6147.608.00.205"
+
+
+
+CONST 	MAX_PARTY_NUM 	38 	; Maximum number length of a cld/clg party
+CONST 	MAX_SUBADDR_NUM 	20 	; Maximum number length of a cld/clg party subaddress
+CONST 	MAX_CUGS_NUM 	10 	; Maximum number of CUG subscriptions
+CONST 	MAX_CUGF_NUM 	13 	; Maximum number of CUG features
+CONST 	MAX_FF_NUM 	13 	; Maximum number of forwarding features
+CONST 	MAX_BS_NUM 	13 	; Maximum number basic services
+CONST 	MAX_CBF_NUM 	13 	; Maximum number call barring features
+CONST 	MAX_PWD_NUM 	4 	; Maximum password lengthy
+CONST 	MAX_CCBSF_NUM 	5 	; Maximum number CCBS features
+CONST 	MAX_EXT_NUM 	10 	; Maximum number of extension
+CONST 	MAX_USSD_DATA 	200 	; Maximum bitsize of the USSD data
+CONST 	MAX_USSD_DATAB 	1600 	; Maximum bitsize of the USSD data
+CONST 	MAX_USSD_STRING 	160 	; Maximum bitsize of the USSD string
+CONST 	MAX_USSD_STRINGB 	1280 	; Maximum bitsize of the USSD string
+CONST 	MAX_EVAL_LEN 	4 	; Maximum bitsize for e values
+CONST 	MAX_NAME_STRING 	160 	; Maximum bitsize of name string
+CONST 	MAX_NAME_STRINGB 	1280 	; Maximum bitsize of name string
+CONST 	MAX_MSISDN_LEN 	20 	; Maximum bitsize of msisdn number
+
+
+
+VALTAB 	VAL_op_code
+VAL 	10 	OPC_REGISTER_SS 	"Register supplementary service"
+VAL 	11 	OPC_ERASE_SS 	"Erase supplementary service"
+VAL 	12 	OPC_ACTIVATE_SS 	"Activate supplementary service"
+VAL 	13 	OPC_DEACTIVATE_SS 	"Deactivate supplementary service"
+VAL 	14 	OPC_INTERROGATE_SS 	"Interrogate supplementary service"
+VAL 	16 	OPC_NOTIFY_SS 	"Notify supplementary service"
+VAL 	17 	OPC_REGISTER_PASSWORD 	"Register password"
+VAL 	18 	OPC_GET_PASSWORD 	"Get password"
+VAL 	19 	OPC_PROC_UNSTRUCT_SS_DATA 	"Process unstructured supplementary service Data"
+VAL 	38 	OPC_FWD_CHECK_SS_IND 	"Forward check supplementary service indication"
+VAL 	59 	OPC_PROC_UNSTRUCT_SS_REQ 	"Process unstructured supplementary service request"
+VAL 	60 	OPC_UNSTRUCT_SS_REQ 	"Unstructured supplementary service request"
+VAL 	61 	OPC_UNSTRUCT_SS_NOTIFY 	"Unstructured supplementary service notify"
+VAL 	77 	OPC_ERASE_CC_ENTRY 	"Erase CC entry"
+VAL 	117 	OPC_CALL_DEFLECTION 	"Call deflection"
+VAL 	118 	OPC_USER_USER_SERVICE 	"User to user service"
+VAL 	119 	OPC_ACC_REGISTER_CC_ENTRY 	"Access register CC entry"
+VAL 	120 	OPC_FWD_CUG_INFO 	"Forward closed user group information"
+VAL 	121 	OPC_SPLIT_MPTY 	"Split multiparty"
+VAL 	122 	OPC_RETRIEVE_MPTY 	"Retrieve multiparty"
+VAL 	123 	OPC_HOLD_MPTY 	"Hold multiparty"
+VAL 	124 	OPC_BUILD_MPTY 	"Build multiparty"
+VAL 	125 	OPC_FWD_CHARGE_ADVICE 	"Forward charge advice"
+VAL 	126 	OPC_EXPLICIT_CT 	"Explicit call transfer"
+
+VALTAB 	VAL_err_code
+VAL 	1 	ERR_UNKNOWN_SUBSCRIBER 	"Register supplementary service"
+VAL 	9 	ERR_ILLEGAL_SUBSCRIBER 	"Erase supplementary service"
+VAL 	10 	ERR_BEARER_SVC_NOT_PROV 	"Bearer service not provisioned"
+VAL 	11 	ERR_TELE_SVC_NOT_PROV 	"Teleservice not provisioned"
+VAL 	12 	ERR_ILLEGAL_EQUIPMENT 	"Illegal Equipment"
+VAL 	13 	ERR_CALL_BARRED 	"Call barred"
+VAL 	16 	ERR_ILLEGAL_SS_OPERATION 	"Illegal supplementary service operation"
+VAL 	17 	ERR_SS_ERR_STATUS 	"Supplementary service error status"
+VAL 	18 	ERR_SS_NOT_AVAIL 	"Supplementary service not available"
+VAL 	19 	ERR_SS_SUBS_VIOLATION 	"Supplementary service subscript vialation"
+VAL 	20 	ERR_SS_INCOMP 	"Supplementary service incompatible"
+VAL 	21 	ERR_FAC_NOT_SUPPORTED 	"Facility not supported"
+VAL 	27 	ERR_ABSENT_SUBS 	"Absent subscriber"
+VAL 	29 	ERR_SHORT_TERM_DENIAL 	"Short term denial"
+VAL 	30 	ERR_LONG_TERM_DENIAL 	"Long term denial"
+VAL 	34 	ERR_SYSTEM_FAIL 	"System failure"
+VAL 	35 	ERR_DATA_MISSING 	"Data Missing"
+VAL 	36 	ERR_UNEXPECT_DATA 	"Unexpected data value"
+VAL 	37 	ERR_PWD_REG_FAIL 	"Password registration failure"
+VAL 	38 	ERR_NEG_PWD_CHECK 	"Negative password check"
+VAL 	43 	ERR_NUM_PWD_VIOLATION 	"Number of password attempts violation"
+VAL 	71 	ERR_UNKNOWN_ALPHA 	"Unknown alphabet"
+VAL 	72 	ERR_USSD_BUSY 	"Unstructured supplementary service data busy"
+VAL 	121 	ERR_REJ_BY_USER 	"Rejected by user"
+VAL 	122 	ERR_REJ_BY_NETWORK 	"Rejected by network"
+VAL 	123 	ERR_DEFL_TO_SRVD_SUBSC 	"Deflection to served subscriber"
+VAL 	124 	ERR_SPEC_SERVICE_CODE 	"Special service code"
+VAL 	125 	ERR_INV_DEFL_TO_NUMBER 	"Invalid deflected to number"
+VAL 	126 	ERR_MAX_NUM_MPTY_EXCEED 	"Maximum number of multiparty participants exceeded"
+VAL 	127 	ERR_RESOURCE_NOT_AVAIL 	"Resource not available"
+
+VALTAB 	VAL_gen_problem
+VAL 	0 	GEN_PROB_UNRECOG_CMP 	"Unrecognized component"
+VAL 	1 	GEN_PROB_MISTYPED_CMP 	"Mistype component"
+VAL 	2 	GEN_PROB_BAD_STRUCT_CMP 	"Badly structured component"
+
+VALTAB 	VAL_inv_problem
+VAL 	0 	INV_PROB_DUPL_INV_ID 	"Duplicate invoke ID"
+VAL 	1 	INV_PROB_UNRECOG_OP 	"Unrecognized operation"
+VAL 	2 	INV_PROB_MISTYPED_PAR 	"Mistyped parameter"
+VAL 	3 	INV_PROB_RESOURCE_LIM 	"Resource limitation"
+VAL 	4 	INV_PROB_INIT_RELEASE 	"Initiating release"
+VAL 	5 	INV_PROB_UNRECOG_LNK_ID 	"Unrecognized linked ID"
+VAL 	6 	INV_PROB_LNK_RES_UNEXP 	"Linked response unexpected"
+VAL 	7 	INV_PROB_UNEXP_LNK_OP 	"Unexpected linked operation"
+
+VALTAB 	VAL_res_problem
+VAL 	0 	RES_PROB_UNRECOG_INV_ID 	"Unrecognized invoke ID"
+VAL 	1 	RES_PROB_RET_RES_UNEXP 	"Return result unexpected"
+VAL 	2 	RES_PROB_MISTYPED_PAR 	"Mistyped parameter"
+
+VALTAB 	VAL_err_problem
+VAL 	0 	ERR_PROB_UNRECOG_INV_ID 	"Unrecognized invoke ID"
+VAL 	1 	ERR_PROB_RET_ERR_UNEXP 	"Return result unexpected"
+VAL 	2 	ERR_PROB_UNRECOG_ERR 	"Unrecognized error"
+VAL 	3 	ERR_PROB_UNEXP_ERR 	"Unexpected error"
+VAL 	4 	ERR_PROB_MISTYPED_PAR 	"Mistyped parameter"
+
+VALTAB 	VAL_ssCode
+VAL 	0b00000000 	SS_CD_ALL_SS 	"all SS"
+VAL 	0b00010000 	SS_CD_ALL_LISS 	"all line identification SS"
+VAL 	0b00010001 	SS_CD_CLIP 	"calling line identification presentation"
+VAL 	0b00010010 	SS_CD_CLIR 	"calling line identification restriction"
+VAL 	0b00010011 	SS_CD_COLP 	"connected line identification presentation"
+VAL 	0b00010100 	SS_CD_COLR 	"connected line identification restriction"
+VAL 	0b00010101 	SS_CD_MCI 	"malicious call identification"
+VAL 	0b00011000 	SS_CD_ALL_NISS 	"all name identification SS"
+VAL 	0b00011001 	SS_CD_CNAP 	"calling name presentation"
+VAL 	0b00100000 	SS_CD_ALL_FWSS 	"all forwarding SS"
+VAL 	0b00100001 	SS_CD_CFU 	"call forwarding unconditional"
+VAL 	0b00100100 	SS_CD_CD 	"call deflection"
+VAL 	0b00101000 	SS_CD_ALL_CFWSS 	"all conditional forwarding SS"
+VAL 	0b00101001 	SS_CD_CFB 	"call forwarding on mobile subscriber busy"
+VAL 	0b00101010 	SS_CD_CFNRY 	"call forwarding on no reply"
+VAL 	0b00101011 	SS_CD_CFNRC 	"call forwarding on mobile subscriber not reachable"
+VAL 	0b00110000 	SS_CD_ALL_COSS 	"all call offering SS"
+VAL 	0b00110001 	SS_CD_CT 	"explicit call transfer"
+VAL 	0b00110010 	SS_CD_MAH 	"mobile access hunting"
+VAL 	0b01000000 	SS_CD_ALL_CCSS 	"all Call completion SS"
+VAL 	0b01000001 	SS_CD_CW 	"call waiting"
+VAL 	0b01000010 	SS_CD_HLD 	"call hold"
+VAL 	0b01000011 	SS_CD_CCBS 	"completion of call to busy subscribers, originating side"
+VAL 	0b01000100 	SS_CD_CCBS_B 	"completion of call to busy subscribers, destination side"
+VAL 	0b01000101 	SS_CD_MC 	"multi call"
+VAL 	0b01010000 	SS_CD_ALL_MPSS 	"all multiparty SS"
+VAL 	0b01010001 	SS_CD_MLPTY 	"multiparty"
+VAL 	0b01100000 	SS_CD_ALL_CISS 	"all community of interest SS"
+VAL 	0b01100001 	SS_CD_CUG 	"closed user group"
+VAL 	0b01110000 	SS_CD_ALL_CHSS 	"all charging SS"
+VAL 	0b01110001 	SS_CD_AOCI 	"advice of charge information"
+VAL 	0b01110010 	SS_CD_AOCC 	"advice of charge charging"
+VAL 	0b10000000 	SS_CD_ALL_AITSS 	"all additional information transfer SS"
+VAL 	0b10000001 	SS_CD_UUS1 	"UUS1 user-to-user signalling"
+VAL 	0b10000010 	SS_CD_UUS2 	"UUS2 user-to-user signalling"
+VAL 	0b10000011 	SS_CD_UUS3 	"UUS3 user-to-user signalling"
+VAL 	0b10010000 	SS_CD_ALL_CBSS 	"all barring SS"
+VAL 	0b10010001 	SS_CD_BOC 	"barring of outgoing calls"
+VAL 	0b10010010 	SS_CD_BAOC 	"barring of all outgoing calls"
+VAL 	0b10010011 	SS_CD_BOIC 	"barring of outgoing international calls"
+VAL 	0b10010100 	SS_CD_BOICXH 	"barring of outgoing international calls except those directed to the home PLMN"
+VAL 	0b10011001 	SS_CD_BIC 	"barring of incoming calls"
+VAL 	0b10011010 	SS_CD_BAIC 	"barring of all incoming calls"
+VAL 	0b10011011 	SS_CD_BICRM 	"barring of incoming calls when roaming outside home PLMN Country"
+VAL 	0b10100000 	SS_CD_ALL_CPSS 	"all call priority SS"
+VAL 	0b10100001 	SS_CD_EMLPP 	"enhanced Multilevel Precedence Pre-emption service"
+VAL 	0b10110000 	SS_CD_ALL_PEC 	"all LCS privacy exception classes"
+VAL 	0b10110001 	SS_CD_UNIVERSAL 	"allow location by any LCS client"
+VAL 	0b10110010 	SS_CD_CALLREL 	"allow location by any LCS client to which a call is established from the target MS"
+VAL 	0b10110011 	SS_CD_CALLUNREL 	"allow location by designated external value added LCS clients"
+VAL 	0b10110100 	SS_CD_PLMN_OP 	"allow location by designated PLMN operator LCS clients"
+VAL 	0b11000000 	SS_CD_ALL_MOLR 	"all Mobile Originating Location Request Classes"
+VAL 	0b11000001 	SS_CD_BSL 	"allow an MS to request its own location (BasicSelfLocation)"
+VAL 	0b11000010 	SS_CD_ASL 	"allow an MS to perform self location without interaction with the PLMN"
+VAL 	0b11000011 	SS_CD_3RDPTY 	"allow an MS to request transfer of its location to another LCS client"
+VAL 	0b11110000 	SS_CD_ALL_PSSS 	"all PLMN specific"
+VAL 	0b11110001 	SS_CD_PLMN1 	"PLMN specific SS 1"
+VAL 	0b11110010 	SS_CD_PLMN2 	"PLMN specific SS 2"
+VAL 	0b11110011 	SS_CD_PLMN3 	"PLMN specific SS 3"
+VAL 	0b11110100 	SS_CD_PLMN4 	"PLMN specific SS 4"
+VAL 	0b11110101 	SS_CD_PLMN5 	"PLMN specific SS 5"
+VAL 	0b11110110 	SS_CD_PLMN6 	"PLMN specific SS 6"
+VAL 	0b11110111 	SS_CD_PLMN7 	"PLMN specific SS 7"
+VAL 	0b11111000 	SS_CD_PLMN8 	"PLMN specific SS 8"
+VAL 	0b11111001 	SS_CD_PLMN9 	"PLMN specific SS 9"
+VAL 	0b11111010 	SS_CD_PLMNA 	"PLMN specific SS A"
+VAL 	0b11111011 	SS_CD_PLMNB 	"PLMN specific SS B"
+VAL 	0b11111100 	SS_CD_PLMNC 	"PLMN specific SS C"
+VAL 	0b11111101 	SS_CD_PLMND 	"PLMN specific SS D"
+VAL 	0b11111110 	SS_CD_PLMNE 	"PLMN specific SS E"
+VAL 	0b11111111 	SS_CD_PLMNF 	"PLMN specific SS F"
+
+VALTAB 	VAL_bearerService
+VAL 	0b00000000 	BS_CD_ALL_BS 	"all bearer services"
+VAL 	0b00010000 	BS_CD_ALL_DATA_CDA 	"all data CDA services"
+VAL 	0b00010001 	BS_CD_CDA_300 	"data CDA  300 bps"
+VAL 	0b00010010 	BS_CD_CDA_1200 	"data CDA 1200 bps"
+VAL 	0b00010011 	BS_CD_CDA_1200_75 	"data CDA 1200/75 bps"
+VAL 	0b00010100 	BS_CD_CDA_2400 	"data CDA 2400 bps"
+VAL 	0b00010101 	BS_CD_CDA_4800 	"data CDA 4800 bps"
+VAL 	0b00010110 	BS_CD_CDA_9600 	"data CDA 9600 bps"
+VAL 	0b00011000 	BS_CD_ALL_DATA_CDS 	"all data CDS services"
+VAL 	0b00011010 	BS_CD_CDS_1200 	"data CDS 1200 bps"
+VAL 	0b00011100 	BS_CD_CDS_2400 	"data CDS 2400 bps"
+VAL 	0b00011101 	BS_CD_CDS_4800 	"data CDS 4800 bps"
+VAL 	0b00011110 	BS_CD_CDS_9600 	"data CDS 9600 bps"
+VAL 	0b00100000 	BS_CD_ALL_DATA_PAD 	"all data PAD services"
+VAL 	0b00100001 	BS_CD_PAD_300 	"data PAD  300 bps"
+VAL 	0b00100010 	BS_CD_PAD_1200 	"data PAD 1200 bps"
+VAL 	0b00100011 	BS_CD_PAD_1200_75 	"data PAD 1200/75 bps"
+VAL 	0b00100100 	BS_CD_PAD_2400 	"data PAD 2400 bps"
+VAL 	0b00100101 	BS_CD_PAD_4800 	"data PAD 4800 bps"
+VAL 	0b00100110 	BS_CD_PAD_9600 	"data PAD 9600 bps"
+VAL 	0b00101000 	BS_CD_ALL_DATA_PDS 	"all data PDS services"
+VAL 	0b00101100 	BS_CD_PDS_2400 	"data PDS 2400 bps"
+VAL 	0b00101101 	BS_CD_PDS_4800 	"data PDS 4800 bps"
+VAL 	0b00101110 	BS_CD_PDS_9600 	"data PDS 9600 bps"
+VAL 	0b00110000 	BS_CD_SPCH_ALT_CDA 	"all data CDA alter. speech"
+VAL 	0b00111000 	BS_CD_SPCH_ALT_CDS 	"all data CDS alter. speech"
+VAL 	0b01000000 	BS_CD_SPCH_FLD_CDA 	"all data speech followed CDA"
+VAL 	0b01001000 	BS_CD_SPCH_FLD_CDS 	"all data speech followed CDA"
+VAL 	0b01010000 	BS_CD_ALL_DC_ASYN 	"all data circuit asynchronous"
+VAL 	0b01100000 	BS_CD_ALL_ASYN 	"all asynchronous services"
+VAL 	0b01011000 	BS_CD_ALL_DC_SYN 	"all data circuit synchronous"
+VAL 	0b01101000 	BS_CD_ALL_SYN 	"all synchronous services"
+VAL 	0b11010000 	BS_CD_ALL_PSSS 	"all PLMN specific BS"
+VAL 	0b11010001 	BS_CD_PLMN1 	"PLMN specific 1"
+VAL 	0b11010010 	BS_CD_PLMN2 	"PLMN specific 2"
+VAL 	0b11010011 	BS_CD_PLMN3 	"PLMN specific 3"
+VAL 	0b11010100 	BS_CD_PLMN4 	"PLMN specific 4"
+VAL 	0b11010101 	BS_CD_PLMN5 	"PLMN specific 5"
+VAL 	0b11010110 	BS_CD_PLMN6 	"PLMN specific 6"
+VAL 	0b11010111 	BS_CD_PLMN7 	"PLMN specific 7"
+VAL 	0b11011000 	BS_CD_PLMN8 	"PLMN specific 8"
+VAL 	0b11011001 	BS_CD_PLMN9 	"PLMN specific 9"
+VAL 	0b11011010 	BS_CD_PLMNA 	"PLMN specific A"
+VAL 	0b11011011 	BS_CD_PLMNB 	"PLMN specific B"
+VAL 	0b11011100 	BS_CD_PLMNC 	"PLMN specific C"
+VAL 	0b11011101 	BS_CD_PLMND 	"PLMN specific D"
+VAL 	0b11011110 	BS_CD_PLMNE 	"PLMN specific E"
+VAL 	0b11011111 	BS_CD_PLMNF 	"PLMN specific F"
+
+VALTAB 	VAL_teleservice
+VAL 	0b00000000 	TS_CD_ALL_TS 	"all teleservices"
+VAL 	0b00010000 	TS_CD_ALL_SPCH 	"All speech transmission services"
+VAL 	0b00010001 	TS_CD_TLPHNY 	"telephony"
+VAL 	0b00010010 	TS_CD_EMRGNCY 	"emergency calls"
+VAL 	0b00100000 	TS_CD_ALL_SMS 	"all SMS services"
+VAL 	0b00100001 	TS_CD_SMS_MT 	"SMS MT PP"
+VAL 	0b00100010 	TS_CD_SMS_MO 	"SMS MO PP"
+VAL 	0b01100000 	TS_CD_ALL_FAX 	"all FAX transmission services"
+VAL 	0b01100001 	TS_CD_FAX3_ALT_SPCH 	"FAX group 3 alter. speech"
+VAL 	0b01100010 	TS_CD_FAX3_AUTO 	"FAX group 3 automatic"
+VAL 	0b01100011 	TS_CD_FAX4 	"FAX group 4"
+VAL 	0b01110000 	TS_CD_ALL_DATA 	"all FAX and SMS services"
+VAL 	0b10000000 	TS_CD_ALL_XCPT_SMS 	"all FAX and speech services"
+VAL 	0b11010000 	TS_CD_ALL_PSSS 	"all PLMN specific TS"
+VAL 	0b11010001 	TS_CD_PLMN1 	"PLMN specific TS 1"
+VAL 	0b11010010 	TS_CD_PLMN2 	"PLMN specific TS 2"
+VAL 	0b11010011 	TS_CD_PLMN3 	"PLMN specific TS 3"
+VAL 	0b11010100 	TS_CD_PLMN4 	"PLMN specific TS 4"
+VAL 	0b11010101 	TS_CD_PLMN5 	"PLMN specific TS 5"
+VAL 	0b11010110 	TS_CD_PLMN6 	"PLMN specific TS 6"
+VAL 	0b11010111 	TS_CD_PLMN7 	"PLMN specific TS 7"
+VAL 	0b11011000 	TS_CD_PLMN8 	"PLMN specific TS 8"
+VAL 	0b11011001 	TS_CD_PLMN9 	"PLMN specific TS 9"
+VAL 	0b11011010 	TS_CD_PLMNA 	"PLMN specific TS A"
+VAL 	0b11011011 	TS_CD_PLMNB 	"PLMN specific TS B"
+VAL 	0b11011100 	TS_CD_PLMNC 	"PLMN specific TS C"
+VAL 	0b11011101 	TS_CD_PLMND 	"PLMN specific TS D"
+VAL 	0b11011110 	TS_CD_PLMNE 	"PLMN specific TS E"
+VAL 	0b11011111 	TS_CD_PLMNF 	"PLMN specific TS F"
+
+VALTAB 	VAL_noa
+VAL 	DEF 	 	"Reserved"
+VAL 	0b000 	NOA_UNKNOWN 	"unknown"
+VAL 	0b001 	NOA_INTER_NUM 	"international number"
+VAL 	0b010 	NOA_NATIO_NUM 	"national significant number"
+VAL 	0b011 	NOA_NETW_NUM 	"network specific number"
+VAL 	0b100 	NOA_SUBSC_NUM 	"subscriber number"
+VAL 	0b110 	NOA_ABBRV_NUM 	"abbreviated number"
+
+VALTAB 	VAL_npi
+VAL 	DEF 	 	"reserved"
+VAL 	0b0000 	NPI_UNKNOWN 	"unknown"
+VAL 	0b0001 	NPI_ISDN 	"ISDN/Telephony Numbering Plan (Rec CCITT E.164)"
+VAL 	0b0011 	NPI_X121 	"data numbering plan (CCITT Rec X.121)"
+VAL 	0b0100 	NPI_F69 	"telex numbering plan (CCITT Rec F.69)"
+VAL 	0b0110 	NPI_LAND_MOBILE 	"land mobile numbering plan (CCITT Rec E.212)"
+VAL 	0b1000 	NPI_NATIONAL 	"land mobile numbering plan (CCITT Rec E.212)"
+VAL 	0b1001 	NPI_PRIVATE 	"Private numbering plan"
+
+VALTAB 	VAL_tos
+VAL 	DEF 	 	"Reserved"
+VAL 	0b000 	TOS_X213 	"NSAP (X.213/ISO 8348 AD2)"
+VAL 	0b010 	TOS_USER 	"User Specified"
+
+VALTAB 	VAL_oei
+VAL 	0b0 	OEI_EVEN 	"even number of address signals"
+VAL 	0b1 	OEI_ODD 	"odd number of address signals"
+
+VALTAB 	VAL_ssStatus
+VAL 	0b00000001 	SSS_A 	"Active"
+VAL 	0b00000010 	SSS_R 	"Registered"
+VAL 	0b00000011 	SSS_RA 	"Registered,Active"
+VAL 	0b00000100 	SSS_P 	"Provisioned"
+VAL 	0b00000101 	SSS_PA 	"Provisioned,Active"
+VAL 	0b00000110 	SSS_PR 	"Provisioned,Registered"
+VAL 	0b00000111 	SSS_PRA 	"Provisioned,Registered,Active"
+VAL 	0b00001000 	SSS_Q 	"Quiescent"
+VAL 	0b00001001 	SSS_QA 	"Quiescent,Active"
+VAL 	0b00001010 	SSS_QR 	"Quiescent,Registered"
+VAL 	0b00001011 	SSS_QRA 	"Quiescent,Registered,Active"
+VAL 	0b00001100 	SSS_QP 	"Quiescent,Provisioned"
+VAL 	0b00001101 	SSS_QPA 	"Quiescent,Provisioned,Active"
+VAL 	0b00001110 	SSS_QPR 	"Quiescent,Provisioned,Registered"
+VAL 	0b00001111 	SSS_QPRA 	"Quiescent,Provisioned,Registered,Active"
+
+VALTAB 	VAL_notify_fwd_pty
+VAL 	0b00 	NTYF_V1_NO_NTFY 	"Version 1 No Notify"
+VAL 	0b01 	NTYF_V1_NTFY1 	"Version 1 Notify"
+VAL 	0b10 	NTYF_V1_NTFY2 	"Version 1 Notify"
+VAL 	0b00 	NTYF_V2_NO_NTFY 	"Version 2 No Notify"
+VAL 	0b10 	NTYF_V2_NTFY 	"Version 2 Notify"
+
+VALTAB 	VAL_notify_clg_pty
+VAL 	0b00 	NTYC_V1_NO_NTFY 	"Version 1 No Notify"
+VAL 	0b01 	NTYC_V1_NTFY1 	"Version 1 Notify"
+VAL 	0b10 	NTYC_V1_NTFY2 	"Version 1 Notify"
+VAL 	0b00 	NTYC_V2_NO_NTFY 	"Version 2 No Notify"
+VAL 	0b10 	NTYC_V2_NTFY 	"Version 2 Notify"
+
+VALTAB 	VAL_fwd_reason
+VAL 	0b00 	FWDR_V2_MS_NOT_REACH 	"MS not reachable"
+VAL 	0b01 	FWDR_V2_MS_BUSY 	"MS is busy"
+VAL 	0b10 	FWDR_V2_NO_REPLY 	"No reply"
+VAL 	0b11 	FWDR_V2_UNCONDITIONAL 	"Unconditional"
+
+VALTAB 	VAL_intraCugOptions
+VAL 	0x00 	ICUG_NO_RESTRICTIONS 	"no CUG restrictions"
+VAL 	0x01 	ICUG_INCOM_CALL_BARRED 	"CUG incoming call barred"
+VAL 	0x02 	ICUG_OUTGO_CALL_BARRED 	"CUG outgoing call barred"
+
+VALTAB 	VAL_interCugRestrictions
+VAL 	0x00 	ICUGR_FAC_ONLY 	"CUG only facilities"
+VAL 	0x01 	ICUGR_OUTGO_ACCESS 	"CUG with outgoing access"
+VAL 	0x02 	ICUGR_INCOM_ACCESS 	"CUG with incoming access"
+VAL 	0x03 	ICUGR_BOTH_ACCESS 	"CUG with both (in/out) access"
+
+VALTAB 	VAL_cliRestrictionOption
+VAL 	0x00 	CLIR_OPT_PERMANENT 	"CLI Restriction permanent"
+VAL 	0x01 	CLIR_OPT_TEMPORARY 	"CLI Restriction temporary default"
+VAL 	0x02 	CLIR_OPT_ALLOWED 	"CLI Allowed temporary default"
+
+VALTAB 	VAL_overrideCategory
+VAL 	0x00 	OVR_CAT_ENABLED 	"Override enabled"
+VAL 	0x01 	OVR_CAT_DISABLED 	"Override disabled"
+
+VALTAB 	VAL_clgSubscriber
+VAL 	0b0 	CLG_A_NO_INFO 	"No information content"
+VAL 	0b1 	CLG_A_OUTG_CALL_FWD_C 	"Outgoing call has been forwarded to C"
+
+VALTAB 	VAL_fwgSubscriber
+VAL 	0b0 	FWG_B_NO_INFO 	"No information content"
+VAL 	0b1 	FWG_B_INC_CALL_FWD_C 	"Incoming call has been forwarded to C"
+
+VALTAB 	VAL_fwdSubscriber
+VAL 	0b0 	FWD_C_NO_INFO 	"No information content"
+VAL 	0b1 	FWD_C_INC_CALL_FWD 	"Incoming call is a forwarded call"
+
+VALTAB 	VAL_callBarringCause
+VAL 	0 	BARC_SERV_ACTIVE 	"Barring service active"
+VAL 	1 	BARC_OPERATOR_BARR 	"Operator barring"
+
+VALTAB 	VAL_networkResource
+VAL 	0 	NET_RCE_PLMN 	"Network resource PLMN"
+VAL 	1 	NET_RCE_HLR 	"Network resource HLR"
+VAL 	2 	NET_RCE_VLR 	"Network resource VLR"
+VAL 	3 	NET_RCE_PVLR 	"Network resource PVLR"
+VAL 	4 	NET_RCE_CTRL_MSC 	"Network resource controlling MSC"
+VAL 	5 	NET_RCE_VMSC 	"Network resource VMSC"
+VAL 	6 	NET_RCE_EIR 	"Network resource EIR"
+VAL 	7 	NET_RCE_RSS 	"Network resource RSS"
+
+VALTAB 	VAL_pwRegistrationFailureCause
+VAL 	0 	PWR_FAIL_UNDETERM 	"Undetermined"
+VAL 	1 	PWR_FAIL_INVALID_FORM 	"Invalid format"
+VAL 	2 	PWR_FAIL_NEW_PW_MISS 	"New passwords mismatch"
+
+VALTAB 	VAL_callOnHoldIndicator
+VAL 	0 	CHLD_CALL_RETRIEVED 	"Call retrieved"
+VAL 	1 	CHLD_CALL_ON_HOLD 	"Call on hold"
+
+VALTAB 	VAL_ectCallState
+VAL 	0 	ECT_CS_ALERTING 	"Alerting"
+VAL 	1 	ECT_CS_ACTIVE 	"Active"
+
+VALTAB 	VAL_guidanceInfo
+VAL 	0 	GUI_ENTER_PW 	"Enter password"
+VAL 	1 	GUI_ENTER_NEW_PW 	"Enter new pasword"
+VAL 	2 	GUI_ENTER_NEW_PW_AGAIN 	"Enter new password again"
+VAL 	3 	GUI_BAD_PW_RETRY 	"Bad password - try again"
+VAL 	4 	GUI_BAD_PW_FORM 	"Bad password format - try again"
+
+VALTAB 	VAL_uusService
+VAL 	1 	UUS_1 	"User user service 1"
+VAL 	2 	UUS_2 	"User user service 2"
+VAL 	3 	UUS_3 	"User user service 3"
+
+VALTAB 	VAL_uusRequired
+VAL 	0 	UUS_NOT_REQUIRED 	"User user service not required"
+
+VALTAB 	VAL_unknwnSubscrDiag
+VAL 	0 	USD_IMSI_UNKNOWN 	"IMSI unknown"
+VAL 	1 	USD_GPRS_SUBSCR_UNKNOWN 	"GPRS subscription unknown"
+
+VALTAB 	VAL_absentSubscriberReason
+VAL 	0 	ASR_IMSI_DETACH 	"IMSI detach"
+VAL 	1 	ASR_RESTRICTED_AREA 	"Restricted area"
+VAL 	2 	ASR_NO_PAGE_RESPONSE 	"No page response"
+
+
+
+
+VAR 	inv_id 	"Invoke ID" 	
+ 	8
+
+
+VAR 	lnk_id 	"linked ID" 	
+ 	8
+
+
+VAR 	op_code 	"Operation Code" 	
+ 	8
+
+VAL 	@m_fac - VAL_op_code@ 	
+
+VAR 	err_code 	"Error Code" 	
+ 	8
+
+VAL 	@m_fac - VAL_err_code@ 	
+
+VAR 	params 	"Parameters" 	
+ 	1952
+
+
+VAR 	gen_problem 	"General problem code" 	
+ 	8
+
+VAL 	@m_fac - VAL_gen_problem@ 	
+
+VAR 	inv_problem 	"Invoke problem code" 	
+ 	8
+
+VAL 	@m_fac - VAL_inv_problem@ 	
+
+VAR 	res_problem 	"Return result problem code" 	
+ 	8
+
+VAL 	@m_fac - VAL_res_problem@ 	
+
+VAR 	err_problem 	"Return error problem code" 	
+ 	8
+
+VAL 	@m_fac - VAL_err_problem@ 	
+
+VAR 	ssCode 	"Supplementary Service Code" 	
+ 	8
+
+VAL 	@m_fac - VAL_ssCode@ 	
+
+VAR 	bearerService 	"Bearer Service" 	
+ 	8
+
+VAL 	@m_fac - VAL_bearerService@ 	
+
+VAR 	teleservice 	"teleservice" 	
+ 	8
+
+VAL 	@m_fac - VAL_teleservice@ 	
+
+VAR 	noa 	"Nature of address" 	
+ 	3
+
+VAL 	@m_fac - VAL_noa@ 	
+
+VAR 	msg_type 	"Message type" 	
+ 	8
+
+
+VAR 	npi 	"Numbering plan indication" 	
+ 	4
+
+VAL 	@m_fac - VAL_npi@ 	
+
+VAR 	bcdDigit 	"BCD digit" 	
+ 	4
+
+
+VAR 	tos 	"Type of subaddress" 	
+ 	3
+
+VAL 	@m_fac - VAL_tos@ 	
+
+VAR 	oei 	"Odd/even indicator" 	
+ 	1
+
+VAL 	@m_fac - VAL_oei@ 	
+
+VAR 	noReplyConditionTime 	"No reply condition time" 	
+ 	8
+
+
+VAR 	ssStatus 	"Supplementary service status" 	
+ 	8
+
+VAL 	@m_fac - VAL_ssStatus@ 	
+
+VAR 	notify_fwd_pty 	"Notification to forwarding party" 	
+ 	2
+
+VAL 	@m_fac - VAL_notify_fwd_pty@ 	
+
+VAR 	notify_clg_pty 	"Notification to calling party" 	
+ 	2
+
+VAL 	@m_fac - VAL_notify_clg_pty@ 	
+
+VAR 	fwd_reason 	"Forwarding reason" 	
+ 	2
+
+VAL 	@m_fac - VAL_fwd_reason@ 	
+
+VAR 	cugIndex 	"Closed user group index" 	
+ 	16
+
+
+VAR 	cugInterlock 	"Closed user group interlock" 	
+ 	32
+
+
+VAR 	intraCugOptions 	"Intra closed user group options" 	
+ 	8
+
+VAL 	@m_fac - VAL_intraCugOptions@ 	
+
+VAR 	preferentialCugIndicator 	"Preferential closed user group indicator" 	
+ 	16
+
+
+VAR 	interCugRestrictions 	"Inter Closed User Group Restrictions" 	
+ 	8
+
+VAL 	@m_fac - VAL_interCugRestrictions@ 	
+
+VAR 	cliRestrictionOption 	"CLI Restriction option" 	
+ 	8
+
+VAL 	@m_fac - VAL_cliRestrictionOption@ 	
+
+VAR 	overrideCategory 	"Override category" 	
+ 	8
+
+VAL 	@m_fac - VAL_overrideCategory@ 	
+
+VAR 	clgSubscriber 	"calling A-subscriber" 	
+ 	1
+
+VAL 	@m_fac - VAL_clgSubscriber@ 	
+
+VAR 	fwgSubscriber 	"forwarding B-subscriber" 	
+ 	1
+
+VAL 	@m_fac - VAL_fwgSubscriber@ 	
+
+VAR 	fwdSubscriber 	"forwarded to C-subscriber" 	
+ 	1
+
+VAL 	@m_fac - VAL_fwdSubscriber@ 	
+
+VAR 	callBarringCause 	"Call barring cause" 	
+ 	8
+
+VAL 	@m_fac - VAL_callBarringCause@ 	
+
+VAR 	networkResource 	"Network Resource" 	
+ 	8
+
+VAL 	@m_fac - VAL_networkResource@ 	
+
+VAR 	pwRegistrationFailureCause 	"PW Registration Failure Cause" 	
+ 	8
+
+VAL 	@m_fac - VAL_pwRegistrationFailureCause@ 	
+
+VAR 	callOnHoldIndicator 	"Call on hold indicator" 	
+ 	8
+
+VAL 	@m_fac - VAL_callOnHoldIndicator@ 	
+
+VAR 	ectCallState 	"Explicit call transfer call ctate" 	
+ 	8
+
+VAL 	@m_fac - VAL_ectCallState@ 	
+
+VAR 	digit 	"Digit" 	
+ 	8
+
+
+VAR 	guidanceInfo 	"Guidance Info" 	
+ 	8
+
+VAL 	@m_fac - VAL_guidanceInfo@ 	
+
+VAR 	ssUserData 	"Supplementary service user data" 	
+ 	MAX_USSD_DATAB
+
+
+VAR 	ussdDataCodingScheme 	"Unstructured SS data coding scheme" 	
+ 	8
+
+
+VAR 	ussdString 	"Unstructured SS data string" 	
+ 	MAX_USSD_STRINGB
+
+
+VAR 	e_val 	"E Value" 	
+ 	8
+
+
+VAR 	err_params_sat 	"Error Parameters SAT" 	
+ 	64
+
+
+VAR 	res_params_sat 	"Result Parameters SAT" 	
+ 	1976
+
+
+VAR 	rej_params_sat 	"Reject Parameters SAT" 	
+ 	48
+
+
+VAR 	defaultPriority 	"Default priority" 	
+ 	8
+
+
+VAR 	maxEntitledPriority 	"Maximum entitled priority" 	
+ 	8
+
+
+VAR 	ccbsIndex 	"CCBS index" 	
+ 	8
+
+
+VAR 	dataCodingScheme 	"Data coding scheme" 	
+ 	8
+
+
+VAR 	lengthInCharacters 	"Length in Characters" 	
+ 	8
+
+
+VAR 	nameString 	"Name string" 	
+ 	MAX_NAME_STRINGB
+
+
+VAR 	alertingPattern 	"Alerting pattern" 	
+ 	8
+
+
+VAR 	accRegisterCCEntryArg 	"Access register CC entry argument" 	
+ 	1840
+
+
+VAR 	uusService 	"uUS Service" 	
+ 	8
+
+VAL 	@m_fac - VAL_uusService@ 	
+
+VAR 	uusRequired 	"uUS Required" 	
+ 	8
+
+VAL 	@m_fac - VAL_uusRequired@ 	
+
+VAR 	extension 	"Extension" 	
+ 	184
+
+
+VAR 	pcsExtension 	"PCS extension" 	
+ 	8
+
+
+VAR 	unknwnSubscrDiag 	"Unknown subscriber diagnostic" 	
+ 	8
+
+VAL 	@m_fac - VAL_unknwnSubscrDiag@ 	
+
+VAR 	absentSubscriberReason 	"Absent subscriber reason" 	
+ 	8
+
+VAL 	@m_fac - VAL_absentSubscriberReason@ 	
+
+VAR 	msisdn 	"msisdn number" 	
+ 	128
+
+
+VAR 	subadr_str 	"subb address byte" 	
+ 	8
+
+
+
+
+
+COMP 	inv_comp 	"Invoke component"
+{
+ 	GSM1_ASN  	inv_id 	0x02 	 ; Invoke ID
+ 	GSM1_ASN  	lnk_id 	0x80 	 ; Linked ID
+ 	GSM1_ASN  	op_code 	0x02 	 ; Operation code
+ 	GSM5_V  	params 	 ; Parameters
+}
+
+
+
+COMP 	err_comp 	"Return error component"
+{
+ 	GSM1_ASN  	inv_id 	0x02 	 ; Invoke ID
+ 	GSM1_ASN  	err_code 	0x02 	 ; Error code
+ 	GSM5_V  	params 	 ; Parameters
+}
+
+
+
+COMP 	rej_comp 	"Reject component"
+{
+ 	GSM1_ASN  	inv_id 	0x02 	 ; Invoke ID
+ 	GSM1_ASN  	gen_problem 	0x80 	 ; General problem code
+ 	GSM1_ASN  	inv_problem 	0x81 	 ; Invoke problem code
+ 	GSM1_ASN  	res_problem 	0x82 	 ; Return result problem code
+ 	GSM1_ASN  	err_problem 	0x83 	 ; Return error problem code
+}
+
+
+
+COMP 	sequence 	"Sequence"
+{
+ 	GSM1_ASN  	op_code 	0x02 	 ; Operation code
+ 	GSM5_V  	params 	 ; Parameters
+}
+
+
+
+COMP 	res_comp 	"Return result component"
+{
+ 	GSM1_ASN  	inv_id 	0x02 	 ; Invoke ID
+ 	GSM1_ASN  	sequence 	0x30 	 ; Sequence
+}
+
+
+
+COMP 	forwardedToNumber 	"Forwarded to number"
+{
+ 	+ 	 	noa 	 ; Nature of address
+ 	* 	 	npi 	 ; Numbering plan identification
+ 	BCDEVEN  	bcdDigit 	[0..MAX_PARTY_NUM] 	 ; BCD digit
+}
+TYPEDEF COMP forwardedToNumber 	partyNumber 	"Party number"
+TYPEDEF COMP forwardedToNumber 	b_subscriberNumber 	"B Subscriber number"
+TYPEDEF COMP forwardedToNumber 	deflectedToNumber 	"Deflected to number"
+
+
+
+COMP 	forwardedToSubaddress 	"Forwarded to subaddress"
+{
+ 	+ 	 	tos 	 ; Type of subaddress
+ 	 	oei 	 ; Odd/even indicator
+ 	* 	.000  ; Spare
+ 	 	subadr_str 	[0..MAX_SUBADDR_NUM] 	 ; Structured Element Item
+}
+TYPEDEF COMP forwardedToSubaddress 	partySubaddress 	"Party Subaddress"
+TYPEDEF COMP forwardedToSubaddress 	b_subscriberSubaddress 	"B Subscriber subaddress"
+TYPEDEF COMP forwardedToSubaddress 	deflectedToSubaddress 	"Deflected to subaddress"
+
+
+
+COMP 	basicService 	"Basic service"
+{
+ 	GSM1_ASN  	bearerService 	0x82 	 ; Bearer service
+ 	GSM1_ASN  	teleservice 	0x83 	 ; Teleservice
+}
+TYPEDEF COMP basicService 	basicServiceGroup 	"Basic service group"
+
+
+
+COMP 	ssForBS 	"SS For BS"
+{
+ 	GSM1_ASN  	ssCode 	0x04 	 ; Supplementary Service Code
+ 	 	basicService 	 ; Basic Service
+}
+
+
+
+COMP 	registerSSArg 	"Register SS Arg"
+{
+ 	GSM1_ASN  	ssCode 	0x04 	 ; Supplementary Service Code
+ 	 	basicService 	 ; Basic Service
+ 	GSM1_ASN  	forwardedToNumber 	0x84 	 ; Forwarded to number
+ 	GSM1_ASN  	forwardedToSubaddress 	0x86 	 ; Forwarded to subaddress
+ 	GSM1_ASN  	noReplyConditionTime 	0x85 	 ; No reply condition time
+ 	GSM1_ASN  	defaultPriority 	0x87 	 ; Default priority
+}
+
+
+
+COMP 	cbf 	"Call barring feature"
+{
+ 	 	basicService 	 ; Basic Service
+ 	GSM1_ASN  	ssStatus 	0x84 	 ; Supplementary service status
+}
+
+
+
+COMP 	callBarringFeatureList 	"Call barring feature List"
+{
+ 	GSM1_ASN  	cbf 	[1..MAX_CBF_NUM] 	0x30 	 ; Call barring feature
+}
+
+
+
+COMP 	callBarringInfo 	"Call barring info"
+{
+ 	GSM1_ASN  	ssCode 	0x04 	 ; Supplementary service Code
+ 	GSM1_ASN  	callBarringFeatureList 	0x30 	 ; Call barring feature list
+}
+
+
+
+COMP 	cugf 	"Closed user group feature"
+{
+ 	 	basicService 	 ; Basic Service
+ 	GSM1_ASN  	preferentialCugIndicator 	0x02 	 ; Preferential closed user group indicator
+ 	GSM1_ASN  	interCugRestrictions 	0x04 	 ; Inter closed user group restrictions
+}
+
+
+
+COMP 	cugFeatureList 	"Closed user group feature list"
+{
+ 	GSM1_ASN  	cugf 	[1..MAX_CUGF_NUM] 	0x30 	 ; Closed user group feature
+}
+
+
+
+COMP 	forwardingOptions 	"Forwarding options"
+{
+ 	 	notify_fwd_pty 	 ; Notification to forwarding party
+ 	 	notify_clg_pty 	 ; Notification to calling party
+ 	 	fwd_reason 	 ; Forwarding Reason
+ 	.00  ; spare
+}
+
+
+
+COMP 	ff 	"Forwarding feature"
+{
+ 	 	basicService 	 ; Basic Service
+ 	GSM1_ASN  	ssStatus 	0x84 	 ; Supplementary service status
+ 	GSM1_ASN  	forwardedToNumber 	0x85 	 ; Forwarded to number
+ 	GSM1_ASN  	forwardedToSubaddress 	0x88 	 ; Forwarded to subaddress
+ 	GSM1_ASN  	forwardingOptions 	0x86 	 ; Forwarding options
+ 	GSM1_ASN  	noReplyConditionTime 	0x87 	 ; No reply condition time
+}
+
+
+
+COMP 	forwardingFeatureList 	"Forwarding feature List"
+{
+ 	GSM1_ASN  	ff 	[1..MAX_FF_NUM] 	0x30 	 ; Forwarding Feature
+}
+
+
+
+COMP 	forwardingInfo 	"Forwarding info"
+{
+ 	GSM1_ASN  	ssCode 	0x04 	 ; Supplementary service Code
+ 	GSM1_ASN  	forwardingFeatureList 	0x30 	 ; Forwarding feature list
+}
+
+
+
+COMP 	ssSubscriptionOption 	"Supplementary service subscription option"
+{
+ 	GSM1_ASN  	cliRestrictionOption 	0x82 	 ; CLI restriction option
+ 	GSM1_ASN  	overrideCategory 	0x81 	 ; Override Category
+}
+
+
+
+COMP 	ssNotification 	"SS Notification"
+{
+ 	.00000  ; spare
+ 	 	clgSubscriber 	 ; Calling A subscriber
+ 	 	fwgSubscriber 	 ; Forwarding B subscriber
+ 	 	fwdSubscriber 	 ; Forwarded C subscriber
+}
+
+
+
+COMP 	ssIncompatibilityCause 	"SS Incompatibility cause"
+{
+ 	GSM1_ASN  	ssCode 	0x81 	 ; Supplementary Service Code
+ 	 	basicService 	 ; Basic Service
+ 	GSM1_ASN  	ssStatus 	0x84 	 ; Supplementary Service Status
+}
+
+
+
+COMP 	presentationAllowedAddress 	"Presentation allowed address"
+{
+ 	GSM1_ASN  	partyNumber 	0x80 	 ; Party number
+ 	GSM1_ASN  	partySubaddress 	0x81 	 ; Party subaddress
+}
+TYPEDEF COMP presentationAllowedAddress 	presentationRestrictedAddress 	"Presentation restricted address"
+
+
+
+COMP 	callIsWaitingIndicator 	"Call is waiting indicator"
+{
+}
+
+
+
+COMP 	mptyIndicator 	"Multiparty indicator"
+{
+}
+
+
+
+COMP 	clirSuppressionRejected 	"CLIR suppression rejected"
+{
+}
+
+
+
+COMP 	presentationRestricted 	"Presentation restricted"
+{
+}
+
+
+
+COMP 	numberNotAvailableDueToInterworking 	"Number not available due to interworking"
+{
+}
+
+
+
+COMP 	rdn 	"rdn"
+{
+ 	GSM1_ASN  	presentationAllowedAddress 	0xA0 	 ; Presentation allowed address
+ 	GSM1_ASN  	presentationRestricted 	0x81 	 ; Presentation restricted
+ 	GSM1_ASN  	numberNotAvailableDueToInterworking 	0x82 	 ; Number not available due to interworking
+ 	GSM1_ASN  	presentationRestrictedAddress 	0xA3 	 ; Presentation restricted address
+}
+
+
+
+COMP 	ectIndicator 	"Explicit call transfer indicator"
+{
+ 	GSM1_ASN  	ectCallState 	0x80 	 ; Explicit call transfer call state
+ 	GSM1_ASN  	rdn 	0xA1 	 ; Rdn
+}
+
+
+
+COMP 	ussdRes 	"Unstructured SS data result"
+{
+ 	GSM1_ASN  	ussdDataCodingScheme 	0x04 	 ; Unstructured SS data coding scheme
+ 	GSM1_ASN  	ussdString 	[.0..MAX_USSD_STRINGB] 	0x04 	 ; Unstructured SS data string
+}
+
+
+
+COMP 	suppressPrefCUG 	"Suppress prefered closed user group"
+{
+}
+
+
+
+COMP 	suppressOA 	"Suppress outgoing access"
+{
+}
+
+
+
+COMP 	forwardCUGInfoArg 	"Forward closed user group info argument"
+{
+ 	GSM1_ASN  	cugIndex 	0x80 	 ; Closed user group index
+ 	GSM1_ASN  	suppressPrefCUG 	0x81 	 ; Suppress prefered closed user group
+ 	GSM1_ASN  	suppressOA 	0x82 	 ; Suppress outgoing access
+}
+
+
+
+COMP 	zzzzEmpty 	"ZZZZ empty"
+{
+}
+
+
+
+COMP 	newPassword 	"New password"
+{
+ 	 	digit 	[MAX_PWD_NUM] 	 ; Digit
+}
+TYPEDEF COMP newPassword 	currPassword 	"Current password"
+
+
+
+COMP 	e1 	"E1"
+{
+ 	 	e_val 	[0..MAX_EVAL_LEN] 	 ; E value
+}
+TYPEDEF COMP e1 	e2 	"E2"
+TYPEDEF COMP e1 	e3 	"E3"
+TYPEDEF COMP e1 	e4 	"E4"
+TYPEDEF COMP e1 	e5 	"E5"
+TYPEDEF COMP e1 	e6 	"E6"
+TYPEDEF COMP e1 	e7 	"E7"
+
+
+
+COMP 	chargingInformation 	"Charging Information"
+{
+ 	GSM1_ASN  	e1 	0x81 	 ; E1
+ 	GSM1_ASN  	e2 	0x82 	 ; E2
+ 	GSM1_ASN  	e3 	0x83 	 ; E3
+ 	GSM1_ASN  	e4 	0x84 	 ; E4
+ 	GSM1_ASN  	e5 	0x85 	 ; E5
+ 	GSM1_ASN  	e6 	0x86 	 ; E6
+ 	GSM1_ASN  	e7 	0x87 	 ; E7
+}
+
+
+
+COMP 	forwardChargeAdviceArg 	"Forward Charge Advice"
+{
+ 	GSM1_ASN  	ssCode 	0x80 	 ; Supplementary service code
+ 	GSM1_ASN  	chargingInformation 	0xA1 	 ; Charging information
+}
+
+
+
+COMP 	rej_comp_sat 	"Reject component SAT"
+{
+ 	GSM1_ASN  	inv_id 	0x02 	 ; Invoke ID
+ 	GSM5_V  	rej_params_sat 	 ; Reject parameters SAT
+}
+
+
+
+COMP 	err_desc_sat 	"Error description SAT"
+{
+ 	GSM5_V  	err_params_sat 	 ; Error parameters SAT
+}
+
+
+
+COMP 	err_comp_sat 	"Return error component SAT"
+{
+ 	GSM1_ASN  	inv_id 	0x02 	 ; Invoke ID
+ 	GSM1_ASN  	err_desc_sat 	0x02 	 ; Error description SAT
+}
+
+
+
+COMP 	res_desc_sat 	"Result description SAT"
+{
+ 	GSM5_V  	res_params_sat 	 ; Result parameters SAT
+}
+
+
+
+COMP 	seq_sat 	"Sequence SAT"
+{
+ 	GSM1_ASN  	res_desc_sat 	0x02 	 ; Result description SAT
+}
+
+
+
+COMP 	res_comp_sat 	"Return result component SAT"
+{
+ 	GSM1_ASN  	inv_id 	0x02 	 ; Invoke ID
+ 	GSM1_ASN  	seq_sat 	0x30 	 ; Sequence SAT
+}
+
+
+
+COMP 	ccbsf 	"CCBS feature"
+{
+ 	GSM1_ASN  	ccbsIndex 	0x80 	 ; CCBS index
+ 	GSM1_ASN  	b_subscriberNumber 	0x81 	 ; B subscriber number
+ 	GSM1_ASN  	b_subscriberSubaddress 	0x82 	 ; B subscriber subaddress
+ 	GSM1_ASN  	basicServiceGroup 	0xA3 	 ; Basic service group
+}
+
+
+
+COMP 	ccbsFeatureList 	"CCBS feature List"
+{
+ 	GSM1_ASN  	ccbsf 	[1..MAX_CCBSF_NUM] 	0x30 	 ; CCBS Feature
+}
+
+
+
+COMP 	cliRestrictionInfo 	"CLI Restriction info"
+{
+ 	GSM1_ASN  	ssStatus 	0x04 	 ; Supplementary service status
+ 	GSM1_ASN  	cliRestrictionOption 	0x0A 	 ; CLI Restriction option
+ 	GSM1_ASN  	maxEntitledPriority 	0x80 	 ; Maximum entitled priority
+ 	GSM1_ASN  	defaultPriority 	0x81 	 ; Default priority
+ 	GSM1_ASN  	ccbsFeatureList 	0xA2 	 ; CCBS feature list
+}
+
+
+
+COMP 	namePresentationAllowed 	"Name presentation allowed"
+{
+ 	GSM1_ASN  	dataCodingScheme 	0x80 	 ; Data coding scheme
+ 	GSM1_ASN  	lengthInCharacters 	0x81 	 ; Length in Characters
+ 	GSM1_ASN  	nameString 	[.0..MAX_NAME_STRINGB] 	0x82 	 ; Name string
+}
+TYPEDEF COMP namePresentationAllowed 	namePresentationRestricted 	"Name presentation restricted"
+
+
+
+COMP 	ussdArg 	"Unstructured SS data argument"
+{
+ 	GSM1_ASN  	ussdDataCodingScheme 	0x04 	 ; Unstructured SS data coding scheme
+ 	GSM1_ASN  	ussdString 	[.0..MAX_USSD_STRINGB] 	0x04 	 ; Unstructured SS data string
+ 	GSM1_ASN  	alertingPattern 	0x04 	 ; Alerting pattern
+ 	GSM1_ASN  	msisdn 	[.0..128] 	0x80 	 ; Structured Element Item
+}
+
+
+
+COMP 	eraseCCEntryArg 	"Erase CC entry Arg"
+{
+ 	GSM1_ASN  	ssCode 	0x80 	 ; Supplementary Service Code
+ 	GSM1_ASN  	ccbsIndex 	0x81 	 ; CCBS index
+}
+
+
+
+COMP 	eraseCCEntryRes 	"Erase CC entry Res"
+{
+ 	GSM1_ASN  	ssCode 	0x80 	 ; Supplementary Service Code
+ 	GSM1_ASN  	ssStatus 	0x81 	 ; Supplementary service status
+}
+
+
+
+COMP 	accRegisterCCEntryRes 	"Access register CC entry Res"
+{
+ 	GSM1_ASN  	ccbsf 	0xA0 	 ; CCBS feature
+}
+
+
+
+COMP 	callDeflectionArg 	"Call Deflection Arg"
+{
+ 	GSM1_ASN  	deflectedToNumber 	0x80 	 ; Deflected to number
+ 	GSM1_ASN  	deflectedToSubaddress 	0x81 	 ; Deflected to subaddress
+}
+
+
+
+COMP 	userUserServiceArg 	"User user service Arg"
+{
+ 	GSM1_ASN  	uusService 	0x80 	 ; uUS Service
+ 	GSM1_ASN  	uusRequired 	0x81 	 ; uUS Required
+}
+
+
+
+COMP 	privateExtensionList 	"Private extension list"
+{
+ 	GSM1_ASN  	extension 	[1..MAX_EXT_NUM] 	0x30 	 ; Extension
+}
+
+
+
+COMP 	extensionContainer 	"Extension container"
+{
+ 	GSM1_ASN  	privateExtensionList 	0xA0 	 ; Private extension list
+ 	GSM1_ASN  	pcsExtension 	0xA1 	 ; PCS extension
+}
+
+
+
+COMP 	unknownSubscriberParam 	"Unknown subscriber parameter"
+{
+ 	GSM1_ASN  	extensionContainer 	0x30 	 ; Extension container
+ 	GSM1_ASN  	unknwnSubscrDiag 	0x0A 	 ; Unknown subscriber diagnostic
+}
+
+
+
+COMP 	illegalSubscriberParam 	"Illegal subscriber parameter"
+{
+ 	GSM1_ASN  	extensionContainer 	0x30 	 ; Extension container
+}
+TYPEDEF COMP illegalSubscriberParam 	bearerServNotProvParam 	"Bearer service not provisioned parameter"
+TYPEDEF COMP illegalSubscriberParam 	teleServNotProvParam 	"Tele service not provisioned parameter"
+TYPEDEF COMP illegalSubscriberParam 	facilityNotSupParam 	"Facility not supported parameter"
+TYPEDEF COMP illegalSubscriberParam 	dataMissingParam 	"Data missing parameter"
+TYPEDEF COMP illegalSubscriberParam 	unexpectedDataParam 	"Unexpected data parameter"
+
+
+
+COMP 	extCallBarredParam 	"Extensible call barred parameter"
+{
+ 	GSM1_ASN  	callBarringCause 	0x0A 	 ; Call barring cause
+ 	GSM1_ASN  	extensionContainer 	0x30 	 ; Extension container
+}
+
+
+
+COMP 	absentSubscriberParam 	"Absent subscriber parameter"
+{
+ 	GSM1_ASN  	extensionContainer 	0x30 	 ; Extension container
+ 	GSM1_ASN  	absentSubscriberReason 	0x80 	 ; Absent subscriber reason
+}
+
+
+
+COMP 	extSystemFailureParam 	"Extensible system failure parameter"
+{
+ 	GSM1_ASN  	networkResource 	0x0A 	 ; Network resource
+ 	GSM1_ASN  	extensionContainer 	0x30 	 ; Extension container
+}
+
+
+
+COMP 	nameUnavailable 	"Name unavailable"
+{
+}
+
+
+
+COMP 	callingName 	"Calling name"
+{
+ 	GSM1_ASN  	namePresentationAllowed 	0xA0 	 ; Name presentation allowed
+ 	GSM1_ASN  	presentationRestricted 	0x81 	 ; Presentation restricted
+ 	GSM1_ASN  	nameUnavailable 	0x82 	 ; Name unavailable
+ 	GSM1_ASN  	namePresentationRestricted 	0xA3 	 ; Name presentation restricted
+}
+
+
+
+COMP 	nameIndicator 	"Name indicator"
+{
+ 	GSM1_ASN  	callingName 	0xA0 	 ; Calling name
+}
+
+
+
+COMP 	notifySSArg 	"Notify SS Arg"
+{
+ 	GSM1_ASN  	ssCode 	0x81 	 ; Supplementary Service Code
+ 	GSM1_ASN  	ssStatus 	0x84 	 ; Supplementary Service Status
+ 	GSM1_ASN  	ssNotification 	0x85 	 ; SS notification
+ 	GSM1_ASN  	callIsWaitingIndicator 	0x8E 	 ; Call is waiting indicator
+ 	GSM1_ASN  	callOnHoldIndicator 	0x8F 	 ; Call on hold indicator
+ 	GSM1_ASN  	mptyIndicator 	0x90 	 ; Multiparty indicator
+ 	GSM1_ASN  	cugIndex 	0x91 	 ; Closed user group index
+ 	GSM1_ASN  	clirSuppressionRejected 	0x92 	 ; CLIR suppression rejected
+ 	GSM1_ASN  	ectIndicator 	0xB3 	 ; Explicit call transfer indicator
+ 	GSM1_ASN  	nameIndicator 	0xB4 	 ; Name indicator
+ 	GSM1_ASN  	ccbsf 	0xB5 	 ; CCBS feature
+ 	GSM1_ASN  	alertingPattern 	0x96 	 ; Alerting pattern
+}
+
+
+
+COMP 	basicServiceGroupList_value 	"Basic service group list"
+{
+ 	GSM1_ASN  	bearerService 	0x82 	 ; Bearer service
+ 	GSM1_ASN  	teleservice 	0x83 	 ; Teleservice
+}
+
+
+
+COMP 	basicServiceGroupList 	"Basic service group list"
+{
+ 	 	basicServiceGroupList_value 	[1..MAX_BS_NUM] 	 ; Structured Element Item
+}
+
+
+
+COMP 	interrogateSSRes 	"Interrogate SS result"
+{
+ 	GSM1_ASN  	ssStatus 	0x80 	 ; Supplementary Service Status
+ 	GSM1_ASN  	forwardedToNumber 	0x81 	 ; Forwarded to number
+ 	GSM1_ASN  	basicServiceGroupList 	0xA2 	 ; Basic service group list
+ 	GSM1_ASN  	forwardingFeatureList 	0xA3 	 ; Forwarding feature list
+ 	GSM1_ASN  	cliRestrictionInfo 	0xA4 	 ; CLI Restriction Info
+}
+
+
+
+COMP 	cugs 	"Closed user group subscription"
+{
+ 	GSM1_ASN  	cugIndex 	0x02 	 ; Closed user group index
+ 	GSM1_ASN  	cugInterlock 	0x04 	 ; Closed user group interlock
+ 	GSM1_ASN  	intraCugOptions 	0x0A 	 ; Intra closed user group options
+ 	GSM1_ASN  	basicServiceGroupList 	0x30 	 ; Basic service group list
+}
+
+
+
+COMP 	cugSubscriptionList 	"Closed user group subscription list"
+{
+ 	GSM1_ASN  	cugs 	[1..MAX_CUGS_NUM] 	0x30 	 ; Closed user group subscription
+}
+
+
+
+COMP 	cugInfo 	"Closed user group info"
+{
+ 	GSM1_ASN  	cugSubscriptionList 	0x30 	 ; Closed user group subscription list
+ 	GSM1_ASN  	cugFeatureList 	0x30 	 ; Closed user group feature list
+}
+
+
+
+COMP 	ssData 	"Supplementary service data"
+{
+ 	GSM1_ASN  	ssCode 	0x04 	 ; Supplementary service Code
+ 	GSM1_ASN  	ssStatus 	0x84 	 ; Supplementary service status
+ 	 	ssSubscriptionOption 	 ; Supplementary service subscription option
+ 	GSM1_ASN  	basicServiceGroupList 	0x30 	 ; Basic service group list
+ 	GSM1_ASN  	defaultPriority 	0x02 	 ; Default Priority
+}
+
+
+
+COMP 	ssInfo 	"SS info"
+{
+ 	GSM1_ASN  	forwardingInfo 	0xA0 	 ; Forwarding info
+ 	GSM1_ASN  	callBarringInfo 	0xA1 	 ; Call barring info
+ 	GSM1_ASN  	cugInfo 	0xA2 	 ; Closed user group info
+ 	GSM1_ASN  	ssData 	0xA3 	 ; Supplementary service data
+}
+
+
+
+
+
+
+MSG 	component 	both 	0b00000000 ; Component
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	inv_comp 	0xA1 	 ; Invoke component
+ 	GSM1_ASN  	res_comp 	0xA2 	 ; Return Result component
+ 	GSM1_ASN  	err_comp 	0xA3 	 ; Return Error component
+ 	GSM1_ASN  	rej_comp 	0xA4 	 ; Reject component
+}
+
+
+
+MSG 	register_ss_inv 	uplink 	0b00001010 ; Register SS invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	registerSSArg 	0x30 	 ; register ss argument
+}
+
+
+
+MSG 	register_ss_res 	downlink 	0b00001010 ; Register SS result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	ssInfo 	 ; SS info
+}
+
+
+
+MSG 	erase_ss_inv 	uplink 	0b00001011 ; Erase SS invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ssForBS 	0x30 	 ; SS for BS
+}
+
+
+
+MSG 	erase_ss_res 	downlink 	0b00001011 ; Erase SS result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	ssInfo 	 ; SS info
+}
+
+
+
+MSG 	activate_ss_inv 	uplink 	0b00001100 ; Activate SS invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ssForBS 	0x30 	 ; SS for BS
+}
+
+
+
+MSG 	activate_ss_res 	downlink 	0b00001100 ; Activate SS result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	ssInfo 	 ; SS info
+}
+
+
+
+MSG 	deactivate_ss_inv 	uplink 	0b00001101 ; Deactivate SS invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ssForBS 	0x30 	 ; SS for BS
+}
+
+
+
+MSG 	deactivate_ss_res 	downlink 	0b00001101 ; Deactivate SS result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	ssInfo 	 ; SS info
+}
+
+
+
+MSG 	interrogate_ss_inv 	uplink 	0b00001110 ; Interrogate SS For BS
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ssForBS 	0x30 	 ; SS for BS
+}
+
+
+
+MSG 	interrogate_ss_res 	downlink 	0b00001110 ; Interrogate SS result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	interrogateSSRes 	 ; Interrogate SS result
+}
+
+
+
+MSG 	notify_ss_inv 	downlink 	0b00010000 ; Notify SS Arg
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	notifySSArg 	0x30 	 ; Notify SS argument
+}
+
+
+
+MSG 	register_pwd_inv 	uplink 	0b00010001 ; Register password
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ssCode 	0x04 	 ; Supplementary Service Code
+}
+
+
+
+MSG 	register_pwd_res 	downlink 	0b00010001 ; Register password
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	newPassword 	0x12 	 ; New Password
+}
+
+
+
+MSG 	get_pwd_inv 	downlink 	0b00010010 ; Get password
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	guidanceInfo 	0x0A 	 ; Guidance info
+}
+
+
+
+MSG 	get_pwd_res 	uplink 	0b00010010 ; Get password
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	currPassword 	0x12 	 ; Current Password
+}
+
+
+
+MSG 	process_ussd_inv 	uplink 	0b00010011 ; Process unstructured supplementary service data
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ssUserData 	[.0..MAX_USSD_DATAB] 	0x16 	 ; Supplementary service user data
+}
+
+
+
+MSG 	process_ussd_res 	downlink 	0b00010011 ; Process unstructured supplementary service data
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ssUserData 	[.0..MAX_USSD_DATAB] 	0x16 	 ; Supplementary service user data
+}
+
+
+
+MSG 	process_ussd_req_inv 	uplink 	0b00111011 ; Process unstructured supplementary service request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ussdArg 	0x30 	 ; Unstructured SS argument
+}
+
+
+
+MSG 	process_ussd_req_res 	downlink 	0b00111011 ; Process unstructured supplementary service request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ussdRes 	0x30 	 ; Unstructured SS result
+}
+
+
+
+MSG 	ussd_req_inv 	downlink 	0b00111100 ; Unstructured supplementary service request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ussdArg 	0x30 	 ; Unstructured SS argument
+}
+
+
+
+MSG 	ussd_req_res 	uplink 	0b00111100 ; Unstructured supplementary service request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ussdRes 	0x30 	 ; Unstructured SS result
+}
+
+
+
+MSG 	ussd_notify_inv 	downlink 	0b00111101 ; Unstructured supplementary service notify
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ussdArg 	0x30 	 ; Unstructured SS argument
+}
+
+
+
+MSG 	fwd_cug_info_inv 	uplink 	0b01111000 ; Forward Closed User Group Info Invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	forwardCUGInfoArg 	0x30 	 ; Forward closed user group info argument
+}
+
+
+
+MSG 	split_mpty_res 	downlink 	0b01111001 ; Split multiparty result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	zzzzEmpty 	0x05 	 ; zzzz-empty
+}
+
+
+
+MSG 	retrieve_mpty_res 	downlink 	0b01111010 ; Retrieve multiparty result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	zzzzEmpty 	0x05 	 ; zzzz-empty
+}
+
+
+
+MSG 	hold_mpty_res 	downlink 	0b01111011 ; Hold multiparty result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	zzzzEmpty 	0x05 	 ; zzzz-empty
+}
+
+
+
+MSG 	build_mpty_res 	downlink 	0b01111100 ; Build multiparty result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	zzzzEmpty 	0x05 	 ; zzzz-empty
+}
+
+
+
+MSG 	fwd_chg_advice_inv 	downlink 	0b01111101 ; Forward charge advice invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	forwardChargeAdviceArg 	0x30 	 ; Forward charge advice
+}
+
+
+
+MSG 	fwd_chg_advice_res 	uplink 	0b01111101 ; Forward charge advice result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	zzzzEmpty 	0x05 	 ; zzzz-empty
+}
+
+
+
+MSG 	comp_sat 	both 	0b00000001 ; Component SAT
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	res_comp_sat 	0xA2 	 ; Return Result component SAT
+ 	GSM1_ASN  	err_comp_sat 	0xA3 	 ; Return Error component SAT
+ 	GSM1_ASN  	rej_comp_sat 	0xA4 	 ; Reject component SAT
+}
+
+
+
+MSG 	erase_cc_entry_inv 	uplink 	0b01001101 ; Erase CC entry invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	eraseCCEntryArg 	0x30 	 ; Erase CC entry argument
+}
+
+
+
+MSG 	erase_cc_entry_res 	downlink 	0b01001101 ; Erase CC entry result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	eraseCCEntryRes 	0x30 	 ; Erase CC entry result
+}
+
+
+
+MSG 	acc_register_cc_entry_inv 	uplink 	0b01110111 ; Access register CC entry invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	accRegisterCCEntryArg 	[.0..1840] 	0x30 	 ; Access register CC entry argument
+}
+
+
+
+MSG 	acc_register_cc_entry_res 	downlink 	0b01110111 ; Access register CC entry result
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	accRegisterCCEntryRes 	0x30 	 ; Access register CC entry result
+}
+
+
+
+MSG 	call_deflection_inv 	uplink 	0b01110101 ; Call deflection invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	callDeflectionArg 	0x30 	 ; Call deflection arg
+}
+
+
+
+MSG 	user_user_srv_inv 	both 	0b01110110 ; User user service invoke
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	userUserServiceArg 	0x30 	 ; user user service argument
+}
+
+
+
+MSG 	unknown_subscriber_err 	downlink 	0b10000001 ; Unknown subscriber error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	unknownSubscriberParam 	0x30 	 ; Unknown subscriber parameter
+}
+
+
+
+MSG 	illegal_subscriber_err 	downlink 	0b10001001 ; Illegal subscriber error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	illegalSubscriberParam 	0x30 	 ; Illegal subscriber parameter
+}
+
+
+
+MSG 	bearer_serv_not_prov_err 	downlink 	0b10001010 ; Bearer service not provisioned error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	bearerServNotProvParam 	0x30 	 ; Bearer service not provisioned parameter
+}
+
+
+
+MSG 	tele_serv_not_prov_err 	downlink 	0b10001011 ; Tele service not provisioned error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	teleServNotProvParam 	0x30 	 ; Tele service not provisioned parameter
+}
+
+
+
+MSG 	illegal_equipment_err 	downlink 	0b10001100 ; Illegal equipment error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	teleServNotProvParam 	0x30 	 ; Illegal equipment parameter
+}
+
+
+
+MSG 	call_barred_err 	downlink 	0b10001101 ; Call barred error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	callBarringCause 	0x0A 	 ; Call barring cause
+ 	GSM1_ASN  	extCallBarredParam 	0x30 	 ; Extensible call barred parameter
+}
+
+
+
+MSG 	ss_incompatibility_err 	downlink 	0b10010100 ; SS incompatibility error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ssIncompatibilityCause 	0x30 	 ; SS incompatibility cause
+}
+
+
+
+MSG 	facility_not_supported_err 	downlink 	0b10010101 ; Facility not supported error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	facilityNotSupParam 	0x30 	 ; Facility not supported parameter
+}
+
+
+
+MSG 	absent_subscriber_err 	downlink 	0b10011011 ; Absent subscriber error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	absentSubscriberParam 	0x30 	 ; absent subscriber parameter
+}
+
+
+
+MSG 	system_failure_err 	downlink 	0b10100010 ; System failure error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	networkResource 	0x0A 	 ; Network resource
+ 	GSM1_ASN  	extSystemFailureParam 	0x30 	 ; Extensible system failure parameter
+}
+
+
+
+MSG 	data_missing_err 	downlink 	0b10100011 ; Data missing error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	dataMissingParam 	0x30 	 ; Data missing parameter
+}
+
+
+
+MSG 	unexpected_data_value_err 	downlink 	0b10100100 ; Unexpected data value error
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	unexpectedDataParam 	0x30 	 ; Unexpected data parameter
+}
+
+
+
+MSG 	ss_error_status_err 	downlink 	0b10010001 ; Supplementary service error status
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	ssStatus 	0x04 	 ; Supplementary service status
+}
+
+
+
+MSG 	pw_registration_failure_err 	downlink 	0b10100101 ; Password registration failure
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_ASN  	pwRegistrationFailureCause 	0x0A 	 ; Password registration failure cause
+}
+
+
+
+
+
+

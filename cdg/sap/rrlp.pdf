@@ -1,0 +1,270 @@
+;********************************************************************************
+;*** File           : rrlp.pdf
+;*** Creation       : Wed Mar 11 09:58:48 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : rrlp
+;*** Document No.   : 8443.102.02.100
+;*** Document Date  : 2002-11-13
+;*** Document Status: APPROVED
+;*** Document Author: TML
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:53:06 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-11-13"
+PRAGMA 	ID_AND_VERSION 	"8443.102.02.100"
+
+
+
+CONST 	R_NUM_MEAS_SETS 	3 	; Number of BTS measurements
+CONST 	R_MAX_REF_NEIGH_BTS 	15 	; Maximum number of reference neighbour BTS
+CONST 	MAX_NCELL_EOTD 	15 	; Maximum number of E-OTD measurements
+
+
+
+VALTAB 	VAL_cause
+VAL 	7 	RRLP_METHOD_INVALID 	"Position method is not supported"
+VAL 	10 	RRLP_REF_BTS_INVALID 	"The ref. BTS for E-OTD is not the serving BTS"
+VAL 	20 	RRLP_HANDOVER 	"The measurement procedure was interrupted by a handover. No RRLP specific error message is created."
+
+VALTAB 	VAL_exp_otd
+VAL 	0 - 1250 	"The used resolution is 1 bits. This OTD value is the OTD value of TS0s (i.e. the difference in starting of TS0), not only the OTD between starts of bursts expected OTD between the scell and the specified cell. Note: 1250 is interpreted as 0"
+
+VALTAB 	VAL_loc_method
+VAL 	0 	EOTD_METHOD 	""
+VAL 	1 	GPS_METOD 	""
+VAL 	2 	GPS_OR_EOTD_METOD 	""
+
+VALTAB 	VAL_mfrm_offset
+VAL 	0 - 51 	"multiframes/ 51 is interpreted as 0"
+
+VALTAB 	VAL_otd_type
+VAL 	0 	ROUGH_RTD 	"only rough RTD has been provided by the NW"
+VAL 	1 	EXPECTED_OTD 	"only expectedOTD has been provided by the NW"
+VAL 	2 	BOTH_OTD 	"Both OTD / RTD types have been provided by the NW"
+
+VALTAB 	VAL_pos_method
+VAL 	0 	MS_ASSISTED 	""
+VAL 	1 	MS_BASED 	""
+VAL 	2 	MS_BASED_PREF 	""
+VAL 	3 	MS_ASSISTED_PREF 	""
+
+VALTAB 	VAL_rough_rtd
+VAL 	0 - 1250 	"rough RTD in bits (see expected OTD)"
+
+VALTAB 	VAL_ta_correction_present
+VAL 	1 	TA_PRESENT 	"TA present"
+VAL 	0 	TA_NOT_PRESENT 	"TA NOT present"
+
+VALTAB 	VAL_uncertainty
+VAL 	0 	UNC_MAX_2BIT 	"uncertainty in bits. 0 - 2 bits"
+VAL 	1 	UNC_MAX_4BIT 	"uncertainty in bits. 3 - 4 bits"
+VAL 	2 	UNC_MAX_8BIT 	"uncertainty in bits. 5 - 8 bits"
+VAL 	3 	UNC_MAX_12BIT 	"uncertainty in bits. 9 - 12 bits"
+VAL 	4 	UNC_MAX_16BIT 	"uncertainty in bits. 13 - 16 bits"
+VAL 	5 	UNC_MAX_22BIT 	"uncertainty in bits. 17 - 22 bits"
+VAL 	6 	UNC_MAX_30BIT 	"uncertainty in bits. 23 - 30 bits"
+VAL 	7 	UNC_GT_30BIT 	"uncertainty in bits.  > 30 bits"
+
+
+
+
+VAR 	arfcn 	"Channel number" 	S
+
+
+VAR 	bsic 	"Base station ID code" 	B
+
+
+VAR 	cause 	"Cause Id Error" 	B
+
+VAL 	@p_rrlp - VAL_cause@ 	
+
+VAR 	cell_id 	"Cell ID" 	S
+
+
+VAR 	exp_otd 	"expectedOTD" 	S
+
+VAL 	@p_rrlp - VAL_exp_otd@ 	
+
+VAR 	frame_number 	"Frame number" 	S
+
+
+VAR 	loc_method 	"Location method" 	B
+
+VAL 	@p_rrlp - VAL_loc_method@ 	
+
+VAR 	lac 	"Location area code" 	S
+
+
+VAR 	mcc 	"Mobile country code" 	S
+
+
+VAR 	mnc 	"Mobile country code" 	S
+
+
+VAR 	mfrm_offset 	"multiframe offset" 	B
+
+VAL 	@p_rrlp - VAL_mfrm_offset@ 	
+
+VAR 	num_measurement_sets 	"Number of measurement sets" 	B
+
+
+VAR 	num_measurements 	"Number of measurements" 	B
+
+
+VAR 	num_reference_cells 	"Number of reference cells" 	B
+
+
+VAR 	otd_type 	"OTD type" 	B
+
+VAL 	@p_rrlp - VAL_otd_type@ 	
+
+VAR 	pos_method 	"Position method" 	B
+
+VAL 	@p_rrlp - VAL_pos_method@ 	
+
+VAR 	reference_relation 	"0, 1 or 2, only used when there are 2 ref cells and 3 measurement sets" 	B
+
+
+VAR 	rough_rtd 	"rough RTD" 	S
+
+VAL 	@p_rrlp - VAL_rough_rtd@ 	
+
+VAR 	std_resolution 	"Standard resolution in meters" 	B
+
+
+VAR 	ta_correction_present 	"" 	B
+
+VAL 	@p_rrlp - VAL_ta_correction_present@ 	
+
+VAR 	ta_correction 	"TA correction" 	S
+
+
+VAR 	time_slot 	"Time slot number" 	B
+
+
+VAR 	timing_advance 	"Timing advance" 	M
+
+
+VAR 	timing_offset 	"Timing offset" 	M
+
+
+VAR 	total_neigh_bts 	"Total number of neighbor BTS" 	B
+
+
+VAR 	uncertainty 	"Uncertainty of expected OTD" 	B
+
+VAL 	@p_rrlp - VAL_uncertainty@ 	
+
+VAR 	quality 	"5 bit encoding: ranges" 	B
+
+
+
+
+
+COMP 	assist_data 	 "Assistance Data"
+{
+ 	arfcn 	 ; channel number
+ 	bsic 	 ; Base Station Id Code
+ 	mfrm_offset 	 ; multiframe offset
+ 	otd_type 	 ; otd type
+ 	exp_otd 	 ; expected otd
+ 	uncertainty 	 ; uncertainty of expected otd
+ 	rough_rtd 	 ; rough rtd
+}
+
+
+
+COMP 	bts_data 	 "BTS data"
+{
+ 	bsic 	 ; Base Station Identification Code
+ 	arfcn 	 ; Absolute Radio Frequency Channel Number
+ 	quality 	 ; Quality
+ 	num_measurements 	 ; Number of Measurements
+ 	timing_offset 	 ; Timing Offset
+ 	timing_advance 	 ; Timing Advance
+}
+
+
+
+COMP 	ref_bts_data 	 "Reference BTS data"
+{
+ 	cell_id 	 ; Cell Id
+ 	lac 	 ; LAC
+ 	quality 	 ; quality
+ 	num_measurements 	 ; Number of Measurements
+ 	timing_offset 	 ; Timing Offset
+ 	total_neigh_bts 	 ; Total number of Neighbourgh BTS
+ 	bts_data 	[R_MAX_REF_NEIGH_BTS] 	 ; BTS Data
+ 	frame_number 	 ; Frame Number
+ 	timing_advance 	 ; Timing Advance
+}
+
+
+
+COMP 	timing_data 	 "Output of the position algorithm"
+{
+ 	mcc 	 ; MCC
+ 	mnc 	 ; MNC
+ 	reference_relation 	 ; Reference Relation
+ 	time_slot 	 ; Time Slot
+ 	std_resolution 	 ; Std Resolution
+ 	num_measurement_sets 	 ; Number Measurement Sets
+ 	num_reference_cells 	 ; Number of Reference Cells
+ 	ta_correction_present 	 ; TA Correction Present
+ 	ta_correction 	 ; TA Correction
+ 	ref_bts_data 	[R_NUM_MEAS_SETS] 	 ; Reference BTS Data
+}
+
+
+
+
+
+
+; RRLP_POS_IND 	0x80004042
+; RRLP_POS_RES 	0x80000042
+; RRLP_ERROR_REQ 	0x80010042
+
+
+
+PRIM 	RRLP_POS_IND 	0x80004042
+{
+ 	< () 	assist_data 	[1..MAX_NCELL_EOTD] 	> 	 ; Assistance Data
+ 	loc_method 	 ; Location Method
+ 	pos_method 	 ; Position Method
+ 	< () 	arfcn 	> 	 ; Reference BTS ARFCN
+ 	< () 	bsic 	> 	 ; Reference BTS BSIC
+}
+
+
+
+
+
+
+PRIM 	RRLP_POS_RES 	0x80000042
+{
+ 	timing_data 	 ; Timing Data
+}
+
+
+
+
+
+
+PRIM 	RRLP_ERROR_REQ 	0x80010042
+{
+ 	cause 	 ; Cause Id Error
+}
+
+
+
+
+
+
+
+
+

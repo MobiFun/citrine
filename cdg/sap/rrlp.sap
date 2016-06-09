@@ -1,0 +1,1280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">rrlp</DocName>
+        <DocNum Number="102" Project="8443"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the physical layer to the radio resource management.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="16" Month="7" Year="2002"/>
+            <Author>OTH</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="23" Month="9" Year="2002"/>
+            <Author>TML</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Adopted existing document to CPS documentation.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="24" Month="9" Year="2002"/>
+            <Author>TML</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Update after review.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="27" Month="9" Year="2002"/>
+            <Author>TML</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Prepared for review.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="8" Month="10" Year="2002"/>
+            <Author>TML</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Revised after review DK.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="25" Month="10" Year="2002"/>
+            <Author>TML</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Made constants NUM_MEAS_SETS and MAX_REF_NEIGH_BTS unique</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="100" Year="02"/>
+            <Date Day="13" Month="11" Year="2002"/>
+            <Author>TML</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Corrected diverse types to be compliant with CPS interface</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the RRLP SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>R_NUM_MEAS_SETS</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment>Number of BTS measurements</Comment>
+        </Constant>
+        <Constant>
+            <Alias>R_MAX_REF_NEIGH_BTS</Alias>
+            <Value ValueType="DEC">15</Value>
+            <Comment>Maximum number of reference neighbour BTS</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_NCELL_EOTD</Alias>
+            <Value ValueType="DEC">15</Value>
+            <Comment>Maximum number of E-OTD measurements</Comment>
+        </Constant>
+        <History>
+            <Date Day="19" Month="6" Year="2002"/>
+            <Author>OTH</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="24" Month="9" Year="2002"/>
+            <Author>TML</Author>
+            <Comment>Adopted to CPS interface.</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="66">
+        <Description>
+            <Section>This section contains all primitives that are defined for the RRLP SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The RRLP_POS_IND primitive is used to start a new measurement procedure in the LC controller.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RRLP_POS_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>RRLP</Sender>
+                    <Receiver>LC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>assist_data</Name>
+                </ItemLink>
+                <Control>[1..MAX_NCELL_EOTD]</Control>
+                <Comment>Assistance Data</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>loc_method</Name>
+                </ItemLink>
+                <Comment>Location Method</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>pos_method</Name>
+                </ItemLink>
+                <Comment>Position Method</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>arfcn</Name>
+                </ItemLink>
+                <Comment>Reference BTS ARFCN</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>bsic</Name>
+                </ItemLink>
+                <Comment>Reference BTS BSIC</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="7" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="10" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Optional fiields for arfcn, bsic and added range for assist_data</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RRLP_POS_RES primitive transport the new processed data from the LC controller to RRLP.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RRLP_POS_RES</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>LC</Sender>
+                    <Receiver>RRLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>timing_data</Name>
+                </ItemLink>
+                <Comment>Timing Data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="7" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>CPS interface</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RRLP_ERROR_REQ primitive is used to convey an error message indicating a method or location error from the LC controller to RRLP.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RRLP_ERROR_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>LC</Sender>
+                    <Receiver>RRLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Cause Id Error</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the RRLP SAP</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the Assistance Data as part of the Measure Position Request.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>assist_data</Name>
+                <Comment>Assistance Data</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>arfcn</Name>
+                </ItemLink>
+                <Comment>channel number</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>bsic</Name>
+                </ItemLink>
+                <Comment>Base Station Id Code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>mfrm_offset</Name>
+                </ItemLink>
+                <Comment>multiframe offset</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>otd_type</Name>
+                </ItemLink>
+                <Comment>otd type</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>exp_otd</Name>
+                </ItemLink>
+                <Comment>expected otd</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>uncertainty</Name>
+                </ItemLink>
+                <Comment>uncertainty of expected otd</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>rough_rtd</Name>
+                </ItemLink>
+                <Comment>rough rtd</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="9" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2002"/>
+                <Author>VK</Author>
+                <Comment>Adapt to MPH</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the BTS data for the reference cells.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>bts_data</Name>
+                <Comment>BTS data</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>bsic</Name>
+                </ItemLink>
+                <Comment>Base Station Identification Code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>arfcn</Name>
+                </ItemLink>
+                <Comment>Absolute Radio Frequency Channel Number</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>quality</Name>
+                </ItemLink>
+                <Comment>Quality</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>num_measurements</Name>
+                </ItemLink>
+                <Comment>Number of Measurements</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>timing_offset</Name>
+                </ItemLink>
+                <Comment>Timing Offset</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>timing_advance</Name>
+                </ItemLink>
+                <Comment>Timing Advance</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the output of the CPS position algorithm.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>timing_data</Name>
+                <Comment>Output of the position algorithm</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>mcc</Name>
+                </ItemLink>
+                <Comment>MCC</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>mnc</Name>
+                </ItemLink>
+                <Comment>MNC</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>reference_relation</Name>
+                </ItemLink>
+                <Comment>Reference Relation</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>time_slot</Name>
+                </ItemLink>
+                <Comment>Time Slot</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>std_resolution</Name>
+                </ItemLink>
+                <Comment>Std Resolution</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>num_measurement_sets</Name>
+                </ItemLink>
+                <Comment>Number Measurement Sets</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>num_reference_cells</Name>
+                </ItemLink>
+                <Comment>Number of Reference Cells</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>ta_correction_present</Name>
+                </ItemLink>
+                <Comment>TA Correction Present</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>ta_correction</Name>
+                </ItemLink>
+                <Comment>TA Correction</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>ref_bts_data</Name>
+                </ItemLink>
+                <Control>[R_NUM_MEAS_SETS]</Control>
+                <Comment>Reference BTS Data</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="19" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>CPS interface</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the number of reference cells.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ref_bts_data</Name>
+                <Comment>Reference BTS data</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>cell_id</Name>
+                </ItemLink>
+                <Comment>Cell Id</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>lac</Name>
+                </ItemLink>
+                <Comment>LAC</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>quality</Name>
+                </ItemLink>
+                <Comment>quality</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>num_measurements</Name>
+                </ItemLink>
+                <Comment>Number of Measurements</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>timing_offset</Name>
+                </ItemLink>
+                <Comment>Timing Offset</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>total_neigh_bts</Name>
+                </ItemLink>
+                <Comment>Total number of Neighbourgh BTS</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>bts_data</Name>
+                </ItemLink>
+                <Control>[R_MAX_REF_NEIGH_BTS]</Control>
+                <Comment>BTS Data</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>frame_number</Name>
+                </ItemLink>
+                <Comment>Frame Number</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrlp</DocName>
+                    <Name>timing_advance</Name>
+                </ItemLink>
+                <Comment>Timing Advance</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="19" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="10" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Change cell_id type to match RR and CPS interface</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the RRLP SAP</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the absolute radio frequency channel number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>arfcn</Name>
+                <Type>U16</Type>
+                <Comment>Channel number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="9" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the base station identification code.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bsic</Name>
+                <Type>U8</Type>
+                <Comment>Base station ID code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="9" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="9" Year="2002"/>
+                <Author>VK</Author>
+                <Comment>Remove CTRL column (defined BSIC[7])</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the error cause in RRLP_ERROR_REQ.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U8</Type>
+                <Comment>Cause Id Error</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rrlp</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the cell identity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cell_id</Name>
+                <Type>U16</Type>
+                <Comment>Cell ID</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the expected OTD given by the network.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>exp_otd</Name>
+                <Type>U16</Type>
+                <Comment>expectedOTD</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rrlp</DocName>
+                <Name>VAL_exp_otd</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="9" Year="2002"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the frame number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>frame_number</Name>
+                <Type>U16</Type>
+                <Comment>Frame number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the location method used.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>loc_method</Name>
+                <Type>U8</Type>
+                <Comment>Location method</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rrlp</DocName>
+                <Name>VAL_loc_method</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the location area code.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>lac</Name>
+                <Type>U16</Type>
+                <Comment>Location area code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the MCC. MCC is defined as BCD digits. The delimiter is 0xF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mcc</Name>
+                <Type>U16</Type>
+                <Comment>Mobile country code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the MNC. MNC is defined as BCD digits. The delimiter is 0xF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mnc</Name>
+                <Type>U16</Type>
+                <Comment>Mobile country code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the offset in multiframes between the scell and the specified cell.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mfrm_offset</Name>
+                <Type>U8</Type>
+                <Comment>multiframe offset</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rrlp</DocName>
+                <Name>VAL_mfrm_offset</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="9" Year="2002"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the number of measurement sets.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>num_measurement_sets</Name>
+                <Type>U8</Type>
+                <Comment>Number of measurement sets</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the number of reference cells.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>num_measurements</Name>
+                <Type>U8</Type>
+                <Comment>Number of measurements</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="12" Month="12" Year="1954"/>
+                <Author>doc2xml</Author>
+                <Comment>no history in source document</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the number of reference cells.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>num_reference_cells</Name>
+                <Type>U8</Type>
+                <Comment>Number of reference cells</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the type of OTD data given by the network.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>otd_type</Name>
+                <Type>U8</Type>
+                <Comment>OTD type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rrlp</DocName>
+                <Name>VAL_otd_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="9" Year="2002"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the position method used.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pos_method</Name>
+                <Type>U8</Type>
+                <Comment>Position method</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rrlp</DocName>
+                <Name>VAL_pos_method</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines number of measurement sets.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reference_relation</Name>
+                <Type>U8</Type>
+                <Comment>0, 1 or 2, only used when there are 2 ref cells and 3 measurement sets</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the rough RTD given by the network.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rough_rtd</Name>
+                <Type>U16</Type>
+                <Comment>rough RTD</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rrlp</DocName>
+                <Name>VAL_rough_rtd</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="9" Year="2002"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the standard resolution in meters.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>std_resolution</Name>
+                <Type>U8</Type>
+                <Comment>Standard resolution in meters</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Defines if the timing advance data is present or.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ta_correction_present</Name>
+                <Type>U8</Type>
+                <Comment/>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rrlp</DocName>
+                <Name>VAL_ta_correction_present</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the TA correction.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ta_correction</Name>
+                <Type>U16</Type>
+                <Comment>TA correction</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines time slot number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>time_slot</Name>
+                <Type>U8</Type>
+                <Comment>Time slot number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the timing advance received with dedicated mode SI's in quarter bit periods.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>timing_advance</Name>
+                <Type>S32</Type>
+                <Comment>Timing advance</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2002"/>
+                <Author>OTH</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>CPS interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the timing advance received with dedicated mode SI's in quarter bit periods.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>timing_offset</Name>
+                <Type>S32</Type>
+                <Comment>Timing offset</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the total number of BTS neighbors.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>total_neigh_bts</Name>
+                <Type>U8</Type>
+                <Comment>Total number of neighbor BTS</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the expected OTD given by the network.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>uncertainty</Name>
+                <Type>U8</Type>
+                <Comment>Uncertainty of expected OTD</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rrlp</DocName>
+                <Name>VAL_uncertainty</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="9" Year="2002"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the deviation of TOA measurements from the ref. BTS.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>quality</Name>
+                <Type>U8</Type>
+                <Comment>5 bit encoding: ranges</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="9" Year="2002"/>
+                <Author>TML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the RRLP SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>RRLP_METHOD_INVALID</Alias>
+                <Comment>Position method is not supported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>RRLP_REF_BTS_INVALID</Alias>
+                <Comment>The ref. BTS for E-OTD is not the serving BTS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">20</Value>
+                <Alias>RRLP_HANDOVER</Alias>
+                <Comment>The measurement procedure was interrupted by a handover. No RRLP specific error message is created.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_exp_otd</Name>
+                <Comment>values for exp_otd</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>1250</MaxValue>
+                <Comment>The used resolution is 1 bits. This OTD value is the OTD value of TS0s (i.e. the difference in starting of TS0), not only the OTD between starts of bursts expected OTD between the scell and the specified cell. Note: 1250 is interpreted as 0</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_loc_method</Name>
+                <Comment>values for loc_method</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>EOTD_METHOD</Alias>
+                <Comment/>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GPS_METOD</Alias>
+                <Comment/>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GPS_OR_EOTD_METOD</Alias>
+                <Comment/>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mfrm_offset</Name>
+                <Comment>values for mfrm_offset</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>51</MaxValue>
+                <Comment>multiframes/ 51 is interpreted as 0</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_otd_type</Name>
+                <Comment>values for otd_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ROUGH_RTD</Alias>
+                <Comment>only rough RTD has been provided by the NW</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>EXPECTED_OTD</Alias>
+                <Comment>only expectedOTD has been provided by the NW</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>BOTH_OTD</Alias>
+                <Comment>Both OTD / RTD types have been provided by the NW</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pos_method</Name>
+                <Comment>values for pos_method</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MS_ASSISTED</Alias>
+                <Comment/>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MS_BASED</Alias>
+                <Comment/>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>MS_BASED_PREF</Alias>
+                <Comment/>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>MS_ASSISTED_PREF</Alias>
+                <Comment/>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rough_rtd</Name>
+                <Comment>values for rough_rtd</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>1250</MaxValue>
+                <Comment>rough RTD in bits (see expected OTD)</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ta_correction_present</Name>
+                <Comment>values for ta_correction_present</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TA_PRESENT</Alias>
+                <Comment>TA present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TA_NOT_PRESENT</Alias>
+                <Comment>TA NOT present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_uncertainty</Name>
+                <Comment>values for uncertainty</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UNC_MAX_2BIT</Alias>
+                <Comment>uncertainty in bits. 0 - 2 bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UNC_MAX_4BIT</Alias>
+                <Comment>uncertainty in bits. 3 - 4 bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>UNC_MAX_8BIT</Alias>
+                <Comment>uncertainty in bits. 5 - 8 bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>UNC_MAX_12BIT</Alias>
+                <Comment>uncertainty in bits. 9 - 12 bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>UNC_MAX_16BIT</Alias>
+                <Comment>uncertainty in bits. 13 - 16 bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>UNC_MAX_22BIT</Alias>
+                <Comment>uncertainty in bits. 17 - 22 bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>UNC_MAX_30BIT</Alias>
+                <Comment>uncertainty in bits. 23 - 30 bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>UNC_GT_30BIT</Alias>
+                <Comment>uncertainty in bits.  > 30 bits</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

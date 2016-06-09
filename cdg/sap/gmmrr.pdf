@@ -1,0 +1,466 @@
+;********************************************************************************
+;*** File           : gmmrr.pdf
+;*** Creation       : Wed Mar 11 09:58:05 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : gmmrr
+;*** Document No.   : 8441.101.03.025
+;*** Document Date  : 2003-09-02
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SAB
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:42:28 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-09-02"
+PRAGMA 	ID_AND_VERSION 	"8441.101.03.025"
+
+
+
+CONST 	MAX_DIGITS 	16 	; 
+CONST 	SIZE_MCC 	3 	; maximum number of BCD digits of the mobile country code
+CONST 	SIZE_MNC 	3 	; maximum number of BCD digits of the mobile network code
+
+
+
+VALTAB 	VAL_old_tlli
+VAL 	0xFFFFFFFF 	GMMRR_TLLI_INVALID 	"TLLI invalid (see GSM 3.03)"
+
+VALTAB 	VAL_service_state
+VAL 	0 	GMMRR_SERVICE_NONE 	"No service"
+VAL 	1 	GMMRR_SERVICE_LIMITED 	"Limited service"
+VAL 	2 	GMMRR_SERVICE_FULL 	"Full service"
+VAL 	3 	GMMRR_SERVICE_UNKNOWN 	"Service unknown"
+
+VALTAB 	VAL_net_mode
+VAL 	0 	GMMRR_NET_MODE_I 	"Network operation mode I, only one Paging channel for both: PCCCH or  CCCH"
+VAL 	1 	GMMRR_NET_MODE_II 	"Network operation mode II, Paging only on CCCH"
+VAL 	2 	GMMRR_NET_MODE_III 	"Network operation mode III, Paging on CCCH for CS and either on CCCH or on PCCCH for GPRS, if PCCH allocated in the cell"
+
+VALTAB 	VAL_standby_cause
+VAL 	1 	GMMRR_TIMEOUT_OF_T3314 	"GMM enters state STANDBY because of timeout of READY timer T3314"
+VAL 	2 	GMMRR_RESET_OF_T3314 	"GMM enters state STANDBY because GMM receives a message witrh timer_value 0"
+VAL 	3 	GMMRR_FORCE_TO_STANDBY 	"GMM receives a message indicating FORCE TO STANDBY"
+
+VALTAB 	VAL_old_ptmsi
+VAL 	0xFFFFFFFF 	GMMRR_TMSI_INVALID 	"P-TMSI or TMSI invalid (see GSM 3.03)"
+
+VALTAB 	VAL_v_mid
+VAL 	0 	V_MID_NOT_PRES 	"not present"
+VAL 	1 	V_MID_PRES 	"present"
+
+VALTAB 	VAL_id_type
+VAL 	0 	TYPE_NO_ID 	"no identity"
+VAL 	1 	TYPE_IMSI 	"IMSI"
+VAL 	4 	TYPE_TMSI 	"TMSI"
+
+VALTAB 	VAL_response
+VAL 	DEF 	 	"The call is confirmed"
+VAL 	0 	GMMRR_CS_PAGE_REJ 	"The call is rejected"
+VAL 	1 	GMMRR_CS_PAGE_CNF 	"The call is confirmed"
+
+VALTAB 	VAL_page_id
+VAL 	DEF 	 	"P-TMSI"
+VAL 	0 	GMMRR_IMSI 	"IMSI"
+VAL 	1 	GMMRR_PTMSI 	"P-TMSI"
+
+VALTAB 	VAL_mobile_class
+VAL 	DEF 	 	"Combined GPRS attach"
+VAL 	1 	GMMRR_CLASS_A 	"Combined GPRS"
+VAL 	2 	GMMRR_CLASS_B 	"GPRS and GSM"
+VAL 	3 	GMMRR_CLASS_BC 	"Combined GPRS if possible, otherwise GSM only"
+VAL 	4 	GMMRR_CLASS_BG 	"Combined GPRS if possible, otherwise GPRS only"
+VAL 	5 	GMMRR_CLASS_CC 	"reserved. (GSM-only)"
+VAL 	6 	GMMRR_CLASS_CG 	"GPRS-only"
+
+VALTAB 	VAL_susp_gprs
+VAL 	DEF 	 	"Suspend GPRS"
+VAL 	0 	GMMRR_NOT_SUSP_GPRS 	"Do not suspend GPRS"
+VAL 	1 	GMMRR_SUSP_GPRS 	"Suspend GPRS"
+
+VALTAB 	VAL_split_pg_cycle
+VAL 	704 	GMMRR_NO_DRX 	"Non DRX mode"
+
+VALTAB 	VAL_lac
+VAL 	DEF 	 	"lac"
+VAL 	0xFFFE 	GMMRR_LA_INVALID 	"la invalid"
+
+VALTAB 	VAL_rac
+VAL 	0xFF 	GMMRR_RAC_INVALID 	"routing area code invalid"
+
+VALTAB 	VAL_gmmrr_non_drx_timer
+VAL 	0 	DRX_NO 	"no non-DRX mode after transfer state"
+VAL 	1 	DRX_1_SEC 	"max. 1 sec non-DRX mode after transfer"
+VAL 	2 	DRX_2_SEC 	"max. 2 sec non-DRX mode after transfer"
+VAL 	3 	DRX_4_SEC 	"max. 4 sec non-DRX mode after transfer"
+VAL 	4 	DRX_8_SEC 	"max. 8 sec non-DRX mode after transfer"
+VAL 	5 	DRX_16_SEC 	"max. 16 sec non-DRX mode after transfer"
+VAL 	6 	DRX_32_SEC 	"max. 32 sec non-DRX mode after transfer"
+VAL 	7 	DRX_64_SEC 	"max. 64 sec non-DRX mode after transfer"
+
+VALTAB 	VAL_gmmrr_susp_cause
+VAL 	0 	GMMRR_ABNORMAL_RELEASE 	"GRR should release immediately the running TBF"
+VAL 	1 	GMMRR_NORMAL_RELEASE 	"GRR should wait until TBF is released"
+
+VALTAB 	VAL_spgc_ccch_supp
+VAL 	0 	GMMRR_SPGC_CCCH_SUPP_NO 	"Split paging cycle on CCCH is not supported by the mobile station"
+VAL 	1 	GMMRR_SPGC_CCCH_SUPP_YES 	"Split paging cycle on CCCH is supported by the mobile station"
+
+VALTAB 	VAL_cu_cause
+VAL 	0 	GMMRR_RA_DEFAULT 	"GRR should not perform Cell Update Access"
+VAL 	1 	GMMRR_RA_CU 	"GRR should perforn Random Access with cause Cell Update"
+
+VALTAB 	VAL_rt
+VAL 	0 	RT_GSM 	"GSM"
+VAL 	1 	RT_GPRS 	"GSM/GPRS"
+VAL 	2 	RT_EDGE 	"GSM/GPRS/EDGE"
+VAL 	3 	RT_UMTS_FDD 	"UMTS FDD"
+
+
+
+
+VAR 	old_tlli 	"old temporary logical link identifier" 	L
+
+VAL 	@p_gmmrr - VAL_old_tlli@ 	
+
+VAR 	new_tlli 	"new temporary logical link identifier" 	L
+
+VAL 	@p_gmmrr - VAL_old_tlli@ 	
+
+VAR 	service_state 	"Service state" 	B
+
+VAL 	@p_gmmrr - VAL_service_state@ 	
+
+VAR 	net_mode 	"Network operation mode" 	B
+
+VAL 	@p_gmmrr - VAL_net_mode@ 	
+
+VAR 	standby_cause 	"standby cause" 	B
+
+VAL 	@p_gmmrr - VAL_standby_cause@ 	
+
+VAR 	old_ptmsi 	"old ptmsi" 	L
+
+VAL 	@p_gmmrr - VAL_old_ptmsi@ 	
+
+VAR 	new_ptmsi 	"new ptmsi" 	L
+
+VAL 	@p_gmmrr - VAL_old_ptmsi@ 	
+
+VAR 	v_mid 	"valid flag" 	B
+
+VAL 	@p_gmmrr - VAL_v_mid@ 	
+
+VAR 	id_type 	"type of identity" 	B
+
+VAL 	@p_gmmrr - VAL_id_type@ 	
+
+VAR 	id 	"IMSI digits" 	B
+
+
+VAR 	tmsi_dig 	"TMSI digits" 	L
+
+
+VAR 	response 	"CS Paging respnonse" 	B
+
+VAL 	@p_gmmrr - VAL_response@ 	
+
+VAR 	page_id 	"Page ID" 	B
+
+VAL 	@p_gmmrr - VAL_page_id@ 	
+
+VAR 	mobile_class 	"Mobile Class" 	B
+
+VAL 	@p_gmmrr - VAL_mobile_class@ 	
+
+VAR 	acc_contr_class 	"Access Control Class" 	S
+
+
+VAR 	susp_gprs 	"suspend GPRS" 	B
+
+VAL 	@p_gmmrr - VAL_susp_gprs@ 	
+
+VAR 	split_pg_cycle 	"Split paging cycle (the value, NOT the code)" 	S
+
+VAL 	@p_gmmrr - VAL_split_pg_cycle@ 	
+
+VAR 	lac 	"location area code" 	S
+
+VAL 	@p_gmmrr - VAL_lac@ 	
+
+VAR 	rac 	"routing area code" 	B
+
+VAL 	@p_gmmrr - VAL_rac@ 	
+
+VAR 	gmmrr_non_drx_timer 	"non-DRX timer" 	B
+
+VAL 	@p_gmmrr - VAL_gmmrr_non_drx_timer@ 	
+
+VAR 	gmmrr_susp_cause 	"suspension cause" 	B
+
+VAL 	@p_gmmrr - VAL_gmmrr_susp_cause@ 	
+
+VAR 	spgc_ccch_supp 	"Split paging cycle support on CCCH" 	B
+
+VAL 	@p_gmmrr - VAL_spgc_ccch_supp@ 	
+
+VAR 	cid 	"cell identification" 	S
+
+
+VAR 	v_plmn 	"Valid Flag" 	B
+
+
+VAR 	mcc 	"Mobile Country Code" 	B
+
+
+VAR 	mnc 	"Mobile Network Code" 	B
+
+
+VAR 	cu_cause 	"Cell Update Cause" 	B
+
+VAL 	@p_gmmrr - VAL_cu_cause@ 	
+
+VAR 	rt 	"This parameter indicates the radio access technology available in the cell. " 	B
+
+VAL 	@p_gmmrr - VAL_rt@ 	
+
+
+
+
+COMP 	imsi 	 "mobile identity"
+{
+ 	v_mid 	 ; valid flag
+ 	id_type 	 ; type of identity
+ 	id 	[MAX_DIGITS] 	 ; IMSI digits
+ 	tmsi_dig 	 ; TMSI digits
+}
+
+
+
+COMP 	plmn 	 "PLMN identification"
+{
+ 	v_plmn 	 ; Valid Flag
+ 	mcc 	[SIZE_MCC] 	 ; Mobile Country Code
+ 	mnc 	[SIZE_MNC] 	 ; Mobile Network Code
+}
+
+
+
+COMP 	rai 	 "routing area identifier"
+{
+ 	plmn 	 ; PLMN
+ 	lac 	 ; Location Area Code
+ 	rac 	 ; Routing Area Code
+}
+
+
+
+COMP 	cell_env 	 "current location of the mobile equipment"
+{
+ 	rai 	 ; Routing Area Identifier
+ 	cid 	 ; Cell Identification
+}
+
+
+
+COMP 	cell_info 	 "Cell information"
+{
+ 	cell_env 	 ; Cell Environment
+ 	service_state 	 ; Service state
+ 	net_mode 	 ; Network operation mode
+ 	rt 	 ; RAT supported in cell
+}
+
+
+
+
+
+
+; GMMRR_ASSIGN_REQ 	0x1F00
+; GMMRR_ENABLE_REQ 	0x1F01
+; GMMRR_DISABLE_REQ 	0x1F02
+; GMMRR_CELL_IND 	0x5F00
+; GMMRR_READY_REQ 	0x1F03
+; GMMRR_STANDBY_REQ 	0x1F04
+; GMMRR_PAGE_IND 	0x5F02
+; GMMRR_CS_PAGE_IND 	0x5F03
+; GMMRR_CS_PAGE_RES 	0x1F05
+; GMMRR_SUSPEND_REQ 	0x1F06
+; GMMRR_SUSPEND_CNF 	0x5F04
+; GMMRR_RESUME_REQ 	0x1F07
+; GMMRR_ATTACH_STARTED_REQ 	0x1F0A
+; GMMRR_ATTACH_FINISHED_REQ 	0x1F0B
+; GMMRR_CELL_RES 	0x1F0C
+; GMMRR_CR_IND 	0x5F08
+
+
+
+PRIM 	GMMRR_ASSIGN_REQ 	0x1F00
+{
+ 	old_tlli 	 ; Old temporary logical link identifier
+ 	new_tlli 	 ; New temporary logical link identifier
+ 	old_ptmsi 	 ; Old Packet Temporary MS Identity
+ 	new_ptmsi 	 ; New Packet Temporary MS Identity
+ 	imsi 	 ; IMSI
+ 	rai 	 ; Routing area identifier assinged by the network
+}
+
+
+
+
+
+
+PRIM 	GMMRR_ENABLE_REQ 	0x1F01
+{
+ 	mobile_class 	 ; Mobile Class
+ 	acc_contr_class 	 ; Access control class
+ 	split_pg_cycle 	 ; Split paging cycle
+ 	spgc_ccch_supp 	 ; Split paging cycle support on CCCH
+ 	gmmrr_non_drx_timer 	 ; non_DRX timer
+}
+
+
+
+
+
+
+PRIM 	GMMRR_DISABLE_REQ 	0x1F02
+{
+}
+
+
+
+
+
+
+PRIM 	GMMRR_CELL_IND 	0x5F00
+{
+ 	cell_info 	 ; Cell information
+}
+
+
+
+
+
+
+PRIM 	GMMRR_READY_REQ 	0x1F03
+{
+}
+
+
+
+
+
+
+PRIM 	GMMRR_STANDBY_REQ 	0x1F04
+{
+ 	standby_cause 	 ; standby cause
+}
+
+
+
+
+
+
+PRIM 	GMMRR_PAGE_IND 	0x5F02
+{
+ 	page_id 	 ; page ID
+}
+
+
+
+
+
+
+PRIM 	GMMRR_CS_PAGE_IND 	0x5F03
+{
+}
+
+
+
+
+
+
+PRIM 	GMMRR_CS_PAGE_RES 	0x1F05
+{
+ 	response 	 ; response
+ 	susp_gprs 	 ; Suspend GPRS
+}
+
+
+
+
+
+
+PRIM 	GMMRR_SUSPEND_REQ 	0x1F06
+{
+ 	susp_gprs 	 ; Suspend GPRS
+ 	gmmrr_susp_cause 	 ; Suspension Cause
+}
+
+
+
+
+
+
+PRIM 	GMMRR_SUSPEND_CNF 	0x5F04
+{
+}
+
+
+
+
+
+
+PRIM 	GMMRR_RESUME_REQ 	0x1F07
+{
+}
+
+
+
+
+
+
+PRIM 	GMMRR_ATTACH_STARTED_REQ 	0x1F0A
+{
+}
+
+
+
+
+
+
+PRIM 	GMMRR_ATTACH_FINISHED_REQ 	0x1F0B
+{
+}
+
+
+
+
+
+
+PRIM 	GMMRR_CELL_RES 	0x1F0C
+{
+ 	cu_cause 	 ; Cell Update Cause
+}
+
+
+
+
+
+
+PRIM 	GMMRR_CR_IND 	0x5F08
+{
+}
+
+
+
+
+
+
+
+
+

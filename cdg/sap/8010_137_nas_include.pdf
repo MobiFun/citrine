@@ -1,0 +1,618 @@
+;********************************************************************************
+;*** File           : 8010_137_nas_include.pdf
+;*** Creation       : Wed Mar 11 09:57:51 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_137_nas_include
+;*** Document No.   : 8010.137.02.017
+;*** Document Date  : 2004-06-09
+;*** Document Status: APPROVED
+;*** Document Author: rpk
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:28:24 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-06-09"
+PRAGMA 	ID_AND_VERSION 	"8010.137.02.017"
+PRAGMA 	PREFIX 	NAS 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Disable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+CONST 	SIZE_ENTITY_NAME 	6 	; Maximum length of an entity name
+CONST 	SIZE_TFT_FILTER 	8 	; Maximum number of TFTs in one message
+CONST 	SIZE_IPv4_ADDR 	4 	; Length of an IPv4 address in octets
+CONST 	SIZE_IPv6_ADDR 	16 	; Length of an IPv6 address in octets
+CONST 	SIZE_NSAPI 	16 	; Maximum NSAPI id plus 1 (for array declarations)
+CONST 	FACILITY_LEN 	251 	; Max. length of facility considering L2 constraints
+
+
+
+VALTAB 	VAL_nsapi
+VAL 	0 	NSAPI_0 	"escape mechanism for future extensions"
+VAL 	1 	NSAPI_1 	"Point-To-Multipoint Multicast information"
+VAL 	2 	NSAPI_2 	"reserved for future use"
+VAL 	3 	NSAPI_3 	"reserved for future use"
+VAL 	4 	NSAPI_4 	"reserved for future use"
+VAL 	5 	NSAPI_5 	"dynamically allocated NSAPI value"
+VAL 	6 	NSAPI_6 	"dynamically allocated NSAPI value"
+VAL 	7 	NSAPI_7 	"dynamically allocated NSAPI value"
+VAL 	8 	NSAPI_8 	"dynamically allocated NSAPI value"
+VAL 	9 	NSAPI_9 	"dynamically allocated NSAPI value"
+VAL 	10 	NSAPI_10 	"dynamically allocated NSAPI value"
+VAL 	11 	NSAPI_11 	"dynamically allocated NSAPI value"
+VAL 	12 	NSAPI_12 	"dynamically allocated NSAPI value"
+VAL 	13 	NSAPI_13 	"dynamically allocated NSAPI value"
+VAL 	14 	NSAPI_14 	"dynamically allocated NSAPI value"
+VAL 	15 	NSAPI_15 	"dynamically allocated NSAPI value"
+
+VALTAB 	VAL_dti_direction
+VAL 	0 	HOME 	"mapped to HOME from dti.h"
+VAL 	1 	NEIGHBOR 	"mapped to NEIGHBOR from dti.h"
+
+VALTAB 	VAL_dti_conn
+VAL 	0 	CONNECT_DTI 	"Connect DTI  connection."
+VAL 	1 	DISCONNECT_DTI 	"Disconnect DTI connection."
+
+VALTAB 	VAL_dcomp
+VAL 	0b00 	DCOMP_OFF 	"compress neither direction"
+VAL 	0b01 	DCOMP_ON 	"compress MS to SGSN direction only"
+VAL 	0b10 	DCOMP_V_42_BIS 	"compress SGSN to MS direction only"
+
+VALTAB 	VAL_ppp_hc
+VAL 	0 	PPP_HC_NOT_USED 	"Header compression not used"
+VAL 	1 	PPP_HC_RFC_1144_USED 	"Van Jacobson is used"
+
+VALTAB 	VAL_hcomp
+VAL 	0b00 	HCOMP_OFF 	"compress neither direction"
+VAL 	0b01 	HCOMP_ON 	"compress MS to SGSN direction only"
+VAL 	0b10 	HCOMP_RFC1144 	"compress SGSN to MS direction only"
+VAL 	0b11 	HCOMP_RFC2507 	"compress both directions"
+
+VALTAB 	VAL_sync_event
+VAL 	0x20 	SYNC_RESSOURCE_ASSIGNED 	"Traffic channel resource assigned"
+VAL 	0x30 	SYNC_CHANNEL_MODE_MODIFIED 	"Channel mode modified"
+
+VALTAB 	VAL_ti
+VAL 	0 - 6 	"ms originated identifier"
+VAL 	8 - 14 	"ms terminated transaction"
+VAL 	7 	TI_RES_1 	"reserved"
+VAL 	15 	TI_RES_2 	"reserved"
+
+VALTAB 	VAL_ch_mode
+VAL 	0 	CHM_SIG_ONLY 	"signalling only"
+VAL 	1 	CHM_SPEECH 	"speech full rate or half rate version 1"
+VAL 	33 	CHM_SPEECH_V2 	"speech full rate or half rate version 2"
+VAL 	65 	CHM_SPEECH_V3 	"speech full rate or half rate version 3"
+VAL 	3 	CHM_DATA_9_6 	"data 9.6 kBit/s"
+VAL 	11 	CHM_DATA_4_8 	"data 4.8 kBit/s"
+VAL 	19 	CHM_DATA_2_4 	"data 2.4 kBit/s"
+VAL 	15 	CHM_DATA_14_4 	"data 14.4 kBit/s"
+
+VALTAB 	VAL_ch_type
+VAL 	0 	CH_SDCCH 	"SDCCH channel"
+VAL 	1 	CH_TCH_F 	"TCH Fullrate"
+VAL 	2 	CH_TCH_H 	"TCH Halfrate"
+
+VALTAB 	VAL_k_ms_iwf
+VAL 	0 - 61 	"Max window size for RLP Version 1"
+
+VALTAB 	VAL_k_iwf_ms
+VAL 	0 - 61 	"Max window size for RLP Version 1"
+
+VALTAB 	VAL_pt
+VAL 	0 	COMPR_TYPE_V42BIS 	"V.42bis"
+
+VALTAB 	VAL_p0
+VAL 	0 	COMP_DIR_NONE 	"compress in neither direction"
+VAL 	1 	COMP_DIR_TRANSMIT 	"compress in uplink direction only"
+VAL 	2 	COMP_DIR_RECEIVE 	"compress in downlink direction only"
+VAL 	3 	COMP_DIR_BOTH 	"compress in both directions"
+
+VALTAB 	VAL_p1
+VAL 	512 - 65535 	"Range definition for type"
+
+VALTAB 	VAL_p2
+VAL 	6 - 250 	"Range definition for type"
+
+VALTAB 	VAL_rate
+VAL 	0 	HALFRATE_4800 	"halfrate 4,8/6 Kb"
+VAL 	1 	FULLRATE_4800 	"fullrate 4,8/6 Kb"
+VAL 	2 	FULLRATE_9600 	"fullrate 9,6/12 Kb"
+VAL 	3 	FULLRATE_14400 	"fullrate 13,4/14,4 Kb"
+
+VALTAB 	VAL_ack_flg
+VAL 	0 	FLAG_ACK 	"acknowledged"
+VAL 	1 	FLAG_NAK 	"not acknowledged"
+
+VALTAB 	VAL_tft_pf_valid_bits
+VAL 	0x00 	TFT_ID_RES 	"Reserved"
+VAL 	0x01 	TFT_ID_IPv4_SRC_ADDR_MASK 	"source address and subnet mask"
+VAL 	0x02 	TFT_ID_IPv6_SRC_ADDR_MASK 	"source address and subnet mask"
+VAL 	0x04 	TFT_ID_PROTOCOL_OR_NEXT_HDR 	"IPv4 protocol number or IPv6 next header"
+VAL 	0x08 	TFT_ID_DEST_PORT_RANGE 	"destination port range"
+VAL 	0x10 	TFT_ID_SRC_PORT_RANGE 	"source port range"
+VAL 	0x20 	TFT_ID_IPSEC_SPI 	"IPSec security parameter index"
+VAL 	0x40 	TFT_ID_TOS_AND_MASK 	"IPv4 ToS or IPv6 traffic class) and mask"
+VAL 	0x80 	TFT_ID_FLOW_LABEL 	"IPv6 flow label"
+
+VALTAB 	VAL_org_entity
+VAL 	0 	ORG_ENTITY_CC 	"Originator is CC"
+VAL 	1 	ORG_ENTITY_SM 	"Originator is SM"
+VAL 	2 	ORG_ENTITY_SMS 	"Originator is SMS"
+VAL 	3 	ORG_ENTITY_SS 	"Originator is SS"
+VAL 	4 	ORG_ENTITY_UPM 	"Originator is UPM"
+VAL 	5 	ORG_ENTITY_CLT 	"Originator is CLT (COMLIB test )"
+
+VALTAB 	VAL_reset
+VAL 	0 	RESET_NO 	"no reset"
+VAL 	1 	RESET_YES 	"reset"
+
+VALTAB 	VAL_pkt_flow_id
+VAL 	0x00 	PFI_BEST_EFFORT 	"Best Effort"
+VAL 	0x01 	PFI_SIGNALING 	"Signalling"
+VAL 	0x02 	PFI_SMS 	"SMS"
+VAL 	0xFF 	PKT_FLOW_ID_NOT_PRES 	"Value FF is used to indicate when Packet Flow Identifier is not present."
+
+
+
+
+VAR 	nsapi 	"network layer service access point identifier" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_nsapi@ 	
+
+VAR 	pri_nsapi 	"network layer service access point identifier" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_nsapi@ 	
+
+VAR 	nsapi_set 	"set of network layer service access point identifiers" 	S
+
+
+VAR 	dti_linkid 	"DTI link identifier" 	L
+
+
+VAR 	name 	"DTI entity neighbor name" 	B
+
+
+VAR 	dti_direction 	"direction of DTI connection" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_dti_direction@ 	
+
+VAR 	dti_conn 	"DTI connect" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_dti_conn@ 	
+
+VAR 	hcomp 	"Header compression used/requested; Header compression used/requested" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_hcomp@ 	
+
+VAR 	dcomp 	"Data compression used/requested; Data compression used/requested" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_dcomp@ 	
+
+VAR 	ppp_hc 	"header compression of PPP connection; header compression of PPP connection" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_ppp_hc@ 	
+
+VAR 	msid 	"max slot identifier; max slot identifier" 	B
+
+
+VAR 	sync_event 	"event, received in the sync indication" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_sync_event@ 	
+
+VAR 	ti 	"transaction identifier" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_ti@ 	
+
+VAR 	ch_type 	"Channel Type" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_ch_type@ 	
+
+VAR 	ch_mode 	"Channel Mode" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_ch_mode@ 	
+
+VAR 	ip_not_present 	"IP address not present" 	L
+
+
+VAR 	a4 	"IPv4 Address Values" 	B
+
+
+VAR 	a6 	"IPv6 Address Values" 	B
+
+
+VAR 	k_ms_iwf 	"window size ms -> iwf" 	S
+
+VAL 	@p_8010_137_nas_include - VAL_k_ms_iwf@ 	
+
+VAR 	k_iwf_ms 	"window size iwf -> ms" 	S
+
+VAL 	@p_8010_137_nas_include - VAL_k_iwf_ms@ 	
+
+VAR 	t1 	"acknowledge timer" 	B
+
+
+VAR 	t2 	"reply delay" 	B
+
+
+VAR 	n2 	"maximum number of retransmission attempts" 	B
+
+
+VAR 	pt 	"type of data compression" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_pt@ 	
+
+VAR 	p0 	"v.42bis data compression direction" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_p0@ 	
+
+VAR 	p1 	"v.42bis number of possible codewords" 	S
+
+VAL 	@p_8010_137_nas_include - VAL_p1@ 	
+
+VAR 	p2 	"v.42bis maximum encodable string length" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_p2@ 	
+
+VAR 	bytes_per_prim 	"bytes per primitive" 	S
+
+
+VAR 	rate 	"transmission rate" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_rate@ 	
+
+VAR 	rlp_vers 	"rlp version number" 	B
+
+
+VAR 	ack_flg 	"acknowledge flag" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_ack_flg@ 	
+
+VAR 	error_rate 	"error_rate" 	L
+
+
+VAR 	tft_pf_id 	"packet filter identifier" 	B
+
+
+VAR 	tft_pf_precedence 	"packet filter precedence" 	B
+
+
+VAR 	tft_pf_valid_bits 	"field precence bitfield" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_tft_pf_valid_bits@ 	
+
+VAR 	tft_protocol 	"IPv4 protocol number" 	B
+
+
+VAR 	tft_next_hdr 	"IPv6 next header" 	B
+
+
+VAR 	tft_flow_label 	"IPv6 flow label" 	L
+
+
+VAR 	tft_ipv4_addr 	"source address" 	B
+
+
+VAR 	tft_ipv4_mask 	"subnet mask" 	B
+
+
+VAR 	tft_ipv6_addr 	"source address" 	B
+
+
+VAR 	tft_ipv6_mask 	"subnet mask" 	B
+
+
+VAR 	low_limit 	"low limit" 	S
+
+
+VAR 	high_limit 	"high limit" 	S
+
+
+VAR 	tos_value 	"type of service value" 	B
+
+
+VAR 	tos_mask 	"type of service mask" 	B
+
+
+VAR 	tft_ipsec_spi 	"IPSec security parameter index" 	L
+
+
+VAR 	l_fac 	"facility length" 	S
+
+
+VAR 	o_fac 	"facility offset" 	S
+
+
+VAR 	fac 	"facility content" 	B
+
+
+VAR 	org_entity 	"Originator of a request to MM" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_org_entity@ 	
+
+VAR 	reset 	"reset flag" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_reset@ 	
+
+VAR 	octets_uplink 	"octets uplink" 	L
+
+
+VAR 	octets_downlink 	"octets downlink" 	L
+
+
+VAR 	packets_uplink 	"packets uplink" 	L
+
+
+VAR 	packets_downlink 	"packets downlink" 	L
+
+
+VAR 	pkt_flow_id 	"packet flow identifier" 	B
+
+VAL 	@p_8010_137_nas_include - VAL_pkt_flow_id@ 	
+
+VAR 	model 	"RA transfer model" 	B
+
+
+VAR 	tra_rate 	"Transmission rate" 	B
+
+
+VAR 	user_rate 	"User rate" 	B
+
+
+VAR 	ndb 	"Number data bits" 	B
+
+
+VAR 	nsb 	"Number stop bits" 	B
+
+
+
+
+
+COMP 	dti_neighbor 	 "DTI neighbor entity name"
+{
+ 	name 	[SIZE_ENTITY_NAME] 	 ; DTI entity neighbor name
+}
+
+
+
+COMP 	comp_params 	 "Header compression parameters"
+{
+ 	hcomp 	 ; Header compression used/requested; Header compression used/requested
+ 	dcomp 	 ; Data compression used/requested; Data compression used/requested
+ 	ppp_hc 	 ; header compression of PPP connection; header compression of PPP connection
+ 	msid 	 ; max slot identifier; max slot identifier
+}
+
+
+
+COMP 	ch_info 	 "Channel using mode"
+{
+ 	ch_type 	 ; Channel Type
+ 	ch_mode 	 ; Channel Mode
+}
+
+
+
+COMP 	ipv4_addr 	 "IPv4 Address Type"
+{
+ 	a4 	[SIZE_IPv4_ADDR] 	 ; IPv4 Address Values
+}
+
+
+
+COMP 	ipv6_addr 	 "IPv6 Address Type"
+{
+ 	a6 	[SIZE_IPv6_ADDR] 	 ; IPv6 Address Values
+}
+
+
+
+UNION 	ip_address 	 "IP Address"
+{
+ 	is_ip_not_present 	ip_not_present 	 ; IP address not present
+ 	is_ipv4 	ipv4_addr 	 ; IPv4 address
+ 	is_ipv6 	ipv6_addr 	 ; IPv6 address
+}
+
+
+
+COMP 	ip 	 "IP Address structure"
+{
+ 	ip_address 	 ; IP address
+}
+
+
+
+COMP 	rlp_config 	 "RLP configuration parameters"
+{
+ 	k_ms_iwf 	 ; window size ms->iwf
+ 	k_iwf_ms 	 ; window size iwf->ms
+ 	t1 	 ; acknowledge timer
+ 	t2 	 ; reply delay
+ 	n2 	 ; retransmission attempts
+ 	pt 	 ; type of data compression
+ 	p0 	 ; v.42 bis data compression direction
+ 	p1 	 ; v.42 bis number of possible codewords
+ 	p2 	 ; v.42 bis maximum encodable data string length
+}
+
+
+
+COMP 	tft_ipv4_src_addr_mask 	 "IPv4 source address and subnet mask"
+{
+ 	tft_ipv4_addr 	[SIZE_IPv4_ADDR] 	 ; source address
+ 	tft_ipv4_mask 	[SIZE_IPv4_ADDR] 	 ; subnet mask
+}
+
+
+
+COMP 	tft_ipv6_src_addr_mask 	 "IPv6 source address and subnet mask"
+{
+ 	tft_ipv6_addr 	[SIZE_IPv6_ADDR] 	 ; source address
+ 	tft_ipv6_mask 	[SIZE_IPv6_ADDR] 	 ; subnet mask
+}
+
+
+
+COMP 	tft_src_port_range 	 "source port range"
+{
+ 	low_limit 	 ; low limit
+ 	high_limit 	 ; high limit
+}
+TYPEDEF COMP tft_src_port_range 	tft_dest_port_range 	 "destination port range"
+
+
+
+COMP 	tft_tos_and_mask 	 "IPv4 type of service (or IPv6 traffic class) and mask"
+{
+ 	tos_value 	 ; type of service value
+ 	tos_mask 	 ; type of service mask
+}
+
+
+
+COMP 	tft_pf_ipv6 	 "packet filter component"
+{
+ 	tft_next_hdr 	 ; IPv6 next header
+ 	tft_tos_and_mask 	 ; IPv6 traffic class and mask
+ 	tft_dest_port_range 	 ; destination port range
+ 	tft_src_port_range 	 ; source port range
+ 	tft_ipsec_spi 	 ; IPSec security parameter index
+ 	tft_flow_label 	 ; IPv6 flow label
+ 	tft_ipv6_src_addr_mask 	 ; source address and subnet mask
+}
+
+
+
+COMP 	tft_pf_ipv4 	 "packet filter component"
+{
+ 	tft_protocol 	 ; IPv4 protocol number
+ 	tft_tos_and_mask 	 ; IPv4 ToS and mask
+ 	tft_dest_port_range 	 ; destination port range
+ 	tft_src_port_range 	 ; source port range
+ 	tft_ipsec_spi 	 ; IPSec security parameter index
+ 	tft_ipv4_src_addr_mask 	 ; source address and subnet mask
+}
+
+
+
+UNION 	tft_pf_entry 	 "TFT packet filter entry"
+{
+ 	is_tft_pf_ipv4 	tft_pf_ipv4 	 ; IPv4 packet filter
+ 	is_tft_pf_ipv6 	tft_pf_ipv6 	 ; IPv6 packet filter
+}
+
+
+
+COMP 	tft_pf 	 "packet filter"
+{
+ 	tft_pf_id 	 ; packet filter identifier
+ 	tft_pf_precedence 	 ; packet filter precedence
+ 	tft_pf_valid_bits 	 ; field precence bitfield
+ 	tft_pf_entry 	 ; packet filter entry
+}
+
+
+
+COMP 	tft 	 "Traffic Flow Template"
+{
+ 	tft_pf 	PTR [0..SIZE_TFT_FILTER] 	 ; traffic filter
+}
+
+
+
+COMP 	fac_inf 	 "facility information"
+{
+ 	l_fac 	 ; facility length
+ 	o_fac 	 ; facility offset
+ 	fac 	[FACILITY_LEN] 	 ; facility content
+}
+
+
+
+COMP 	ra_act_params 	 "facility information"
+{
+ 	model 	 ; RA transfer model
+ 	tra_rate 	 ; Transmission rate
+ 	user_rate 	 ; User rate
+ 	ndb 	 ; Number data bits
+ 	nsb 	 ; Number stop bits
+}
+
+
+
+
+
+
+; NAS_EXPORT 	0x0000
+
+
+
+PRIM 	NAS_EXPORT 	0x0000
+{
+ 	ack_flg 	 ; acknowledge flag
+ 	bytes_per_prim 	 ; bytes per primitive
+ 	ch_info 	 ; Channel using mode
+ 	comp_params 	 ; Compression parameters
+ 	dti_direction 	 ; direction of DTI connection
+ 	dti_linkid 	 ; DTI link identifier
+ 	dti_neighbor 	 ; DTI neighbor entity name
+ 	error_rate 	 ; error_rate
+ 	ip 	 ; IP address structure
+ 	ip_address 	 ; IP address
+ 	k_iwf_ms 	 ; window size iwf -> ms
+ 	k_ms_iwf 	 ; window size ms -> iwf
+ 	n2 	 ; maximum number of retransmission attempts
+ 	ipv4_addr 	 ; IPv4 address
+ 	ipv6_addr 	 ; IPv6 address
+ 	nsapi 	 ; network layer service access point identifier
+ 	nsapi_set 	 ; set of network layer service access point identifiers
+ 	p0 	 ; v.42bis data compression direction
+ 	p1 	 ; v.42bis number of possible codewords
+ 	p2 	 ; v.42bis maximum encodable string length
+ 	pri_nsapi 	 ; network layer service access point identifier
+ 	pt 	 ; type of data compression
+ 	rate 	 ; transmission rate
+ 	rlp_config 	 ; RLP Configuration
+ 	rlp_vers 	 ; rlp version number
+ 	sync_event 	 ; Event, received in the sync indication
+ 	t1 	 ; acknowledge timer
+ 	t2 	 ; reply delay
+ 	tft 	 ; Traffic flow template
+ 	tft_dest_port_range 	 ; IP destination port range
+ 	tft_ipsec_spi 	 ; IPSec SPI
+ 	tft_ipv4_src_addr_mask 	 ; IPv4 source address and subnet mask
+ 	tft_ipv6_src_addr_mask 	 ; IPv6 source address and subnet mask
+ 	tft_pf 	 ; TFT packet filter
+ 	tft_pf_entry 	 ; TFT packet filter entry (in array)
+ 	tft_pf_ipv4 	 ; IPv4 packet filter
+ 	tft_pf_ipv6 	 ; IPv6 packet filter
+ 	tft_src_port_range 	 ; IP source port range
+ 	tft_tos_and_mask 	 ; IP type of service/traffic class
+ 	ti 	 ; Transaction identifier
+ 	fac_inf 	 ; Facility Information
+ 	org_entity 	 ; Originating entity
+ 	dti_conn 	 ; DTI connect
+ 	reset 	 ; reset flag
+ 	octets_uplink 	 ; octets uplink
+ 	octets_downlink 	 ; octets downlink
+ 	packets_uplink 	 ; packets uplink
+ 	packets_downlink 	 ; packets downlink
+ 	pkt_flow_id 	 ; Packet Flow Identifier
+ 	ra_act_params 	 ; RA activation parameters
+}
+
+
+
+
+
+
+
+
+

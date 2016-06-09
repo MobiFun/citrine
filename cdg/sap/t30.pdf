@@ -1,0 +1,778 @@
+;********************************************************************************
+;*** File           : t30.pdf
+;*** Creation       : Wed Mar 11 09:58:51 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : t30
+;*** Document No.   : 8411.104.98.312
+;*** Document Date  : 2002-04-23
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: slo
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:54:28 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-04-23"
+PRAGMA 	ID_AND_VERSION 	"8411.104.98.312"
+
+
+
+CONST 	CSI_LEN 	20 	; length of CSI field
+CONST 	NSF_LEN 	90 	; length of NSF field
+CONST 	CIG_LEN 	20 	; length of CIG field
+CONST 	NSC_LEN 	90 	; length of NSC field
+CONST 	TSI_LEN 	20 	; length of TSI field
+CONST 	NSS_LEN 	90 	; length of NSS field
+CONST 	PWD_LEN 	20 	; length of PWD field
+CONST 	SUB_LEN 	20 	; length of SUB field
+CONST 	SEP_LEN 	20 	; length of SEP field
+CONST 	T30_ENTITY_NAME_LEN 	6 	; maximum length of entity name including NULL
+
+
+
+VALTAB 	VAL_dir
+VAL 	0x00 	DIR_SND 	"send fax data"
+VAL 	0x01 	DIR_RCV 	"receive fax data"
+
+VALTAB 	VAL_sgn
+VAL 	0x00 	SGN_OK 	"OK"
+VAL 	0x01 	SGN_DIS 	"Digital identification signal"
+VAL 	0x02 	SGN_CSI 	"Called subscriber identification"
+VAL 	0x04 	SGN_NSF 	"Non-standard facilities"
+VAL 	0x21 	SGN_CFR 	"Confirmation to receive"
+VAL 	0x22 	SGN_FTT 	"Failure to train"
+VAL 	0x31 	SGN_MCF 	"Message confirmation"
+VAL 	0x32 	SGN_RTN 	"Retrain negative"
+VAL 	0x33 	SGN_RTP 	"Retrain positive"
+VAL 	0x34 	SGN_PIN 	"Procedure interrupt negative"
+VAL 	0x35 	SGN_PIP 	"Procedure interrupt positive"
+VAL 	0x3F 	SGN_FDM 	"File diagnostics message"
+VAL 	0x41 	SGN_DCS 	"Digital command signal"
+VAL 	0x42 	SGN_TSI 	"Transmitting subscriber identification"
+VAL 	0x43 	SGN_SUB 	"Subaddress"
+VAL 	0x44 	SGN_NSS 	"Non-standard set-up"
+VAL 	0x45 	SGN_PWDR 	"Password - receive"
+VAL 	0x4F 	SGN_TCF 	"Training check frame"
+VAL 	0x58 	SGN_CRP 	"Command repeat"
+VAL 	0x5F 	SGN_DCN 	"Disconnect"
+VAL 	0x71 	SGN_EOM 	"End of message"
+VAL 	0x72 	SGN_MPS 	"Multi-page signal"
+VAL 	0x74 	SGN_EOP 	"End of procedure"
+VAL 	0x79 	SGN_PRI_EOM 	"Procedure Interrupt - End Of Message"
+VAL 	0x7A 	SGN_PRI_MPS 	"Procedure Interrupt - MultiPage Signal"
+VAL 	0x7C 	SGN_PRI_EOP 	"Procedure Interrupt - End Of Procedure"
+VAL 	0x81 	SGN_DTC 	"Digital transmit command"
+VAL 	0x82 	SGN_CIG 	"Calling subscriber identification"
+VAL 	0x83 	SGN_PWDS 	"Password  - send"
+VAL 	0x84 	SGN_NSC 	"Non-standard facilities command"
+VAL 	0x85 	SGN_SEP 	"Selective Polling"
+VAL 	0xF1 	SGN_FCS_ERR 	"FCS error"
+VAL 	0xF2 	SGN_NO_RES 	"No response"
+VAL 	0xF3 	SGN_CONT 	"continue"
+VAL 	0xFF 	SGN_NOT_USED 	"Not used"
+
+VALTAB 	VAL_cmpl
+VAL 	0 	CMPL_EOP 	"end of procedure"
+VAL 	1 	CMPL_EOM 	"end of message"
+VAL 	2 	CMPL_PI 	"procedure interrupt"
+VAL 	3 	CMPL_DCN 	"disconnect"
+
+VALTAB 	VAL_cause
+VAL 	0x4D10 	ERR_PH_A_UNSPEC 	"unspecified phase A error"
+VAL 	0x4D11 	ERR_PH_A_T1_TIMEOUT 	"no answer (T30 T1 timeout)"
+VAL 	0x4D20 	ERR_PH_B_SND_UNSPEC 	"unspecified transmit phase B error"
+VAL 	0x4D21 	ERR_PH_B_SND_CANT_RCV_OR_SND 	"remote cannot receive or send"
+VAL 	0x4D22 	ERR_PH_B_SND_COMREC 	"COMREC error in transmit phase B"
+VAL 	0x4D23 	ERR_PH_B_SND_COMREC_INVALID_CMD_RCVD 	"COMREC invalid command received"
+VAL 	0x4D24 	ERR_PH_B_SND_RSPREC 	"RSPREC transmit error phase B"
+VAL 	0x4D25 	ERR_PH_B_SND_DCS_RPTD_3_TIMES 	"DCS send three times without response"
+VAL 	0x4D26 	ERR_PH_B_SND_DIS_DTC_RCVD_3_TIMES 	"DIS/DTC received 3 times; DCS not recognized"
+VAL 	0x4D27 	ERR_PH_B_SND_FTT_2400 	"failure to train at 2400 bit/s or +FMS value"
+VAL 	0x4D28 	ERR_PH_B_SND_INVALID_RESP_RCVD 	"invalid respones received"
+VAL 	0x4D40 	ERR_PH_C_SND_UNSPEC 	"unspecified transmit phase C error"
+VAL 	0x4D41 	ERR_PH_C_SND_UNSPEC_IMAGE_CONV 	"unspecified image format error"
+VAL 	0x4D43 	ERR_PH_C_SND_DTE_TO_DTC_DATA_UNDERFLOW 	"DTE to DTC data underflow"
+VAL 	0x4D44 	ERR_PH_C_SND_UNRECOG_TRANSP_DATA_CMD 	"unrecognized transparent data command"
+VAL 	0x4D45 	ERR_PH_C_SND_IMAGE_LINE_LENGTH 	"image error, line length wrong"
+VAL 	0x4D46 	ERR_PH_C_SND_IMAGE_PAGE_LENGTH 	"image error, page length wrong"
+VAL 	0x4D47 	ERR_PH_C_SND_IMAGE_COMPRESSION_MODE 	"image error, compression mode wrong"
+VAL 	0x4D50 	ERR_PH_D_SND_UNSPEC 	"unspecified transmit phase D error"
+VAL 	0x4D51 	ERR_PH_D_SND_RSPREC 	"RESPREC transmit error phase D"
+VAL 	0x4D52 	ERR_PH_D_SND_MPS_RPTD_3_TIMES 	"no response to MPS repeated 3 times"
+VAL 	0x4D53 	ERR_PH_D_SND_INVALID_RESP_TO_MPS 	"invalid respones to MPS"
+VAL 	0x4D54 	ERR_PH_D_SND_EOP_RPTD_3_TIMES 	"no response to EOP repeated 3 times"
+VAL 	0x4D55 	ERR_PH_D_SND_INVALID_RESP_TO_EOP 	"invalid response to EOP"
+VAL 	0x4D56 	ERR_PH_D_SND_EOM_RPTD_3_TIMES 	"no response to EOM repeated 3 times"
+VAL 	0x4D57 	ERR_PH_D_SND_INVALID_RESP_TO_EOM 	"invalid response to EOM"
+VAL 	0x4D58 	ERR_PH_D_SND_UNABLE_TO_CONT 	"unable to continue after PIN or PIP"
+VAL 	0x4D70 	ERR_PH_B_RCV_UNSPEC 	"unspecified receive phase B error"
+VAL 	0x4D71 	ERR_PH_B_RCV_RSPREC 	"RSPREC receive error phase B"
+VAL 	0x4D72 	ERR_PH_B_RCV_COMREC 	"COMREC error in receive phase B"
+VAL 	0x4D73 	ERR_PH_B_RCV_EXP_PAGE_NOT_RCVD 	"T30 T2 timeout, expected page not received"
+VAL 	0x4D74 	ERR_PH_B_RCV_T1_TIMEOUT_AFTER_EOM_RCVD 	"T30 T1 timeout after EOM received"
+VAL 	0x4D90 	ERR_PH_C_RCV_UNSPEC 	"unspecified receive phase C error"
+VAL 	0x4D91 	ERR_PH_C_RCV_EOL_MISSING 	"missing EOL after 5 seconds (3.2/T4)"
+VAL 	0x4D93 	ERR_PH_C_RCV_DCE_TO_DTE_BUFFER_OVERFLOW 	"DCE to DTE buffer overflow"
+VAL 	0x4D94 	ERR_PH_C_RCV_BAD_CRC_OR_FRAME 	"bad crc or frame (ECM mode)"
+VAL 	0x4DA0 	ERR_PH_D_RCV_UNSPEC 	"unspecified receive phase D error"
+VAL 	0x4DA1 	ERR_PH_D_RCV_RSPREC_INVALID_RESP_RCVD 	"RSPREC invalid respones received"
+VAL 	0x4DA2 	ERR_PH_D_RCV_COMREC_INVALID_RESP_RCVD 	"COMREC invalid respones received"
+VAL 	0x4DA3 	ERR_PH_D_RCV_UNABLE_TO_CONT 	"unable to continue after PIN or PIP"
+VAL 	0xCDE0 	ERR_PH_B_SND_RESERVED1 	"reserved"
+VAL 	0xCDE1 	ERR_PH_B_SND_RESERVED2 	"reserved"
+VAL 	0xCDE2 	ERR_PH_B_SND_RESERVED3 	"reserved"
+VAL 	0xCDE3 	ERR_PH_C_SND_RESERVED1 	"reserved"
+VAL 	0xCDE4 	ERR_PH_C_SND_RESERVED2 	"reserved"
+VAL 	0xCDE5 	ERR_PH_D_SND_RESERVED1 	"reserved"
+VAL 	0xCDE6 	ERR_PH_D_SND_RESERVED2 	"reserved"
+VAL 	0xCDE7 	ERR_PH_D_SND_RESERVED3 	"reserved"
+VAL 	0xCDE8 	ERR_PH_B_RCV_NO_RESP 	"T2 timeout, no response"
+VAL 	0xCDE9 	ERR_PH_B_RCV_INVALID_RESP_RCVD 	"invalid respones received"
+VAL 	0xCDEA 	ERR_PH_B_RCV_RESERVED3 	"reserved"
+VAL 	0xCDEB 	ERR_PH_C_RCV_RESERVED1 	"reserved"
+VAL 	0xCDEC 	ERR_PH_C_RCV_RESERVED2 	"reserved"
+VAL 	0xCDED 	ERR_PH_D_RCV_NO_RESP 	"T2 timeout, no response"
+VAL 	0xCDEE 	ERR_PH_D_RCV_INVALID_RESP_RCVD 	"invalid respones received"
+VAL 	0xCDEF 	ERR_PH_D_RCV_RESERVED3 	"reserved"
+VAL 	0xCDF0 	ERR_SGN_NOT_ALLOWED 	"signal not allowed"
+VAL 	0xCDF1 	ERR_CCD_ENC 	"CCD encoding error"
+
+VALTAB 	VAL_test_mode
+VAL 	0 	TST_OFF 	"normal"
+VAL 	0x0001 	TST_BCS 	"test BCS formatter only"
+VAL 	0x0002 	TST_STUFF 	"stuffing/destuffing off"
+VAL 	0x0004 	TST_FCS 	"FCS generating/checking off"
+VAL 	0x0008 	TST_CTRL 	"Control checking off"
+VAL 	0x0010 	TST_RTC 	"RTC checking off"
+VAL 	0x0020 	TST_MIR 	"mirror report strings"
+VAL 	0x0080 	TST_BUF 	"show contents of buffer"
+
+VALTAB 	VAL_bitorder
+VAL 	0 	FBO_NRM_DATA 	"no change in bitorder for DATA  frames"
+VAL 	0 	FBO_NRM_STATUS 	"no change in bitorder for STATUS  frames"
+VAL 	1 	FBO_REV_DATA 	"reverse bitorder only for MSG frames"
+VAL 	2 	FBO_REV_STATUS 	"reverse bitorder only for STATUS frames"
+
+VALTAB 	VAL_phase
+VAL 	0 	BCS_PHASE 	"Not a message phase"
+VAL 	1 	MSG_PHASE 	"Message phase (C)"
+
+VALTAB 	VAL_dti_conn
+VAL 	0 	T30_DISCONNECT_DTI 	"Disconnect DTI from T30"
+VAL 	1 	T30_CONNECT_DTI 	"Connect DTI to T30"
+
+VALTAB 	VAL_link_id
+VAL 	0 	T30_LINK_ID_DEFAULT 	"Default link id"
+
+VALTAB 	VAL_dti_direction
+VAL 	0 	T30_DTI_NORMAL 	"DTI used normally"
+VAL 	1 	T30_DTI_INVERTED 	"DTI is inverted"
+
+
+
+
+VAR 	crp 	"CRP flag" 	B
+
+
+VAR 	c_pwd 	"length of PWD" 	B
+
+
+VAR 	pwd 	"password" 	B
+
+
+VAR 	c_sub 	"length of SUB" 	B
+
+
+VAR 	sub 	"subaddress" 	B
+
+
+VAR 	c_sep 	"length of SEP" 	B
+
+
+VAR 	sep 	"selective polling" 	B
+
+
+VAR 	c_nsc 	"length of NSC" 	B
+
+
+VAR 	nsc 	"non-standard facilities command" 	B
+
+
+VAR 	c_nsf 	"length of NSF" 	B
+
+
+VAR 	nsf 	"non-standard facilities" 	B
+
+
+VAR 	c_tsi 	"length of TSI" 	B
+
+
+VAR 	tsi 	"transmitting subscriber identification" 	B
+
+
+VAR 	c_cig 	"length of CIG" 	B
+
+
+VAR 	cig 	"calling subscriber identification" 	B
+
+
+VAR 	c_csi 	"length of CSI" 	B
+
+
+VAR 	csi 	"calling subscriber identification" 	B
+
+
+VAR 	c_nss 	"length of NSS" 	B
+
+
+VAR 	nss 	"non-standard set-up" 	B
+
+
+VAR 	v_dis 	"DIS flag" 	B
+
+
+VAR 	v_dcs 	"DCS flag" 	B
+
+
+VAR 	v_dtc 	"DTC flag" 	B
+
+
+VAR 	v8 	"V.8 capabilities" 	B
+
+
+VAR 	n_byte 	"no. of octets preferred" 	B
+
+
+VAR 	ready_tx_fax 	"ready to transmit a facsimile document (polling)" 	B
+
+
+VAR 	rec_fax_op 	"receiver fax operation" 	B
+
+
+VAR 	data_sig_rate 	"data signalling rate" 	B
+
+
+VAR 	R8_lines_pels 	"R8*7.7 lines/mm and/or 200 x 200 pels/25.4 mm" 	B
+
+
+VAR 	two_dim_coding 	"two-dimensional coding" 	B
+
+
+VAR 	rec_width 	"recording-width" 	B
+
+
+VAR 	max_rec_len 	"maximum recording length" 	B
+
+
+VAR 	min_scan_time 	"minimum scan line time at the receiver" 	B
+
+
+VAR 	uncomp_mode 	"uncompressed mode" 	B
+
+
+VAR 	err_corr_mode 	"error correction mode" 	B
+
+
+VAR 	frame_size 	"frame size" 	B
+
+
+VAR 	t6_coding 	"T.6 coding" 	B
+
+
+VAR 	R8_lines 	"R8*15.4 lines/mm" 	B
+
+
+VAR 	r_300_pels 	"300*300 pels/25.4 mm" 	B
+
+
+VAR 	R16_lines_pels 	"R16*15.4 lines/mm and/or 400*400 pels/25.4 mm" 	B
+
+
+VAR 	resolution_type 	"resolution type selection" 	B
+
+
+VAR 	i_res_pref 	"inch based resolution preferred" 	B
+
+
+VAR 	m_res_pref 	"metric-based resolution preferred" 	B
+
+
+VAR 	min_scan_time_hr 	"minimum scan line time for higher resolutions" 	B
+
+
+VAR 	sel_polling 	"selective polling" 	B
+
+
+VAR 	subaddr 	"subaddressing" 	B
+
+
+VAR 	password 	"password" 	B
+
+
+VAR 	ready_tx_doc 	"ready to transmit a data file (polling)" 	B
+
+
+VAR 	bft 	"Binary File Transfer (BFT)" 	B
+
+
+VAR 	dtm 	"Document Transfer Mode (DTM)" 	B
+
+
+VAR 	edi 	"Electronic Data Interchange (EDI)" 	B
+
+
+VAR 	btm 	"Basic Transfer Mode (BTM)" 	B
+
+
+VAR 	ready_tx_mixed 	"ready to transmit a character or mixed mode document (polling)" 	B
+
+
+VAR 	char_mode 	"character mode" 	B
+
+
+VAR 	mixed_mode 	"mixed mode (Annex E/T.4)" 	B
+
+
+VAR 	proc_mode_26 	"processable mode 26)" 	B
+
+
+VAR 	dig_network_cap 	"digital network capability" 	B
+
+
+VAR 	duplex 	"duplex and half duplex capabilities" 	B
+
+
+VAR 	jpeg 	"JPEG coding" 	B
+
+
+VAR 	full_colour 	"full colour mode" 	B
+
+
+VAR 	huffman_tables 	"preferred Huffman tables" 	B
+
+
+VAR 	r_12_bits_pel_comp 	"12 bits/pel component" 	B
+
+
+VAR 	no_subsamp 	"no subsampling" 	B
+
+
+VAR 	cust_illum 	"custom illuminant" 	B
+
+
+VAR 	cust_gamut 	"custom gamut range" 	B
+
+
+VAR 	na_letter 	"North American Letter (215.9*279.4 mm)" 	B
+
+
+VAR 	na_legal 	"North American Legal (215.9*355.6 mm)" 	B
+
+
+VAR 	sing_prog_seq_coding_basic 	"single-progression sequential coding basic" 	B
+
+
+VAR 	sing_prog_seq_coding_L0 	"single-progression sequential coding optional L0" 	B
+
+
+VAR 	trans_rate 	"transmission rate" 	S
+
+
+VAR 	dir 	"direction of call" 	B
+
+VAL 	@p_t30 - VAL_dir@ 	
+
+VAR 	sgn 	"binary coded signal" 	B
+
+VAL 	@p_t30 - VAL_sgn@ 	
+
+VAR 	hdlc_report 	"HDLC report mode" 	B
+
+
+VAR 	l_buf 	"length of content in bits" 	S
+
+
+VAR 	o_buf 	"offset of content in bits" 	S
+
+
+VAR 	buf 	"buffer content" 	B
+
+
+VAR 	cmpl 	"completion" 	B
+
+VAL 	@p_t30 - VAL_cmpl@ 	
+
+VAR 	cause 	"error cause" 	S
+
+VAL 	@p_t30 - VAL_cause@ 	
+
+VAR 	half_rate 	"half-rate flag" 	B
+
+
+VAR 	threshold 	"tcf threshold" 	B
+
+
+VAR 	frames_per_prim 	"no. of frames per primitive" 	S
+
+
+VAR 	test_mode 	"Test mode" 	S
+
+VAL 	@p_t30 - VAL_test_mode@ 	
+
+VAR 	eol 	"end of line count" 	S
+
+
+VAR 	buf_size_rx 	"buffer size RX" 	S
+
+
+VAR 	buf_size_tx 	"buffer size TX" 	S
+
+
+VAR 	bitorder 	"Bitorder" 	B
+
+VAL 	@p_t30 - VAL_bitorder@ 	
+
+VAR 	phase 	"T.30 phase" 	B
+
+VAL 	@p_t30 - VAL_phase@ 	
+
+VAR 	dti_conn 	"DTI connect" 	B
+
+VAL 	@p_t30 - VAL_dti_conn@ 	
+
+VAR 	entity_name 	"name of an neighbour entity" 	B
+
+
+VAR 	link_id 	"Link identifier" 	L
+
+VAL 	@p_t30 - VAL_link_id@ 	
+
+VAR 	dti_direction 	"DTI direction" 	B
+
+VAL 	@p_t30 - VAL_dti_direction@ 	
+
+
+
+
+COMP 	dis 	 "digital identification signal"
+{
+ 	v8 	 ; V.8 capabilities
+ 	n_byte 	 ; no. of octets preferred
+ 	ready_tx_fax 	 ; ready to transmit a facsimile document (polling)
+ 	rec_fax_op 	 ; receiver fax operation
+ 	data_sig_rate 	 ; data signalling rate
+ 	R8_lines_pels 	 ; R8*7.7 lines/mm and/or 200 x 200 pels/25.4 mm
+ 	two_dim_coding 	 ; two-dimensional coding
+ 	rec_width 	 ; recording-width
+ 	max_rec_len 	 ; maximum recording length
+ 	min_scan_time 	 ; minimum scan line time at the receiver
+ 	uncomp_mode 	 ; uncompressed mode
+ 	err_corr_mode 	 ; error correction mode
+ 	frame_size 	 ; frame size
+ 	t6_coding 	 ; T.6 coding
+ 	R8_lines 	 ; R8*15.4 lines/mm
+ 	r_300_pels 	 ; 300*300 pels/25.4 mm
+ 	R16_lines_pels 	 ; R16*15.4 lines/mm and/or 400*400 pels/25.4 mm
+ 	resolution_type 	 ; resolution type selection
+ 	i_res_pref 	 ; inch based resolution preferred
+ 	m_res_pref 	 ; metric-based resolution preferred
+ 	min_scan_time_hr 	 ; minimum scan line time for higher resolutions
+ 	sel_polling 	 ; selective polling
+ 	subaddr 	 ; subaddressing
+ 	password 	 ; password
+ 	ready_tx_doc 	 ; ready to transmit a data file (polling)
+ 	bft 	 ; Binary File Transfer (BFT)
+ 	dtm 	 ; Document Transfer Mode (DTM)
+ 	edi 	 ; Electronic Data Interchange (EDI)
+ 	btm 	 ; Basic Transfer Mode (BTM)
+ 	ready_tx_mixed 	 ; ready to transmit a character or mixed mode document (polling)
+ 	char_mode 	 ; character mode
+ 	mixed_mode 	 ; mixed mode (Annex E/T.4)
+ 	proc_mode_26 	 ; processable mode 26)
+ 	dig_network_cap 	 ; digital network capability
+ 	duplex 	 ; duplex and half duplex capabilities
+ 	jpeg 	 ; JPEG coding
+ 	full_colour 	 ; full colour mode
+ 	huffman_tables 	 ; preferred Huffman tables
+ 	r_12_bits_pel_comp 	 ; 12 bits/pel component
+ 	no_subsamp 	 ; no subsampling
+ 	cust_illum 	 ; custom illuminant
+ 	cust_gamut 	 ; custom gamut range
+ 	na_letter 	 ; North American Letter (215.9*279.4 mm)
+ 	na_legal 	 ; North American Legal (215.9*355.6 mm)
+ 	sing_prog_seq_coding_basic 	 ; single-progression sequential coding basic
+ 	sing_prog_seq_coding_L0 	 ; single-progression sequential coding optional L0
+}
+TYPEDEF COMP dis 	dtc 	 "digital transmit command"
+TYPEDEF COMP dis 	dcs 	 "digital command signal"
+
+
+
+COMP 	hdlc_info 	 "HDLC information field"
+{
+ 	crp 	 ; CRP flag
+ 	c_pwd 	 ; length of PWD
+ 	pwd 	[PWD_LEN] 	 ; password
+ 	c_sub 	 ; length of SUB
+ 	sub 	[SUB_LEN] 	 ; subaddress
+ 	c_sep 	 ; length of SEP
+ 	sep 	[SEP_LEN] 	 ; selective polling
+ 	c_nsc 	 ; length of NSC
+ 	nsc 	[NSC_LEN] 	 ; non-standard facilities command
+ 	c_nsf 	 ; length of NSF
+ 	nsf 	[NSF_LEN] 	 ; non-standard facilities
+ 	c_tsi 	 ; length of TSI
+ 	tsi 	[TSI_LEN] 	 ; transmitting subscriber identification
+ 	c_cig 	 ; length of CIG
+ 	cig 	[CIG_LEN] 	 ; calling subscriber identification
+ 	c_csi 	 ; length of CSI
+ 	csi 	[CSI_LEN] 	 ; calling subscriber identification
+ 	c_nss 	 ; length of NSS
+ 	nss 	[NSS_LEN] 	 ; non-standard set-up
+ 	v_dis 	 ; DIS flag
+ 	dis 	 ; digital identification signal
+ 	v_dcs 	 ; DCS flag
+ 	dcs 	 ; digital command signal
+ 	v_dtc 	 ; DTC flag
+ 	dtc 	 ; digital transmit command
+}
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length of content in bits
+ 	o_buf 	 ; offset of content in bits
+ 	buf 	[1] 	 ; buffer content
+}
+
+
+
+
+
+
+; T30_ACTIVATE_REQ 	0x80000014
+; T30_CONFIG_REQ 	0x80010014
+; T30_CAP_IND 	0x80004014
+; T30_CAP_REQ 	0x80020014
+; T30_DTI_REQ 	0x80060014
+; T30_DTI_CNF 	0x80094014
+; T30_DTI_IND 	0x80084014
+; T30_PHASE_IND 	0x800A4014
+; T30_SGN_IND 	0x80014014
+; T30_SGN_REQ 	0x80030014
+; T30_CMPL_IND 	0x80024014
+; T30_REPORT_IND 	0x80034014
+; T30_MODIFY_REQ 	0x80040014
+; T30_ERROR_IND 	0x80044014
+; T30_EOL_IND 	0x800B4014
+; T30_DEACTIVATE_REQ 	0x80050014
+; T30_DEACTIVATE_CNF 	0x80054014
+; T30_ACTIVATE_CNF 	0x80064014
+; T30_PREAMBLE_IND 	0x80074014
+
+
+
+PRIM 	T30_ACTIVATE_REQ 	0x80000014
+{
+ 	trans_rate 	 ; transmission rate
+ 	half_rate 	 ; half-rate flag
+ 	threshold 	 ; tcf threshold
+ 	frames_per_prim 	 ; no. of frames per primitive
+ 	bitorder 	 ; bitorder
+}
+
+
+
+
+
+
+PRIM 	T30_CONFIG_REQ 	0x80010014
+{
+ 	hdlc_report 	 ; HDLC report mode
+ 	test_mode 	 ; Test mode
+}
+
+
+
+
+
+
+PRIM 	T30_CAP_IND 	0x80004014
+{
+ 	hdlc_info 	 ; HDLC information field
+}
+
+
+
+
+
+
+PRIM 	T30_CAP_REQ 	0x80020014
+{
+ 	hdlc_info 	 ; HDLC information field
+}
+
+
+
+
+
+
+PRIM 	T30_DTI_REQ 	0x80060014
+{
+ 	dti_conn 	 ; DTI connect
+ 	entity_name 	[T30_ENTITY_NAME_LEN] 	 ; entity name
+ 	link_id 	 ; link identifier
+ 	dti_direction 	 ; DTI direction
+}
+
+
+
+
+
+
+PRIM 	T30_DTI_CNF 	0x80094014
+{
+ 	dti_conn 	 ; DTI connect
+}
+
+
+
+
+
+
+PRIM 	T30_DTI_IND 	0x80084014
+{
+}
+
+
+
+
+
+
+PRIM 	T30_PHASE_IND 	0x800A4014
+{
+ 	phase 	 ; T30 Phase
+}
+
+
+
+
+
+
+PRIM 	T30_SGN_IND 	0x80014014
+{
+ 	sgn 	 ; binary coded signal
+}
+
+
+
+
+
+
+PRIM 	T30_SGN_REQ 	0x80030014
+{
+ 	sgn 	 ; binary coded signal
+}
+
+
+
+
+
+
+PRIM 	T30_CMPL_IND 	0x80024014
+{
+ 	cmpl 	 ; complete of phase
+}
+
+
+
+
+
+
+PRIM 	T30_REPORT_IND 	0x80034014
+{
+ 	dir 	 ; call direction
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	T30_MODIFY_REQ 	0x80040014
+{
+ 	trans_rate 	 ; transmission rate
+ 	half_rate 	 ; half-rate flag
+}
+
+
+
+
+
+
+PRIM 	T30_ERROR_IND 	0x80044014
+{
+ 	cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	T30_EOL_IND 	0x800B4014
+{
+ 	eol 	 ; end of line count
+}
+
+
+
+
+
+
+PRIM 	T30_DEACTIVATE_REQ 	0x80050014
+{
+}
+
+
+
+
+
+
+PRIM 	T30_DEACTIVATE_CNF 	0x80054014
+{
+}
+
+
+
+
+
+
+PRIM 	T30_ACTIVATE_CNF 	0x80064014
+{
+ 	buf_size_rx 	 ; buffer size RX
+ 	buf_size_tx 	 ; buffer size TX
+}
+
+
+
+
+
+
+PRIM 	T30_PREAMBLE_IND 	0x80074014
+{
+}
+
+
+
+
+
+
+
+
+

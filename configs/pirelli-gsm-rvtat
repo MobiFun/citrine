@@ -1,0 +1,11 @@
+# This configuration builds an experimental ramImage that runs on the Pirelli
+# target and includes the GSM protocol stack.  Control is via AT commands over
+# RVTMUX.  Flash is not touched; FFS is in RAM and initialized blank on every
+# boot.
+
+target	pirelli
+feature	gsm
+feature	at-rvtmux
+
+feature	etm
+feature	tmffs2

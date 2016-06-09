@@ -1,0 +1,4457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">t30</DocName>
+        <DocNum Number="104" Project="8411"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for fax and data transmission consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity. The entity, which is described in this document, is coloured grey in the following figure :</Section>
+            <Section>Figure 1-1: Architecture of the fax and data protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the fax and data protocol stack are:</Section>
+            <Section>1.1 RA - Rate Adaptation</Section>
+            <Section>This entity performs an adaptation between an asynchronous or synchronous data stream with several bit rates on to the fixed bit rate used at the TCH. This is performed by the rate adaptation functions RA1' and RA0 described in GSM 04.21.</Section>
+            <Section>1.2 RLP - Radio Link Protocol</Section>
+            <Section>This entity provides a Layer 2 protocol for asynchronous reliable data transfer as specified in GSM 04.22. It includes error correction, sequence numbers and a mechanism for repeating corrupted and lost messages.</Section>
+            <Section>1.3 L2R - Layer 2 Relay Functionality</Section>
+            <Section>The L2R provides relay functions in order to adapt the character-oriented data received from the TE via USART to the bit-oriented RLP protocol.</Section>
+            <Section>1.4 FAD 03.45 - Fax Adaptation Protocol</Section>
+            <Section>The fax adaptation protocol, as specified in GSM 03.45, provides synchronisation with the BCS and MSG modems of the peer entity. It uses byte repetition in conjunction with a voting algorithm to handle corruption on the TCH data stream. The non-transparent fax protocol in accordance with GSM 03.46 is not part of this implementation.</Section>
+            <Section>The fax adapter enables T.30 to send BCS at 300 BPS and T.4 MSG in 2400, 4800, 7200 and 9600 BPS.</Section>
+            <Section>1.5 T.30 - Fax Protocol Entity</Section>
+            <Section>The protocol uses binary coded signals packed in HDLC frames to set up and release a connection in the message phase of the FAX transmission. This entity is specified in the ITU-T.30. The main tasks of this unit are:</Section>
+            <Section>? Building the HDLC frames with CRC.</Section>
+            <Section>? Performing bit stuffing/de-stuffing.</Section>
+            <Section>? Executing a sequence of 5 phases: 1.) set up, 2.) pre-message procedures, 3.) transmission/reception, 4.) post message procedures, 5.) waiting for call release.</Section>
+            <Section>1.6 ACI - AT Command Interpreter</Section>
+            <Section>The ACI is specified in GSM 07.07. It is responsible for call establishment via the GSM voice protocol stack and terminal adaptation for asynchronous transparent character-oriented data transmission. The ACI is able to receive AT commands and send the replies over the USART driver to a remote PC. This makes it possible to control the voice and data protocol stack from a remote application running on a PC. The ACI also provides a unique interface for an internal MMI in the MS.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the F&amp;D. The driver has to be able to perform flow control.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="98"/>
+            <Date Day="7" Month="4" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="98"/>
+            <Date Day="17" Month="4" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Modified</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="200" Year="98"/>
+            <Date Day="8" Month="5" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Modified</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="201" Year="98"/>
+            <Date Day="12" Month="5" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>XGEN-convertible version created</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="300" Year="98"/>
+            <Date Day="9" Month="6" Year="1998"/>
+            <Author>DL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Revision of Primitives</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="301" Year="98"/>
+            <Date Day="28" Month="7" Year="1998"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>SDU aligned with reserved element</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="302" Year="98"/>
+            <Date Day="7" Month="8" Year="1998"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>type of error cause changed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="303" Year="98"/>
+            <Date Day="18" Month="8" Year="1998"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Revision of primitives and params</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="304" Year="98"/>
+            <Date Day="21" Month="8" Year="1998"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Revised</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="305" Year="98"/>
+            <Date Day="31" Month="8" Year="1998"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Error values added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="306" Year="98"/>
+            <Date Day="2" Month="9" Year="1998"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Revised</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="307" Year="98"/>
+            <Date Day="28" Month="10" Year="1998"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>(de)activate_cnf added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="308" Year="98"/>
+            <Date Day="10" Month="12" Year="1998"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>id's changed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="309" Year="98"/>
+            <Date Day="3" Month="2" Year="1999"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>test modes added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="310" Year="98"/>
+            <Date Day="13" Month="2" Year="1999"/>
+            <Author>SZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>preamble indication added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="311" Year="98"/>
+            <Date Day="24" Month="6" Year="1999"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>RX/TX buffer sizes and bitorder added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="312" Year="98"/>
+            <Date Day="23" Month="4" Year="2002"/>
+            <Author>slo</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Opcodes expanded to 32 bit</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the T30 SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>CSI_LEN</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>length of CSI field</Comment>
+        </Constant>
+        <Constant>
+            <Alias>NSF_LEN</Alias>
+            <Value ValueType="DEC">90</Value>
+            <Comment>length of NSF field</Comment>
+        </Constant>
+        <Constant>
+            <Alias>CIG_LEN</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>length of CIG field</Comment>
+        </Constant>
+        <Constant>
+            <Alias>NSC_LEN</Alias>
+            <Value ValueType="DEC">90</Value>
+            <Comment>length of NSC field</Comment>
+        </Constant>
+        <Constant>
+            <Alias>TSI_LEN</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>length of TSI field</Comment>
+        </Constant>
+        <Constant>
+            <Alias>NSS_LEN</Alias>
+            <Value ValueType="DEC">90</Value>
+            <Comment>length of NSS field</Comment>
+        </Constant>
+        <Constant>
+            <Alias>PWD_LEN</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>length of PWD field</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SUB_LEN</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>length of SUB field</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SEP_LEN</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>length of SEP field</Comment>
+        </Constant>
+        <Constant>
+            <Alias>T30_ENTITY_NAME_LEN</Alias>
+            <Value ValueType="DEC">6</Value>
+            <Comment>maximum length of entity name including NULL</Comment>
+        </Constant>
+        <History>
+            <Date Day="24" Month="3" Year="1998"/>
+            <Author>DL</Author>
+            <Comment>(MAX_SDU_LEN)</Comment>
+        </History>
+        <History>
+            <Date Day="17" Month="4" Year="1998"/>
+            <Author>DL</Author>
+            <Comment>(command length)</Comment>
+        </History>
+        <History>
+            <Date Day="19" Month="6" Year="1998"/>
+            <Author>SZ</Author>
+            <Comment>MAX_SDU_LEN deleted</Comment>
+        </History>
+        <History>
+            <Date Day="29" Month="7" Year="1998"/>
+            <Author>SZ</Author>
+            <Comment>values changed</Comment>
+        </History>
+        <History>
+            <Date Day="4" Month="11" Year="1998"/>
+            <Author>SZ</Author>
+            <Comment>NS values changed</Comment>
+        </History>
+        <History>
+            <Date Day="8" Month="5" Year="2001"/>
+            <Author>KJF</Author>
+            <Comment>T30_ENTITY_NAME_LEN added</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="20">
+        <Description>
+            <Section>This section contains all primitives that are defined for the T30 SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The T30_ACTIVATE_REQ primitive is issued by MMI to activate the T30 entity in the NULL state.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_ACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>trans_rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>half_rate</Name>
+                </ItemLink>
+                <Comment>half-rate flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>threshold</Name>
+                </ItemLink>
+                <Comment>tcf threshold</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>frames_per_prim</Name>
+                </ItemLink>
+                <Comment>no. of frames per primitive</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>bitorder</Name>
+                </ItemLink>
+                <Comment>bitorder</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>half-rate added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>threshold added</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>frames added</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>bitorder added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_CONFIG_REQ primitive is used to control the behaviour of the T30 entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_CONFIG_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>hdlc_report</Name>
+                </ItemLink>
+                <Comment>HDLC report mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>test_mode</Name>
+                </ItemLink>
+                <Comment>Test mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Test mode added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive contains the fax capabilities from remote site.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_CAP_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>hdlc_info</Name>
+                </ItemLink>
+                <Comment>HDLC information field</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive contains the fax capabilities from local site.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_CAP_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>hdlc_info</Name>
+                </ItemLink>
+                <Comment>HDLC information field</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_DTI_REQ is used to connect or disconnect the DTI communication with the upper layer.</Section>
+                <Section>It is indicated by the parameter dti_conn, if the upper layer wants to connect or disconnect.</Section>
+                <Section>The same parameter is repeated in the corresponding T30_DTI_CNF.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_DTI_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>entity_name</Name>
+                </ItemLink>
+                <Control>[T30_ENTITY_NAME_LEN]</Control>
+                <Comment>entity name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>DTI direction</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="15" Month="3" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_DTI_CNF is used to acknowledge a previous T30_DTI_REQ. The parameter value is always the same as in the corresponding T30_DTI_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_DTI_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="15" Month="3" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_DTI_IND is used by T30 to pass the control of the DTI back to the upper layer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_DTI_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="15" Month="3" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_PHASE_IND is used by T30 to pass the T.30 phase to the ACI.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_PHASE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>phase</Name>
+                </ItemLink>
+                <Comment>T30 Phase</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="15" Month="3" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive contains a response or command from remote site.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_SGN_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>sgn</Name>
+                </ItemLink>
+                <Comment>binary coded signal</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive contains a response or command signal from local site.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_SGN_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>sgn</Name>
+                </ItemLink>
+                <Comment>binary coded signal</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>RES -> REQ</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive indicates the completion result.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_CMPL_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>cmpl</Name>
+                </ItemLink>
+                <Comment>complete of phase</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_REPORT_IND primitive passes the HDLC frame sent or received to the MMI entities.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_REPORT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>dir</Name>
+                </ItemLink>
+                <Comment>call direction</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_MODIFY_REQ primitive is issued by MMI when change of transmission rate is deemed necessary.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_MODIFY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>trans_rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>half_rate</Name>
+                </ItemLink>
+                <Comment>half-rate flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (call direction removed)</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (access rate removed)</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Modified</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_ERROR_IND primitive is issued by T30 to alert MMI that an error has occurred in the course of message or facsimile transmission.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>type changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_EOL_IND primitive is issued by T30 to inform MMI about occured eols.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_EOL_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>eol</Name>
+                </ItemLink>
+                <Comment>end of line count</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="2" Year="1999"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_DEACTIVATE_REQ primitive is issued by MMI to deactivate the T30 entity following the conclusion of Phase D, whereupon T30 returns to the NULL state.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_DEACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>T30</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="6" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_DEACTIVATE_CNF primitive is issued by T30 to inform MMI that deactivation is completed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_DEACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="28" Month="10" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_ACTIVATE_CNF primitive is issued by T30 to inform MMI that activation is completed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_ACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>buf_size_rx</Name>
+                </ItemLink>
+                <Comment>buffer size RX</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>buf_size_tx</Name>
+                </ItemLink>
+                <Comment>buffer size TX</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="10" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>all elements added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The T30_PREAMBLE_IND primitive is issued by T30 to inform MMI that a preamble has been received.</Section>
+            </Description>
+            <PrimDef>
+                <Name>T30_PREAMBLE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>T30</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="13" Month="2" Year="1999"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters are part of the primitives described above contain the values specified below where applicable. These values are selected to correspond to element values used in the air-interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>hdlc_info</Name>
+                <Comment>HDLC information field</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>crp</Name>
+                </ItemLink>
+                <Comment>CRP flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>c_pwd</Name>
+                </ItemLink>
+                <Comment>length of PWD</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>pwd</Name>
+                </ItemLink>
+                <Control>[PWD_LEN]</Control>
+                <Comment>password</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>c_sub</Name>
+                </ItemLink>
+                <Comment>length of SUB</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>sub</Name>
+                </ItemLink>
+                <Control>[SUB_LEN]</Control>
+                <Comment>subaddress</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>c_sep</Name>
+                </ItemLink>
+                <Comment>length of SEP</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>sep</Name>
+                </ItemLink>
+                <Control>[SEP_LEN]</Control>
+                <Comment>selective polling</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>c_nsc</Name>
+                </ItemLink>
+                <Comment>length of NSC</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>nsc</Name>
+                </ItemLink>
+                <Control>[NSC_LEN]</Control>
+                <Comment>non-standard facilities command</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>c_nsf</Name>
+                </ItemLink>
+                <Comment>length of NSF</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>nsf</Name>
+                </ItemLink>
+                <Control>[NSF_LEN]</Control>
+                <Comment>non-standard facilities</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>c_tsi</Name>
+                </ItemLink>
+                <Comment>length of TSI</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>tsi</Name>
+                </ItemLink>
+                <Control>[TSI_LEN]</Control>
+                <Comment>transmitting subscriber identification</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>c_cig</Name>
+                </ItemLink>
+                <Comment>length of CIG</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>cig</Name>
+                </ItemLink>
+                <Control>[CIG_LEN]</Control>
+                <Comment>calling subscriber identification</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>c_csi</Name>
+                </ItemLink>
+                <Comment>length of CSI</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>csi</Name>
+                </ItemLink>
+                <Control>[CSI_LEN]</Control>
+                <Comment>calling subscriber identification</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>c_nss</Name>
+                </ItemLink>
+                <Comment>length of NSS</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>nss</Name>
+                </ItemLink>
+                <Control>[NSS_LEN]</Control>
+                <Comment>non-standard set-up</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>v_dis</Name>
+                </ItemLink>
+                <Comment>DIS flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>dis</Name>
+                </ItemLink>
+                <Comment>digital identification signal</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>v_dcs</Name>
+                </ItemLink>
+                <Comment>DCS flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>dcs</Name>
+                </ItemLink>
+                <Comment>digital command signal</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>v_dtc</Name>
+                </ItemLink>
+                <Comment>DTC flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>dtc</Name>
+                </ItemLink>
+                <Comment>digital transmit command</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>dis</Name>
+                <Comment>digital identification signal</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>dtc</Name>
+                <Comment>digital transmit command</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>dcs</Name>
+                <Comment>digital command signal</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>v8</Name>
+                </ItemLink>
+                <Comment>V.8 capabilities</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>n_byte</Name>
+                </ItemLink>
+                <Comment>no. of octets preferred</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>ready_tx_fax</Name>
+                </ItemLink>
+                <Comment>ready to transmit a facsimile document (polling)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>rec_fax_op</Name>
+                </ItemLink>
+                <Comment>receiver fax operation</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>data_sig_rate</Name>
+                </ItemLink>
+                <Comment>data signalling rate</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>R8_lines_pels</Name>
+                </ItemLink>
+                <Comment>R8*7.7 lines/mm and/or 200 x 200 pels/25.4 mm</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>two_dim_coding</Name>
+                </ItemLink>
+                <Comment>two-dimensional coding</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>rec_width</Name>
+                </ItemLink>
+                <Comment>recording-width</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>max_rec_len</Name>
+                </ItemLink>
+                <Comment>maximum recording length</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>min_scan_time</Name>
+                </ItemLink>
+                <Comment>minimum scan line time at the receiver</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>uncomp_mode</Name>
+                </ItemLink>
+                <Comment>uncompressed mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>err_corr_mode</Name>
+                </ItemLink>
+                <Comment>error correction mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>frame_size</Name>
+                </ItemLink>
+                <Comment>frame size</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>t6_coding</Name>
+                </ItemLink>
+                <Comment>T.6 coding</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>R8_lines</Name>
+                </ItemLink>
+                <Comment>R8*15.4 lines/mm</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>r_300_pels</Name>
+                </ItemLink>
+                <Comment>300*300 pels/25.4 mm</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>R16_lines_pels</Name>
+                </ItemLink>
+                <Comment>R16*15.4 lines/mm and/or 400*400 pels/25.4 mm</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>resolution_type</Name>
+                </ItemLink>
+                <Comment>resolution type selection</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>i_res_pref</Name>
+                </ItemLink>
+                <Comment>inch based resolution preferred</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>m_res_pref</Name>
+                </ItemLink>
+                <Comment>metric-based resolution preferred</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>min_scan_time_hr</Name>
+                </ItemLink>
+                <Comment>minimum scan line time for higher resolutions</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>sel_polling</Name>
+                </ItemLink>
+                <Comment>selective polling</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>subaddr</Name>
+                </ItemLink>
+                <Comment>subaddressing</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>password</Name>
+                </ItemLink>
+                <Comment>password</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>ready_tx_doc</Name>
+                </ItemLink>
+                <Comment>ready to transmit a data file (polling)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>bft</Name>
+                </ItemLink>
+                <Comment>Binary File Transfer (BFT)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>dtm</Name>
+                </ItemLink>
+                <Comment>Document Transfer Mode (DTM)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>edi</Name>
+                </ItemLink>
+                <Comment>Electronic Data Interchange (EDI)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>btm</Name>
+                </ItemLink>
+                <Comment>Basic Transfer Mode (BTM)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>ready_tx_mixed</Name>
+                </ItemLink>
+                <Comment>ready to transmit a character or mixed mode document (polling)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>char_mode</Name>
+                </ItemLink>
+                <Comment>character mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>mixed_mode</Name>
+                </ItemLink>
+                <Comment>mixed mode (Annex E/T.4)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>proc_mode_26</Name>
+                </ItemLink>
+                <Comment>processable mode 26)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>dig_network_cap</Name>
+                </ItemLink>
+                <Comment>digital network capability</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>duplex</Name>
+                </ItemLink>
+                <Comment>duplex and half duplex capabilities</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>jpeg</Name>
+                </ItemLink>
+                <Comment>JPEG coding</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>full_colour</Name>
+                </ItemLink>
+                <Comment>full colour mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>huffman_tables</Name>
+                </ItemLink>
+                <Comment>preferred Huffman tables</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>r_12_bits_pel_comp</Name>
+                </ItemLink>
+                <Comment>12 bits/pel component</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>no_subsamp</Name>
+                </ItemLink>
+                <Comment>no subsampling</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>cust_illum</Name>
+                </ItemLink>
+                <Comment>custom illuminant</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>cust_gamut</Name>
+                </ItemLink>
+                <Comment>custom gamut range</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>na_letter</Name>
+                </ItemLink>
+                <Comment>North American Letter (215.9*279.4 mm)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>na_legal</Name>
+                </ItemLink>
+                <Comment>North American Legal (215.9*355.6 mm)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>sing_prog_seq_coding_basic</Name>
+                </ItemLink>
+                <Comment>single-progression sequential coding basic</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>sing_prog_seq_coding_L0</Name>
+                </ItemLink>
+                <Comment>single-progression sequential coding optional L0</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>Service Data Unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">t30</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>buffer content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters are part of the primitives described above contain the values specified below where applicable. These values are selected to correspond to element values used in the air-interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>crp</Name>
+                <Type>U8</Type>
+                <Comment>CRP flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_pwd</Name>
+                <Type>U8</Type>
+                <Comment>length of PWD</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pwd</Name>
+                <Type>U8</Type>
+                <Comment>password</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_sub</Name>
+                <Type>U8</Type>
+                <Comment>length of SUB</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sub</Name>
+                <Type>U8</Type>
+                <Comment>subaddress</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_sep</Name>
+                <Type>U8</Type>
+                <Comment>length of SEP</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sep</Name>
+                <Type>U8</Type>
+                <Comment>selective polling</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_nsc</Name>
+                <Type>U8</Type>
+                <Comment>length of NSC</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nsc</Name>
+                <Type>U8</Type>
+                <Comment>non-standard facilities command</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_nsf</Name>
+                <Type>U8</Type>
+                <Comment>length of NSF</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nsf</Name>
+                <Type>U8</Type>
+                <Comment>non-standard facilities</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_tsi</Name>
+                <Type>U8</Type>
+                <Comment>length of TSI</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tsi</Name>
+                <Type>U8</Type>
+                <Comment>transmitting subscriber identification</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_cig</Name>
+                <Type>U8</Type>
+                <Comment>length of CIG</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cig</Name>
+                <Type>U8</Type>
+                <Comment>calling subscriber identification</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_csi</Name>
+                <Type>U8</Type>
+                <Comment>length of CSI</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>csi</Name>
+                <Type>U8</Type>
+                <Comment>calling subscriber identification</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_nss</Name>
+                <Type>U8</Type>
+                <Comment>length of NSS</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nss</Name>
+                <Type>U8</Type>
+                <Comment>non-standard set-up</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_dis</Name>
+                <Type>U8</Type>
+                <Comment>DIS flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_dcs</Name>
+                <Type>U8</Type>
+                <Comment>DCS flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is a structure which contains the data required for generation of HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_dtc</Name>
+                <Type>U8</Type>
+                <Comment>DTC flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>crp added, order changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v8</Name>
+                <Type>U8</Type>
+                <Comment>V.8 capabilities</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n_byte</Name>
+                <Type>U8</Type>
+                <Comment>no. of octets preferred</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ready_tx_fax</Name>
+                <Type>U8</Type>
+                <Comment>ready to transmit a facsimile document (polling)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rec_fax_op</Name>
+                <Type>U8</Type>
+                <Comment>receiver fax operation</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data_sig_rate</Name>
+                <Type>U8</Type>
+                <Comment>data signalling rate</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>R8_lines_pels</Name>
+                <Type>U8</Type>
+                <Comment>R8*7.7 lines/mm and/or 200 x 200 pels/25.4 mm</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>two_dim_coding</Name>
+                <Type>U8</Type>
+                <Comment>two-dimensional coding</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rec_width</Name>
+                <Type>U8</Type>
+                <Comment>recording-width</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>max_rec_len</Name>
+                <Type>U8</Type>
+                <Comment>maximum recording length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>min_scan_time</Name>
+                <Type>U8</Type>
+                <Comment>minimum scan line time at the receiver</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>uncomp_mode</Name>
+                <Type>U8</Type>
+                <Comment>uncompressed mode</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>err_corr_mode</Name>
+                <Type>U8</Type>
+                <Comment>error correction mode</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>frame_size</Name>
+                <Type>U8</Type>
+                <Comment>frame size</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t6_coding</Name>
+                <Type>U8</Type>
+                <Comment>T.6 coding</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>R8_lines</Name>
+                <Type>U8</Type>
+                <Comment>R8*15.4 lines/mm</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>r_300_pels</Name>
+                <Type>U8</Type>
+                <Comment>300*300 pels/25.4 mm</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>R16_lines_pels</Name>
+                <Type>U8</Type>
+                <Comment>R16*15.4 lines/mm and/or 400*400 pels/25.4 mm</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>resolution_type</Name>
+                <Type>U8</Type>
+                <Comment>resolution type selection</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>i_res_pref</Name>
+                <Type>U8</Type>
+                <Comment>inch based resolution preferred</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>m_res_pref</Name>
+                <Type>U8</Type>
+                <Comment>metric-based resolution preferred</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>min_scan_time_hr</Name>
+                <Type>U8</Type>
+                <Comment>minimum scan line time for higher resolutions</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sel_polling</Name>
+                <Type>U8</Type>
+                <Comment>selective polling</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>subaddr</Name>
+                <Type>U8</Type>
+                <Comment>subaddressing</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>password</Name>
+                <Type>U8</Type>
+                <Comment>password</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ready_tx_doc</Name>
+                <Type>U8</Type>
+                <Comment>ready to transmit a data file (polling)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bft</Name>
+                <Type>U8</Type>
+                <Comment>Binary File Transfer (BFT)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dtm</Name>
+                <Type>U8</Type>
+                <Comment>Document Transfer Mode (DTM)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>edi</Name>
+                <Type>U8</Type>
+                <Comment>Electronic Data Interchange (EDI)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>btm</Name>
+                <Type>U8</Type>
+                <Comment>Basic Transfer Mode (BTM)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ready_tx_mixed</Name>
+                <Type>U8</Type>
+                <Comment>ready to transmit a character or mixed mode document (polling)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>char_mode</Name>
+                <Type>U8</Type>
+                <Comment>character mode</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mixed_mode</Name>
+                <Type>U8</Type>
+                <Comment>mixed mode (Annex E/T.4)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>proc_mode_26</Name>
+                <Type>U8</Type>
+                <Comment>processable mode 26)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dig_network_cap</Name>
+                <Type>U8</Type>
+                <Comment>digital network capability</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>duplex</Name>
+                <Type>U8</Type>
+                <Comment>duplex and half duplex capabilities</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>jpeg</Name>
+                <Type>U8</Type>
+                <Comment>JPEG coding</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>full_colour</Name>
+                <Type>U8</Type>
+                <Comment>full colour mode</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>huffman_tables</Name>
+                <Type>U8</Type>
+                <Comment>preferred Huffman tables</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>r_12_bits_pel_comp</Name>
+                <Type>U8</Type>
+                <Comment>12 bits/pel component</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>no_subsamp</Name>
+                <Type>U8</Type>
+                <Comment>no subsampling</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cust_illum</Name>
+                <Type>U8</Type>
+                <Comment>custom illuminant</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cust_gamut</Name>
+                <Type>U8</Type>
+                <Comment>custom gamut range</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>na_letter</Name>
+                <Type>U8</Type>
+                <Comment>North American Letter (215.9*279.4 mm)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>na_legal</Name>
+                <Type>U8</Type>
+                <Comment>North American Legal (215.9*355.6 mm)</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sing_prog_seq_coding_basic</Name>
+                <Type>U8</Type>
+                <Comment>single-progression sequential coding basic</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a structure which contains the fax capabilities of the local fax machine or that of the remote site. A field set to CAP_NOT_USED is to be ignored.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sing_prog_seq_coding_L0</Name>
+                <Type>U8</Type>
+                <Comment>single-progression sequential coding optional L0</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (min. scan line time cap. for higher res. renamed)</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="5" Year="2998"/>
+                <Author>DL</Author>
+                <Comment>Modified (extend fields discarded, minor text changes)</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the transmission rate used for fax transmission.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>trans_rate</Name>
+                <Type>U16</Type>
+                <Comment>transmission rate</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Modified</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the direction of the HDLC frame.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dir</Name>
+                <Type>U8</Type>
+                <Comment>direction of call</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_dir</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter comprises the binary coded signal transmitted between the local and remote modem.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sgn</Name>
+                <Type>U8</Type>
+                <Comment>binary coded signal</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_sgn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (response list)</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified (list expanded)</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>SGN_CONT added</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="9" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter sets the report mode for HDLC frames.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>hdlc_report</Name>
+                <Type>U8</Type>
+                <Comment>HDLC report mode</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="29" Month="4" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Modified</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values deleted</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>buffer content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter signals the end of the current phase.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cmpl</Name>
+                <Type>U8</Type>
+                <Comment>completion</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_cmpl</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="6" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used to alert MMI that an error has occurred in the course of message or facsimile transmission. The cause number identifies the error encountered.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="27" Month="3" Year="1998"/>
+                <Author>DL</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>type changed</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>values added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>values revised</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>values added</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="9" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>values added</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="5" Year="2002"/>
+                <Author>KJF</Author>
+                <Comment>Concept for causes</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates if half-rate is used on the traffic channel.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>half_rate</Name>
+                <Type>U8</Type>
+                <Comment>half-rate flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the threshold of good TCF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>threshold</Name>
+                <Type>U8</Type>
+                <Comment>tcf threshold</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="25" Month="6" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the number of frames to be contained in a SDU (send/receive).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>frames_per_prim</Name>
+                <Type>U16</Type>
+                <Comment>no. of frames per primitive</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="5" Month="8" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to change the testing behaviour of t30. For internal use only.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>test_mode</Name>
+                <Type>U16</Type>
+                <Comment>Test mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_test_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="29" Month="7" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="2" Year="1999"/>
+                <Author>SZ</Author>
+                <Comment>test modes added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to count the number of EOL in the fax data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>eol</Name>
+                <Type>U16</Type>
+                <Comment>end of line count</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="9" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to notify the size of the buffer which is used in the fax receive mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf_size_rx</Name>
+                <Type>U16</Type>
+                <Comment>buffer size RX</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to notify the size of the buffer which is used in the fax send mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf_size_tx</Name>
+                <Type>U16</Type>
+                <Comment>buffer size TX</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to define the bitordering for DCE-DTE phase B and C data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bitorder</Name>
+                <Type>U8</Type>
+                <Comment>Bitorder</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_bitorder</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="24" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Describes the T.30 phases</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>phase</Name>
+                <Type>U8</Type>
+                <Comment>T.30 phase</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_phase</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="15" Month="3" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines, if the T30 shall be connected to DTI.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_conn</Name>
+                <Type>U8</Type>
+                <Comment>DTI connect</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_dti_conn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="15" Month="3" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a string (zero terminated) which is the name of a neighbour entity, i.e. the entity handling a higher or lower protocol. The parameter is used to open the communication channel to this entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>entity_name</Name>
+                <Type>U8</Type>
+                <Comment>name of an neighbour entity</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="15" Month="3" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to identify the affected channel in case of multiplexing.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>link_id</Name>
+                <Type>U32</Type>
+                <Comment>Link identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_link_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="15" Month="3" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="11" Year="2001"/>
+                <Author>TVO</Author>
+                <Comment>changed c_id to link_id</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter controls if T30 uses the DTI in the normal way or if the primitives are inverted. In the normal way data are sent as DTI_DATA_IND and received as DTI_DATA_REQ. In the inverted mode data are send as DTI_DATA_REQ and received as DTI_DATA_IND (relay functionality).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_direction</Name>
+                <Type>U8</Type>
+                <Comment>DTI direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">t30</DocName>
+                <Name>VAL_dti_direction</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="15" Month="3" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the T30 SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dir</Name>
+                <Comment>values for dir</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>DIR_SND</Alias>
+                <Comment>send fax data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DIR_RCV</Alias>
+                <Comment>receive fax data</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sgn</Name>
+                <Comment>values for sgn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>SGN_OK</Alias>
+                <Comment>OK</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>SGN_DIS</Alias>
+                <Comment>Digital identification signal</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>SGN_CSI</Alias>
+                <Comment>Called subscriber identification</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>SGN_NSF</Alias>
+                <Comment>Non-standard facilities</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">21</Value>
+                <Alias>SGN_CFR</Alias>
+                <Comment>Confirmation to receive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">22</Value>
+                <Alias>SGN_FTT</Alias>
+                <Comment>Failure to train</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">31</Value>
+                <Alias>SGN_MCF</Alias>
+                <Comment>Message confirmation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">32</Value>
+                <Alias>SGN_RTN</Alias>
+                <Comment>Retrain negative</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">33</Value>
+                <Alias>SGN_RTP</Alias>
+                <Comment>Retrain positive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">34</Value>
+                <Alias>SGN_PIN</Alias>
+                <Comment>Procedure interrupt negative</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">35</Value>
+                <Alias>SGN_PIP</Alias>
+                <Comment>Procedure interrupt positive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">3F</Value>
+                <Alias>SGN_FDM</Alias>
+                <Comment>File diagnostics message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">41</Value>
+                <Alias>SGN_DCS</Alias>
+                <Comment>Digital command signal</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">42</Value>
+                <Alias>SGN_TSI</Alias>
+                <Comment>Transmitting subscriber identification</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">43</Value>
+                <Alias>SGN_SUB</Alias>
+                <Comment>Subaddress</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">44</Value>
+                <Alias>SGN_NSS</Alias>
+                <Comment>Non-standard set-up</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">45</Value>
+                <Alias>SGN_PWDR</Alias>
+                <Comment>Password - receive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4F</Value>
+                <Alias>SGN_TCF</Alias>
+                <Comment>Training check frame</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">58</Value>
+                <Alias>SGN_CRP</Alias>
+                <Comment>Command repeat</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">5F</Value>
+                <Alias>SGN_DCN</Alias>
+                <Comment>Disconnect</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">71</Value>
+                <Alias>SGN_EOM</Alias>
+                <Comment>End of message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">72</Value>
+                <Alias>SGN_MPS</Alias>
+                <Comment>Multi-page signal</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">74</Value>
+                <Alias>SGN_EOP</Alias>
+                <Comment>End of procedure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">79</Value>
+                <Alias>SGN_PRI_EOM</Alias>
+                <Comment>Procedure Interrupt - End Of Message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">7A</Value>
+                <Alias>SGN_PRI_MPS</Alias>
+                <Comment>Procedure Interrupt - MultiPage Signal</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">7C</Value>
+                <Alias>SGN_PRI_EOP</Alias>
+                <Comment>Procedure Interrupt - End Of Procedure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">81</Value>
+                <Alias>SGN_DTC</Alias>
+                <Comment>Digital transmit command</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">82</Value>
+                <Alias>SGN_CIG</Alias>
+                <Comment>Calling subscriber identification</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">83</Value>
+                <Alias>SGN_PWDS</Alias>
+                <Comment>Password  - send</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">84</Value>
+                <Alias>SGN_NSC</Alias>
+                <Comment>Non-standard facilities command</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">85</Value>
+                <Alias>SGN_SEP</Alias>
+                <Comment>Selective Polling</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">F1</Value>
+                <Alias>SGN_FCS_ERR</Alias>
+                <Comment>FCS error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">F2</Value>
+                <Alias>SGN_NO_RES</Alias>
+                <Comment>No response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">F3</Value>
+                <Alias>SGN_CONT</Alias>
+                <Comment>continue</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>SGN_NOT_USED</Alias>
+                <Comment>Not used</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cmpl</Name>
+                <Comment>values for cmpl</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CMPL_EOP</Alias>
+                <Comment>end of procedure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CMPL_EOM</Alias>
+                <Comment>end of message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CMPL_PI</Alias>
+                <Comment>procedure interrupt</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CMPL_DCN</Alias>
+                <Comment>disconnect</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">4D10</Value>
+                <Alias>ERR_PH_A_UNSPEC</Alias>
+                <Comment>unspecified phase A error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D11</Value>
+                <Alias>ERR_PH_A_T1_TIMEOUT</Alias>
+                <Comment>no answer (T30 T1 timeout)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D20</Value>
+                <Alias>ERR_PH_B_SND_UNSPEC</Alias>
+                <Comment>unspecified transmit phase B error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D21</Value>
+                <Alias>ERR_PH_B_SND_CANT_RCV_OR_SND</Alias>
+                <Comment>remote cannot receive or send</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D22</Value>
+                <Alias>ERR_PH_B_SND_COMREC</Alias>
+                <Comment>COMREC error in transmit phase B</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D23</Value>
+                <Alias>ERR_PH_B_SND_COMREC_INVALID_CMD_RCVD</Alias>
+                <Comment>COMREC invalid command received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D24</Value>
+                <Alias>ERR_PH_B_SND_RSPREC</Alias>
+                <Comment>RSPREC transmit error phase B</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D25</Value>
+                <Alias>ERR_PH_B_SND_DCS_RPTD_3_TIMES</Alias>
+                <Comment>DCS send three times without response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D26</Value>
+                <Alias>ERR_PH_B_SND_DIS_DTC_RCVD_3_TIMES</Alias>
+                <Comment>DIS/DTC received 3 times; DCS not recognized</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D27</Value>
+                <Alias>ERR_PH_B_SND_FTT_2400</Alias>
+                <Comment>failure to train at 2400 bit/s or +FMS value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D28</Value>
+                <Alias>ERR_PH_B_SND_INVALID_RESP_RCVD</Alias>
+                <Comment>invalid respones received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D40</Value>
+                <Alias>ERR_PH_C_SND_UNSPEC</Alias>
+                <Comment>unspecified transmit phase C error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D41</Value>
+                <Alias>ERR_PH_C_SND_UNSPEC_IMAGE_CONV</Alias>
+                <Comment>unspecified image format error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D43</Value>
+                <Alias>ERR_PH_C_SND_DTE_TO_DTC_DATA_UNDERFLOW</Alias>
+                <Comment>DTE to DTC data underflow</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D44</Value>
+                <Alias>ERR_PH_C_SND_UNRECOG_TRANSP_DATA_CMD</Alias>
+                <Comment>unrecognized transparent data command</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D45</Value>
+                <Alias>ERR_PH_C_SND_IMAGE_LINE_LENGTH</Alias>
+                <Comment>image error, line length wrong</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D46</Value>
+                <Alias>ERR_PH_C_SND_IMAGE_PAGE_LENGTH</Alias>
+                <Comment>image error, page length wrong</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D47</Value>
+                <Alias>ERR_PH_C_SND_IMAGE_COMPRESSION_MODE</Alias>
+                <Comment>image error, compression mode wrong</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D50</Value>
+                <Alias>ERR_PH_D_SND_UNSPEC</Alias>
+                <Comment>unspecified transmit phase D error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D51</Value>
+                <Alias>ERR_PH_D_SND_RSPREC</Alias>
+                <Comment>RESPREC transmit error phase D</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D52</Value>
+                <Alias>ERR_PH_D_SND_MPS_RPTD_3_TIMES</Alias>
+                <Comment>no response to MPS repeated 3 times</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D53</Value>
+                <Alias>ERR_PH_D_SND_INVALID_RESP_TO_MPS</Alias>
+                <Comment>invalid respones to MPS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D54</Value>
+                <Alias>ERR_PH_D_SND_EOP_RPTD_3_TIMES</Alias>
+                <Comment>no response to EOP repeated 3 times</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D55</Value>
+                <Alias>ERR_PH_D_SND_INVALID_RESP_TO_EOP</Alias>
+                <Comment>invalid response to EOP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D56</Value>
+                <Alias>ERR_PH_D_SND_EOM_RPTD_3_TIMES</Alias>
+                <Comment>no response to EOM repeated 3 times</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D57</Value>
+                <Alias>ERR_PH_D_SND_INVALID_RESP_TO_EOM</Alias>
+                <Comment>invalid response to EOM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D58</Value>
+                <Alias>ERR_PH_D_SND_UNABLE_TO_CONT</Alias>
+                <Comment>unable to continue after PIN or PIP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D70</Value>
+                <Alias>ERR_PH_B_RCV_UNSPEC</Alias>
+                <Comment>unspecified receive phase B error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D71</Value>
+                <Alias>ERR_PH_B_RCV_RSPREC</Alias>
+                <Comment>RSPREC receive error phase B</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D72</Value>
+                <Alias>ERR_PH_B_RCV_COMREC</Alias>
+                <Comment>COMREC error in receive phase B</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D73</Value>
+                <Alias>ERR_PH_B_RCV_EXP_PAGE_NOT_RCVD</Alias>
+                <Comment>T30 T2 timeout, expected page not received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D74</Value>
+                <Alias>ERR_PH_B_RCV_T1_TIMEOUT_AFTER_EOM_RCVD</Alias>
+                <Comment>T30 T1 timeout after EOM received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D90</Value>
+                <Alias>ERR_PH_C_RCV_UNSPEC</Alias>
+                <Comment>unspecified receive phase C error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D91</Value>
+                <Alias>ERR_PH_C_RCV_EOL_MISSING</Alias>
+                <Comment>missing EOL after 5 seconds (3.2/T4)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D93</Value>
+                <Alias>ERR_PH_C_RCV_DCE_TO_DTE_BUFFER_OVERFLOW</Alias>
+                <Comment>DCE to DTE buffer overflow</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4D94</Value>
+                <Alias>ERR_PH_C_RCV_BAD_CRC_OR_FRAME</Alias>
+                <Comment>bad crc or frame (ECM mode)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4DA0</Value>
+                <Alias>ERR_PH_D_RCV_UNSPEC</Alias>
+                <Comment>unspecified receive phase D error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4DA1</Value>
+                <Alias>ERR_PH_D_RCV_RSPREC_INVALID_RESP_RCVD</Alias>
+                <Comment>RSPREC invalid respones received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4DA2</Value>
+                <Alias>ERR_PH_D_RCV_COMREC_INVALID_RESP_RCVD</Alias>
+                <Comment>COMREC invalid respones received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">4DA3</Value>
+                <Alias>ERR_PH_D_RCV_UNABLE_TO_CONT</Alias>
+                <Comment>unable to continue after PIN or PIP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE0</Value>
+                <Alias>ERR_PH_B_SND_RESERVED1</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE1</Value>
+                <Alias>ERR_PH_B_SND_RESERVED2</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE2</Value>
+                <Alias>ERR_PH_B_SND_RESERVED3</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE3</Value>
+                <Alias>ERR_PH_C_SND_RESERVED1</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE4</Value>
+                <Alias>ERR_PH_C_SND_RESERVED2</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE5</Value>
+                <Alias>ERR_PH_D_SND_RESERVED1</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE6</Value>
+                <Alias>ERR_PH_D_SND_RESERVED2</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE7</Value>
+                <Alias>ERR_PH_D_SND_RESERVED3</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE8</Value>
+                <Alias>ERR_PH_B_RCV_NO_RESP</Alias>
+                <Comment>T2 timeout, no response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDE9</Value>
+                <Alias>ERR_PH_B_RCV_INVALID_RESP_RCVD</Alias>
+                <Comment>invalid respones received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDEA</Value>
+                <Alias>ERR_PH_B_RCV_RESERVED3</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDEB</Value>
+                <Alias>ERR_PH_C_RCV_RESERVED1</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDEC</Value>
+                <Alias>ERR_PH_C_RCV_RESERVED2</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDED</Value>
+                <Alias>ERR_PH_D_RCV_NO_RESP</Alias>
+                <Comment>T2 timeout, no response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDEE</Value>
+                <Alias>ERR_PH_D_RCV_INVALID_RESP_RCVD</Alias>
+                <Comment>invalid respones received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDEF</Value>
+                <Alias>ERR_PH_D_RCV_RESERVED3</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDF0</Value>
+                <Alias>ERR_SGN_NOT_ALLOWED</Alias>
+                <Comment>signal not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">CDF1</Value>
+                <Alias>ERR_CCD_ENC</Alias>
+                <Comment>CCD encoding error</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_test_mode</Name>
+                <Comment>values for test_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TST_OFF</Alias>
+                <Comment>normal</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>TST_BCS</Alias>
+                <Comment>test BCS formatter only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>TST_STUFF</Alias>
+                <Comment>stuffing/destuffing off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>TST_FCS</Alias>
+                <Comment>FCS generating/checking off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0008</Value>
+                <Alias>TST_CTRL</Alias>
+                <Comment>Control checking off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>TST_RTC</Alias>
+                <Comment>RTC checking off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0020</Value>
+                <Alias>TST_MIR</Alias>
+                <Comment>mirror report strings</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0080</Value>
+                <Alias>TST_BUF</Alias>
+                <Comment>show contents of buffer</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_bitorder</Name>
+                <Comment>values for bitorder</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>FBO_NRM_DATA</Alias>
+                <Comment>no change in bitorder for DATA  frames</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>FBO_NRM_STATUS</Alias>
+                <Comment>no change in bitorder for STATUS  frames</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>FBO_REV_DATA</Alias>
+                <Comment>reverse bitorder only for MSG frames</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>FBO_REV_STATUS</Alias>
+                <Comment>reverse bitorder only for STATUS frames</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_phase</Name>
+                <Comment>values for phase</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>BCS_PHASE</Alias>
+                <Comment>Not a message phase</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MSG_PHASE</Alias>
+                <Comment>Message phase (C)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_conn</Name>
+                <Comment>values for dti_conn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>T30_DISCONNECT_DTI</Alias>
+                <Comment>Disconnect DTI from T30</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>T30_CONNECT_DTI</Alias>
+                <Comment>Connect DTI to T30</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_link_id</Name>
+                <Comment>values for link_id</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>T30_LINK_ID_DEFAULT</Alias>
+                <Comment>Default link id</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_direction</Name>
+                <Comment>values for dti_direction</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>T30_DTI_NORMAL</Alias>
+                <Comment>DTI used normally</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>T30_DTI_INVERTED</Alias>
+                <Comment>DTI is inverted</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

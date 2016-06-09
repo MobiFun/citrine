@@ -1,0 +1,1518 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">grlc</DocName>
+        <DocNum Number="126" Project="8010"/>
+        <Description>
+            <Section>The Service Access Point (SAP) for an entity defines the interface supported by that entity in order to gain access to its services. This document contains a specification of the GRLC SAP for the GPRS Radio Link Control (GRLC) entity of the Texas Instruments Dual mode protocol stack.</Section>
+            <Section>The GRLC SAP is based on the exchange of primitives between the GRLC entity and the LLC entity. Further information on the system design can be found in "Dual Mode System Design" [TI 8010.944]. The method used for exchange of primitives is message passing. The terms "message" and "primitive" are used interchangeably in this document.</Section>
+            <Section>This document has three primary sections. The first (section 2) contains a specification of constants used on the interface, which are not specific to the value of a particular parameter. Such constants are typically size fields, specifying array or element sizes.</Section>
+            <Section>The second primary section (section 3) contains the top-level description of the primitives defined for the interface. For each primitive its function is described, and a parameter list is given.</Section>
+            <Section>For any primitive using complex structures or parameters with identified values, references will be given to subsections of the third primary section (section 4). This section contains specifications of the complex types used in the primitives of the interface. It also contains specifications of parameters with predefined values or value ranges. Cross-references to subtypes may be used within this section for complex type declarations. Types, which are common for more SAP's or are defined as ASN1 types, are specified in common include-files, and references to these files will be given instead.</Section>
+            <Section>For all primitives included in this SAP, it is a sad but unavoidable fact that as the world of 3G evolves, some changes to this interface may be necessary. However, as this document is the basis for the GRLC SAP it will be fully maintained and all necessary changes will result in updated versions of this document.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="29" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="29" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document based on 7010.126.02.003</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document update based on review report 7010_126_02_003_review_report</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="20" Month="12" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>GRLC_GRR_DATA_IND inserted</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="28" Month="1" Year="2003"/>
+            <Author>NIA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed upcodes</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="12" Month="2" Year="2003"/>
+            <Author>GSO</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated Pragma table</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="02"/>
+            <Date Day="10" Month="4" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Compiler warnings are removed.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="02"/>
+            <Date Day="20" Month="5" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Updated due to Berlin/Aalborg meeting.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="02"/>
+            <Date Day="6" Month="6" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>The GRLC_MAC_PWR_CTRL_IND is inserted.</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the GRLC SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">GRLC</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="29" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Initial.</Comment>
+        </History>
+        <History>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Pragma inserted.</Comment>
+        </History>
+    </PragmasSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="151">
+        <Description>
+            <Section>This section contains all primitives that are defined for the GRLC SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>Request used by the LL sublayer for acknowledged data transmission with a certain priority. Cause indicates if the GRLC-DATA-REQ was triggered as an implicit page response.</Section>
+                <Section>SAPI indicates the SAPI of LLE. QoS Parameters includes peak throughput. Radio Priority indicates the radio priority level.</Section>
+                <Section>NOTE: Parameter reserved_data_req is used to align the position of the sdu with the primitives GRLC_UNITDATA_REQ and CCI_CIPHER_CNF. If anything is changed which affects the position of the sdu in this primitive, reserved_data_req must be adapted.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>LLC</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>tlli</Name>
+                </ItemLink>
+                <Comment>Temporary logical link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>grlc_qos</Name>
+                </ItemLink>
+                <Comment>Quality of service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Comment>Radio priority</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>reserved_data_req</Name>
+                </ItemLink>
+                <Control>[16]</Control>
+              <Version>!REL99</Version>
+                <Comment>Reserved octets for data request</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>pkt_flow_id</Name>
+                </ItemLink>
+                <Control>[16]</Control>
+                <Version>REL99</Version>
+                <Comment>Packet flow identifier</Comment>
+            </PrimItem>            
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The grr_qos is inserted. Aligned with GRR_SAP (version 021).</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>The grr_qos is renamed to grlc_qos</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by RR to transfer received data to the LL sublayer.</Section>
+                <Section>NOTE: This primitive must be identical to GRLC_UNITDATA_IND.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>tlli</Name>
+                </ItemLink>
+                <Comment>Temporary logical link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>desc_list</Name>
+                </ItemLink>
+                <Comment>List of generic data descriptors</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by RR to transfer received data to the LL sublayer.</Section>
+                <Section>NOTE: This primitive is only used for testing, where it replaces GRLC_DATA_IND.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_DATA_IND_TEST</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>tlli</Name>
+                </ItemLink>
+                <Comment>Temporary logical link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Request used by the LL sublayer for unacknowledged data transmission with a certain priority.</Section>
+                <Section>SAPI indicates the SAPI of LLE. QoS Parameters includes peak throuput. Radio Priority indicates the radio priority level.</Section>
+                <Section>NOTE: Parameter reserved_unitdata_req is used to align the position of the sdu with the primitives GRLC_DATA_REQ and CCI_CIPHER_CNF. If anything is changed which affects the position of the sdu in this primitive, reserved_unitdata_req must be adapted.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_UNITDATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>LLC</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>Service Access Point Identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>tlli</Name>
+                </ItemLink>
+                <Comment>Temporary logical link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>grlc_qos</Name>
+                </ItemLink>
+                <Comment>Quality of service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Comment>Radio priority</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>reserved_unitdata_req1</Name>
+                </ItemLink>
+                <Comment>Reserved octet</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>reserved_unitdata_req2</Name>
+                </ItemLink>
+                <Control>[16]</Control>
+		 <Version>!REL99</Version>
+                <Comment>Reserved octets for unitdata request</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>pkt_flow_id</Name>
+                </ItemLink>
+                <Control>[16]</Control>
+                <Version>REL99</Version>
+                <Comment>Packet flow identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial 27-Nov-03 xshrivas  renamed reserved_unit_data_req2 to pkt_flow_id</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by RR to transfer received data to the LL sublayer.</Section>
+                <Section>NOTE: This primitive must be identical to GRLC_DATA_IND.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_UNITDATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>tlli</Name>
+                </ItemLink>
+                <Comment>Temporary logical link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>desc_list</Name>
+                </ItemLink>
+                <Comment>List of generic data descriptors</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by RR to transfer received data to the LL sublayer.</Section>
+                <Section>NOTE: This primitive is only used for testing, where it replaces GRLC_UNITDATA_IND.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_UNITDATA_IND_TEST</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>tlli</Name>
+                </ItemLink>
+                <Comment>Temporary logical link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive indicates LLC that GRLC is ready to receive a GRLC_DATA_REQ or a GRLC_UNITDATA_REQ primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_READY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive activates the GMM queue used during Routing area update procedure after cell reselection.  It triggers the GRLC_SUSPEND_READY_IND primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_ACTIVATE_GMM_QUEUE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>LLC</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="9" Month="10" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive indicates LLC that GRLC is ready to receive GRLC_DATA_REQ primitives allowed while LLC is in state suspended.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_SUSPEND_READY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>When rlc_downlink is called from L1 this primitive is sent to GRLC itself.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_MAC_DATA_IND</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="5" Month="3" Year="2003"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>When rlc_downlink is called from L1 this primitive is sent to GRLC itself.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_MAC_READY_IND</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>When maca_power_control is called from L1 this primitive is sent to GRLC itself.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_MAC_PWR_CTRL_IND</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <DocLink DocType="OTHER">
+                        <Name/>
+                    </DocLink>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>GRLC_FLUSH_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>LLC</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="13" Month="08" Year="2007"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter defines a list of data descriptors. It is implemented as a pointer to the first generic data descriptor.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>desc_list</Name>
+                <Comment>list of generic data descriptors</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>list_len</Name>
+                </ItemLink>
+                <Comment>Length in octets of whole data</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>first</Name>
+                </ItemLink>
+                <Comment>Pointer to generic data descriptors</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The purpose of this parameter is to specify the QoS parameters for a PDP context. Only element peak is to be considered as valid. Other elements must not be evaluated. NOTE: The reserved elements at the end are necessary to align this structure with ll_qos.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>grlc_qos</Name>
+                <Comment>Quality of service</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>delay</Name>
+                </ItemLink>
+                <Comment>Delay class</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>relclass</Name>
+                </ItemLink>
+                <Comment>Reliablility class</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>peak</Name>
+                </ItemLink>
+                <Comment>Peak throughput</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>preced</Name>
+                </ItemLink>
+                <Comment>Precedence class</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>mean</Name>
+                </ItemLink>
+                <Comment>Main throughput</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>reserved_1</Name>
+                </ItemLink>
+                <Comment>Reserved</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>reserved_2</Name>
+                </ItemLink>
+                <Comment>Reserved</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>reserved_3</Name>
+                </ItemLink>
+                <Comment>Reserved</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains either a L3-PDU or layer-3 parameters that are negotiated between the peer entities.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>service data unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">grlc</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>buffer content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies a point at which LLC services are provided by an LLE to a layer-3 entity. Consequently, SAPI identifies an LLE that processes an LLC frame and also a layer-3 entity that is to receive information carried by the LLC frame.</Section>
+                <Section>SAPI allows 16 service access points to be specified but only six of them are currently defined. The rest is reserved for future use.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sapi</Name>
+                <Type>U8</Type>
+                <Comment>service access point identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">grlc</DocName>
+                <Name>VAL_sapi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines a list of data descriptors. It is implemented as a pointer to the first generic data descriptor.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>list_len</Name>
+                <Type>U16</Type>
+                <Comment>Length in octets of whole data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines a list of data descriptors. It is implemented as a pointer to the first generic data descriptor.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>first</Name>
+                <Type>U32</Type>
+                <Comment>Pointer to generic data descriptors</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of this parameter is to specify the QoS parameters for a PDP context. Only element peak is to be considered as valid. Other elements must not be evaluated. NOTE: The reserved elements at the end are necessary to align this structure with ll_qos.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>delay</Name>
+                <Type>U8</Type>
+                <Comment>Delay class</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">grlc</DocName>
+                <Name>VAL_delay</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of this parameter is to specify the QoS parameters for a PDP context. Only element peak is to be considered as valid. Other elements must not be evaluated. NOTE: The reserved elements at the end are necessary to align this structure with ll_qos.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>relclass</Name>
+                <Type>U8</Type>
+                <Comment>Reliablility class</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">grlc</DocName>
+                <Name>VAL_relclass</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of this parameter is to specify the QoS parameters for a PDP context. Only element peak is to be considered as valid. Other elements must not be evaluated. NOTE: The reserved elements at the end are necessary to align this structure with ll_qos.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>peak</Name>
+                <Type>U8</Type>
+                <Comment>Peak throughput</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">grlc</DocName>
+                <Name>VAL_peak</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of this parameter is to specify the QoS parameters for a PDP context. Only element peak is to be considered as valid. Other elements must not be evaluated. NOTE: The reserved elements at the end are necessary to align this structure with ll_qos.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>preced</Name>
+                <Type>U8</Type>
+                <Comment>Precedence class</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">grlc</DocName>
+                <Name>VAL_preced</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of this parameter is to specify the QoS parameters for a PDP context. Only element peak is to be considered as valid. Other elements must not be evaluated. NOTE: The reserved elements at the end are necessary to align this structure with ll_qos.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mean</Name>
+                <Type>U8</Type>
+                <Comment>Main throughput</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">grlc</DocName>
+                <Name>VAL_mean</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of this parameter is to specify the QoS parameters for a PDP context. Only element peak is to be considered as valid. Other elements must not be evaluated. NOTE: The reserved elements at the end are necessary to align this structure with ll_qos.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reserved_1</Name>
+                <Type>U8</Type>
+                <Comment>Reserved</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of this parameter is to specify the QoS parameters for a PDP context. Only element peak is to be considered as valid. Other elements must not be evaluated. NOTE: The reserved elements at the end are necessary to align this structure with ll_qos.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reserved_2</Name>
+                <Type>U8</Type>
+                <Comment>Reserved</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of this parameter is to specify the QoS parameters for a PDP context. Only element peak is to be considered as valid. Other elements must not be evaluated. NOTE: The reserved elements at the end are necessary to align this structure with ll_qos.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reserved_3</Name>
+                <Type>U8</Type>
+                <Comment>Reserved</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of the radio priority information element is to specify the priority level that the MS shall use at the lower layers for transmission of data related to a PDP context or for mobile originated SMS transmission.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>radio_prio</Name>
+                <Type>U8</Type>
+                <Comment>Radio Priority</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">grlc</DocName>
+                <Name>VAL_radio_prio</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains either a L3-PDU or layer-3 parameters that are negotiated between the peer entities.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains either a L3-PDU or layer-3 parameters that are negotiated between the peer entities.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains either a L3-PDU or layer-3 parameters that are negotiated between the peer entities.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>buffer content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the MS. Within the SGSN it is used to distinguish between the different LLC entities. LLC is able to handle a maximum of two TLLIs, both for receiving frames and one of them for transmitting frames. Therefore this parameter is also useful on the side of the MS to distinguish between the two possible receiving TLLIs.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tlli</Name>
+                <Type>U32</Type>
+                <Comment>temporary logical link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Cause indicates if GRLC-DATA-REQ is sent as an implicit page response, due to a cell update, or if MM data is sent. If Cause is set to any of these reasons, Radio Priority is also set to highest.</Section>
+                <Section>NOTE: The values of cause are identical to those of LLGMM_TRIGGER_REQ trigger_cause.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U8</Type>
+                <Comment>Cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">grlc</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The prefixes are removed (already specified in the Constants section). 15-Jul-03 CAN CELL_UPDATE replaced by EMPTY_FRAME</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>These parameters are used to insert reserved octets into the data structures of GRLC_DATA_REQ and GRLC_UNITDATA_REQ, in order to align the position of the sdu in these primitives with the other primitive, and with CCI primitives (see the specific primitive description for further details).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reserved_data_req</Name>
+                <Type>U8</Type>
+              <Version>!REL99</Version>
+                <Comment>reserved octets for data request</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>These parameters are used to insert reserved octets into the data structures of GRLC_DATA_REQ and GRLC_UNITDATA_REQ, in order to align the position of the sdu in these primitives with the other primitive, and with CCI primitives (see the specific primitive description for further details).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reserved_unitdata_req1</Name>
+                <Type>U8</Type>
+                <Comment>reserved octet</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>These parameters are used to insert reserved octets into the data structures of GRLC_DATA_REQ and GRLC_UNITDATA_REQ, in order to align the position of the sdu in these primitives with the other primitive, and with CCI primitives (see the specific primitive description for further details).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reserved_unitdata_req2</Name>
+                <Type>U8</Type>
+		  <Version>!REL99</Version>
+                <Comment>reserved octets for unitdata request</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="29" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to indicate packet flow identifier to GRLC. Only first byte of the array 16 bytes is used for packet flow id. This 16 bytes array is requited in the data structures of GRLC_DATA_REQ and GRLC_UNITDATA_REQ, in order to align the position of the sdu in these primitives with the other primitive, and with CCI primitives (see the specific primitive description for further details).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pkt_flow_id</Name>
+                <Type>U8</Type>
+                <Version>REL99</Version>
+                <Comment>Packet flow identifier. Only first byte of the array is used for the packet flow identifier.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">grlc</DocName>
+                <Name>VAL_pkt_flow_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="11" Year="2003"/>
+                <Author>xshrivas</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the GRLC SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sapi</Name>
+                <Comment>values for sapi</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SAPI_1</Alias>
+                <Comment>SAP for GMM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>SAPI_3</Alias>
+                <Comment>SAP 1 for SNDCP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>SAPI_5</Alias>
+                <Comment>SAP 2 for SNDCP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>SAPI_7</Alias>
+                <Comment>SAP for SMS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>SAPI_9</Alias>
+                <Comment>SAP 3 for SNDCP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>SAPI_11</Alias>
+                <Comment>SAP 4 for SNDCP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>SAPI_TEST_MODE</Alias>
+                <Comment>This signs a primitive as GRLC-self generated for test purposes</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="9" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_peak</Name>
+                <Comment>values for peak</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PEAK_SUB</Alias>
+                <Comment>Subscribed peak throughput</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PEAK_1K</Alias>
+                <Comment>Up to 1 000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PEAK_2K</Alias>
+                <Comment>Up to 2 000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>PEAK_4K</Alias>
+                <Comment>Up to 4 000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>PEAK_8K</Alias>
+                <Comment>Up to 8 000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>PEAK_16K</Alias>
+                <Comment>Up to 16 000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>PEAK_32K</Alias>
+                <Comment>Up to 32 000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>PEAK_64K</Alias>
+                <Comment>Up to 64 000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>PEAK_128K</Alias>
+                <Comment>Up to 128 000 octet/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>PEAK_256K</Alias>
+                <Comment>Up to 256 000 octet/s</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="9" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_relclass</Name>
+                <Comment>values for relclass</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RELCLASS_SUB</Alias>
+                <Comment>Subscribed reliability class</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GTP_LLC_RLC_PROT</Alias>
+                <Comment>Acknowledged GTP, LLC, and RLC; Protected data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>LLC_RLC_PROT</Alias>
+                <Comment>Unacknowledged GTP; Acknowledged LLC and RLC, Protected data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>RLC_PROT</Alias>
+                <Comment>Unacknowledged GTP and LLC; Acknowledged RLC, Protected data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>PROT</Alias>
+                <Comment>Unacknowledged GTP, LLC, and RLC, Protected data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>NO_REL</Alias>
+                <Comment>Unacknowledged GTP, LLC, and RLC, Unprotected data</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="9" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_delay</Name>
+                <Comment>values for delay</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DELAY_SUB</Alias>
+                <Comment>Subscribed delay class</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DELAY_1</Alias>
+                <Comment>Delay class 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DELAY_2</Alias>
+                <Comment>Delay class 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>DELAY_3</Alias>
+                <Comment>Delay class 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>DELAY_4</Alias>
+                <Comment>Delay class 4 (best effort)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="9" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mean</Name>
+                <Comment>values for mean</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MEAN_SUB</Alias>
+                <Comment>Subscribed mean throughput</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MEAN_100</Alias>
+                <Comment>100 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>MEAN_200</Alias>
+                <Comment>200 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>MEAN_500</Alias>
+                <Comment>500 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>MEAN_1K</Alias>
+                <Comment>1 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>MEAN_2K</Alias>
+                <Comment>2 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>MEAN_5K</Alias>
+                <Comment>5 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>MEAN_10K</Alias>
+                <Comment>10 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>MEAN_20K</Alias>
+                <Comment>20 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>MEAN_50K</Alias>
+                <Comment>50 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>MEAN_100K</Alias>
+                <Comment>100 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>MEAN_200K</Alias>
+                <Comment>200 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>MEAN_500K</Alias>
+                <Comment>500 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>MEAN_1M</Alias>
+                <Comment>1 000 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>MEAN_2M</Alias>
+                <Comment>2 000 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>MEAN_5M</Alias>
+                <Comment>5 000 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">16</Value>
+                <Alias>MEAN_10M</Alias>
+                <Comment>10 000 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">17</Value>
+                <Alias>MEAN_20M</Alias>
+                <Comment>20 000 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">18</Value>
+                <Alias>MEAN_50M</Alias>
+                <Comment>50 000 000 octet/h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">31</Value>
+                <Alias>MEAN_BEST</Alias>
+                <Comment>Best effort</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="9" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_preced</Name>
+                <Comment>values for preced</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PRECED_SUB</Alias>
+                <Comment>Subscribed precedence</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PRIO_HIGH</Alias>
+                <Comment>High priority</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PRIO_NORM</Alias>
+                <Comment>Normal priority</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>PRIO_LOW</Alias>
+                <Comment>Low priority</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="9" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_radio_prio</Name>
+                <Comment>values for radio_prio</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RADIO_PRIO_1</Alias>
+                <Comment>Radio Priority Level 1 (highest)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RADIO_PRIO_2</Alias>
+                <Comment>Radio Priority Level 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>RADIO_PRIO_3</Alias>
+                <Comment>Radio Priority Level 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>RADIO_PRIO_4</Alias>
+                <Comment>Radio Priority Level 4 (lowest)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="9" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTACS_DEF</Alias>
+                <Comment>any other reason</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTACS_PAGE_RESPONSE</Alias>
+                <Comment>data is sent due to a page response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DTACS_MOBILITY_MANAGEMENT</Alias>
+                <Comment>mobility management data is sent</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>DTACS_EMPTY_FRAME</Alias>
+                <Comment>data is sent due to a cell update</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>DTACS_CELL_NOTIFI_NULL_FRAME</Alias>
+                <Comment>data is send due to cell notification using LLC unnumbered NULL command.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pkt_flow_id</Name>
+                <Version>REL99</Version>
+                <Comment>values for pkt_flow_id</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>GRLC_PFI_BEST_EFFORT</Alias>
+                <Version>REL99</Version>
+                <Comment>best effort</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>GRLC_PFI_SIGNALING</Alias>
+                <Version>REL99</Version>
+                <Comment>signalling</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>GRLC_PFI_SMS</Alias>
+                <Version>REL99</Version>
+                <Comment>SMS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>GRLC_PKT_FLOW_ID_NOT_PRES</Alias>
+                <Version>REL99</Version>
+                <Comment>value FF is used to indicate when packet flow identifier is not present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

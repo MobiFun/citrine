@@ -1,0 +1,230 @@
+diff l1_const.h
+--- ../../../../leo2moko/chipsetsw/layer1/include/l1_const.h	2009-11-07 06:38:12.000000000 -0800
++++ l1_const.h	2014-07-14 17:41:39.772709632 -0800
+@@ -18,11 +18,13 @@
+ #else                         // Running ARM compiler.
+   #define FAR
+   #define EXIT exit(0)
++  #undef  stricmp	// appease gcc
+   #define stricmp strcmp
+ #endif
+ 
+ 
+ #if (CODE_VERSION != SIMULATION)
++  #undef  NULL		// appease gcc
+   #define NULL                0
+ #endif
+ 
+@@ -1264,7 +1266,7 @@
+ 
+ // "d_ctrl_abb" bits positions for conditionnal loading of abb registers.
+ #define B_RAMP                   0
+-#if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
++#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+   #define B_BULRAMPDEL             3 // Note: this name is changed
+   #define B_BULRAMPDEL2            2 // Note: this name is changed
+   #define B_BULRAMPDEL_BIS         9
+diff l1_ctl.h
+--- ../../../../leo2moko/chipsetsw/layer1/include/l1_ctl.h	2009-11-07 06:38:12.000000000 -0800
++++ l1_ctl.h	2013-11-16 20:27:53.000000000 -0800
+@@ -50,10 +50,8 @@
+   #define  ALGO_AFC_KALMAN_PREDICTOR 3 // Kalman filter + rgap predictor
+ #endif
+ 
+-#if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
++#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+    // clipping related to AFC DAC linearity range
+   #define  C_max_step        32000   //   4000 * 2**3                    
+   #define  C_min_step       -32000   //  -4000 * 2**3                   
+ #endif
+-
+-
+diff l1_defty.h
+--- ../../../../leo2moko/chipsetsw/layer1/include/l1_defty.h	2009-11-07 06:38:12.000000000 -0800
++++ l1_defty.h	2014-07-10 07:19:36.915001165 -0800
+@@ -7,7 +7,7 @@
+  *
+  ************* Revision Controle System Header *************/
+ #if(L1_DYN_DSP_DWNLD == 1)
+-  #include "l1_dyn_dwl_defty.h"
++  #include "../dyn_dwl_include/l1_dyn_dwl_defty.h"
+ #endif
+ 
+ typedef struct
+@@ -421,7 +421,7 @@
+                              //        bit [12.13] -> b_tch_loop,     tch loops A/B/C.
+   API hole;               // (10) unused hole.
+ 
+-#if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
++#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+   API d_ctrl_abb;         // (11) Bit field indicating the analog baseband register to send.
+                              //        bit [0]     -> b_ramp: the ramp information(a_ramp[]) is located in NDB
+                              //        bit [1.2]   -> unused
+@@ -552,9 +552,9 @@
+     API d_dai_onoff;
+     API d_auxdac;
+ 
+-  #if (ANLG_FAM == 1)
++  #if (ANALOG == 1)
+     API d_vbctrl;
+-  #elif ((ANLG_FAM == 2) || (ANLG_FAM == 3))
++  #elif ((ANALOG == 2) || (ANALOG == 3))
+     API d_vbctrl1;
+   #endif
+   
+@@ -660,7 +660,7 @@
+     API d_gea_mode_ovly;
+     API a_gea_kc_ovly[4];
+ 
+-#if (ANLG_FAM == 3)
++#if (ANALOG == 3)
+     // SYREN specific registers
+     API d_vbpop;
+     API d_vau_delay_init;
+@@ -669,7 +669,7 @@
+     API d_vaus_vol;
+     API d_vaud_pll;
+     API d_hole3_ndb[1];
+-#elif ((ANLG_FAM == 1) || (ANLG_FAM == 2))
++#elif ((ANALOG == 1) || (ANALOG == 2))
+ 
+     API d_hole3_ndb[7];
+ 
+@@ -896,9 +896,9 @@
+     API d_dai_onoff;
+     API d_auxdac;
+ 
+-  #if (ANLG_FAM == 1)
++  #if (ANALOG == 1)
+     API d_vbctrl;
+-  #elif ((ANLG_FAM == 2) || (ANLG_FAM == 3))
++  #elif ((ANALOG == 2) || (ANALOG == 3))
+     API d_vbctrl1;
+   #endif
+ 
+@@ -1157,7 +1157,7 @@
+                             //   bit [2]     -> b_dtx.
+ 
+   // OMEGA...........................(MCU -> DSP).
+-  #if ((ANLG_FAM == 1) || (ANLG_FAM == 2))
++  #if ((ANALOG == 1) || (ANALOG == 2))
+     API a_ramp[16];
+     #if (MELODY_E1)
+       API d_melo_osc_used;
+@@ -1215,9 +1215,9 @@
+     API d_dai_onoff;
+     API d_auxdac;
+ 
+-    #if (ANLG_FAM == 1)
++    #if (ANALOG == 1)
+       API d_vbctrl;
+-    #elif (ANLG_FAM == 2)
++    #elif (ANALOG == 2)
+       API d_vbctrl1;
+     #endif
+ 
+@@ -1387,7 +1387,7 @@
+ 
+   // OMEGA...........................(MCU -> DSP).
+ 
+-#if ((ANLG_FAM == 1) || (ANLG_FAM == 2))
++#if ((ANALOG == 1) || (ANALOG == 2))
+   API a_ramp[16];
+   #if (MELODY_E1)
+     API d_melo_osc_used;
+@@ -1443,9 +1443,9 @@
+   API d_bulqoff;
+   API d_dai_onoff;
+   API d_auxdac;
+-  #if (ANLG_FAM == 1)
++  #if (ANALOG == 1)
+     API d_vbctrl;
+-  #elif (ANLG_FAM == 2)
++  #elif (ANALOG == 2)
+     API d_vbctrl1;
+   #endif
+   API d_bbctrl;
+@@ -2834,7 +2834,7 @@
+     BOOL     dco_enabled;
+   #endif
+ 
+-  #if (ANLG_FAM == 1)
++  #if (ANALOG == 1)
+     UWORD16 debug1;
+     UWORD16 afcctladd;
+     UWORD16 vbuctrl;
+@@ -2848,7 +2848,7 @@
+     UWORD16 vbctrl;
+     UWORD16 apcdel1;
+   #endif
+-  #if (ANLG_FAM == 2)
++  #if (ANALOG == 2)
+     UWORD16 debug1;
+     UWORD16 afcctladd;
+     UWORD16 vbuctrl;
+@@ -2865,7 +2865,7 @@
+     UWORD16 apcdel1;
+     UWORD16 apcdel2;
+   #endif
+-  #if (ANLG_FAM == 3)
++  #if (ANALOG == 3)
+     UWORD16 debug1;
+     UWORD16 afcctladd;
+     UWORD16 vbuctrl;
+diff l1_macro.h
+--- ../../../../leo2moko/chipsetsw/layer1/include/l1_macro.h	2009-11-07 06:38:12.000000000 -0800
++++ l1_macro.h	2013-11-16 12:55:51.000000000 -0800
+@@ -10,7 +10,7 @@
+ #include "l1_confg.h"
+ 
+ #if(L1_DYN_DSP_DWNLD == 1)
+-  #include "l1_dyn_dwl_const.h"
++  #include "../dyn_dwl_include/l1_dyn_dwl_const.h"
+ #endif
+ 
+ #if (TRACE_TYPE==5) && NUCLEUS_TRACE
+diff l1_proto.h
+--- ../../../../leo2moko/chipsetsw/layer1/include/l1_proto.h	2009-11-07 06:38:12.000000000 -0800
++++ l1_proto.h	2014-07-10 07:18:34.489000271 -0800
+@@ -134,7 +134,7 @@
+ /* prototypes of L1_FUNC functions    */
+ /**************************************/
+ void            dsp_power_on                (void);
+-#if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
++#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+    void         l1_abb_power_on              (void);
+ #endif
+ void            tpu_init                    (void);
+@@ -517,7 +517,7 @@
+ WORD8 l1ctl_encode_delta1  (UWORD16 radio_freq);
+ WORD8 l1ctl_encode_delta2  (UWORD16 radio_freq);
+ void Cust_get_ramp_tab     (API *a_ramp, UWORD8 txpwr_ramp_up, UWORD8 txpwr_ramp_down, UWORD16 radio_freq);
+-#if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
++#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+   UWORD16 Cust_get_pwr_data(UWORD8 txpwr, UWORD16 radio_freq);
+ #endif
+ 
+diff l1_time.h
+--- ../../../../leo2moko/chipsetsw/layer1/include/l1_time.h	2009-11-07 06:38:12.000000000 -0800
++++ l1_time.h	2014-07-10 07:18:53.908001527 -0800
+@@ -140,7 +140,7 @@
+ #if (CODE_VERSION==SIMULATION)
+   #define TULSET_DURATION    ( 16L )                                                 // Uplink power on setup time
+   #define BULRUDEL_DURATION  ( 2L )
+-  #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
++  #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+      // 16 qbits are added because the Calibration time is reduced of 4 GSM bit
+      // due to a slow APC ramp of OMEGA (Cf. START_TX_NB)
+      #define UL_VEGA_DELAY      ( TULSET_DURATION + BULRUDEL_DURATION +16L )         // = 18qbits, TX Vega delay
+diff l1_trace.h
+--- ../../../../leo2moko/chipsetsw/layer1/include/l1_trace.h	2009-11-07 06:38:12.000000000 -0800
++++ l1_trace.h	2014-07-14 23:32:39.826002442 -0800
+@@ -11,7 +11,7 @@
+ #ifndef __L1_TRACE_H__
+ #define __L1_TRACE_H__
+ 
+-#include "rvt_gen.h"
++#include "../../riviera/rvt/rvt_gen.h"
+ #include <string.h>
+ 
+ #if (defined RVM_RTT_SWE || (OP_L1_STANDALONE == 1))

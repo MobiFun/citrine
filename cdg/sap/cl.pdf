@@ -1,0 +1,95 @@
+;********************************************************************************
+;*** File           : cl.pdf
+;*** Creation       : Wed Mar 11 09:58:08 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : cl
+;*** Document No.   : 8010.149.04.012
+;*** Document Date  : 2004-06-08
+;*** Document Status: SUBMITTED
+;*** Document Author: rpk
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:38:38 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-06-08"
+PRAGMA 	ID_AND_VERSION 	"8010.149.04.012"
+PRAGMA 	PREFIX 	CL 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	NO 	; Adds enumerations in the .val file.
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+CONST 	DUMMY 	0xFF 	; Just for avoiding error
+
+
+
+VALTAB 	VAL_qos_conv_res
+VAL 	0x01 	CONV_OK 	"Conversion successful."
+VAL 	0x00 	CONV_FAILED 	"Conversion failed"
+
+
+
+
+VAR 	qos_conv_res 	"Result of qos conversion " 	B
+
+VAL 	@p_cl - VAL_qos_conv_res@ 	
+
+
+
+
+
+
+
+; CL_NWRL_SET_SGSN_RELEASE_REQ 	0x8000009C
+; CL_NWRL_SET_SGSN_RELEASE_CNF 	0x8000409C
+; CL_NWRL_GET_SGSN_RELEASE_REQ 	0x8001009C
+; CL_NWRL_GET_SGSN_RELEASE_CNF 	0x8001409C
+
+
+
+PRIM 	CL_NWRL_SET_SGSN_RELEASE_REQ 	0x8000009C
+{
+ 	EXTERN @p_8010_152_ps_include - sgsn_rel@ 	sgsn_rel 	 ; Input: SGSN release
+}
+
+
+
+
+
+
+PRIM 	CL_NWRL_SET_SGSN_RELEASE_CNF 	0x8000409C
+{
+}
+
+
+
+
+
+
+PRIM 	CL_NWRL_GET_SGSN_RELEASE_REQ 	0x8001009C
+{
+}
+
+
+
+
+
+
+PRIM 	CL_NWRL_GET_SGSN_RELEASE_CNF 	0x8001409C
+{
+ 	EXTERN @p_8010_152_ps_include - sgsn_rel@ 	sgsn_rel 	 ; Output: SGSN Release
+}
+
+
+
+
+
+
+
+
+

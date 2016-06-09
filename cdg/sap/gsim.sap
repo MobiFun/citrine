@@ -1,0 +1,960 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">gsim</DocName>
+        <DocNum Number="113" Project="8441"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for GPRS consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity.</Section>
+            <Section>Figure 1-1: Architecture of the GSM/GPRS protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the GPRS protocol stack are:</Section>
+            <Section>1.1 GRR (RLC/MAC) - Radio Link Control/Medium Access Control</Section>
+            <Section>This layer contains two functions: The Radio Link Control function provides a radio-solution-dependent reliable link. The Medium Access Control function controls the access signalling (request and grant) procedures for the radio channel, and the mapping of LLC frames onto the GSM physical channel.</Section>
+            <Section>1.2 LLC - Logical Link Control</Section>
+            <Section>The LLC entity provides multiple highly reliable logical links for asynchronous data transfer between the MS and the network. It supports variable-length information frames, acknowledged and unacknowledged data transfer, flow and sequence control, error detection and recovery, notification of unrecoverable errors, user identity confidentiality, and ciphering of user data.</Section>
+            <Section>1.3 GMM - GPRS Mobility Management</Section>
+            <Section>The GMM entity provides procedures for the mobility of the MS, such as informing the network of its present location, and user identity confidentiality. It manages the GMM context (attach, detach, routing area updating), supports security functions such as authentication of user and MS, controls ciphering of user data, and initiates the response to paging messages.</Section>
+            <Section>1.4 SM - Session Management</Section>
+            <Section>The main function of the session management (SM) is to support PDP context handling of the user terminal. Session Management activates, modifies and deletes the contexts for packet data protocols (PDP). Session Management services are provided at the SMREG-SAP and the SNSM-SAP for anonymous and non-anonymous access. The non-anonymous and anonymous access procedures for PDP context activation and PDP context deactivation are available at the SMREG-SAP. In addition there exists a PDP context modification for non-anonymous PDP contexts.</Section>
+            <Section>1.5 SNDCP - Subnetwork Dependant Convergence Protocol</Section>
+            <Section>SNDCP carries out all functions related to transfer of Network layer Protocol Data Units (N-PDUs) over GPRS in a transparent way. SNDCP helps to improve channel efficiency by means of compression techniques. The set of protocol entities above SNDCP consists of commonly used network protocols. They all use the same SNDCP entity, which then performs multiplexing of data coming from different sources to be sent using the service provided by the LLC layer.</Section>
+            <Section>1.6 GACI - GPRS AT Command Interpreter</Section>
+            <Section>The ACI is the GPRS extension of the ACI. It is specified in GSM 07.60. It is responsible for processing of the GPRS related AT Commands to setup, activate and deactivate the PDP context parameter. It also provides funtionallity for the interworking between GMM/SM/SNDCP and a packet oriented protocol like PPP.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the GPRS. The driver has to be able to perform flow control.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="99"/>
+            <Date Day="16" Month="7" Year="1999"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>DB, Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="99"/>
+            <Date Day="25" Month="4" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Access Control class added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="99"/>
+            <Date Day="29" Month="5" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>AUTHENTICATION added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="99"/>
+            <Date Day="4" Month="2" Year="2003"/>
+            <Author>LG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>length of imsi_field by symbol</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 05.02 version 8.0.0 Release 1999Digital cellular telecommunications system (Phase 2+);Multiplexing and multiple access on the radio path</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 04.60 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station (MS) - Base Station System (BSS) interface;Radio Link Control/ Medium Access Control (RLC/MAC) protocol</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 04.08 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface layer 3 specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 03.64 version 6.1.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Overall description of the GPRS radio interface; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 03.60 version 6.3.1 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Service description; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 04.07 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface signalling layer 3; General aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 04.64 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station - Serving GPRS Support Node (MS-SGSN)Logical Link Control (LLC) layer specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 05.08 version 6.4.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem link control</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 05.10 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem synchronization</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 03.20 TS 100 929: July 1998 (GSM 03.20 version 6.0.1)Security related network functions, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Draft GSM 03.22: August 1998 (GSM 03.22 version 6.1.0)Functions related to Mobile Station (MS) in idle mode and group receive mode, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 04.65 V6.3.0: Subnetwork Dependant Convergence Protocol ETSI, March 1999</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>ITU-T V42bis ITU-T, Recommendation V.42 bis 1990</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 09.60 GPRS Tunneling Protocol (GTP) across the Gn and Gp Interface</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>RFC 1661 IETF STD 51 July 1994The Point-to-Point Protocol (PPP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>RFC 1662 IETF STD 51 July 1994PPP in HDLC-like Framing</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>RFC 1570 January 1994PPP LCP Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>RFC 1989 August 1996PPP Link Quality Monitoring</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>RFC 1332 May 1992The PPP Internet Protocol Control Protocol (IPCP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>RFC 1877 December 1995PPP IPCP Extensions for Name Server Addresses</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>RFC 2153 May 1997PPP Vendor Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>RFC 1334 October 1992PPP Authentication Protocols (for Password Authentication Protocol only)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>RFC 1994 August 1996PPP Challenge Handshake Authentication Protocol (CHAP)</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the GSIM SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>GSIM_PTMSI_NA</Alias>
+            <Value ValueType="HEX">FFFFFFFF</Value>
+            <Comment>P-TMSI not applicable (i.e. this parameter shall be ignored)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_SRES</Alias>
+            <Value ValueType="DEC">4</Value>
+            <Comment>size of sres</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_KC</Alias>
+            <Value ValueType="DEC">8</Value>
+            <Comment>size of kc</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_RAND</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment>size of rand</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_IMSI</Alias>
+            <Value ValueType="DEC">9</Value>
+            <Comment>Number of bytes to be read from EF(IMSI)</Comment>
+        </Constant>
+        <History>
+            <Date Day="6" Month="7" Year="1999"/>
+            <Author>DB</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="30" Month="9" Year="1999"/>
+            <Author>ANS</Author>
+            <Comment>GSIM_PTMSI_NA moved from 4.3, because of ccd trouble</Comment>
+        </History>
+        <History>
+            <Date Day="4" Month="2" Year="2003"/>
+            <Author>LG</Author>
+            <Comment>MAX_IMSI added</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="41">
+        <Description>
+            <Section>This section contains all primitives that are defined for the GSIM SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>GSIM_UPDATE_REQ is used to request GSIM to modify the specified data. Only the parameters which shall be modified have to contain valid data, the rest have to be set to the according NO_CHANGE definitions.</Section>
+                <Section>The data is not stored on SIM until GSIM_FLUSH_REQ is received!</Section>
+            </Description>
+            <PrimDef>
+                <Name>GSIM_UPDATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GSIM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>sim_gprs_invalid</Name>
+                </ItemLink>
+                <Comment>SIM invalid for GPRS service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>gu</Name>
+                </ItemLink>
+                <Comment>GPRS update status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>ptmsi</Name>
+                </ItemLink>
+                <Comment>packet temporary mobile subscriber identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>ptmsi_signature_flag</Name>
+                </ItemLink>
+                <Comment>P-TMSI Signature flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>rai</Name>
+                </ItemLink>
+                <Control>[7]</Control>
+                <Comment>routing area identification</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GSIM_STORE_KC_REQ is used to request GSIM to store the KC and the CKSN.</Section>
+                <Section>The data is not stored on SIM until GSIM_FLUSH_REQ is received!</Section>
+            </Description>
+            <PrimDef>
+                <Name>GSIM_STORE_KC_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GSIM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>gsim_kc</Name>
+                </ItemLink>
+                <Control>[8]</Control>
+                <Comment>GPRS ciphering key</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>gsim_cksn</Name>
+                </ItemLink>
+                <Comment>GPRS ciphering key sequence number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="9" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GSIM_INSERTED_IND is used to indicate to GMM that a SIM card has been inserted in the MS. The relevant data for GPRS is included in this primitive. All parameters have to be set to valid values.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GSIM_INSERTED_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>GSIM</Sender>
+                    <Receiver>GMM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>sim_gprs_invalid</Name>
+                </ItemLink>
+                <Comment>SIM invalid for GPRS service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>gu</Name>
+                </ItemLink>
+                <Comment>GPRS update status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>rai</Name>
+                </ItemLink>
+                <Control>[7]</Control>
+                <Comment>routing area identification</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>ptmsi</Name>
+                </ItemLink>
+                <Comment>packet temporary mobile subscriber identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>tmsi</Name>
+                </ItemLink>
+                <Comment>temporary mobile subscriber identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>imsi_field</Name>
+                </ItemLink>
+                <Comment>international mobile subscriber identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>gsim_kc</Name>
+                </ItemLink>
+                <Control>[8]</Control>
+                <Comment>GPRS ciphering key</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>gsim_cksn</Name>
+                </ItemLink>
+                <Comment>GPRS ciphering key sequence number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>acc_contr_class</Name>
+                </ItemLink>
+                <Comment>Access control class</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="9" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>IMSI included</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="3" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>TMSI included</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GSIM_REMOVED_IND is used to indicate to GMM that the SIM card has been removed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GSIM_REMOVED_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>GSIM</Sender>
+                    <Receiver>GMM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The GSIM_AUTHENTICATION_REQ is used to start the GSM authentication algorithm on the SIM card.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GSIM_AUTHENTICATION_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GSIM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>rand</Name>
+                </ItemLink>
+                <Control>[SIZE_RAND]</Control>
+                <Comment>rand</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>gsim_cksn</Name>
+                </ItemLink>
+                <Comment>ciphering key sequence number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="5" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from SIM</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The GSIM_AUTHENTICATION_CNF primitive is the response to a previous authentication request. The parameter Sres is forwarded to the infrastructure by mobility management and the parameter Kc is used by the physical layer for encryption.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GSIM_AUTHENTICATION_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>GSIM</Sender>
+                    <Receiver>GMM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>sres</Name>
+                </ItemLink>
+                <Control>[SIZE_SRES]</Control>
+                <Comment>Sres</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>gsim_kc</Name>
+                </ItemLink>
+                <Control>[SIZE_KC]</Control>
+                <Comment>Kc</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="5" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from SIM</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>ctrl-column removed</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the international mobile subscriber identity (IMSI) in the format of the SIM data field IMSI. Format and coding is described in GSM 11.11.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>imsi_field</Name>
+                <Comment>international mobile subscriber identity</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>c_field</Name>
+                </ItemLink>
+                <Comment>length of imsi</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsim</DocName>
+                    <Name>field</Name>
+                </ItemLink>
+                <Control>[MAX_IMSI]</Control>
+                <Comment>imsi</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="2" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from SIM</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>length of field by symbol</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The GPRS update status contains information about the update status of the MS within the network. The GPRS update status pertains to a specific subscriber embodied by a SIM. It is defined even when the subscriber is not activated (e.g. SIM removed). The GPRS update status is changed only after execution of a GPRS attach, network initiated GPRS detach, authentication procedure, or RAU procedure.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gu</Name>
+                <Type>U8</Type>
+                <Comment>GPRS update status</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gsim</DocName>
+                <Name>VAL_gu</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the actual (or the last if no serving cell is available) routing area of the MS. The purpose of the routing area identification is to provide an unambiguous identification of routing areas within the area covered by the GSM system.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rai</Name>
+                <Type>U8</Type>
+                <Comment>routing_area information</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>changed to type ULONG</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial in SIM</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>copied from SIM</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The P-TMSI is used in the GMM sublayer for identification of an MS.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tmsi</Name>
+                <Type>U32</Type>
+                <Comment>temporary mobile subscriber identity</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gsim</DocName>
+                <Name>VAL_tmsi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Value added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The P-TMSI is used in the GMM sublayer for identification of an MS.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ptmsi</Name>
+                <Type>U32</Type>
+                <Comment>packet temporary mobile subscriber identity</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gsim</DocName>
+                <Name>VAL_tmsi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Value added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the international mobile subscriber identity (IMSI) in the format of the SIM data field IMSI. Format and coding is described in GSM 11.11.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_field</Name>
+                <Type>U8</Type>
+                <Comment>length of imsi</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="2" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from SIM</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>length of field by symbol</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the international mobile subscriber identity (IMSI) in the format of the SIM data field IMSI. Format and coding is described in GSM 11.11.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>field</Name>
+                <Type>U8</Type>
+                <Comment>imsi</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="2" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from SIM</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>length of field by symbol</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Indicates if P-TMSI signature shall be deleted or not..</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ptmsi_signature_flag</Name>
+                <Type>U8</Type>
+                <Comment>P-TMSI Signature flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gsim</DocName>
+                <Name>VAL_ptmsi_signature_flag</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="13" Month="9" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The GPRS ciphering key is used to cipher uplink data and decipher downlink data. If the ciphering key is not applicable (invalid) it is set to all 0's.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gsim_kc</Name>
+                <Type>U8</Type>
+                <Comment>GPRS ciphering key</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>STRUCT replaced with array</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of the Ciphering Key Sequence Number information element is to make it possible for the network to identify the ciphering key Kc which is stored in the mobile station without invoking the authentication procedure. The ciphering key sequence number is allocated by the network and sent with the AUTHENTICATION REQUEST message to the mobile station where it is stored together with the calculated ciphering key Kc.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gsim_cksn</Name>
+                <Type>U8</Type>
+                <Comment>GPRS ciphering key sequence number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gsim</DocName>
+                <Name>VAL_gsim_cksn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter Sres is the 32 bit result of the GSM authentication algorithm. The value is forwarded to the infrastructure. The format and coding is described in GSM 4.08.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sres</Name>
+                <Type>U8</Type>
+                <Comment>authentication parameter Sres</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from SIM</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter rand is a random number of 128 bits, which is forwarded from the infrastructure to the mobile station as an input parameter for the authentication algorithm of GSM. The format and coding is described in GSM 4.08.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rand</Name>
+                <Type>U8</Type>
+                <Comment>authentication parameter rand</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from SIM</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The sim_gprs_invalid variable indicates whether SIM is valid or invalid for GPRS service.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sim_gprs_invalid</Name>
+                <Type>U8</Type>
+                <Comment>SIM invalid for GPRS service</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gsim</DocName>
+                <Name>VAL_sim_gprs_invalid</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="7" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Access Control Class N (bit 1-16) (see octet 3 and 4 of the RACH Control Parameters IE in GSM 04.08) . For a mobile station with Access Control Class =N access is not barred if the Access Control Class N bit is coded with a '0'; N = 0, 1,....9,11,...,15. Bit 11= the EC bit is the Emergency Call Allowed coded as specified in GSM 04.08. (see GSM 04.60 and GSM 2.11)</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>acc_contr_class</Name>
+                <Type>U16</Type>
+                <Comment>Access Control Class</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from GMMRR.</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the GSIM SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_gu</Name>
+                <Comment>values for gu</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GSIM_GU_NA</Alias>
+                <Comment>GPRS update status not applicable (i.e. this parameter shall be ignored)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GSIM_GU1_UPDATED</Alias>
+                <Comment>last GPRS attach or RAU attempt successful</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GSIM_GU2_NOT_UPDATED</Alias>
+                <Comment>last GPRS attach or RAU attempt failed procedurally</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>GSIM_GU3_ROAMING_NOT_ALLOWED</Alias>
+                <Comment>last GPRS attach or RAU attempt correctly performed, but negative answer from network received</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tmsi</Name>
+                <Comment>values for tmsi</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FFFFFFFF</Value>
+                <Alias>GSIM_TMSI_INVALID</Alias>
+                <Comment>P-TMSI invalid (see GSM 3.03)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ptmsi_signature_flag</Name>
+                <Comment>values for ptmsi_signature_flag</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GSIM_PTMSI_SIG_DEL</Alias>
+                <Comment>P-TMSI Dignature shall be deleted</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GSIM_PTMSI_SIG_VALID</Alias>
+                <Comment>P-TMSI Signature is valid</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GSIM_PTMSI_SIG_NA</Alias>
+                <Comment>P-TMSI Signature not applicable (i.e. this parameter shall be ignored)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_gsim_cksn</Name>
+                <Comment>values for gsim_cksn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GSIM_CKSN_NA</Alias>
+                <Comment>GPRS ciphering key sequence number not applicable (i.e. this parameter shall be ignored)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sim_gprs_invalid</Name>
+                <Comment>values for sim_gprs_invalid</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GSIM_SIM_GPRS_NA</Alias>
+                <Comment>not applicable (i.e. this parameter shall be ignored)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GSIM_SIM_GPRS_VALID</Alias>
+                <Comment>SIM is considered as valid for GPRS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GSIM_SIM_GPRS_INVALID</Alias>
+                <Comment>SIM is considered as invalid for GPRS</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

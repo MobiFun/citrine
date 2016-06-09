@@ -1,0 +1,88 @@
+;********************************************************************************
+;*** File           : ip.pdf
+;*** Creation       : Wed Mar 11 09:58:12 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : ip
+;*** Document No.   : 8444.101.00.006
+;*** Document Date  : 2003-08-30
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: Jacek
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:43:40 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-08-30"
+PRAGMA 	ID_AND_VERSION 	"8444.101.00.006"
+
+
+
+
+
+
+VALTAB 	VAL_err
+VAL 	0 	IP_ADDR_NOERROR 	"no error"
+VAL 	1 	IP_ADDR_NOROUTE 	"no route to destination"
+
+VALTAB 	VAL_trans_prot
+VAL 	6 	TCP_PROTOCOL 	"TCP protocol"
+VAL 	17 	UDP_PROTOCOL 	"UDP protocol"
+VAL 	16 	RAW_PROTOCOL 	"Chaos"
+
+
+
+
+VAR 	dst_addr 	"destination address" 	L
+
+
+VAR 	src_addr 	"source address" 	L
+
+
+VAR 	err 	"error code" 	B
+
+VAL 	@p_ip - VAL_err@ 	
+
+VAR 	trans_prot 	"transport protocol" 	B
+
+VAL 	@p_ip - VAL_trans_prot@ 	
+
+
+
+
+
+
+
+; IP_ADDR_REQ 	0x3900
+; IP_ADDR_CNF 	0x7900
+
+
+
+PRIM 	IP_ADDR_REQ 	0x3900
+{
+ 	dst_addr 	 ; destination address
+ 	trans_prot 	 ; transport protocol
+}
+
+
+
+
+
+
+PRIM 	IP_ADDR_CNF 	0x7900
+{
+ 	src_addr 	 ; source  address
+ 	err 	 ; error code
+ 	trans_prot 	 ; transport protocol
+}
+
+
+
+
+
+
+
+
+

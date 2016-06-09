@@ -1,0 +1,429 @@
+;********************************************************************************
+;*** File           : ra.pdf
+;*** Creation       : Wed Mar 11 09:58:38 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : ra
+;*** Document No.   : 8411.102.98.204
+;*** Document Date  : 2002-04-26
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SLO
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:51:34 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-04-26"
+PRAGMA 	ID_AND_VERSION 	"8411.102.98.204"
+
+
+
+CONST 	DUMMY_RA 	0 	; Dummy
+
+
+
+VALTAB 	VAL_model
+VAL 	0 	RA_MODEL_SPEECH 	"model speech"
+VAL 	1 	RA_MODEL_TRANS 	"model 1b async transparent"
+VAL 	2 	RA_MODEL_RLP 	"model 3b async nontransparent"
+VAL 	3 	RA_MODEL_FAX 	"model 5b fax 3.45"
+
+VALTAB 	VAL_tra_rate
+VAL 	0 	TRA_FULLRATE_2400 	"fullrate 2,4/3,6 kBit"
+VAL 	1 	TRA_HALFRATE_2400 	"halfrate 2,4/3,6 kBit"
+VAL 	2 	TRA_FULLRATE_4800 	"fullrate 4,8/6 kBit"
+VAL 	3 	TRA_HALFRATE_4800 	"halfrate 4,8/6 kBit"
+VAL 	4 	TRA_FULLRATE_9600 	"fullrate 9,6/12 kBit"
+VAL 	5 	TRA_FULLRATE_14400 	"fullrate 13,4/14,4 kBit"
+
+VALTAB 	VAL_user_rate
+VAL 	0 	URA_300 	"user rate 300bps"
+VAL 	1 	URA_1200 	"user rate 1200bps"
+VAL 	2 	URA_2400 	"user rate 2400bps"
+VAL 	3 	URA_4800 	"user rate 4800bps"
+VAL 	4 	URA_9600 	"user rate 9600bps"
+VAL 	5 	URA_1200_75 	"user rate 1200/75bps"
+VAL 	6 	URA_14400 	"user rate 14400bps"
+
+VALTAB 	VAL_dtx_flg
+VAL 	0 	DTX_DIS 	"Disable DTX"
+VAL 	1 	DTX_EN 	"Enable DTX"
+
+VALTAB 	VAL_fr_type
+VAL 	0x00 	FR_T4DATA 	"GSM 3.45 Data frame"
+VAL 	0x01 	FR_STATUS 	"GSM 3.45 Status (BCS) frame"
+VAL 	0x02 	FR_SYNC 	"GSM 3.45 Sync frame"
+VAL 	0x03 	FR_TRAIN 	"GSM 3.45 Status (TRAIN) frame"
+VAL 	0x04 	FR_TRANS 	"Transparent Data frame"
+VAL 	0x05 	FR_RLP 	"Valid RLP frame"
+VAL 	0x0F 	FR_INVALID 	"Invalid frame or FCS error detected in RLP mode"
+
+VALTAB 	VAL_status
+VAL 	1 	ST_SA 	"Status SA"
+VAL 	2 	ST_SB 	"Status SB"
+VAL 	4 	ST_X 	"Status X"
+VAL 	8 	ST_OVER 	"Overspeed flag"
+
+VALTAB 	VAL_ack_flg
+VAL 	0 	RA_ACK 	"acknowledged"
+VAL 	1 	RA_NAK 	"not acknowledged"
+
+VALTAB 	VAL_detect
+VAL 	0 	DET_NO_STATUS 	"do not detect status frames"
+VAL 	1 	DET_STATUS 	"detect status frames"
+
+VALTAB 	VAL_tick_dir
+VAL 	1 	TICK_UL 	"tick uplink"
+VAL 	2 	TICK_DL 	"tick downlink"
+VAL 	3 	TICK_UL_DL 	"tick uplink & downlink"
+
+VALTAB 	VAL_offset
+VAL 	0 	ra_conf 	"Configurations"
+VAL 	1 	ra_act 	"Activities"
+VAL 	2 	ra_test 	"Test"
+VAL 	3 	ra_statu 	"Uplink status"
+VAL 	4 	ra_statd 	"Downlink status"
+VAL 	5 	fax_status_det 	"Fax status detection"
+VAL 	6 	rau 	"Buffer for uplink characters"
+VAL 	7 	rad 	"Buffer for downlink characters"
+VAL 	8 	ntu 	"Buffer for uplink RLP frames"
+VAL 	9 	ntd 	"Buffer for downlink RLP frames"
+VAL 	10 	faxu 	"Buffer for uplink fax data"
+VAL 	11 	faxd 	"Buffer for downlink fax data"
+
+
+
+
+VAR 	model 	"transfer protocol model" 	B
+
+VAL 	@p_ra - VAL_model@ 	
+
+VAR 	tra_rate 	"transmission rate" 	B
+
+VAL 	@p_ra - VAL_tra_rate@ 	
+
+VAR 	user_rate 	"user rate" 	B
+
+VAL 	@p_ra - VAL_user_rate@ 	
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"buffer content" 	B
+
+
+VAR 	dtx_flg 	"discontinuous transmission flag" 	B
+
+VAL 	@p_ra - VAL_dtx_flg@ 	
+
+VAR 	req_frames 	"requested frames" 	B
+
+
+VAR 	fr_type 	"frame type" 	B
+
+VAL 	@p_ra - VAL_fr_type@ 	
+
+VAR 	reserved 	"Reserved" 	B
+
+
+VAR 	status 	"V24 Status" 	B
+
+VAL 	@p_ra - VAL_status@ 	
+
+VAR 	break_len 	"Break Length" 	S
+
+
+VAR 	ndb 	"number data bits" 	B
+
+
+VAR 	nsb 	"number stop bits" 	B
+
+
+VAR 	ack_flg 	"acknowledge flag" 	B
+
+VAL 	@p_ra - VAL_ack_flg@ 	
+
+VAR 	detect 	"Detect mode" 	B
+
+VAL 	@p_ra - VAL_detect@ 	
+
+VAR 	tick_dir 	"tick direction" 	B
+
+VAL 	@p_ra - VAL_tick_dir@ 	
+
+VAR 	id 	"Bit Identity" 	B
+
+
+VAR 	offset 	"Address offset" 	B
+
+VAL 	@p_ra - VAL_offset@ 	
+
+VAR 	mask 	"Bit mask" 	S
+
+
+VAR 	value 	"Bits value" 	S
+
+
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[1] 	 ; buffer content
+}
+
+
+
+
+
+
+; RA_ACTIVATE_REQ 	0x80000010
+; RA_DEACTIVATE_REQ 	0x80010010
+; RA_READY_IND 	0x80004010
+; RA_DATA_REQ 	0x80020010
+; RA_BREAK_REQ 	0x80030010
+; RA_DATA_IND 	0x80014010
+; RA_ACTIVATE_CNF 	0x80024010
+; RA_DEACTIVATE_CNF 	0x80034010
+; RA_BREAK_IND 	0x80044010
+; RA_DETECT_REQ 	0x80040010
+; RA_MODIFY_REQ 	0x80050010
+; RA_MODIFY_CNF 	0x80054010
+; RA_DATATRANS_REQ 	0x80060010
+; SHM_TICK_REQ 	0x80070010
+; SHM_DATA_REQ 	0x80080010
+; SHM_READ_REQ 	0x80090010
+; SHM_DATA_IND 	0x80064010
+; SHM_BITSET_REQ 	0x800A0010
+; SHM_BITTEST_REQ 	0x800B0010
+; SHM_BITTEST_IND 	0x80074010
+
+
+
+PRIM 	RA_ACTIVATE_REQ 	0x80000010
+{
+ 	model 	 ; transfer protocol model
+ 	tra_rate 	 ; transmission rate
+ 	user_rate 	 ; user rate
+ 	ndb 	 ; number data bits
+ 	nsb 	 ; number stop bits
+}
+
+
+
+
+
+
+PRIM 	RA_DEACTIVATE_REQ 	0x80010010
+{
+}
+
+
+
+
+
+
+PRIM 	RA_READY_IND 	0x80004010
+{
+ 	req_frames 	 ; requested frames
+}
+
+
+
+
+
+
+PRIM 	RA_DATA_REQ 	0x80020010
+{
+ 	fr_type 	 ; frame type
+ 	dtx_flg 	 ; discontinuous transmission flag
+ 	status 	 ; V.24 Status
+ 	reserved 	 ; reserved
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	RA_BREAK_REQ 	0x80030010
+{
+ 	break_len 	 ; Break length
+}
+
+
+
+
+
+
+PRIM 	RA_DATA_IND 	0x80014010
+{
+ 	fr_type 	 ; frame type
+ 	status 	 ; V.24 Status
+ 	reserved 	 ; reserved
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	RA_ACTIVATE_CNF 	0x80024010
+{
+ 	ack_flg 	 ; acknowledge flag
+}
+
+
+
+
+
+
+PRIM 	RA_DEACTIVATE_CNF 	0x80034010
+{
+}
+
+
+
+
+
+
+PRIM 	RA_BREAK_IND 	0x80044010
+{
+ 	break_len 	 ; Break length
+}
+
+
+
+
+
+
+PRIM 	RA_DETECT_REQ 	0x80040010
+{
+ 	detect 	 ; Detect mode
+}
+
+
+
+
+
+
+PRIM 	RA_MODIFY_REQ 	0x80050010
+{
+ 	tra_rate 	 ; transmission rate
+ 	user_rate 	 ; user rate
+}
+
+
+
+
+
+
+PRIM 	RA_MODIFY_CNF 	0x80054010
+{
+}
+
+
+
+
+
+
+PRIM 	RA_DATATRANS_REQ 	0x80060010
+{
+}
+
+
+
+
+
+
+PRIM 	SHM_TICK_REQ 	0x80070010
+{
+ 	tick_dir 	 ; tick direction
+}
+
+
+
+
+
+
+PRIM 	SHM_DATA_REQ 	0x80080010
+{
+ 	fr_type 	 ; frame type
+ 	dtx_flg 	 ; discontinuous transmission flag
+ 	status 	 ; V.24 Status
+ 	reserved 	 ; Reserved
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	SHM_READ_REQ 	0x80090010
+{
+ 	model 	 ; transfer protocol model
+}
+
+
+
+
+
+
+PRIM 	SHM_DATA_IND 	0x80064010
+{
+ 	fr_type 	 ; frame type
+ 	status 	 ; V.24 Status
+ 	reserved 	 ; reserved
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	SHM_BITSET_REQ 	0x800A0010
+{
+ 	id 	 ; Bit identity
+ 	value 	 ; Bits Value
+}
+
+
+
+
+
+
+PRIM 	SHM_BITTEST_REQ 	0x800B0010
+{
+ 	offset 	 ; Address offset
+ 	mask 	 ; Bit mask
+}
+
+
+
+
+
+
+PRIM 	SHM_BITTEST_IND 	0x80074010
+{
+ 	value 	 ; Bits Value
+}
+
+
+
+
+
+
+
+
+

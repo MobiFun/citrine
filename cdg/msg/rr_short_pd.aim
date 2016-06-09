@@ -1,0 +1,1399 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<AIM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aim.xsd">
+    <DocInfoSection>
+        <DocName DocType="AIM">rr_short_pd</DocName>
+        <DocNum Number="602" Project="8010"/>
+        <Description>
+            <Section>The Air Interface Message (AIM) for an interface defines the air messages supported by that interface in order to gain access to these messages. This document contains a specification of the messages with the RR Short PD for the RR interface in the Texas Instruments Dual mode protocol stack. The protocol discriminator bit has been included for technical reasons into the message type IE. In case of future extensions this means, that also messages with other short PD's are described within this document.</Section>
+            <Section>This document has five primary sections. The first (section2) contains a specification of constants used in the messages, which are not specific to the value of a particular parameter. Such constants are typically size fields, specifying array or element sizes.</Section>
+            <Section>The second primary section (section 3) contains common types used in the description of the primitives contained in this AIM.</Section>
+            <Section>The third primary section (section 4) contains a top-level description of the air messages defined for this interface. For each primitive its function is described, and a parameter list is given.</Section>
+            <Section>For any messages using complex structures or parameters with identified values, references will be given to subsections of the fifth and sixth primary sections. Section 5 contains structured elements and section 6 contains basic elements.</Section>
+            <Section>For all messages included in this AIM, it is a unavoidable fact that the world of 3G evolves, some changes to this interface may be necessary. However, as this document is the basis for the RR AIM it will be fully maintained and all necessary changes will result in updated versions of this document.</Section>
+            <Section>Because the VGCS listening or VBS listening feature isn't supported, the related messages aren't described in this version.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="03"/>
+            <Date Day="6" Month="11" Year="2003"/>
+            <Author>LG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the RR_SHORT_PD AIM</Section>
+        </Description>
+        <Pragma>
+            <Name>CCDNAME</Name>
+            <Value ValueType="ALPHA">RR_SHORT</Value>
+            <Comment>CCD name tag</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Adds enumerations in the .val file.</Comment>
+        </Pragma>
+        <History>
+            <Date Day="6" Month="11" Year="2003"/>
+            <Author>LG</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the RR_SHORT_PD AIM</Section>
+        </Description>
+        <Constant>
+            <Alias>L3MAX_ACK</Alias>
+            <Value ValueType="DEC">251</Value>
+            <Comment>GSM 4.06, section 5.8.5</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L3MAX</Alias>
+            <Value ValueType="DEC">251</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>MAX_NNC</Alias>
+            <Value ValueType="DEC">96</Value>
+            <Comment>Maximum number of cells in Neighbour cell list for Enhanced Measurements</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_BSICI</Alias>
+            <Value ValueType="DEC">8</Value>
+            <Comment>Maximum invalid BSIC information IE's (21*8-14) / (17+1) = 8</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_2GEXT</Alias>
+            <Value ValueType="DEC">132</Value>
+            <Comment>Maximum length of MI 2G Extension (21*8-36) = 132</Comment>
+        </Constant>
+        <History>
+            <Date Day="6" Month="11" Year="2003"/>
+            <Author>LG</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <MessagesSection>
+        <Description>
+            <Section>This section contains all messages that are defined for the RR_SHORT_PD AIM</Section>
+        </Description>
+        <Message>
+            <Description>
+                <Section>This message containing measurement results is sent on the SACCH by the mobile to the network.</Section>
+                <Section>NOTE: Any tool, which wants to decode the message, should fill the value for nnc (contained in em_rep) into CCD register 1 before decoding.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.55</Section>
+            </Description>
+            <MsgDef>
+                <Name>u_emr</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">000100</MsgID>
+                <Comment>Enhanced Measurement Report</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>sl2h</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Short Layer 2 Header</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>ba_ind</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>BA Sequence Number indication</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>ba_ind_3g</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>3G BA Sequence Number indication</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>bsic_seen</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>BSIC Seen</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>scale</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Scale</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>scdata</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Serving Cell Data</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>i_bsic_i</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <Control>
+                    <TypeModifier>[0..MAX_BSICI]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Invalid BSIC Information</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>em_rep</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>EM Bitmap Type Reporting</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <Spare>
+                    <Pattern>00101011</Pattern>
+                    <BitLen>8</BitLen>
+                </Spare>
+                <Type>S_PADDING</Type>
+                <Control>
+                    <CmdSequence>21</CmdSequence>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Spare Padding</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <Section>This message is sent on the SACCH by the network to the mobile station. If not all information fits into one message, the remaining information will be sent in other instances of this message. This message may contain a combination of information for e.g. 3G Neighbour Cell Description, Real Time Differences, BSICs, Report priority, Measurement parameters or 3G Measurement parameters.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+                <Section>Now, we have 3G neighbour cell info and 3G measurement parameters included in this message definition.</Section>
+            </Description>
+            <MsgDef>
+                <Name>d_meas_inf</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">000101</MsgID>
+                <Comment>Measurement Information</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>sl2h</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Short Layer 2 Header</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>ba_ind</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>BA Sequence Number indication</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>ba_ind_3g</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>3G BA Sequence Number indication</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>mp_cm</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Measurement parameters change mark</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>mi_idx</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>MI Index</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>mi_c</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>MI Counter</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>pow_ctrl</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Power Control Indicator</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>report_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Report Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>rep_rate</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Reporting Rate</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>inv_bsic_rep</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Invalid BSIC Reporting</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>rtdd</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>GPRS Real Time Difference Description</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>gprs_bsic</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>GPRS BSIC Description</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>gprs_rep_prio</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Report Priority</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>emp</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>EM Measurement Parameters Description</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>mi_ext</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>MI 2G Extension</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <Spare>
+                    <Pattern>00101011</Pattern>
+                    <BitLen>8</BitLen>
+                </Spare>
+                <Type>S_PADDING</Type>
+                <Control>
+                    <CmdSequence>21</CmdSequence>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Spare Padding</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+    </MessagesSection>
+    <MsgStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the RR_SHORT_PD AIM</Section>
+        </Description>
+        <MsgStructElem>
+            <Description>
+                <Section>This structure contains the report of cells with valid BSIC.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.55</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>em_rep</Name>
+                <Comment>EM Bitmap Type Reporting</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>rep_q_arr</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[0..MAX_NNC]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Reporting Quantities</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="01" Year="2004"/>
+                <Author>LG</Author>
+                <Comment>no more direct reference to rep_q</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>emp</Name>
+                <Comment>EM MEASUREMENT Parameters Description</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>mr</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Multiband Reporting</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>serv_band_rep</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Serving band reporting</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>scale_ord</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Scale ord</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>report_900</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Reporting 900</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>report_1800</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Reporting 1800</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>report_400</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Reporting 400</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>report_1900</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Reporting 1900</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>report_850</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>Reporting 850</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>This structure contains the report of cells with invalid BSIC.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.55</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>i_bsic_i</Name>
+                <Comment>Invalid BSIC Information</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>ba_start_bsic</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>BA List Index</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>bsic</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>BSIC</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>rxlev</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>GSM Reporting Quantity</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>This structure contains possible future extensions for 2G mobiles.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>mi_ext</Name>
+                <Comment>MI 2G Extension</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>e_len</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Extension Length</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>extens</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[e_len..MAX_2GEXT]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Extension</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>If this structure is missing, this indicates that no valid measurement exist for the serving cell.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.55</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>scdata</Name>
+                <Comment>Serving Cell Data</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>dtx_used</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>DTX Used</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>rxlev</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>RX Level</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>rxqual_full</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>RX Quality Full</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>mean_bep</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Mean BEP</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>cv_bep</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Coefficient of Variation of BEP</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>nr_rcvd_bl</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Number Of Received Blocks</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>This IE contains the reported quantity (rxlev,...) for those indexes in the neighbourcell list, which are reported to the net, otherwise it isn't valid. </Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>rep_q_arr</Name>
+                <Comment>Structured Element</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_short_pd</DocName>
+                    <Name>rep_q</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef/>
+                <Comment>reported quantity, present only if reported</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="22" Month="01" Year="2004"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+    </MsgStructElementsSection>
+    <MsgBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the RR_SHORT_PD AIM</Section>
+        </Description>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference :  [3GPP 04.18] section 10.5.2.33b</Section>
+                <Section>[3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ba_start_bsic</Name>
+                <BitLen>5</BitLen>
+                <Comment>BA Index Start BSIC</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The BCCH allocation sequence number indication is needed to allow the network to discriminate measurements results related to different GSM Neighbour Cell lists sent to the MS. The 3G_BA_IND parameter is needed to allow the network to discriminate measurement results related to different 3G Neighbour Cell lists sent to the MS</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.54, 9.1.55</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ba_ind</Name>
+                <BitLen>1</BitLen>
+                <Comment>BA Sequence Number indication</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The BCCH allocation sequence number indication is needed to allow the network to discriminate measurements results related to different GSM Neighbour Cell lists sent to the MS. The 3G_BA_IND parameter is needed to allow the network to discriminate measurement results related to different 3G Neighbour Cell lists sent to the MS</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.54, 9.1.55</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ba_ind_3g</Name>
+                <BitLen>1</BitLen>
+                <Comment>3G BA Sequence Number indication</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3GPP 04.18] section 10.5.2.20 (Measurement Results)</Section>
+                <Section>[3GPP 04.18] section 9.1.30 (Synchronisation Channel Information)</Section>
+                <Section>[3GPP 04.18] section 9.1.54 (Measurement Information)</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>bsic</Name>
+                <BitLen>6</BitLen>
+                <Comment>BSIC</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>This parameters indicates if a GSM cell with invalid BSIC and allowed NCC part of BSIC is one of the six strongest.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.55</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>bsic_seen</Name>
+                <BitLen>1</BitLen>
+                <Comment>BSIC Seen</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_bsic_seen</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>CV_BEPblock = std(BEP)/mean(BEP) Coefficient of Variation of the Bit Error Probability of the block.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.55, [3GPP 05.58] section 8.2.3 and 8.2.5</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>cv_bep</Name>
+                <BitLen>3</BitLen>
+                <Comment>Coefficient of Variation of BEP</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_cv_bep</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3GPP 04.18] section 9.1.55</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>dtx_used</Name>
+                <BitLen>1</BitLen>
+                <Comment>DTX USED</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_dtx_used</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>This bits indicates future extensions.</Section>
+                <Section>Reference : [3GPP 04.18] 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>extens</Name>
+                <BitLen>1</BitLen>
+                <Comment>Extension</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>IE  indicates the length of future extensions (in bits).</Section>
+                <Section>Reference : [3GPP 04.18] 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>e_len</Name>
+                <BitLen>8</BitLen>
+                <Comment>Extension Length</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3GPP 04.18] section 10.5.2.33b, 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>inv_bsic_rep</Name>
+                <BitLen>1</BitLen>
+                <Comment>Invalid BSIC reporting</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_inv_bsic_rep</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>MEAN_BEPblock = mean(BEP) Mean Bit Error Probability (BEP) of the block.</Section>
+                <Section>Reference : [3GPP 05.08] section 8.2.3 and 8.2.5</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>mean_bep</Name>
+                <BitLen>5</BitLen>
+                <Comment>Mean BEP</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>This parameter is used to indicate the MS a change of information concerning Report Priority, Measurement Information and 3G Measurement Information.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>mp_cm</Name>
+                <BitLen>1</BitLen>
+                <Comment>Measurement parameters change mark</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>This IE includes the RR Short Protocol Discriminator and the message type as well for technical reasons. Currently it is defined:</Section>
+                <Section>Short PD length 1 bit; Short PD value: 0  RR;  message type length for this case: 5 bits</Section>
+                <Section>Reference: [3GPP 04.07] section 11.3.2.1</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>msg_type</Name>
+                <BitLen>6</BitLen>
+                <Comment>Message Type</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The purpose of the MI Index and MI Count fields is to indicate the number of individual messages within the sequence of Measurement Information messages and to assign an index to identify each of them. The MI Index field provides an index to identify the individual Measurement Information message. The MI Count field provides the MI Index value for the last (highest indexed) message in the sequence of Measurement Information messages.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>mi_idx</Name>
+                <BitLen>4</BitLen>
+                <Comment>MI Index</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The purpose of the MI Index and MI Count fields is to indicate the number of individual messages within the sequence of Measurement Information messages and to assign an index to identify each of them. The MI Index field provides an index to identify the individual Measurement Information message. The MI Count field provides the MI Index value for the last (highest indexed) message in the sequence of Measurement Information messages.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>mi_c</Name>
+                <BitLen>4</BitLen>
+                <Comment>MI Counter</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>mr</Name>
+                <BitLen>2</BitLen>
+                <Comment>Multiband Reporting</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The number of correctly decoded blocks, that were completed during the measurement report period.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.55 [3GPP 05.08] section 8.4.8.2</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>nr_rcvd_bl</Name>
+                <BitLen>5</BitLen>
+                <Comment>Number Of Received Blocks</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>pow_ctrl</Name>
+                <BitLen>1</BitLen>
+                <Comment>Power Control Indicator</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_pow_ctrl</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>rep_rate</Name>
+                <BitLen>1</BitLen>
+                <Comment>Reporting Rate</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_rep_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>This parameter is used to indicate to the mobile to use the Enhanced Measurement report or Measurement report messages for reporting.</Section>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>report_type</Name>
+                <BitLen>1</BitLen>
+                <Comment>Report Type</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_report_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>rxlev</Name>
+                <BitLen>6</BitLen>
+                <Comment>RX Level</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>rep_q</Name>
+                <BitLen>6</BitLen>
+                <Comment>Reporting Quantity</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3GPP 04.18] section 9.1.55</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>rxqual_full</Name>
+                <BitLen>3</BitLen>
+                <Comment>RX Quality Full Serving Cell</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Indication of the offset, which applies for the reported RXLEV values.</Section>
+                <Section>Reference : [3GPP 05.08] section 9 table 2</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>scale</Name>
+                <BitLen>1</BitLen>
+                <Comment>Scale</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_scale</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference :  [3GPP 04.18] section 10.5.2.33b</Section>
+                <Section>[3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>scale_ord</Name>
+                <BitLen>2</BitLen>
+                <Comment>Scale ord</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_scale_ord</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference: [3GPP 04.18] section 10.5.2.33b</Section>
+                <Section>[3GPP 04.18] section 9.1.54</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>serv_band_rep</Name>
+                <BitLen>2</BitLen>
+                <Comment>Serving band reporting</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>The short L2 header type 1 field is used in format Bter frames. It consists of 2 bits, both shall take value 0.</Section>
+                <Section>Reference : [3GPP 04.06] section 3.4a</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>sl2h</Name>
+                <BitLen>2</BitLen>
+                <Comment>Short Layer 2 Header</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">rr_short_pd</DocName>
+                <Name>VAL_sl2h</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+    </MsgBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the RR_SHORT_PD AIM</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_bsic_seen</Name>
+                <Comment>values for bsic_seen</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>NO_INV_BSIC_SEEN</Alias>
+                <Comment>No cell with invalid BSIC and allowed NCC part of BSIC is seen.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>INV_BSIC_SEEN</Alias>
+                <Comment>One cell or more with invalid BSIC and allowed NCC part of BSIC is seen.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cv_bep</Name>
+                <Comment>values for cv_bep</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CV_BEP_0</Alias>
+                <Comment>2.00 &gt; std(BEP)/mean(BEP) &gt; 1.75</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CV_BEP_1</Alias>
+                <Comment>1.75 &gt; std(BEP)/mean(BEP) &gt; 1.50</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CV_BEP_2</Alias>
+                <Comment>1.50 &gt; std(BEP)/mean(BEP) &gt; 1.25</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CV_BEP_3</Alias>
+                <Comment>1.25 &gt; std(BEP)/mean(BEP) &gt; 1.00</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>CV_BEP_4</Alias>
+                <Comment>1.00 &gt; std(BEP)/mean(BEP) &gt; 0.75</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>CV_BEP_5</Alias>
+                <Comment>0.75 &gt; std(BEP)/mean(BEP) &gt; 0.50</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>CV_BEP_6</Alias>
+                <Comment>0.50 &gt; std(BEP)/mean(BEP) &gt; 0.25</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>CV_BEP_7</Alias>
+                <Comment>0.25 &gt; std(BEP)/mean(BEP) &gt; 0.00</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dtx_used</Name>
+                <Comment>values for dtx_used</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTX_USED_NO</Alias>
+                <Comment>DTX was not used</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTX_USED_YES</Alias>
+                <Comment>DTX was used</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_inv_bsic_rep</Name>
+                <Comment>values for inv_bsic_rep</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>NO_REPORT</Alias>
+                <Comment>Indicates that GSM cells with invalid BSIC and allowed NCC part should not be reported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>YES_REPORT</Alias>
+                <Comment>Indicates that GSM cells with invalid BSIC and allowed NCC part should be reported</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pow_ctrl</Name>
+                <Comment>values for pow_ctrl</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>POW_CTRL_NO</Alias>
+                <Comment>PWRC is not set</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>POW_CTRL_YES</Alias>
+                <Comment>PWRC is set</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rep_rate</Name>
+                <Comment>values for rep_rate</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>NORMAL_RATE</Alias>
+                <Comment>SACCH rate reporting.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>REDUCED_RATE</Alias>
+                <Comment>Reduced reporting rate allowed.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_report_type</Name>
+                <Comment>values for report_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RT_EMR</Alias>
+                <Comment>MS shall use the Enhanced Measurement Report message, if at least one BSIC is allocated to each BA frequency, otherwise the Measurement Report message.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RT_MR</Alias>
+                <Comment>The MS shall use the Measurement Report message for reporting.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_scale</Name>
+                <Comment>values for scale</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SCALE_ZERO_DB</Alias>
+                <Comment>0 dB offset is used for the reported RXLEV values</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SCALE_TEN_DB</Alias>
+                <Comment>+10 dB offset is used for the reported RXLEV values</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_scale_ord</Name>
+                <Comment>values for scale_ord</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SC_ORD_ZERO_DB</Alias>
+                <Comment>0 dB offset, which shall be used for the reported RXLEV values</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SC_ORD_TEN_DB</Alias>
+                <Comment>+10 dB offset, which shall be used for the reported RXLEV values</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>SC_ORD_AUTOMATIC</Alias>
+                <Comment>automatic offset, which shall be used for the reported RXLEV values</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sl2h</Name>
+                <Comment>values for sl2h</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SL2H_0</Alias>
+                <Comment>Short Layer 2 header: UI command frame</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>reserved</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</AIM>

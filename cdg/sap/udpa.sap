@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">udpa</DocName>
+        <DocNum Number="103" Project="8444"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages. Additionally the reception of cell broadcast short messages is included.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>NOTE: Some of the primitive names described in this document carry &quot;DTI&quot; component in them although actually the dti2 type of interface is meant and used. Therefore the name &quot;DTI2&quot; is being used in the commentaries instead of &quot;DTI&quot;.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the radio resource management to the mobility management.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="00"/>
+            <Date Day="19" Month="5" Year="2000"/>
+            <Author>Stefan</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Grundmann Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="00"/>
+            <Date Day="31" Month="5" Year="2000"/>
+            <Author>Manfred</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Gutheins Primitive opcodes changed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="00"/>
+            <Date Day="28" Month="6" Year="2000"/>
+            <Author>Manfred</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Gutheins TUI added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="00"/>
+            <Date Day="7" Month="11" Year="2001"/>
+            <Author>TVO</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>TUI removed (for use with DTI2 SAP)</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="26" Month="9" Year="2002"/>
+            <Author>Stefan</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Grundmann Link-activation Primitives changed (to be conform with other Entities), Long Op-codes</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="26" Month="8" Year="2003"/>
+            <Author>Jacek</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Kwasnik Nomenclature for DTI in commentaries corrected and clarified</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 2.81, Line Identification Supplementary Services - Stage 1 ETS 300 514, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 2.82, Call Forwarding Supplementary Services - Stage 1 ETS 300 515, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 2.83, Call Waiting and Call Hold Supplementary Services - Stage 1 ETS 300 516, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 2.84, Multi Party Supplementary Services - Stage 1 ETS 300 517, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 2.85, Closed User Group Supplementary Services - Stage 1 ETS 300 518, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 2.86, Advice of Charge Supplementary Services - Stage 1 ETS 300 519, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 2.88, Call Barring Supplementary Services - Stage 1 ETS 300 520, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 3.14, Support of Dual Tone Multi Frequency Signalling via the GSM System ETS 300 532, ETSI, April 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 3.40, Technical Realization of the Short Message Service Point-to-Point ETS 300 536, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 3.41, Technical Realization of Short Message Service Cell Broadcast ETS 300 537, ETSI, June 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>GSM 3.81, Line Identification Supplementary Services - Stage 2 ETS 300 542, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 3.82, Call Forwarding Supplementary Services - Stage 2 ETS 300 543, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>GSM 3.83, Call Waiting and Call Hold Supplementary Services - Stage 2 ETS 300 544, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 3.84, Multi Party Supplementary Services - Stage 2 ETS 300 545, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>GSM 3.85, Closed User Group Supplementary Services - Stage 2 ETS 300 546, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>GSM 3.86, Advice of Charge Supplementary Services - Stage 2 ETS 300 547, ETSI, March 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>GSM 3.88, Call Barring Supplementary Services - Stage 2 ETS 300 548, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>GSM 4.01, MS-BSS Interface General Aspects and Principles ETS 300 550, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18a]</RefId>
+            <RefTitle>GSM 4.03, MS-BSS Interface Channel Structures and Access Capabilities ETS 300 552, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>GSM 4.05, Data Link Layer General Aspects ETS 300 554, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>GSM 4.06, MS-BSS Interface Data Link Layer Specification ETS 300 555, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>GSM 4.07, Mobile Radio Interface Signalling Layer 3 General Aspects ETS 300 556, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>GSM 4.08, Mobile Radio Interface Layer 3 Specification ETS 300 557, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>GSM 4.10, Mobile Radio Interface Layer 3 Supplementary Services Specification  General Aspects ETS 300 558, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>GSM 4.11, Point-to-Point Short Message Service Support on Mobile Radio Interface ETS 300 559, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>GSM 4.12, Short Message Service Cell Broadcast Support on Mobile Radio Interface ETS 300 560, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>GSM 4.80, Mobile Radio Interface Supplementary Services Specification Formats and Coding ETS 300 564, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[27]</RefId>
+            <RefTitle>GSM 4.81, Line Identification Supplementary Services - Stage 3 ETS 300 565, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[28]</RefId>
+            <RefTitle>GSM 4.82, Call Forwarding Supplementary Services - Stage 3 ETS 300 566, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[29]</RefId>
+            <RefTitle>GSM 4.83, Call Waiting and Call Hold Supplementary Services - Stage 3 ETS 300 567, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[30]</RefId>
+            <RefTitle>GSM 4.84, Multi Party Supplementary Services - Stage 3 ETS 300 568, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[31]</RefId>
+            <RefTitle>GSM 4.85, Closed User Group Supplementary Services - Stage 3 ETS 300 569, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[32]</RefId>
+            <RefTitle>GSM 4.86, Advice of Charge Supplementary Services - Stage 3 ETS 300 570, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[33]</RefId>
+            <RefTitle>GSM 4.88, Call Barring Supplementary Services - Stage 3 ETS 300 571, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[34]</RefId>
+            <RefTitle>GSM 5.01, Physical Layer on the Radio Path General Description ETS 300 573, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[35]</RefId>
+            <RefTitle>GSM 5.02, Multiplexing and Multiple Access on the Radio Path ETS 300 574, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[36]</RefId>
+            <RefTitle>GSM 5.08, Radio Sub-system Link Control ETS 300 578, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[37]</RefId>
+            <RefTitle>GSM 5.10, Radio Sub-system Synchronisation ETS 300 579, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[38]</RefId>
+            <RefTitle>Service Access Point MMREG 6147.100.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[39]</RefId>
+            <RefTitle>Service Access Point MNCC 6147.101.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[40]</RefId>
+            <RefTitle>Service Access Point MNSS 6147.102.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[41]</RefId>
+            <RefTitle>Service Access Point MNSMS 6147.103.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[42]</RefId>
+            <RefTitle>Service Access Point MMCC 6147.104.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[43]</RefId>
+            <RefTitle>Service Access Point MMSS 6147.105.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[44]</RefId>
+            <RefTitle>Service Access Point MMSMS 6147.106.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[45]</RefId>
+            <RefTitle>Service Access Point RR 6147.107.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[46]</RefId>
+            <RefTitle>Service Access Point SIM 6147.108.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[47]</RefId>
+            <RefTitle>Service Access Point MPH 6147.109.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[48]</RefId>
+            <RefTitle>Service Access Point DL 6147.110.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[49]</RefId>
+            <RefTitle>Service Access Point MDL 6147.111.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[50]</RefId>
+            <RefTitle>Service Access Point PH 6147.112.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[51]</RefId>
+            <RefTitle>Service Access Point MMI 6147.113.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[52]</RefId>
+            <RefTitle>Message Sequence Charts CC 6147.200.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[53]</RefId>
+            <RefTitle>Message Sequence Charts SS 6147.201.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[54]</RefId>
+            <RefTitle>Message Sequence Charts SMS 6147.202.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[55]</RefId>
+            <RefTitle>Message Sequence Charts MM 6147.203.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[56]</RefId>
+            <RefTitle>Message Sequence Charts RR 6147.204.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[57]</RefId>
+            <RefTitle>Message Sequence Charts DL 6147.205.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[58]</RefId>
+            <RefTitle>Users Guide 6147.300.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[59]</RefId>
+            <RefTitle>Test Specification CC 6147.400.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[60]</RefId>
+            <RefTitle>Test Specification SS 6147.401.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[61]</RefId>
+            <RefTitle>Test Specification SMS 6147.402.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[62]</RefId>
+            <RefTitle>Test Specification MM 6147.403.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[63]</RefId>
+            <RefTitle>Test Specification RR 6147.404.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[64]</RefId>
+            <RefTitle>Test Specification DL 6147.405.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[65]</RefId>
+            <RefTitle>Test Specification CCD 6147.406.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[66]</RefId>
+            <RefTitle>SDL Specification CC 6147.500.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[67]</RefId>
+            <RefTitle>SDL Specification SS 6147.501.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[68]</RefId>
+            <RefTitle>SDL Specification SMS 6147.502.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[69]</RefId>
+            <RefTitle>SDL Specification MM 6147.503.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[70]</RefId>
+            <RefTitle>SDL Specification RR 6147.504.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[71]</RefId>
+            <RefTitle>SDL Specification DL 6147.505.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[72]</RefId>
+            <RefTitle>Message Specification CC 6147.600.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[73]</RefId>
+            <RefTitle>Message Specification SS 6147.601.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[74]</RefId>
+            <RefTitle>Message Specification SMS 6147.602.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[75]</RefId>
+            <RefTitle>Message Specification MM 6147.603.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[76]</RefId>
+            <RefTitle>Message Specification RR 6147.604.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[77]</RefId>
+            <RefTitle>Message Specification DL 6147.605.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[78]</RefId>
+            <RefTitle>Technical Documentation CC 6147.700.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[79]</RefId>
+            <RefTitle>Technical Documentation SS 6147.701.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[80]</RefId>
+            <RefTitle>Technical Documentation SMS 6147.702.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[81]</RefId>
+            <RefTitle>Technical Documentation MM 6147.703.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[82]</RefId>
+            <RefTitle>Technical Documentation RR 6147.704.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[83]</RefId>
+            <RefTitle>Technical Documentation DL 6147.705.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[84]</RefId>
+            <RefTitle>Technical Documentation CCD 6147.706.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the UDPA SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>UDPA_ENTITY_NAME_LEN</Alias>
+            <Value ValueType="DEC">6</Value>
+            <Comment>maximum length of entity name including NULL</Comment>
+        </Constant>
+        <History>
+            <Date Day="19" Month="5" Year="2000"/>
+            <Author>SG</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="26" Month="9" Year="2002"/>
+            <Author>SG</Author>
+            <Comment>UDPA_ENTITY_NAME_LEN added</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="59">
+        <Description>
+            <Section>This section contains all primitives that are defined for the UDPA SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The UDPA_DTI_REQ is used to connect or disconnect the DTI2 communication with the upper or lower layer. It is indicated by the parameter dti_conn, if the upper layer wants to connect or disconnect. The same parameter is repeated in the corresponding UDPA_DTI_CNF.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UDPA_DTI_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>CTL</Sender>
+                    <Receiver>UDP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">udpa</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">udpa</DocName>
+                    <Name>entity_name</Name>
+                </ItemLink>
+                <Control>[UDPA_ENTITY_NAME_LEN]</Control>
+                <Comment>Entity name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">udpa</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>Link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">udpa</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>DTI direction</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="9" Year="2002"/>
+                <Author>SG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The UDPA_DTI_CNF is used to acknowledge a previous UDPA_DTI_REQ. The parameter value of dti_conn is always the same as in the corresponding UDPA_DTI_REQ. The parameter link_id can be used to identify the DTI2 link.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UDPA_DTI_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>UDP</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">udpa</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">udpa</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>Link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="9" Year="2002"/>
+                <Author>SG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The UDPA_DTI_IND is used by UDP to pass the control of the DTI2 back after a DTI2_DISCONNECT_* primitive has been received from the upper or lower layer. The parameter value of dti_conn is used to indicate that DTI2 has been disconnected.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UDPA_DTI_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>UDP</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">udpa</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="9" Year="2002"/>
+                <Author>SG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The UDPA_CONFIG_REQ is used to activate the lower-layer interface of the entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UDPA_CONFIG_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>CTL</Sender>
+                    <Receiver>UDP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">udpa</DocName>
+                    <Name>cmd</Name>
+                </ItemLink>
+                <Comment>Command</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="19" Month="5" Year="2000"/>
+                <Author>SG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="9" Year="2002"/>
+                <Author>SG</Author>
+                <Comment>long op-codes</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="10" Year="2002"/>
+                <Author>KJF</Author>
+                <Comment>cmd invented</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>UDPA_CONFIG_CNF is sent, when the entity is completely activated, as a response to a UDPA_CONFIG_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>UDPA_CONFIG_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>UDP</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="19" Month="5" Year="2000"/>
+                <Author>SG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="9" Year="2002"/>
+                <Author>SG</Author>
+                <Comment>long op-codes</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines, if UDP shall be connected via the DTI2 to the upper or lower layer or not.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_conn</Name>
+                <Type>U8</Type>
+                <Comment>DTI2 connect</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">udpa</DocName>
+                <Name>VAL_dti_conn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="26" Month="9" Year="2002"/>
+                <Author>SG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to identify the affected channel.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>link_id</Name>
+                <Type>U32</Type>
+                <Comment>Link identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">udpa</DocName>
+                <Name>VAL_link_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="26" Month="9" Year="2002"/>
+                <Author>SG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter controls if UDP opens a DTI2 channel to a lower layer or to a higher layer.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_direction</Name>
+                <Type>U8</Type>
+                <Comment>DTI2 direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">udpa</DocName>
+                <Name>VAL_dti_direction</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="26" Month="9" Year="2002"/>
+                <Author>SG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a string (zero terminated) which is the name of a neighbour entity, i.e. the entity handling a higher or lower protocol. The parameter is used to open the communication channel to this entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>entity_name</Name>
+                <Type>U8</Type>
+                <Comment>name of an neighbour entity</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="26" Month="9" Year="2002"/>
+                <Author>SG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter determines whether the interface is to be activated or deactivated.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cmd</Name>
+                <Type>U8</Type>
+                <Comment>command</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">udpa</DocName>
+                <Name>VAL_cmd</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="29" Month="10" Year="2002"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the UDPA SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_conn</Name>
+                <Comment>values for dti_conn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UDPA_CONNECT_DTI</Alias>
+                <Comment>Connect DTI2 to UDP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UDPA_DISCONNECT_DTI</Alias>
+                <Comment>Disconnect DTI2 from UDP</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_link_id</Name>
+                <Comment>values for link_id</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UDPA_LINK_ID_DEFAULT</Alias>
+                <Comment>Default link id</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_direction</Name>
+                <Comment>values for dti_direction</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UDPA_DTI_TO_HIGHER_LAYER</Alias>
+                <Comment>DTI2 used normally</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UDPA_DTI_TO_LOWER_LAYER</Alias>
+                <Comment>DTI2 is inverted</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cmd</Name>
+                <Comment>values for cmd</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>UDPA_CONFIG_UP</Alias>
+                <Comment>enable the interface</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UDPA_CONFIG_DOWN</Alias>
+                <Comment>disable the interface</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

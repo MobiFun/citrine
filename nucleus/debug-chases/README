@@ -1,0 +1,4 @@
+During some of my debug sessions (wild goose chases after difficult bugs)
+I hacked the bloody hell out of some Nucleus modules, trying to instrument
+them to catch the bugs I was after.  This directory is a stash-away place
+for such ugly hacks.

@@ -1,0 +1,10 @@
+# XRAM image loadable into Openmoko modems for ETM/MokoFFS R/W operations,
+# no GSM functionality.  The ETM/RVT serial channel is steered to the
+# headset jack - use with the external debug cable.
+
+target	gtamodem
+feature	mokoffs rw
+feature	etm
+feature	tmffs2
+
+RVTMUX_UART_port=IrDA

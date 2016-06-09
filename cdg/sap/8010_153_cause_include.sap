@@ -1,0 +1,3822 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">8010_153_cause_include</DocName>
+        <DocNum Number="153" Project="8010"/>
+        <Description>
+            <Section>This document contains a specification of causes used to pass information regarding the result of operations on a Service Access Point (SAP) within the Protocol Stack (PS). There is only one cause type, which is used globally, throughout the protocol stack.</Section>
+            <Section>As a document specifying a common type and common constants, this document is a part of the set of include-documents existing for the protocol stack. The relationship between these documents can be seen in Figure 1.</Section>
+            <Section>Figure 1 - Hierarchical inclusion of type and constant definitions</Section>
+            <Section>All causes used within the protocol stack are defined in this document1, and included from here where the causes are used in SAPs.</Section>
+            <Section>From the cause_ctrl value it is possible to determine if the cause value originates from the network or the UE. If the cause originates from the network the cause_ctrl values is below is_from_nw (don't forget that the PREFIX is added in front of the value). If the cause originated from the UE the cause_ctrl value is between is_from_nw and is_from_ue.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document based on 7010_153_Cause_Include.doc</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>HEM</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed status to Accepted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="28" Month="1" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Inserted CC local cause definition and CC AIM Cause definitions</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="29" Month="1" Year="2003"/>
+            <Author>JMA</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>RR causes and RR Network causes added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="12" Month="2" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Added PRAGMAs  ENABLE_GROUP and COMP...</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="02"/>
+            <Date Day="14" Month="2" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>The LLC and DL causes are inserted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="02"/>
+            <Date Day="19" Month="2" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated after review. Primarily inserted references to 3G and rephrasing</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="02"/>
+            <Date Day="28" Month="2" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>RLP cause definitions inserted. (old errnum/cause dummy)</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="02"/>
+            <Date Day="3" Month="3" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>L2R cause definition inserted</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="02"/>
+            <Date Day="16" Month="4" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>SS cause definition inserted</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="012" Year="02"/>
+            <Date Day="2" Month="5" Year="2003"/>
+            <Author>FDU</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>SMS cause definition inserted</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="013" Year="02"/>
+            <Date Day="7" Month="5" Year="2003"/>
+            <Author>FDU</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>SIM cause definition inserted</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="014" Year="02"/>
+            <Date Day="20" Month="5" Year="2003"/>
+            <Author>FDU</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Added new PPP causes</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="015" Year="02"/>
+            <Date Day="10" Month="6" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Inserted new MM cause values from GPRS project TCR2.1.0</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="016" Year="02"/>
+            <Date Day="1" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added SMS RP, CP and TP causes. Added ps_cause as STRUCT instead of UNION.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="017" Year="02"/>
+            <Date Day="4" Month="7" Year="2003"/>
+            <Author>LOE</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Additional causes for RR</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="018" Year="02"/>
+            <Date Day="25" Month="7" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>A new RR cause is inserted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="019" Year="02"/>
+            <Date Day="29" Month="7" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added causes to SM. Renamed NWSM causes to correspond to those in SM AIM document.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="020" Year="02"/>
+            <Date Day="5" Month="8" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>CAUSE_EXPORT ID changed from 1 to 0. Added 2 SM causes.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="021" Year="02"/>
+            <Date Day="5" Month="8" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added SIM_UMTS_AUTH_SQN_ERROR and SIM_UMTS_AUTH_MAC_ERROR.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="022" Year="02"/>
+            <Date Day="1" Month="10" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added DL_NO_ERROR</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="023" Year="02"/>
+            <Date Day="6" Month="10" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>SAP compile warning removed on DL_NO_ERROR cause value</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="024" Year="02"/>
+            <Date Day="9" Month="10" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Inserted CC_NO_ERROR cause to substitute NOT_PRESENT_8BIT.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="025" Year="02"/>
+            <Date Day="13" Month="10" Year="2003"/>
+            <Author>NIH</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added RRC_ABORT_UNSPECIFIED</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="026" Year="02"/>
+            <Date Day="14" Month="10" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Adding RR_ESTABLISH_REJECT</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="027" Year="02"/>
+            <Date Day="19" Month="11" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>CC_DTMF_STOP_SUCCESS inserted</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="028" Year="02"/>
+            <Date Day="21" Month="11" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>CC Causes renumbered. The 3GPP Cause equivalents are now equally numbered as the AIM Causes. 2 Unused CC caused removed.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="029" Year="02"/>
+            <Date Day="21" Month="11" Year="2003"/>
+            <Author>KVI</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Alligned MM causes with TCS2.1.2. Added MMNW cause 95-111.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="030" Year="02"/>
+            <Date Day="15" Month="12" Year="2003"/>
+            <Author>MAB</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added is_from_nw and is_from_ue</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="031" Year="04"/>
+            <Date Day="30" Month="11" Year="2004"/>
+            <Author>JOJ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added rrlc_cause</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="032" Year="04"/>
+            <Date Day="30" Month="11" Year="2004"/>
+            <Author>JOJ</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Submitted for review</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>There are no constants defined in this document, since the cause declarations do not require any external constant definitions. However, this section must be present in the document since it also includes directives to the tool-chain for correct processing of the document contents.</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">CAUSE</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Disable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="12" Month="2" Year="2003"/>
+            <Author>KBS</Author>
+            <Comment>Added PRAGMAs  ENABLE_GROUP and COMP...</Comment>
+        </History>
+    </PragmasSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="0">
+        <Description>
+            <Section>This section contains all primitives that are defined for the 8010_153_CAUSE_INCLUDE SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>This message is here to keep xGen Happy, in the following 2 respects:</Section>
+                <Section>* The primitives section cannot be empty,</Section>
+                <Section>* All parameters should be used.</Section>
+                <Section>The developer can use it as a Short Name index.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CAUSE_EXPORT</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>PS</Sender>
+                    <Receiver>UMTS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>Cause element containing result of operation</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>CAUSE_EXPORT ID changed from 1 to 0.</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the 8010_153_CAUSE_INCLUDE SAP</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter holds a cause to be used in order to convey information about the outcome of an operation from one entity to another. The cause parameter is a union, where the controller determines which entity has defined the cause.</Section>
+                <Section>NOTE: If a new controller must be added remember that if it originates from the NW it must be inserted before is_from_nw. If it originates from the UE it must be inserted between is_from_nw and is_from_ue.</Section>
+            </Description>
+            <PrimStructElemDef Type="UNION">
+                <Name>value</Name>
+                <Comment>Cause element containing result of operation</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>nwmm_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nwmm</Name>
+                </UnionTag>
+                <Comment>MM Network cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>nwrr_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nwrr</Name>
+                </UnionTag>
+                <Comment>RR Network cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>nwrrc_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nwrrc</Name>
+                </UnionTag>
+                <Comment>RRC Network cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>nwsm_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nwsm</Name>
+                </UnionTag>
+                <Comment>SM Network cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>nwss_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nwss</Name>
+                </UnionTag>
+                <Comment>SS Network cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>nwsms_cp_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nwsms_cp</Name>
+                </UnionTag>
+                <Comment>SMS CP Network Cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>nwsms_rp_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nwsms_rp</Name>
+                </UnionTag>
+                <Comment>SMS RP Network Cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>nwsms_tp_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nwsms_tp</Name>
+                </UnionTag>
+                <Comment>SMS TP Network Cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>upper_nw_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nw</Name>
+                </UnionTag>
+                <Comment>If ctrl_value is below is_from_nw the cause originates from NW. Do NOT use as real value of ctrl_value.</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>cc_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_cc</Name>
+                </UnionTag>
+                <Comment>CC cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>dl_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_dl</Name>
+                </UnionTag>
+                <Comment>DL cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>l2r_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_l2r</Name>
+                </UnionTag>
+                <Comment>L2R cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>llc_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_llc</Name>
+                </UnionTag>
+                <Comment>LLC cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>mm_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_mm</Name>
+                </UnionTag>
+                <Comment>MM cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>nwcc_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_nwcc</Name>
+                </UnionTag>
+                <Comment>CC Network cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ppp_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_ppp</Name>
+                </UnionTag>
+                <Comment>PPP cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>rcm_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_rcm</Name>
+                </UnionTag>
+                <Comment>RCM cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>rr_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_rr</Name>
+                </UnionTag>
+                <Comment>RR cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>rlp_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_rlp</Name>
+                </UnionTag>
+                <Comment>RLP cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>rrc_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_rrc</Name>
+                </UnionTag>
+                <Comment>RRC cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>sim_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_sim</Name>
+                </UnionTag>
+                <Comment>SIM cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>sm_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_sm</Name>
+                </UnionTag>
+                <Comment>SM cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>sms_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_sms</Name>
+                </UnionTag>
+                <Comment>SMS cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>sn_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_sndcp</Name>
+                </UnionTag>
+                <Comment>SNDCP cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>upm_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_upm</Name>
+                </UnionTag>
+                <Comment>UPM cause</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>upper_ue_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_ue</Name>
+                </UnionTag>
+                <Comment>If ctrl_value is between is_from_nw and is_from_ue the cause originates from UE. Do NOT use as real value of ctrl_value.</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>rrlc_cause</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_from_rrlc</Name>
+                </UnionTag>
+                <Comment>RRLC cause value</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>LOE</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The llc_cause and dl_cause are inserted</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>RLP cause inserted</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="3" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>L2R cause inserted</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="6" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>SMS CP,RP and TP causes added</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MAB</Author>
+                <Comment>is_from_nw and is_from_ue added</Comment>
+            </History>
+            <History>
+                <Date Day="01" Month="12" Year="2004"/>
+                <Author>JOJ</Author>
+                <Comment>added RRLC cause</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter holds the cause element containing the union controller and the value.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ps_cause</Name>
+                <Comment>Cause element containing result of operation</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>value</Name>
+                </ItemLink>
+                <Comment>Cause value</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="1" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the 8010_153_CAUSE_INCLUDE SAP</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated by the entity CC.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cc_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of a CC operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_cc_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="1" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Initial version</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="11" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>CC_DTMF_STOP_SUCCESS inserted</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="11" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>3G AIM Cause equivalents renumbered accordingly. 2 unused Cause values    are removed.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated from the peer CC and peer SS. See [3G 24.008], Annex H.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nwcc_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of a CC operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_nwcc_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="1" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Initial version</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Added 3GPP reference in the description.</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="4" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Added nwss to share nwcc causes from 24.008. And NWCC_NO_NET_CAUSE.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated from the peer CC and peer SS. See [3G 24.008], Annex H.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nwss_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of a SS operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_nwcc_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="1" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Initial version</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Added 3GPP reference in the description.</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="4" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Added nwss to share nwcc causes from 24.008. And NWCC_NO_NET_CAUSE.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated by the entity DL.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dl_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of a DL operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_dl_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial version</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="10" Year="2003"/>
+                <Author>BRY</Author>
+                <Comment>Added DL_NO_ERROR</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="10" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>SAP compile error removed by typing 0x00FF instead of 0x00ff</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated by the entity L2R. This is used to indicate a fatal error condition. A fatal error condition arises if L2R cannot communicate with its peer. Generally this means, that a fatal error condition in RLP has arisen due to missing answers from the peer RLP.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l2r_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of a L2R operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_l2r_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="3" Month="3" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Initial version</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated by the entity LLC.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>llc_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of a LLC operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_llc_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial version</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity MM. Cause values greater than 150 until 180 are intended for CS and values greater than 250 are intended for ACI.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mm_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an MM operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_mm_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>MLP</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>'reserved' changed to 'intended' in description.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="6" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Inserted new MM cause values from TCR2.1.0</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="11" Year="2003"/>
+                <Author>KVI</Author>
+                <Comment>Alligned values with MM cause values from TCS2.1.2</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the network peer MM. See [3G 24.008],  An-</Section>
+                <Section>nex G.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nwmm_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element from network peer MM</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_nwmm_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>MLP</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>3G specification reference added to Description.</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="11" Year="2003"/>
+                <Author>KVI</Author>
+                <Comment>Added cause 95-111.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity PPP.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ppp_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of a PPP operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_ppp_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>MVJ</Author>
+                <Comment>Initial version</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>PPP causes 0xA and 0xB added.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause to be used in order to convey information about the outcome of an operation from one entity to another. The cause parameter is a union, where the controller determines which entity has defined the cause.</Section>
+                <Section>NOTE: If a new controller must be added remember that if it originates from the NW it must be inserted before is_from_nw. If it originates from the UE it must be inserted between is_from_nw and is_from_ue.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>upper_nw_cause</Name>
+                <Type>U16</Type>
+                <Comment>If ctrl_value is below is_from_nw the cause originates from NW. Do NOT use as real value of ctrl_value.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>LOE</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The llc_cause and dl_cause are inserted</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>RLP cause inserted</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="3" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>L2R cause inserted</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="6" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>SMS CP,RP and TP causes added</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MAB</Author>
+                <Comment>is_from_nw and is_from_ue added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause to be used in order to convey information about the outcome of an operation from one entity to another. The cause parameter is a union, where the controller determines which entity has defined the cause.</Section>
+                <Section>NOTE: If a new controller must be added remember that if it originates from the NW it must be inserted before is_from_nw. If it originates from the UE it must be inserted between is_from_nw and is_from_ue.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>upper_ue_cause</Name>
+                <Type>U16</Type>
+                <Comment>If ctrl_value is between is_from_nw and is_from_ue the cause originates from UE. Do NOT use as real value of ctrl_value.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>LOE</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The llc_cause and dl_cause are inserted</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>RLP cause inserted</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="3" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>L2R cause inserted</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="6" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>SMS CP,RP and TP causes added</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MAB</Author>
+                <Comment>is_from_nw and is_from_ue added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity RCM.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rcm_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an RCM operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_rcm_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>LOE</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity RR.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rr_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an RR operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_rr_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>LOE</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="1" Year="2003"/>
+                <Author>JMA</Author>
+                <Comment>Sync, abort and NW-search causes added 04-July-03  LOE Additional causes based on old RR SAP implementation 25-July-03  AGR The RR_ACCESS_DELAYED is inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the GSM peer RR. See [3G 04.18], Annex F.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nwrr_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element from GSM peer RR</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_nwrr_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="26" Month="1" Year="2003"/>
+                <Author>JMA</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Reference to 3G 04.18 inserted in Description.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity RLP.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rlp_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an RLP operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_rlp_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Initial declaration</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="3" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>High byte (0x0011) old offset removed (source indicated by UNION CTRL)</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity RRC.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rrc_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an RRC operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_rrc_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>LOE</Author>
+                <Comment>Initial declaration</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="10" Year="2003"/>
+                <Author>NiH</Author>
+                <Comment>Added RRC_ABORT_UNSPECIFIED</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the UTRAN peer RRC. See [3G 25.331] cl. 10.3.3.11 and 10.3.3.32.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nwrrc_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element from UTRAN peer RRC</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_nwrrc_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>LOE</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the SIM entity</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sim_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element from SIM to ACI/SMS/MM</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_sim_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="5" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>Initial declarations</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Added SIM_UMTS_AUTH_SQN_ERROR and       SIM_UMTS_AUTH_MAC_ERROR.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity SM.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sm_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an SM operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_sm_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>MVJ</Author>
+                <Comment>Initial version</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Added SM_INVALID_NSAPI and SM_R99_PROCEDURE_REJECTED_IN_R97.</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>Added SM_PRE_R99_NETWORK_ENTERED and       SM_ACTIVATION_OVERRIDE.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to indicate the reason why a session management request is rejected. Values not mentioned in the list below shall be treated as follows: Any other value received by the mobile station shall be treated as 00100010, 'Service option temporarily out of order'. Any other value received by the network shall be treated as 01101111, 'Protocol error, unspecified'. See [3G 24.008], Annex I.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nwsm_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element from network peer SM</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_nwsm_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>MVJ</Author>
+                <Comment>Initial version</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Renamed causes to be more readable and spec-like [3G 24.008, 10.5.6.6].</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity SMS.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sms_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an SMS operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_sms_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="5" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>Initial version</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is included in the CP-ERROR message, the layout is given in [3G 24.011] section 8.1.4.2.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nwsms_cp_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an SMS operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_nwsms_cp_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="13" Month="6" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Initial version</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines causes included in the RP-ERROR message, conveying a negative result of a RP-DATA message transfer attempt or RP-SMMA notification attempt. The causes are defined in [3G 24.011] section 8.2.5.4.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nwsms_rp_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an SMS operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_nwsms_rp_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="13" Month="6" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Initial version</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The TP-Failure Cause parameter is used to report the reason for failure to transfer or process a short message. The causes are defined in [3G 23.040] section 9.2.3.22.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nwsms_tp_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an SMS operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_nwsms_tp_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="13" Month="6" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Initial version</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity SNDCP. See [3G 04.65], cl. 6.2.1.4 (LL Causes) and 6.8.3 (SNDCP Causes)</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sn_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an SNDCP operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_sn_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>MVJ</Author>
+                <Comment>Initial version</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>References to 3G specifications inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the entity UPM.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>upm_cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause element containing result of an UPM operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_upm_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>MVJ</Author>
+                <Comment>Initial version</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter holds a cause element originated in the RRLC SAP.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rrlc_cause</Name>
+                <Type>U8</Type>
+                <Comment>cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_153_cause_include</DocName>
+                <Name>VAL_rrlc_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="11" Year="2004"/>
+                <Author>JOJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the 8010_153_CAUSE_INCLUDE SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cc_cause</Name>
+                <Comment>values for cc_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">001D</Value>
+                <Alias>CC_FACILITY_REJECT</Alias>
+                <Comment>facility rejected (originated by MS)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0041</Value>
+                <Alias>CC_BEARER_NOT_IMPLEM</Alias>
+                <Comment>bearer service not implemented (originated by MS)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0051</Value>
+                <Alias>CC_INVALID_TI</Alias>
+                <Comment>invalid transaction identifier value (originated by MS)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0058</Value>
+                <Alias>CC_INCOMPAT_DEST</Alias>
+                <Comment>incompatible destination (originated by MS)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0060</Value>
+                <Alias>CC_INVALID_MAND_INFO</Alias>
+                <Comment>invalid mandatory information (originated by MS)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0065</Value>
+                <Alias>CC_MESSAGE_INCOMPAT</Alias>
+                <Comment>message not compatible with protocol state (originated by MS)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0066</Value>
+                <Alias>CC_TIMER</Alias>
+                <Comment>recovery on timer expiry (originated by MS)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>CC_MODIFY_SUCCESS</Alias>
+                <Comment>in-call modification successfully performed, MODIFY COMPLETE message received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>CC_HOLD_SUCCESS</Alias>
+                <Comment>hold successfully performed, HOLD ACKNOWLEDGE message received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>CC_RETRIEVE_SUCCESS</Alias>
+                <Comment>retrieve successfully performed, RETRIEVE ACKNOWLEDGE message received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>CC_DTMF_START_SUCCESS</Alias>
+                <Comment>start of DTMF successfully performed, START DTMF ACKNOWLEDGE message received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0005</Value>
+                <Alias>CC_NO_NET_CAUSE</Alias>
+                <Comment>network initiated without cause</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0006</Value>
+                <Alias>CC_SUCCESS</Alias>
+                <Comment>operation successfully performed (e.g. a call establishment); this cause is used only if no more specific cause applies</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0007</Value>
+                <Alias>CC_DTMF_NOT_ALLOWED</Alias>
+                <Comment>DTMF is currently not allowed (no speech TCH)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0008</Value>
+                <Alias>CC_DTMF_BUFFER_FULL</Alias>
+                <Comment>DTMF storage buffer overflow</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0009</Value>
+                <Alias>CC_DTMF_ABORTED</Alias>
+                <Comment>DTMF was aborted (e.g. due to state change)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>CC_MAX_NO_CALLS_REACHED</Alias>
+                <Comment>maximum number of calls was reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0011</Value>
+                <Alias>CC_MAX_NO_RECALLS_REACHED</Alias>
+                <Comment>maximum number of recalls (CCBS) was reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0012</Value>
+                <Alias>CC_CHANNEL_SYNC</Alias>
+                <Comment>channel mode or type information (changed)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0013</Value>
+                <Alias>CC_REEST_STARTED</Alias>
+                <Comment>call re-establishment started</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0014</Value>
+                <Alias>CC_REEST_FINISHED</Alias>
+                <Comment>call re-establishment is finished</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0015</Value>
+                <Alias>CC_DTMF_STOP_SUCCESS</Alias>
+                <Comment>stop of DTMF successfully performed, STOP DTMF ACKNOWLEDGE message received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00FF</Value>
+                <Alias>CC_NO_ERROR</Alias>
+                <Comment>Equal to NOT_PRESENT_8BIT</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nwcc_cause</Name>
+                <Comment>values for nwcc_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>NWCC_UNASSIGN</Alias>
+                <Comment>unassigned (unallocated) number</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>NWCC_NO_ROUTE</Alias>
+                <Comment>no route to destination</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0006</Value>
+                <Alias>NWCC_CHAN_UNACCEPT</Alias>
+                <Comment>channel unacceptable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0008</Value>
+                <Alias>NWCC_BARRED</Alias>
+                <Comment>operator determined barring</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>NWCC_CALL_CLEAR</Alias>
+                <Comment>normal call clearing</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0011</Value>
+                <Alias>NWCC_USER_BUSY</Alias>
+                <Comment>user busy</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0012</Value>
+                <Alias>NWCC_NO_RESPONSE</Alias>
+                <Comment>no user responding</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0013</Value>
+                <Alias>NWCC_ALERT_NO_ANSWER</Alias>
+                <Comment>user alerting, no answer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0015</Value>
+                <Alias>NWCC_CALL_REJECT</Alias>
+                <Comment>call rejected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0016</Value>
+                <Alias>NWCC_NUM_CHANGED</Alias>
+                <Comment>number changed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0019</Value>
+                <Alias>NWCC_PREEMPTION</Alias>
+                <Comment>pre-emption</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001A</Value>
+                <Alias>NWCC_USER_CLEAR</Alias>
+                <Comment>non selected user clearing</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001B</Value>
+                <Alias>NWCC_DEST_ORDER</Alias>
+                <Comment>destination out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001C</Value>
+                <Alias>NWCC_NUM_FORMAT</Alias>
+                <Comment>invalid number format (incomplete number)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001D</Value>
+                <Alias>NWCC_FACILITY_REJECT</Alias>
+                <Comment>facility rejected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001E</Value>
+                <Alias>NWCC_STATUS_ENQUIRY</Alias>
+                <Comment>response to status enquiry</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001F</Value>
+                <Alias>NWCC_UNSPECIFIED</Alias>
+                <Comment>normal, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0022</Value>
+                <Alias>NWCC_NO_CHAN_AVAIL</Alias>
+                <Comment>no circuit / channel available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0026</Value>
+                <Alias>NWCC_NETWORK_ORDER</Alias>
+                <Comment>network out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0029</Value>
+                <Alias>NWCC_TEMP_FAIL</Alias>
+                <Comment>temporary failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002A</Value>
+                <Alias>NWCC_SWITCH_CONGEST</Alias>
+                <Comment>switching equipment congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002B</Value>
+                <Alias>NWCC_INFO_DISCARD</Alias>
+                <Comment>access information discarded</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002C</Value>
+                <Alias>NWCC_REQ_CHAN_UNAVAIL</Alias>
+                <Comment>requested circuit / channel not available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002F</Value>
+                <Alias>NWCC_RESOURCE_UNAVAIL</Alias>
+                <Comment>resources unavailable, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0031</Value>
+                <Alias>NWCC_QOS_UNAVAIL</Alias>
+                <Comment>quality of service unavailable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0032</Value>
+                <Alias>NWCC_FACILITY_UNSUBSCRIB</Alias>
+                <Comment>requested facility not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0037</Value>
+                <Alias>NWCC_BARRED_IN_CUG</Alias>
+                <Comment>incoming calls barred within the CUG</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0039</Value>
+                <Alias>NWCC_BEARER_CAP_AUTHORIZ</Alias>
+                <Comment>bearer capability not authorized</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">003A</Value>
+                <Alias>NWCC_BEARER_CAP_UNAVAIL</Alias>
+                <Comment>bearer capability not presently available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">003F</Value>
+                <Alias>NWCC_SERVICE_UNAVAIL</Alias>
+                <Comment>service or option not available, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0041</Value>
+                <Alias>NWCC_BEARER_NOT_IMPLEM</Alias>
+                <Comment>bearer service not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0044</Value>
+                <Alias>NWCC_ACM_MAX</Alias>
+                <Comment>ACM equal or greater than ACMmax</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0045</Value>
+                <Alias>NWCC_FACILITY_NOT_IMPLEM</Alias>
+                <Comment>requested facility not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0046</Value>
+                <Alias>NWCC_RESTICT_BEARER_CAP</Alias>
+                <Comment>only restricted digital information bearer capability is available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">004F</Value>
+                <Alias>NWCC_SERVICE_NOT_IMPLEM</Alias>
+                <Comment>service or option not implemented, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0051</Value>
+                <Alias>NWCC_INVALID_TI</Alias>
+                <Comment>invalid transaction identifier value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0057</Value>
+                <Alias>NWCC_USER_NOT_IN_CUG</Alias>
+                <Comment>user not member of CUG</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0058</Value>
+                <Alias>NWCC_INCOMPAT_DEST</Alias>
+                <Comment>incompatible destination</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">005B</Value>
+                <Alias>NWCC_INVALID_TRANS_NET</Alias>
+                <Comment>invalid transit network selection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">005F</Value>
+                <Alias>NWCC_INCORRECT_MESSAGE</Alias>
+                <Comment>semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0060</Value>
+                <Alias>NWCC_INVALID_MAND_INFO</Alias>
+                <Comment>invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0061</Value>
+                <Alias>NWCC_MESSAGE_TYPE_NOT_IMPLEM</Alias>
+                <Comment>message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0062</Value>
+                <Alias>NWCC_MESSAGE_TYPE_INCOMPAT</Alias>
+                <Comment>message type not compatible with protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0063</Value>
+                <Alias>NWCC_INFO_ELEM_NOT_IMPLEM</Alias>
+                <Comment>information element non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0064</Value>
+                <Alias>NWCC_COND_INFO_ELEM</Alias>
+                <Comment>conditional information element error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0065</Value>
+                <Alias>NWCC_MESSAGE_INCOMPAT</Alias>
+                <Comment>message not compatible with protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0066</Value>
+                <Alias>NWCC_TIMER</Alias>
+                <Comment>recovery on timer expiry</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">006F</Value>
+                <Alias>NWCC_PROTOCOL</Alias>
+                <Comment>protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">007F</Value>
+                <Alias>NWCC_INTERWORKING</Alias>
+                <Comment>interworking, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00FF</Value>
+                <Alias>NWCC_NO_NET_CAUSE</Alias>
+                <Comment>Network initiated without cause</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dl_cause</Name>
+                <Comment>values for dl_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>DL_INFO_FIELD_MISMATCH</Alias>
+                <Comment>Different information fields</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00FF</Value>
+                <Alias>DL_NO_ERROR</Alias>
+                <Comment>Equal to NOT_PRESENT_8BIT</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_l2r_cause</Name>
+                <Comment>values for l2r_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>L2R_ERR_INTERNAL</Alias>
+                <Comment>L2R internal error</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_llc_cause</Name>
+                <Comment>values for llc_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>LLC_NORMAL_REL</Alias>
+                <Comment>Normal release</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>LLC_INVALID_XID</Alias>
+                <Comment>Invalid XID response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>LLC_DM_RECEIVED</Alias>
+                <Comment>DM received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>LLC_NO_PEER_RES</Alias>
+                <Comment>No peer response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>LLC_INVALID_UA</Alias>
+                <Comment>Invalid UA response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0005</Value>
+                <Alias>LLC_SABM_INVALID_XID</Alias>
+                <Comment>Invalid XID response during connection establishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0006</Value>
+                <Alias>LLC_SABM_NO_PEER_RES</Alias>
+                <Comment>No peer response during connection establishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0007</Value>
+                <Alias>LLC_XID_INVALID_XID</Alias>
+                <Comment>Invalid XID response during parameter negotiation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0008</Value>
+                <Alias>LLC_XID_NO_PEER_RES</Alias>
+                <Comment>No peer response during parameter negotiation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0009</Value>
+                <Alias>LLC_DISC_NO_PEER_RES</Alias>
+                <Comment>No peer response during release of connection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000A</Value>
+                <Alias>LLC_MULT_ASS_TLLI</Alias>
+                <Comment>Possible multiple assignment of a TLLI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000B</Value>
+                <Alias>LLC_DM1_RECEIVED</Alias>
+                <Comment>Unsolicited DM response with F bit 1 in state ABM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000C</Value>
+                <Alias>LLC_DM1_RECEIVED_REEST</Alias>
+                <Comment>Unsolicited DM response with F bit 1 in state Timer Recovery; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000D</Value>
+                <Alias>LLC_ACK_NO_PEER_RES_REEST</Alias>
+                <Comment>No peer response during waiting for acknowledgement; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000E</Value>
+                <Alias>LLC_PEER_BUSY_REEST</Alias>
+                <Comment>Peer receiver busy condition; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000F</Value>
+                <Alias>LLC_FRMR_COND</Alias>
+                <Comment>Frame rejection condition; frame discarded</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>LLC_FRMR_COND_REEST</Alias>
+                <Comment>Frame rejection condition; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0011</Value>
+                <Alias>LLC_FRMR_RECEIVED</Alias>
+                <Comment>FRMR response received; frame discarded</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0012</Value>
+                <Alias>LLC_L3_REEST</Alias>
+                <Comment>Layer 3 initiated re-establishment procedure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0013</Value>
+                <Alias>LLC_PEER_REEST</Alias>
+                <Comment>Peer initiated re-establishment procedure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0014</Value>
+                <Alias>LLC_DM0_RECEIVED_REEST</Alias>
+                <Comment>Unsolicited DM response with F bit 0; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mm_cause</Name>
+                <Comment>values for mm_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>MM_SUCCESS</Alias>
+                <Comment>No error, successful operation (MM)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0080</Value>
+                <Alias>MM_NO_REGISTRATION</Alias>
+                <Comment>MS is not registered</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0081</Value>
+                <Alias>MM_TIMER_RECOVERY</Alias>
+                <Comment>Time-out in MM during establishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0082</Value>
+                <Alias>MM_NO_REESTABLISH</Alias>
+                <Comment>Cell does not support call reestablish</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0083</Value>
+                <Alias>MM_INT_PREEM</Alias>
+                <Comment>Preemptive release, e.g. MO/MT clash in MM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0084</Value>
+                <Alias>MM_PLMN_NOT_IDLE_MODE</Alias>
+                <Comment>Reject (not in idle mode)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0088</Value>
+                <Alias>MM_AUTHENTICATION_REJECTED</Alias>
+                <Comment>Authentication failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0089</Value>
+                <Alias>MM_SIM_REMOVED</Alias>
+                <Comment>SIM card removed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">008A</Value>
+                <Alias>MM_POWER_OFF</Alias>
+                <Comment>UE Power Off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">008B</Value>
+                <Alias>MM_NO_SERVICE</Alias>
+                <Comment>No service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">008C</Value>
+                <Alias>MM_LIMITED_SERVICE</Alias>
+                <Comment>Only limited service available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0090</Value>
+                <Alias>MM_PROTOCOL_ERROR</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0091</Value>
+                <Alias>MM_DEDICATED_MODE</Alias>
+                <Comment>PS service suspended while in dedicated mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0092</Value>
+                <Alias>MM_TRY_TO_UPDATE</Alias>
+                <Comment>MM is attempting to update registration</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0093</Value>
+                <Alias>MM_SOFT_OFF</Alias>
+                <Comment>Disabled RF RX/TX mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00A0</Value>
+                <Alias>MM_DETACH_WITH_REATTACH</Alias>
+                <Comment>Detach with reattach required</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00FF</Value>
+                <Alias>MM_NO_ERROR</Alias>
+                <Comment>NO ERROR CAUSE</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nwmm_cause</Name>
+                <Comment>values for nwmm_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>NWMM_IMSI_UNKNOWN_IN_HLR</Alias>
+                <Comment>IMSI unknown in HLR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>NWMM_ILLEGAL_MS</Alias>
+                <Comment>Illegal MS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>NWMM_IMSI_UNKNOWN_IN_VLR</Alias>
+                <Comment>IMSI unknown in VLR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>NWMM_IMEI_NOT_ACCEPTED</Alias>
+                <Comment>IMEI not accepted</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>NWMM_ILLEGAL_ME</Alias>
+                <Comment>Illegal ME</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>NWMM_GPRS_NOT_ALLOWED</Alias>
+                <Comment>GPRS services not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>NWMM_GSM_GPRS_NOT_ALLOWED</Alias>
+                <Comment>GPRS services and non-GPRS services not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>NWMM_NO_MS_ID</Alias>
+                <Comment>MS identity cannot be derived by the network</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>NWMM_IMPLICIT_DETACHED</Alias>
+                <Comment>Implicitly detached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>NWMM_PLMN_NOT_ALLOWED</Alias>
+                <Comment>PLMN not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>NWMM_LA_NOT_ALLOWED</Alias>
+                <Comment>Location Area not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>NWMM_ROAMING_NOT_ALLOWED</Alias>
+                <Comment>Roaming not allowed in this location area</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>NWMM_GPRS_NOT_ALLOWED_IN_PLMN</Alias>
+                <Comment>GPRS service not allowed in this PLMN</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>NWMM_NO_SUITABLE_CELL_IN_LA</Alias>
+                <Comment>Find another allowed location area in the same PLMN</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">16</Value>
+                <Alias>NWMM_MSC_TEMP_NOT_REACHABLE</Alias>
+                <Comment>MSC temporarily not reachable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">17</Value>
+                <Alias>NWMM_NETWORK_FAILURE</Alias>
+                <Comment>Network failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">20</Value>
+                <Alias>NWMM_MAC_FAILURE</Alias>
+                <Comment>MAC failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">21</Value>
+                <Alias>NWMM_SYNCH_FAILURE</Alias>
+                <Comment>Synch failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">22</Value>
+                <Alias>NWMM_CONGESTION</Alias>
+                <Comment>Congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">23</Value>
+                <Alias>NWMM_GSM_AUTH_UNACCEPTABLE</Alias>
+                <Comment>No AUTN IE present when MS supports the UMTS authentication algorithm</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">32</Value>
+                <Alias>NWMM_SERVICE_NOT_SUPPORTED</Alias>
+                <Comment>MS requests a service/facility which is not sup-ported by the PLMN.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">33</Value>
+                <Alias>NWMM_SERVICE_NOT_SUBSCRIBED</Alias>
+                <Comment>Requested service option not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">34</Value>
+                <Alias>NWMM_SERVICE_OUT_OF_ORDER</Alias>
+                <Comment>Service option temporary out of order in the MSC</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">38</Value>
+                <Alias>NWMM_CALL_NOT_IDENTIFIED</Alias>
+                <Comment>Call is not identified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">40</Value>
+                <Alias>NWMM_NO_PDP_CONTEXT_ACTIVATED</Alias>
+                <Comment>No PDP context activated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">95</Value>
+                <Alias>NWMM_SEMANTIC_INCORRECT_MSG</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">96</Value>
+                <Alias>NWMM_INVALID_M_INFO</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">97</Value>
+                <Alias>NWMM_MSG_TYPE_NOT_IMPLEMENTED</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">98</Value>
+                <Alias>NWMM_MSG_TYPE_INCOMPATIBLE_WITH_STATE</Alias>
+                <Comment>Message type not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">99</Value>
+                <Alias>NWMM_IE_NOT_IMPLEMENTED</Alias>
+                <Comment>Information element non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">100</Value>
+                <Alias>NWMM_CONDITIONAL_IE_ERROR</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">101</Value>
+                <Alias>NWMM_MSG_INCOMPATIBLE_WITH_STATE</Alias>
+                <Comment>Message not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">111</Value>
+                <Alias>NWMM_PROTOCOL_ERROR_UNSPECIFIED</Alias>
+                <Comment>Unspecified protocol error</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ppp_cause</Name>
+                <Comment>values for ppp_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>PPP_TERM_OK_MMI</Alias>
+                <Comment>successful terminated (MMI initiated)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>PPP_TERM_OK_PEER</Alias>
+                <Comment>successful terminated (PPP peer initiated)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>PPP_TERM_NO_RESPONSE</Alias>
+                <Comment>no response from the PPP peer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>PPP_TERM_LOOP_BACK</Alias>
+                <Comment>looped-back link detected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0005</Value>
+                <Alias>PPP_TERM_LCP_NOT_CONVERGE</Alias>
+                <Comment>LCP configuration is not converging</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0006</Value>
+                <Alias>PPP_TERM_IPCP_NOT_CONVERGE</Alias>
+                <Comment>IPCP configuration is not converging</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0007</Value>
+                <Alias>PPP_TERM_IPCP_NOT_STARTED</Alias>
+                <Comment>PPP peer did not start IPCP configuration</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0008</Value>
+                <Alias>PPP_TERM_NO_CHANNEL</Alias>
+                <Comment>can not open communication channels</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0009</Value>
+                <Alias>PPP_TERM_PROT_REJ_UNEXPECTED</Alias>
+                <Comment>unexpected Protocol Rejection from PPP peer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000A</Value>
+                <Alias>PPP_TERM_USE_AUTHED_FAILED</Alias>
+                <Comment>user authentication failed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000B</Value>
+                <Alias>PPP_TERM_PROT_ERROR_UNSPEC</Alias>
+                <Comment>unspecified protocol error</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rcm_cause</Name>
+                <Comment>values for rcm_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>RCM_OK</Alias>
+                <Comment>Operation or configuration completed successfully.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>RCM_ABORT_NW_NOT_FOUND</Alias>
+                <Comment>Indicates that the selected network was not found.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0011</Value>
+                <Alias>RCM_ABORT_NO_NW_FOUND</Alias>
+                <Comment>Indicates that no network was found.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0012</Value>
+                <Alias>RCM_ABORT_NO_NW_SEARCHING</Alias>
+                <Comment>Indicates that RCM has no candidates for cell reselection and cell reselection measurements are started on all neighbour cells.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0020</Value>
+                <Alias>RCM_ERROR_NO_CELL_SELECTED</Alias>
+                <Comment>RCM has failed to reactivate as requested and is no longer camped on a cell.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0021</Value>
+                <Alias>RCM_ERROR_PREVIOUS_CELL_SELECTED</Alias>
+                <Comment>RCM failed to reactivate as requested but the previously selected cell remains valid.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0030</Value>
+                <Alias>RCM_MEAS_SETUP_INCOMPLETE_CONFIG</Alias>
+                <Comment>A received measurement configuration is incomplete.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0031</Value>
+                <Alias>RCM_MEAS_SETUP_INVALID_CONFIG</Alias>
+                <Comment>A received measurement configuration is invalid.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0032</Value>
+                <Alias>RCM_MEAS_SETUP_UNSUPPORTED_MEAS</Alias>
+                <Comment>A received measurement type is not supported.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1000</Value>
+                <Alias>RCM_IRAT_CR_TARGET_BARRED</Alias>
+                <Comment>Inter RAT cell reselection target cell is barred.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1001</Value>
+                <Alias>RCM_IRAT_CR_TARGET_RESERVED</Alias>
+                <Comment>Inter RAT cell reselection target cell is reserved for operator use, and UE does not fulfil access requirements.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1002</Value>
+                <Alias>RCM_IRAT_CR_TARGET_NOT_FOUND</Alias>
+                <Comment>Inter RAT cell reselection target cell was not found.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1003</Value>
+                <Alias>RCM_IRAT_CR_FAILURE_UNSPECIFIED</Alias>
+                <Comment>Inter RAT cell reselection failed without specification of failure cause.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rr_cause</Name>
+                <Comment>values for rr_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>RR_OK</Alias>
+                <Comment>Operation or configuration completed successfully.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0020</Value>
+                <Alias>RR_NW_SCAN_REJECTED_CONNECTION_STATE</Alias>
+                <Comment>A network scan could not be carried out due to the current connection state of RR.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0030</Value>
+                <Alias>RR_SYNC_RESOURCE_ASSIGNED</Alias>
+                <Comment>Traffic channel resource assigned</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0031</Value>
+                <Alias>RR_SYNC_CHANNEL_MODE_MODIFIED</Alias>
+                <Comment>Channel mode modified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0032</Value>
+                <Alias>RR_SYNC_DRX_CYCLE_LENGTH_UPDATED</Alias>
+                <Comment>The DRX cycle length has been modified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0040</Value>
+                <Alias>RR_RADIO_LINK_FAILURE</Alias>
+                <Comment>Radio link failure occurred</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0041</Value>
+                <Alias>RR_DATA_LINK_FAILURE</Alias>
+                <Comment>Data link failure occurred</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0042</Value>
+                <Alias>RR_RANDOM_ACCESS_FAILURE</Alias>
+                <Comment>Random access failed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0043</Value>
+                <Alias>RR_DL_ESTABLISHMENT_FAILURE</Alias>
+                <Comment>DL establishment failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0044</Value>
+                <Alias>RR_ESTABLISH_REJECT</Alias>
+                <Comment>Rejecting establishment due to wrong state in RR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0050</Value>
+                <Alias>RR_RELEASE_ABNORMAL_UNSPECIFIED</Alias>
+                <Comment>Abnormal release, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0051</Value>
+                <Alias>RR_RELEASE_INTERNAL_UNSPECIFIED</Alias>
+                <Comment>Internal release, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0060</Value>
+                <Alias>RR_ACCESS_BARRED</Alias>
+                <Comment>Access barred because of access class control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0061</Value>
+                <Alias>RR_T3122_RUNNING</Alias>
+                <Comment>T3122 running, emergency calls only until expiry</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0062</Value>
+                <Alias>RR_ACCESS_DELAYED</Alias>
+                <Comment>Access delayed because of immediate assignment reject and followed by timeout</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1000</Value>
+                <Alias>RR_IRAT_CR_FAILURE_UNSPECIFIED</Alias>
+                <Comment>Indicates that reselection to the specified target cell was not successful.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1010</Value>
+                <Alias>RR_IRAT_HO_MESSAGE_FAILURE</Alias>
+                <Comment>Indicates that a check of a handover message to GSM failed.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1020</Value>
+                <Alias>RR_IRAT_HO_FAILURE_UNSPECIFIED</Alias>
+                <Comment>Inter RAT handover failed without specification of failure cause.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1021</Value>
+                <Alias>RR_IRAT_HO_ARFCN_NOT_SUPPORTED</Alias>
+                <Comment>Inter RAT handover failed because the frequency of the target cell was not supported.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1030</Value>
+                <Alias>RR_IRAT_CC_FAILURE_UNSPECIFIED</Alias>
+                <Comment>Inter RAT cell change from UMTS to GSM failed without a specific cause.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nwrr_cause</Name>
+                <Comment>values for nwrr_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>NWRR_RELEASE_NORMAL_EVENT</Alias>
+                <Comment>RR connection released normally</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>NWRR_RELEASE_UNSPECIFIED</Alias>
+                <Comment>RR connection released for unspecified reason</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>NWRR_RELEASE_CH_UNACCEPTABLE</Alias>
+                <Comment>RR connection released due to unacceptable channel</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>NWRR_RELEASE_TIMER_EXPIRED</Alias>
+                <Comment>RR connection released due to timer expirery</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>NWRR_RELEASE_NO_RADIO_ACTIVITY</Alias>
+                <Comment>RR connection released due to no activity on the radio path</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0005</Value>
+                <Alias>NWRR_RELEASE_PREEMPTIVE</Alias>
+                <Comment>RR connection released pre-emptively</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0006</Value>
+                <Alias>NWRR_UTRAN_CONF_UNKNOWN</Alias>
+                <Comment>UTRAN configuration unknown</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0008</Value>
+                <Alias>NWRR_HANDOVER_IMPOSSIBLE</Alias>
+                <Comment>Handover impossible, timing advance out of range</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0009</Value>
+                <Alias>NWRR_CH_MODE_UNACCEPTABLE</Alias>
+                <Comment>Channel mode unacceptable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000A</Value>
+                <Alias>NWRR_FREQ_NOT_IMPLEMENTED</Alias>
+                <Comment>Frequency not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000C</Value>
+                <Alias>NWRR_LOWER_LAYER_FAILURE</Alias>
+                <Comment>Lower layer failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0041</Value>
+                <Alias>NWRR_CALL_ALREADY_CLEARED</Alias>
+                <Comment>Call already cleared</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">005F</Value>
+                <Alias>NWRR_INCORRECT_MESSAGE</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0060</Value>
+                <Alias>NWRR_INVALID_MANDATORY_INFO</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0061</Value>
+                <Alias>NWRR_MESS_NOT_IMPLEMENTED</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0062</Value>
+                <Alias>NWRR_MESS_NOT_COMPATIBLE</Alias>
+                <Comment>Message type not compatible with protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0064</Value>
+                <Alias>NWRR_CONDITIONAL_IE_ERROR</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0065</Value>
+                <Alias>NWRR_NO_CELL_ALLOCATION</Alias>
+                <Comment>No cell allocation available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">006F</Value>
+                <Alias>NWRR_PROTOCOL_ERROR_UNSPECIFIED</Alias>
+                <Comment>Protocol error unspecified</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rlp_cause</Name>
+                <Comment>values for rlp_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>ERR_BASE</Alias>
+                <Comment>RLP base error number</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>ERR_PF_RETRANS</Alias>
+                <Comment>Max Retransmissions of Poll reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>ERR_XID_RETRANS</Alias>
+                <Comment>Max Retransmissions of XID reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>ERR_SABM_RETRANS</Alias>
+                <Comment>Max Retransmissions of SABM reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>ERR_DISC_RETRANS</Alias>
+                <Comment>Max Retransmissions of DISC reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>ERR_REMAP_RETRANS</Alias>
+                <Comment>Max Retransmissions of REMAP reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>ERR_SDU_TO_SMALL</Alias>
+                <Comment>Received SDU is to small</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0020</Value>
+                <Alias>ERR_INTERNAL</Alias>
+                <Comment>Internal error</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rrc_cause</Name>
+                <Comment>values for rrc_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>RRC_OK</Alias>
+                <Comment>Operation or configuration completed successfully.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>RRC_ABORT_UNSPECIFIED</Alias>
+                <Comment>Abort for unspecified reason</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>RRC_PHY_CAPABILITY_CHECK_FAILURE</Alias>
+                <Comment>Indicates that a check of PHY capabilities against requirements for a requested cell selection has failed causing RRC to refuse to start cell selection.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0020</Value>
+                <Alias>RRC_NW_SCAN_REJECTED_CONNECTION_STATE</Alias>
+                <Comment>A network scan could not be carried out due to the current connection state of RRC.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0030</Value>
+                <Alias>RRC_SYNC_RESOURCE_ASSIGNED</Alias>
+                <Comment>Traffic channel resource assigned</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0031</Value>
+                <Alias>RRC_SYNC_CHANNEL_MODE_MODIFIED</Alias>
+                <Comment>Channel mode modified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0032</Value>
+                <Alias>RRC_SYNC_DRX_CYCLE_LENGTH_UPDATED</Alias>
+                <Comment>The DRX cycle length has been modified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0040</Value>
+                <Alias>RRC_START_UPDATE_IDLE_MODE_ENTERED</Alias>
+                <Comment>Update of START values on entering idle mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0041</Value>
+                <Alias>RRC_START_UPDATE_THRESHOLD_REACHED</Alias>
+                <Comment>Update of START values because threshold has been reached.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0042</Value>
+                <Alias>RRC_START_UPDATE_CONNECTION_ESTABLISHED</Alias>
+                <Comment>Update of START values on connection establishment.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1000</Value>
+                <Alias>RRC_IRAT_HO_MESSAGE_FAILURE</Alias>
+                <Comment>Indicates that a check of a handover message to UTRAN failed.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1020</Value>
+                <Alias>RRC_IRAT_HO_FAILURE_UNSPECIFIED</Alias>
+                <Comment>Inter RAT handover failed without specification of failure cause.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1030</Value>
+                <Alias>RRC_IRAT_CC_FAILURE_UNSPECIFIED</Alias>
+                <Comment>Inter RAT cell change from GSM to UMTS failed without a specific cause.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nwrrc_cause</Name>
+                <Comment>values for nwrrc_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>NWRRC_PAGING_MT_CONVERSATION</Alias>
+                <Comment>Mobile terminated conversational call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>NWRRC_PAGING_MT_STREAM</Alias>
+                <Comment>Mobile terminated streaming call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>NWRRC_PAGING_MT_INTERACTIVE</Alias>
+                <Comment>Mobile terminated interactive call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>NWRRC_PAGING_MT_BACKGROUND</Alias>
+                <Comment>Mobile terminated background call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>NWRRC_PAGING_MT_HIGH_PRIO_SIGNAL</Alias>
+                <Comment>Mobile terminated high priority signalling</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0005</Value>
+                <Alias>NWRRC_PAGING_MT_LOW_PRIO_SIGNAL</Alias>
+                <Comment>Mobile terminated low priority signalling</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0006</Value>
+                <Alias>NWRRC_PAGING_MT_UNKNOWN</Alias>
+                <Comment>Mobile terminated call - unknown cause</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>NWRRC_RELEASE_NORMAL_EVENT</Alias>
+                <Comment>RRC connection released normally</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0011</Value>
+                <Alias>NWRRC_RELEASE_UNSPECIFIED</Alias>
+                <Comment>RRC connection released for unspecified reason</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0012</Value>
+                <Alias>NWRRC_RELEASE_PREEMPTIVE</Alias>
+                <Comment>RRC connection released pre-emptively</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0013</Value>
+                <Alias>NWRRC_RELEASE_CONGESTION</Alias>
+                <Comment>RRC connection released due to congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0014</Value>
+                <Alias>NWRRC_RELEASE_REESTABLISH_REJECT</Alias>
+                <Comment>RRC connection released due to rejection of connection reestablishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0015</Value>
+                <Alias>NWRRC_RELEASE_DIR_SIGNAL_REESTAB</Alias>
+                <Comment>RRC connection released due to directed signalling reestablishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0016</Value>
+                <Alias>NWRRC_RELEASE_USER_INACTIVITY</Alias>
+                <Comment>RRC connection released due to user inactivity</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sim_cause</Name>
+                <Comment>values for sim_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00FF</Value>
+                <Alias>SIM_NO_ERROR</Alias>
+                <Comment>No error (Status Code 9000, 91XX, 9FXX, 920X; USIM 63CX)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>SIM_NO_SELECT</Alias>
+                <Comment>No EF selected (SC 9400; USIM 6986)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>SIM_UNKN_FILE_ID</Alias>
+                <Comment>file id not found (SC 9404; USIM 6A82)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>SIM_EF_INVALID</Alias>
+                <Comment>EF invalidated (SC 9810; USIM 6283, 6984)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>SIM_ADDR_WRONG</Alias>
+                <Comment>Address of data invalid (SC 9402; USIM 6A83)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0005</Value>
+                <Alias>SIM_CMD_INCONSIST</Alias>
+                <Comment>Command inconsistent with file type (SC 9408; USIM 6981)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0006</Value>
+                <Alias>SIM_MAX_INCREASE</Alias>
+                <Comment>Increase: maximum reached (SC 9850)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0007</Value>
+                <Alias>SIM_CLA_WRONG</Alias>
+                <Comment>Wrong class parameter (SC 6EXX)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0008</Value>
+                <Alias>SIM_INS_WRONG</Alias>
+                <Comment>Unknown instruction code (SC 6DXX; USIM 6A81)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0009</Value>
+                <Alias>SIM_P1P2_WRONG</Alias>
+                <Comment>Incorrect parameter P1, P2 (SC 6BXX; USIM 6A86. 6A88)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000A</Value>
+                <Alias>SIM_P3_WRONG</Alias>
+                <Comment>Incorrect parameter P3 (SC 67XX; USIM 6282, 6A87)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000B</Value>
+                <Alias>SIM_CHV_NOTSET</Alias>
+                <Comment>No CHV active (SC 9802; USIM 6982)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000C</Value>
+                <Alias>SIM_CHV_VALIDATED</Alias>
+                <Comment>CHV already validated (SC 9808; USIM 6982)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000D</Value>
+                <Alias>SIM_ACCESS_PROHIBIT</Alias>
+                <Comment>Access conditions not fulfilled (SC 9804; USIM 6985)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000E</Value>
+                <Alias>SIM_OTHER_ERROR</Alias>
+                <Comment>Any other SIM error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000F</Value>
+                <Alias>SIM_PUK1_BLOCKED</Alias>
+                <Comment>PUK1 blocked (SC 9840; USIM 63C0)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>SIM_PUK1_REMAIN1</Alias>
+                <Comment>Wrong PUK1, 1 attempt left (SC 9804; USIM 63C1)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0011</Value>
+                <Alias>SIM_PUK1_REMAIN2</Alias>
+                <Comment>Wrong PUK1, 2 attempts left (USIM 63C2)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0012</Value>
+                <Alias>SIM_PUK1_REMAIN3</Alias>
+                <Comment>Wrong PUK1, 3 attempts left (USIM 63C3)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0013</Value>
+                <Alias>SIM_PUK1_REMAIN4</Alias>
+                <Comment>Wrong PUK1, 4 attempts left (USIM 63C4)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0014</Value>
+                <Alias>SIM_PUK1_REMAIN5</Alias>
+                <Comment>Wrong PUK1, 5 attempts left (USIM 63C5)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0015</Value>
+                <Alias>SIM_PUK1_REMAIN6</Alias>
+                <Comment>Wrong PUK1, 6 attempts left (USIM 63C6)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0016</Value>
+                <Alias>SIM_PUK1_REMAIN7</Alias>
+                <Comment>Wrong PUK1, 7 attempts left (USIM 63C7)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0017</Value>
+                <Alias>SIM_PUK1_REMAIN8</Alias>
+                <Comment>Wrong PUK1, 8 attempts left (USIM 63C8)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0018</Value>
+                <Alias>SIM_PUK1_REMAIN9</Alias>
+                <Comment>Wrong PUK1, 9 attempts left (USIM 63C9)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0019</Value>
+                <Alias>SIM_PUK1_EXPECT</Alias>
+                <Comment>PUK1 required (SC 9804, 9808; USIM 6982, 6985)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001A</Value>
+                <Alias>SIM_PIN1_BLOCKED</Alias>
+                <Comment>PIN1 blocked (SC 9840; USIM 63C0, 6983)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001B</Value>
+                <Alias>SIM_PIN1_REMAIN1</Alias>
+                <Comment>Wrong PIN1, 1 attempt left (USIM 63C1)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001C</Value>
+                <Alias>SIM_PIN1_REMAIN2</Alias>
+                <Comment>Wrong PIN1, 2 attempts left (USIM 63C2)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001D</Value>
+                <Alias>SIM_PIN1_EXPECT</Alias>
+                <Comment>PIN1 required (SC 9804, 9808; USIM 6982, 6985)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001E</Value>
+                <Alias>SIM_PUK2_BLOCKED</Alias>
+                <Comment>PUK2 blocked (SC 9840; USIM 63C0)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001F</Value>
+                <Alias>SIM_PUK2_REMAIN1</Alias>
+                <Comment>Wrong PUK2, 1 attempt left (USIM 63C1)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0020</Value>
+                <Alias>SIM_PUK2_REMAIN2</Alias>
+                <Comment>Wrong PUK2, 2 attempts left (USIM 63C2)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0021</Value>
+                <Alias>SIM_PUK2_REMAIN3</Alias>
+                <Comment>Wrong PUK2, 3 attempts left (USIM 63C3)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0022</Value>
+                <Alias>SIM_PUK2_REMAIN4</Alias>
+                <Comment>Wrong PUK2, 4 attempts left (USIM 63C4)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0023</Value>
+                <Alias>SIM_PUK2_REMAIN5</Alias>
+                <Comment>Wrong PUK2, 5 attempts left (USIM 63C5)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0024</Value>
+                <Alias>SIM_PUK2_REMAIN6</Alias>
+                <Comment>Wrong PUK2, 6 attempts left (USIM 63C6)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0025</Value>
+                <Alias>SIM_PUK2_REMAIN7</Alias>
+                <Comment>Wrong PUK2, 7 attempts left (USIM 63C7)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0026</Value>
+                <Alias>SIM_PUK2_REMAIN8</Alias>
+                <Comment>Wrong PUK2, 8 attempts left (USIM 63C8)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0027</Value>
+                <Alias>SIM_PUK2_REMAIN9</Alias>
+                <Comment>Wrong PUK2, 9 attempts left (USIM 63C9)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0028</Value>
+                <Alias>SIM_PUK2_EXPECT</Alias>
+                <Comment>PUK2 required (SC 9804, 9808; USIM 6982, 6985)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0029</Value>
+                <Alias>SIM_PIN2_BLOCKED</Alias>
+                <Comment>PIN2 blocked (SC 9840; USIM 63C0, 6983)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002A</Value>
+                <Alias>SIM_PIN2_REMAIN1</Alias>
+                <Comment>Wrong PIN2, 1 attempt left (USIM 63C1)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002B</Value>
+                <Alias>SIM_PIN2_REMAIN2</Alias>
+                <Comment>Wrong PIN2, 2 attempts left (USIM 63C2)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002C</Value>
+                <Alias>SIM_PIN2_EXPECT</Alias>
+                <Comment>PIN1 required (SC 9804, 9808; USIM 6982, 6985)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002D</Value>
+                <Alias>SIM_SAT_BUSY</Alias>
+                <Comment>SIM Application Toolkit busy (SC 9300)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002E</Value>
+                <Alias>SIM_DNL_ERROR</Alias>
+                <Comment>SAT download error (SC 9EXX; USIM 62XX, 63XX)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002F</Value>
+                <Alias>SIM_CARD_REMOVED</Alias>
+                <Comment>SIM card removed or exchanged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0030</Value>
+                <Alias>SIM_PARAM_WRONG</Alias>
+                <Comment>Wrong parameter in primitive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0031</Value>
+                <Alias>SIM_DRV_NOCARD</Alias>
+                <Comment>SIM driver error: no card detected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0032</Value>
+                <Alias>SIM_DRV_NOINT</Alias>
+                <Comment>SIM driver error: no interrupt</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0033</Value>
+                <Alias>SIM_DRV_NOATR</Alias>
+                <Comment>SIM driver error: no answer to reset</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0034</Value>
+                <Alias>SIM_DRV_READ</Alias>
+                <Comment>SIM driver error: invalid response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0035</Value>
+                <Alias>SIM_DRV_XMIT</Alias>
+                <Comment>SIM driver error: unsuccessful transmission</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0036</Value>
+                <Alias>SIM_DRV_OVF</Alias>
+                <Comment>SIM driver error: interrupt overflow</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0037</Value>
+                <Alias>SIM_DRV_LEN</Alias>
+                <Comment>SIM driver error: incorrect size of response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0038</Value>
+                <Alias>SIM_DRV_CARDREJ</Alias>
+                <Comment>SIM driver error: card rejected (invalid properties)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0039</Value>
+                <Alias>SIM_DRV_WAIT</Alias>
+                <Comment>SIM driver error: timeout</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">003A</Value>
+                <Alias>SIM_DRV_ABNCASE1</Alias>
+                <Comment>SIM driver error: abnormal case 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">003B</Value>
+                <Alias>SIM_DRV_ABNCASE2</Alias>
+                <Comment>SIM driver error: abnormal case 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">003C</Value>
+                <Alias>SIM_DRV_RCVOVFL</Alias>
+                <Comment>SIM driver error: more than 256 bytes received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">003F</Value>
+                <Alias>SIM_DRV_TEMPFAIL</Alias>
+                <Comment>SIM driver error: temprary failure, SIM reset required</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0040</Value>
+                <Alias>SIM_UMTS_AUTH_SQN_ERROR</Alias>
+                <Comment>UMTS authentication failed due to Sequence Number error (erroneous AUTN)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0041</Value>
+                <Alias>SIM_UMTS_AUTH_MAC_ERROR</Alias>
+                <Comment>UMTS authentication failed due to MAC error (erroneous AUTN)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sm_cause</Name>
+                <Comment>values for sm_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>SM_MODIFY_COLLISION</Alias>
+                <Comment>Collision between MO and MT modify. MT wins.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>SM_INVALID_NSAPI</Alias>
+                <Comment>Attempted procedure on non-existing context/NSAPI</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>SM_R99_PROCEDURE_REJECTED_IN_R97</Alias>
+                <Comment>R99 Procedure rejected: Currently active in R97 network</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>SM_PRE_R99_NETWORK_ENTERED</Alias>
+                <Comment>Context deactivation due to entering pre-R99 network</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0005</Value>
+                <Alias>SM_ACTIVATION_OVERRIDE</Alias>
+                <Comment>Context deactivation due to activation override</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nwsm_cause</Name>
+                <Comment>values for nwsm_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0019</Value>
+                <Alias>NWSM_LLC_OR_SNDCP_FAILURE</Alias>
+                <Comment>LLC or SNDCP failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001A</Value>
+                <Alias>NWSM_INSUFFICIENT_RESOURCES</Alias>
+                <Comment>Insufficient resources</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001B</Value>
+                <Alias>NWSM_MISSING_OR_UNKNOWN_APN</Alias>
+                <Comment>Missing or unknown APN</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001C</Value>
+                <Alias>NWSM_UNKNOWN_PDP_ADDR_OR_TYPE</Alias>
+                <Comment>Unknown PDP address or PDP type</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001D</Value>
+                <Alias>NWSM_USER_AUTH_FAILED</Alias>
+                <Comment>User Aauthentication failed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001E</Value>
+                <Alias>NWSM_ACTIVATE_REJECTED_BY_GGSN</Alias>
+                <Comment>Activation rejected by GGSN</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001F</Value>
+                <Alias>NWSM_ACTIVATE_REJECTED_UNSPECIFIED</Alias>
+                <Comment>Activation rejected, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0020</Value>
+                <Alias>NWSM_SERVICE_NOT_SUPPORTED</Alias>
+                <Comment>Service option not supported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0021</Value>
+                <Alias>NWSM_SERVICE_NOT_SUBSCRIBED</Alias>
+                <Comment>Requested service option not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0022</Value>
+                <Alias>NWSM_SERVICE_TEMP_OUT_OF_ORDER</Alias>
+                <Comment>Service option temporarily out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0023</Value>
+                <Alias>NWSM_NSAPI_IN_USE</Alias>
+                <Comment>NSAPI already used (pre-R99 only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0024</Value>
+                <Alias>NWSM_REGULAR_DEACTIVATION</Alias>
+                <Comment>Regular deactivation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0025</Value>
+                <Alias>NWSM_QOS_NOT_ACCEPTED</Alias>
+                <Comment>QoS not accepted</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0026</Value>
+                <Alias>NWSM_NETWORK_FAILURE</Alias>
+                <Comment>Network failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0027</Value>
+                <Alias>NWSM_REACTIVATION_REQUESTED</Alias>
+                <Comment>Reactivation requested</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0028</Value>
+                <Alias>NWSM_FEATURE_NOT_SUPPORTED</Alias>
+                <Comment>Feature not supported (context activation)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0029</Value>
+                <Alias>NWSM_SEMANTIC_TFT_ERROR</Alias>
+                <Comment>Semantic error in TFT operation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002A</Value>
+                <Alias>NWSM_SYNTACTIC_TFT_ERROR</Alias>
+                <Comment>Syntactical error in TFT operation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002B</Value>
+                <Alias>NWSM_UNKNOWN_LINKED_TI</Alias>
+                <Comment>Unknown PDP context (identified by linked TI)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002C</Value>
+                <Alias>NWSM_SEMANTIC_TFT_FILTER_ERROR</Alias>
+                <Comment>Semantic error in packet filter</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002D</Value>
+                <Alias>NWSM_SYNTACTIC_TFT_FILTER_ERROR</Alias>
+                <Comment>Syntactical error in packet filter</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002E</Value>
+                <Alias>NWSM_CONTEXT_NEEDS_TFT</Alias>
+                <Comment>PDP context without TFT already activated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0051</Value>
+                <Alias>NWSM_INVALID_TI</Alias>
+                <Comment>Invalid transaction identifier value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">005F</Value>
+                <Alias>NWSM_SEMANTIC_ERROR_IN_MSG</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0060</Value>
+                <Alias>NWSM_INVALID_MANDATORY_ELEMENT</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0061</Value>
+                <Alias>NWSM_MSG_TYPE_NOT_IMPLEMENTED</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0062</Value>
+                <Alias>NWSM_MSG_TYPE_INCOMPATIBLE_WITH_STATE</Alias>
+                <Comment>Message type not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0063</Value>
+                <Alias>NWSM_IE_NOT_IMPLEMENTED</Alias>
+                <Comment>Information element non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0064</Value>
+                <Alias>NWSM_CONDITIONAL_IE_ERROR</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0065</Value>
+                <Alias>NWSM_MSG_INCOMPATIBLE_WITH_STATE</Alias>
+                <Comment>Message not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">006F</Value>
+                <Alias>NWSM_PROTOCOL_ERROR_UNSPECIFIED</Alias>
+                <Comment>Unspecified protocol error</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sms_cause</Name>
+                <Comment>values for sms_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">1000100111111111</Value>
+                <Alias>SMS_NO_ERROR</Alias>
+                <Comment>No error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000000</Value>
+                <Alias>SMS_PARAM_WRONG</Alias>
+                <Comment>Wrong parameter in primitive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000001</Value>
+                <Alias>SMS_ENTITY_BUSY</Alias>
+                <Comment>Entity is busy</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000010</Value>
+                <Alias>SMS_OPER_NOT_ALLW</Alias>
+                <Comment>Operation not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000011</Value>
+                <Alias>SMS_OPER_NOT_SUPP</Alias>
+                <Comment>Operation not supported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000100</Value>
+                <Alias>SMS_SIM_BUSY</Alias>
+                <Comment>SIM busy</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000101</Value>
+                <Alias>SMS_MEM_FAIL</Alias>
+                <Comment>Memory failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000110</Value>
+                <Alias>SMS_INV_INDEX</Alias>
+                <Comment>Invalid memory index</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001000</Value>
+                <Alias>SMS_MEM_FULL</Alias>
+                <Comment>Memory full</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001001</Value>
+                <Alias>SMS_NO_SERVICE</Alias>
+                <Comment>No network service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001010</Value>
+                <Alias>SMS_NET_TIMEOUT</Alias>
+                <Comment>Network timeout</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001011</Value>
+                <Alias>SMS_UNEXP_CNMA</Alias>
+                <Comment>No +CNMA acknowledgement expected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001111</Value>
+                <Alias>SMS_OTHER_ERROR</Alias>
+                <Comment>Any other error</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nwsms_cp_cause</Name>
+                <Comment>values for nwsms_cp_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0011</Value>
+                <Alias>NWSMS_CP_NETWORK_FAILURE</Alias>
+                <Comment>Network Failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0016</Value>
+                <Alias>NWSMS_CP_CONGESTION</Alias>
+                <Comment>Congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0051</Value>
+                <Alias>NWSMS_CP_INVALID_TI</Alias>
+                <Comment>Invalid Transaction Identifier</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">005F</Value>
+                <Alias>NWSMS_CP_SEM_INC_MSG</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0060</Value>
+                <Alias>NWSMS_CP_INV_MAND_INFO</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0061</Value>
+                <Alias>NWSMS_CP_MSG_TYPE_NON_EXIST</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0062</Value>
+                <Alias>NWSMS_CP_MSG_NOT_COMP</Alias>
+                <Comment>Message not compatible with the short message protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0063</Value>
+                <Alias>NWSMS_CP_INFO_NON_EXIST</Alias>
+                <Comment>Information element non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">006F</Value>
+                <Alias>NWSMS_CP_PROTOCOL_ERROR</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nwsms_rp_cause</Name>
+                <Comment>values for nwsms_rp_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>NWSMS_RP_UNASSIGNED_NUMBER</Alias>
+                <Comment>Unassigned (unallocated) number</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0008</Value>
+                <Alias>NWSMS_RP_OPERATOR_DET_BARRED</Alias>
+                <Comment>Operator determined barring</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000A</Value>
+                <Alias>NWSMS_RP_CALL_BARRED</Alias>
+                <Comment>Call barred</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0015</Value>
+                <Alias>NWSMS_RP_SM_TRANSFER_REJECTED</Alias>
+                <Comment>Short message transfer rejected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0016</Value>
+                <Alias>NWSMS_RP_MEM_CAP_EXCEEDED</Alias>
+                <Comment>Memory Capacity exceeded</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001B</Value>
+                <Alias>NWSMS_RP_DEST_OUT_OF_ORDER</Alias>
+                <Comment>Destination out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001C</Value>
+                <Alias>NWSMS_RP_UNIDENT_SUBSCRIBER</Alias>
+                <Comment>Unidentified subscriber</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001D</Value>
+                <Alias>NWSMS_RP_FACILITY_REJECTED</Alias>
+                <Comment>Facility rejected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">001E</Value>
+                <Alias>NWSMS_RP_UNKNOWN_SUBSCRIBER</Alias>
+                <Comment>Unknown subscriber</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0026</Value>
+                <Alias>NWSMS_RP_NET_OUT_OF_ORDER</Alias>
+                <Comment>Network out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0029</Value>
+                <Alias>NWSMS_RP_TEMP_FAILURE</Alias>
+                <Comment>Temporary Failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002A</Value>
+                <Alias>NWSMS_RP_CONGESTION</Alias>
+                <Comment>Congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">002F</Value>
+                <Alias>NWSMS_RP_NO_RESOURCES</Alias>
+                <Comment>Resources unavailable, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0032</Value>
+                <Alias>NWSMS_RP_FAC_NOT_SUBSCRIBED</Alias>
+                <Comment>Requested facility not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0045</Value>
+                <Alias>NWSMS_RP_FAC_NOT_IMPL</Alias>
+                <Comment>Requested facility not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0051</Value>
+                <Alias>NWSMS_RP_INV_SM_TR_REF_VAL</Alias>
+                <Comment>Invalid short message transfer reference value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">005F</Value>
+                <Alias>NWSMS_RP_SEM_INC_MSG</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0060</Value>
+                <Alias>NWSMS_RP_INV_MAND_INFO</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0061</Value>
+                <Alias>NWSMS_RP_MSG_NON_EXIST</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0062</Value>
+                <Alias>NWSMS_RP_MSG_NOT_COMP</Alias>
+                <Comment>Message not compatible with the short message protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0063</Value>
+                <Alias>NWSMS_RP_INFO_NON_EXIST</Alias>
+                <Comment>Information element non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">006F</Value>
+                <Alias>NWSMS_RP_PROTOCOL_ERROR</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">007F</Value>
+                <Alias>NWSMS_RP_INTERWORKING</Alias>
+                <Comment>Interworking, unspecified</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nwsms_tp_cause</Name>
+                <Comment>values for nwsms_tp_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">80</Value>
+                <Alias>NWSMS_TP_TM_IW_NOT_SUP</Alias>
+                <Comment>Telematic interworking not supported (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">81</Value>
+                <Alias>NWSMS_TP_SM_0_NOT_SUP</Alias>
+                <Comment>Short Message Type 0 not supported (MO, MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">82</Value>
+                <Alias>NWSMS_TP_CANT_REP_SM</Alias>
+                <Comment>Cannot replace short message (MO, MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8F</Value>
+                <Alias>NWSMS_TP_TP_PID_UNSPEC</Alias>
+                <Comment>Unspecified TP-PID error (MO, MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">90</Value>
+                <Alias>NWSMS_TP_DCS_NOT_SUP</Alias>
+                <Comment>Data coding scheme (alphabet) not supported (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">91</Value>
+                <Alias>NWSMS_TP_CLASS_NOT_SUP</Alias>
+                <Comment>Message class not supported (MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">9F</Value>
+                <Alias>NWSMS_TP_TP_DCS_UNSPEC</Alias>
+                <Comment>Unspecified TP-DCS error (MO, MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">A0</Value>
+                <Alias>NWSMS_TP_CMD_CANT_ACT</Alias>
+                <Comment>Command cannot be actioned (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">A1</Value>
+                <Alias>NWSMS_TP_CMD_NOT_SUP</Alias>
+                <Comment>Command unsupported (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">AF</Value>
+                <Alias>NWSMS_TP_TP_CMD_UNSPEC</Alias>
+                <Comment>Unspecified TP-Command error (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">B0</Value>
+                <Alias>NWSMS_TP_TPDU_NOT_SUP</Alias>
+                <Comment>TPDU not supported (MO, MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C0</Value>
+                <Alias>NWSMS_TP_SC_BUSY</Alias>
+                <Comment>SC busy (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C1</Value>
+                <Alias>NWSMS_TP_NO_SC_SUBSCRIPT</Alias>
+                <Comment>No SC subscription (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C2</Value>
+                <Alias>NWSMS_TP_SC_SYS_FAIL</Alias>
+                <Comment>SC system failure (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C3</Value>
+                <Alias>NWSMS_TP_INV_SME_ADDR</Alias>
+                <Comment>Invalid SME address (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C4</Value>
+                <Alias>NWSMS_TP_DEST_SME_BARRED</Alias>
+                <Comment>Destination SME barred (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C5</Value>
+                <Alias>NWSMS_TP_REJ_DUPL_SM</Alias>
+                <Comment>SM rejected-duplicate SM (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C6</Value>
+                <Alias>NWSMS_TP_TPVPF_NOT_SUP</Alias>
+                <Comment>Validity Period Format not supported (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C7</Value>
+                <Alias>NWSMS_TP_TPVP_NOT_SUP</Alias>
+                <Comment>Validity Period not supported (MO)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D0</Value>
+                <Alias>NWSMS_TP_SIM_MEM_FULL</Alias>
+                <Comment>SIM SMS storage full (MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D1</Value>
+                <Alias>NWSMS_TP_NO_SMS_MEM_IN_MS</Alias>
+                <Comment>No SMS storage capability in SIM (MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D2</Value>
+                <Alias>NWSMS_TP_ERROR_IN_MS</Alias>
+                <Comment>Error in MS (MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D3</Value>
+                <Alias>NWSMS_TP_MEM_CAP_EXCEED</Alias>
+                <Comment>Memory Capacity exceeded (MO, MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D4</Value>
+                <Alias>NWSMS_TP_SAT_BUSY</Alias>
+                <Comment>SIM Application Toolkit busy (MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D5</Value>
+                <Alias>NWSMS_TP_SAT_DNL_ERROR</Alias>
+                <Comment>SIM Data Download error (MT)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>NWSMS_TP_UNSPECIFIED</Alias>
+                <Comment>Unspecified error cause (MO, MT)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sn_cause</Name>
+                <Comment>values for sn_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>SN_NORMAL_RELEASE</Alias>
+                <Comment>normal release (Not specified in 3G)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0100</Value>
+                <Alias>SN_INVALID_XID</Alias>
+                <Comment>invalid XID response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0101</Value>
+                <Alias>SN_DM_RECEIVED</Alias>
+                <Comment>DM received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0102</Value>
+                <Alias>SN_NO_PEER_RESPONSE</Alias>
+                <Comment>no peer response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0103</Value>
+                <Alias>SN_LOWLAYER_DEACT</Alias>
+                <Comment>lower layer deactivation</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_upm_cause</Name>
+                <Comment>values for upm_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>UPM_NORMAL_RELEASE</Alias>
+                <Comment>normal release</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>UPM_DTI_DISCONNECT</Alias>
+                <Comment>The DTI was closed for some reason</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0200</Value>
+                <Alias>UPM_RT_QOS_RELEASE</Alias>
+                <Comment>A real-time QoS caused a (RAB) release</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0201</Value>
+                <Alias>UPM_REEST_NEEDED</Alias>
+                <Comment>A real-time QoS context needs (RAB) reestablishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0202</Value>
+                <Alias>UPM_REEST_REJECT</Alias>
+                <Comment>A reestablishment was rejected</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This parameter holds a cause element originated in the RRLC SAP.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rrlc_cause</Name>
+                <Comment>cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>LCS_OK</Alias>
+                <Comment>no error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LCS_ERROR</Alias>
+                <Comment>Unspecified  error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>LCS_WRONG_BTS</Alias>
+                <Comment>Serving Cell BTS differs from Reference BTS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">20</Value>
+                <Alias>LCS_HANDOVER</Alias>
+                <Comment>handover occured during Position Measurement procedure</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="30" Month="11" Year="2004"/>
+                <Author>JOJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

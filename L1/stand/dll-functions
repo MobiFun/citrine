@@ -1,0 +1,9 @@
+L1S (l1_cmplx.c specifically) calls these 3 functions which are normally
+defined in the DL protocol stack entity:
+
+dll_dcch_downlink()
+dll_read_dcch()
+dll_read_sacch()
+
+If we are building L1 standalone (without the G23 protocol stack), we need
+to provide stubs for these functions.

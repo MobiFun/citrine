@@ -1,0 +1,929 @@
+;********************************************************************************
+;*** File           : grlc.mdf
+;*** Creation       : Thu Jun 19 15:32:10 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : grlc
+;*** Document No.   : 8010.603.99.004
+;*** Document Date  : 2004-02-18
+;*** Document Status: APPROVED
+;*** Document Author: x0abualu
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:18:54 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-02-18"
+PRAGMA 	ID_AND_VERSION 	"8010.603.99.004"
+PRAGMA 	CCDNAME 	GRLC 	; CCD name tag
+
+
+
+CONST 	MAX_NUM_BEP_TN 	8 	; Maximum number of time slots for BEP measurements
+CONST 	MAX_SIZE_URBB_DL 	144 	; Maximum number of bits that can be included in uncompressed received block bitmap.(144 = 184 - 24 - 1 - 15),Used in DL
+CONST 	MAX_SIZE_CRBB 	127 	; Maximum number of bits that can be included in compressed received block bitmap,Used in DL
+CONST 	MAX_SIZE_URBB_UL 	128 	; Maximum number of bits possible when only uncompress bitmap present for Uplink
+
+
+
+VALTAB 	VAL_final_alloc
+VAL 	0 	GRLC_NO 	"not present"
+VAL 	1 	GRLC_YES 	"present"
+
+VALTAB 	VAL_msg_type
+VAL 	0b001001 	D_GRLC_UL_ACK_c 	"Packet Uplink Ack/Nack"
+VAL 	0b000001 	U_GRLC_CTRL_ACK_c 	"Packet Control Acknowledgement"
+VAL 	0b000010 	U_GRLC_DL_ACK_c 	"Packet Downlink Ack/Nack"
+VAL 	0b000011 	U_GRLC_UL_DUMMY_c 	"Packet Uplink Dummy Control Block"
+VAL 	0b000101 	U_GRLC_RESOURCE_REQ_c 	"Packet Resource Request"
+VAL 	0b001011 	U_GRLC_ADD_MS_RADIO_CAP_c 	%REL99 AND FF_EGPRS% 	"Additional MS Radio Access Capabilities"
+VAL 	0b001000 	U_GRLC_E_DL_ACK_c 	%REL99 AND FF_EGPRS% 	"EGPRS Packet Downlink Ack/Nack"
+VAL 	0b000111 	U_GRLC_PACKET_PSI_STATUS_c 	"Packet PSI status message."
+VAL 	0b001101 	U_GRLC_PACKET_SI_STATUS_c 	"Packet SI status message."
+VAL 	0b001100 	U_GRLC_PACKET_CELL_CHANGE_NOTIFICATION_c 	"Packet Cell Change Notification."
+
+VALTAB 	VAL_page_mode
+VAL 	0b00 	NORMAL_PAGING 	"Normal Paging"
+VAL 	0b01 	EXT_PAGING 	"Extended Paging"
+VAL 	0b10 	REORG_PAGING 	"Paging Reorganisation"
+VAL 	0b11 	SAME_PAGING 	"Same as before"
+
+VALTAB 	VAL_access_type
+VAL 	0b00 	TWO_PHASE 	"Two Phase Access Request"
+VAL 	0b01 	PAGE 	"Page Response"
+VAL 	0b10 	CELL_UPDATE 	"Cell Update"
+VAL 	0b11 	MM_PROC 	"Mobility Management procedure"
+
+VALTAB 	VAL_chan_coding_cmd
+VAL 	0b00 	 	"CS-1"
+VAL 	0b01 	 	"CS-2"
+VAL 	0b10 	 	"CS-3"
+VAL 	0b11 	 	"CS-4"
+
+VALTAB 	VAL_rlc_mode
+VAL 	0 	 	"RLC acknowledged mode"
+VAL 	1 	 	"RLC unacknowledged mode"
+
+VALTAB 	VAL_pctrl_ack
+VAL 	0 	 	"in case the message is sent in access burst format, the same meaning as for the value '11' except that the mobile station is requesting new TBF. Otherwise the bit value '00' is reserved and shall not be sent. If received it shall be intepreted as bit value '01'."
+VAL 	1 	 	"the MS received an RLC/MAC control block addressed to itself and with RBSN = 1, and did not receive an RLC/MAC control block with the same RTI value and RBSN = 0."
+VAL 	2 	 	"the MS received an RLC/MAC control block addressed to itself and with RBSN = 0, and did not receive an RLC/MAC control block with the same RTI value and RBSN = 1. This value is sent irrespective of the value of the FS bit."
+VAL 	3 	 	"the MS received two RLC/MAC blocks with the same RTI value, one with RBSN = 0 and the other with RBSN = 1."
+
+VALTAB 	VAL_alpha
+VAL 	0b0000 	 	"Alpha = 0.0"
+VAL 	0b0001 	 	"Alpha = 0.1"
+VAL 	0b0010 	 	"Alpha = 0.2"
+VAL 	0b0011 	 	"Alpha = 0.3"
+VAL 	0b0100 	 	"Alpha = 0.4"
+VAL 	0b0101 	 	"Alpha = 0.5"
+VAL 	0b0110 	 	"Alpha = 0.6"
+VAL 	0b0111 	 	"Alpha = 0.7"
+VAL 	0b1000 	 	"Alpha = 0.8"
+VAL 	0b1001 	 	"Alpha = 0.9"
+VAL 	0b1010 	 	"Alpha = 1.0"
+
+VALTAB 	VAL_radio_prio
+VAL 	0 	 	"Radio Priority 1 (Highest priority)"
+VAL 	1 	 	"Radio Priority 2"
+VAL 	2 	 	"Radio Priority 3"
+VAL 	3 	 	"Radio Priority 4 (Lower priority)"
+
+VALTAB 	VAL_llc_pdu_type
+VAL 	0 	 	"LLC PDU is SACK or ACK"
+VAL 	1 	 	"LLC PDU is not SACK or ACK"
+
+VALTAB 	VAL_bl_o_bl_per
+VAL 	0 	BLOCKS 	"ALLOCATION_BITMAP is to be interpreted as blocks"
+VAL 	1 	BLOCK_PERIODS 	"ALLOCATION_BITMAP is to be interpreted as block periods"
+
+VALTAB 	VAL_rbb
+VAL 	0 	INVALID 	"Negative Ack of the RLC data block with BSN=(SSN-bit_nr)mod128"
+VAL 	1 	RECEIVED 	"Positive Ack of the RLC data block with BSN=(SSN-bit_nr)mod128"
+
+VALTAB 	VAL_f_ack_ind
+VAL 	0 	 	"retransmission are requested and the TBF is incomplete"
+VAL 	1 	 	"no retransmissions are requested and this message indicates acknowledgement of all RLC data in the TBF"
+
+VALTAB 	VAL_add_ms_rac 	%REL99%
+VAL 	0 	ADD_MS_RAC_INFO_AVAIL_0 	"indicates that MS will not send more information about its radio access capabilities than included in this message"
+VAL 	1 	ADD_MS_RAC_INFO_AVAIL_1 	"indicates that MS will send more information about its radio access capabilities in the next control message"
+
+VALTAB 	VAL_retrans_of_prr 	%REL99%
+VAL 	0 	RETRANS_OF_PRR_0 	"indicates that this message is an initial Packet Resource Request"
+VAL 	1 	RETRANS_OF_PRR_1 	"indicates that this message is a retransmitted Packet Resource Request: in this case the corresponding PRR message shall not be interpreted as a request for resource reassignment."
+
+VALTAB 	VAL_tbf_est 	%REL99%
+VAL 	0 	TBF_EST_NOT_ALLOWED_0 	"the mobile station is not allowed to request the establishment of new TBF"
+VAL 	1 	TBF_EST_ALLOWED_1 	"the mobile station is allowed to request the establishment of new TBF"
+
+VALTAB 	VAL_egprs_chan_coding_cmd 	%REL99 AND FF_EGPRS%
+VAL 	0b0000 	MCS1 	"MCS-1"
+VAL 	0b0001 	MCS2 	"MCS-2"
+VAL 	0b0010 	MCS3 	"MCS-3"
+VAL 	0b0011 	MCS4 	"MCS-4"
+VAL 	0b0100 	MCS5 	"MCS-5"
+VAL 	0b0101 	MCS6 	"MCS-6"
+VAL 	0b0110 	MCS7 	"MCS-7"
+VAL 	0b0111 	MCS8 	"MCS-8"
+VAL 	0b1000 	MCS9 	"MCS-9"
+VAL 	0b1001 	MCS5_7 	"MCS-5-7"
+VAL 	0b1010 	MCS6_9 	"MCS-6-9"
+
+VALTAB 	VAL_Choice_flag 	%REL99 AND FF_EGPRS%
+VAL 	0b00 	GRLC_CHOICE_00 	""
+VAL 	0b01 	GRLC_CHOICE_01 	""
+VAL 	0b10 	GRLC_CHOICE_10 	""
+VAL 	0b11 	GRLC_CHOICE_11 	""
+
+VALTAB 	VAL_cbmp_color_code 	%REL99 AND FF_EGPRS%
+VAL 	0 	CRBB_CW_0 	"First code word in CRBB represents run length of zeros"
+VAL 	1 	CRBB_CW_1 	"First code word in CRBB represents run length of ones"
+
+
+
+
+VAR 	final_alloc 	"FINAL_ALLOCATION" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	flag 	"Flag" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	flag2 	"Flag2" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	release_99 	"Flag_Release99" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	egprs_flag 	"Egprs escape" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	ul_rlc_resegment 	%REL99 AND FF_EGPRS% 	"UL rlc block resegment" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	arac_retx_req 	%REL99 AND FF_EGPRS% 	"arac retransmission request" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	is_out_of_mem 	%REL99 AND FF_EGPRS% 	"MS_OUT_OF_MEMORY" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	bow 	%REL99 AND FF_EGPRS% 	"BEGINNING_OF_WINDOW" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	eow 	%REL99 AND FF_EGPRS% 	"END_OF_WINDOW" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	pre_emptive_tx 	%REL99 AND FF_EGPRS% 	"PRE_EMPTIVE_TRANSMISSION" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	prr_retx_req 	%REL99 AND FF_EGPRS% 	"PRR RETRANSMISSION REQUEST" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	bit_buf 	"Bit buffer" 	
+ 	1
+
+VAL 	@m_grlc - VAL_final_alloc@ 	
+
+VAR 	msg_type 	"Message Type" 	
+ 	6
+
+VAL 	@m_grlc - VAL_msg_type@ 	
+
+VAR 	page_mode 	"Page Mode" 	
+ 	2
+
+VAL 	@m_grlc - VAL_page_mode@ 	
+
+VAR 	access_type 	"Access Type" 	
+ 	2
+
+VAL 	@m_grlc - VAL_access_type@ 	
+
+VAR 	tlli_value 	"TLLI" 	
+ 	32
+
+
+VAR 	cr_tlli 	"CONTENTION_RESOLUTION_TLLI" 	
+ 	32
+
+
+VAR 	ma_ch_mark 	"MA_CHANGE_MARK" 	
+ 	2
+
+
+VAR 	c_value 	"C_VALUE" 	
+ 	6
+
+
+VAR 	rxqual 	"RXQUAL" 	
+ 	3
+
+
+VAR 	signvar 	"SIGN_VAR" 	
+ 	6
+
+
+VAR 	ilev0 	"I_LEVEL_TNO" 	
+ 	4
+
+
+VAR 	ilev1 	"I_LEVEL_TN1" 	
+ 	4
+
+
+VAR 	ilev2 	"I_LEVEL_TN2" 	
+ 	4
+
+
+VAR 	ilev3 	"I_LEVEL_TN3" 	
+ 	4
+
+
+VAR 	ilev4 	"I_LEVEL_TN4" 	
+ 	4
+
+
+VAR 	ilev5 	"I_LEVEL_TN5" 	
+ 	4
+
+
+VAR 	ilev6 	"I_LEVEL_TN6" 	
+ 	4
+
+
+VAR 	ilev7 	"I_LEVEL_TN7" 	
+ 	4
+
+
+VAR 	chan_coding_cmd 	"CHANNEL_CODING_COMMAND" 	
+ 	2
+
+VAL 	@m_grlc - VAL_chan_coding_cmd@ 	
+
+VAR 	rlc_mode 	"RLC_MODE" 	
+ 	1
+
+VAL 	@m_grlc - VAL_rlc_mode@ 	
+
+VAR 	pctrl_ack 	"P_CONTROL_ACK" 	
+ 	2
+
+VAL 	@m_grlc - VAL_pctrl_ack@ 	
+
+VAR 	ul_tfi 	"Uplink TFI" 	
+ 	5
+
+
+VAR 	dl_tfi 	"Downlink TFI" 	
+ 	5
+
+
+VAR 	alpha 	"Alpha" 	
+ 	4
+
+VAL 	@m_grlc - VAL_alpha@ 	
+
+VAR 	gamma 	"GAMMA_TN" 	
+ 	5
+
+
+VAR 	ta_value 	"TIMING_ADVANCE_VALUE" 	
+ 	6
+
+
+VAR 	ta_index 	"TA_INDEX" 	
+ 	4
+
+
+VAR 	ta_tn 	"TIMING_ADVANCE_TIMESLOT_NUMBER" 	
+ 	3
+
+
+VAR 	ext_len 	"Extension Length" 	
+ 	6
+
+
+VAR 	spare_ext 	"spare bit extensions IE" 	
+ 	1
+
+
+VAR 	peak_thr_class 	"PEAK_THROUGHPUT_CLASS" 	
+ 	4
+
+
+VAR 	radio_prio 	"RADIO_PRIORITY" 	
+ 	2
+
+VAL 	@m_grlc - VAL_radio_prio@ 	
+
+VAR 	llc_pdu_type 	"LLC_PDU_TYPE" 	
+ 	1
+
+VAL 	@m_grlc - VAL_llc_pdu_type@ 	
+
+VAR 	rlc_octet_cnt 	"RLC_OCTET_COUNT" 	
+ 	16
+
+
+VAR 	ts_alloc 	"TIMESLOT_ALLOCATION" 	
+ 	8
+
+
+VAR 	alloc_map 	"ALLOCATION_BITMAP" 	
+ 	1
+
+
+VAR 	a_map_len 	"ALLOCATION_BITMAP_LENGTH" 	
+ 	7
+
+
+VAR 	bl_o_bl_per 	"BLOCKS_OR_BLOCK_PERIODS" 	
+ 	1
+
+VAL 	@m_grlc - VAL_bl_o_bl_per@ 	
+
+VAR 	ts_overr 	"TS_OVERRIDE" 	
+ 	8
+
+
+VAR 	rel 	"TBF Starting Time Relative" 	
+ 	13
+
+
+VAR 	rbb 	"RECEIVE_BLOCK_BITMAP" 	
+ 	1
+
+VAL 	@m_grlc - VAL_rbb@ 	
+
+VAR 	f_ack_ind 	"FINAL_ACK_INDICATION" 	
+ 	1
+
+VAL 	@m_grlc - VAL_f_ack_ind@ 	
+
+VAR 	ssn 	"STARTING_SEQUENCE_NUMBER" 	
+ 	7
+
+
+VAR 	essn 	%REL99 AND FF_EGPRS% 	"EGPRS_STARTING_SEQUENCE_NUMBER" 	
+ 	11
+
+
+VAR 	t1 	"T1'" 	
+ 	5
+
+
+VAR 	t2 	"T2" 	
+ 	5
+
+
+VAR 	t3 	"T3" 	
+ 	6
+
+
+VAR 	pfi 	%REL99% 	"PFI" 	
+ 	7
+
+
+VAR 	add_ms_rac 	%REL99% 	"ADD_MS_RAC_INFO_AVAIL" 	
+ 	1
+
+VAL 	@m_grlc - VAL_add_ms_rac@ 	
+
+VAR 	retrans_of_prr 	%REL99% 	"RETRANS_OF_PRR" 	
+ 	1
+
+VAL 	@m_grlc - VAL_retrans_of_prr@ 	
+
+VAR 	p_ext_ta 	%REL99% 	"Packet_Extend_Timing_Advance" 	
+ 	2
+
+
+VAR 	tbf_est 	%REL99% 	"TBF_EST" 	
+ 	1
+
+VAL 	@m_grlc - VAL_tbf_est@ 	
+
+VAR 	m_bep 	%REL99 AND FF_EGPRS% 	"MEAN_BEP" 	
+ 	5
+
+
+VAR 	cv_bep 	%REL99 AND FF_EGPRS% 	"CV_BEP" 	
+ 	3
+
+
+VAR 	gmsk_mean_bep_tn 	%REL99 AND FF_EGPRS% 	"GMSK MEAN BEP TN" 	
+ 	4
+
+
+VAR 	psk8_mean_bep_tn 	%REL99 AND FF_EGPRS% 	"PSK8 MEAN BEP TN" 	
+ 	4
+
+
+VAR 	egprs_chan_coding_cmd 	%REL99 AND FF_EGPRS% 	"EGPRS_CHANNEL_CODING_COMMAND" 	
+ 	4
+
+VAL 	@m_grlc - VAL_egprs_chan_coding_cmd@ 	
+
+VAR 	Choice_flag 	%REL99 AND FF_EGPRS% 	"Choice_flag" 	
+ 	2
+
+VAL 	@m_grlc - VAL_Choice_flag@ 	
+
+VAR 	len 	%REL99 AND FF_EGPRS% 	"EGPRS Ack Nack value part Length" 	
+ 	8
+
+
+VAR 	urbb_1 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP for UL" 	
+ 	MAX_SIZE_URBB_UL
+
+
+VAR 	crbb 	%REL99 AND FF_EGPRS% 	"COMPRESSED_RECEIVED_BLOCK_BITMAP" 	
+ 	MAX_SIZE_CRBB
+
+
+VAR 	comp_bmp_len 	%REL99 AND FF_EGPRS% 	"COMPRESSED_BITMAP_LENGTH" 	
+ 	7
+
+
+VAR 	cbmp_color_code 	%REL99 AND FF_EGPRS% 	"COMPRESSED_BITMAP_STARTING_COLOR_CODE" 	
+ 	1
+
+VAL 	@m_grlc - VAL_cbmp_color_code@ 	
+
+VAR 	urbb_2 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP" 	
+ 	MAX_SIZE_URBB_UL
+
+
+VAR 	urbb_3 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP" 	
+ 	MAX_SIZE_URBB_UL
+
+
+VAR 	urbb 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP for DL" 	
+ 	MAX_SIZE_URBB_DL
+
+
+VAR 	urbb_4 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP for DL" 	
+ 	MAX_SIZE_URBB_DL
+
+
+VAR 	urbb_5 	%REL99 AND FF_EGPRS% 	"UNCOMPRESSED_RECEIVED_BLOCK_BITMAP for DL" 	
+ 	MAX_SIZE_URBB_DL
+
+
+
+
+
+COMP 	glob_tfi 	"Global TFI"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ul_tfi 	> 	 ; Uplink TFI
+ 	< (flag=1) 	 	dl_tfi 	> 	 ; Downlink TFI
+}
+
+
+
+COMP 	chan_req_des 	"Channel Request Description"
+{
+ 	 	peak_thr_class 	 ; PEAK_THROUGHPUT_CLASS
+ 	 	radio_prio 	 ; RADIO_PRIORITY
+ 	 	rlc_mode 	 ; RLC_MODE
+ 	 	llc_pdu_type 	 ; LLC_ PDU_TYPE
+ 	 	rlc_octet_cnt 	 ; RLC_OCTET_COUNT
+}
+
+
+
+COMP 	block_struct 	"Blocks Structure"
+{
+ 	 	bl_o_bl_per 	 ; BLOCKS_OR_BLOCK_PERIODS
+ 	 	a_map_len 	 ; ALLOCATION_BITMAP_LENGTH
+ 	 	alloc_map 	[a_map_len..127] 	 ; ALLOCATION_BITMAP
+}
+
+
+
+COMP 	ext_bits 	"Extensions Bits IE"
+{
+ 	 	ext_len 	 ; extension length
+ 	 	spare_ext 	[ext_len+1..64] 	 ; spare bit extensions IE
+}
+
+
+
+COMP 	ilev 	"I_LEVEL Structure"
+{
+ 	CSN1_S1  	ilev0 	 ; I_LEVEL_TN0
+ 	CSN1_S1  	ilev1 	 ; I_LEVEL_TN1
+ 	CSN1_S1  	ilev2 	 ; I_LEVEL_TN2
+ 	CSN1_S1  	ilev3 	 ; I_LEVEL_TN3
+ 	CSN1_S1  	ilev4 	 ; I_LEVEL_TN4
+ 	CSN1_S1  	ilev5 	 ; I_LEVEL_TN5
+ 	CSN1_S1  	ilev6 	 ; I_LEVEL_TN6
+ 	CSN1_S1  	ilev7 	 ; I_LEVEL_TN7
+}
+
+
+
+COMP 	chan_qual_rep 	"Channel Quality Report"
+{
+ 	 	c_value 	 ; C_VALUE
+ 	 	rxqual 	 ; RXQUAL
+ 	 	signvar 	 ; SIGN_VAR
+ 	 	ilev 	 ; I_LEVEL Structure
+}
+
+
+
+COMP 	ack_nack_des 	"Ack/Nack Description"
+{
+ 	 	f_ack_ind 	 ; FINAL_ACK_INDICATION
+ 	 	ssn 	 ; STARTING_SEQUENCE_NUMBER
+ 	 	rbb 	[64] 	 ; RECEIVED_BLOCK_BITMAP
+}
+
+
+
+COMP 	cbmp_info 	%REL99 AND FF_EGPRS% 	"COMPRESSED_BMP_INFO"
+{
+ 	 	comp_bmp_len 	(KEEP,2) ; COMPRESSED_BITMAP_LENGTH
+ 	 	cbmp_color_code 	 ; COMPRESSED_BITMAP_STARTING_COLOR_CODE
+ 	 	crbb 	[.comp_bmp_len..MAX_SIZE_CRBB] 	 ; COMPRESSED_RECEIVED_BLOCK_BITMAP
+}
+
+
+
+COMP 	egprs_ack_nack_desc 	%REL99 AND FF_EGPRS% 	"EGPRS Ack Nack description"
+{
+ 	 	f_ack_ind 	 ; FINAL_ACK_INDICATION
+ 	 	bow 	 ; BEGINNING_OF_WINDOW
+ 	 	eow 	 ; END_OF_WINDOW
+ 	 	essn 	 ; EGPRS_STARTING_SEQUENCE_NUMBER
+ 	CSN1_S1  	cbmp_info 	 ; COMPRESSED_BMP_INFO
+ 	< ((TAKE,2) = 0  AND  (TAKE,1) > 15) 	 	urbb 	[.((TAKE,1)-15)..MAX_SIZE_URBB_DL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP
+ 	< ((TAKE,1) > 15) 	 	urbb_4 	[.(TAKE,1)-((TAKE,2)+23)..MAX_SIZE_URBB_DL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP
+ 	< ((TAKE,1) = 0) 	GSM5_V  	urbb_5 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP
+}
+
+
+
+COMP 	egprs_ack_nack_info 	%REL99 AND FF_EGPRS% 	"EGPRS Ack/Nack IE"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag = 1) 	 	len 	(KEEP,1)> 	 ; EGPRS Ack Nack value part Length
+ 	 	egprs_ack_nack_desc 	 ; EGPRS Ack Nack description
+}
+
+
+
+COMP 	ul_egprs_ack_nack_info 	%REL99 AND FF_EGPRS% 	"Uplink EGPRS Ack/Nack IE"
+{
+ 	 	flag 	(KEEP,1) 	 ; Flag
+ 	< (flag = 1) 	 	len 	> 	 ; EGPRS length Parameter
+ 	 	f_ack_ind 	 ; FINAL_ACK_INDICATION
+ 	 	bow 	 ; BEGINNING_OF_WINDOW
+ 	 	eow 	 ; END_OF_WINDOW
+ 	 	essn 	 ; EGPRS_STARTING_SEQUENCE_NUMBER
+ 	 	flag2 	 ; Compressed bitmap indicator
+ 	< (flag2 = 1) 	 	cbmp_info 	> 	 ; COMPRESSED_BMP_INFO
+ 	< (flag2 = 0 AND flag=1) 	 	urbb_1 	[.len-15..MAX_SIZE_URBB_UL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP,max 120
+ 	< (flag2 = 1 AND flag=1) 	 	urbb_2 	[.len-( (TAKE,2)+23)..MAX_SIZE_URBB_UL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP,max 112
+ 	< (flag = 0 ) 	GSM5_V  	urbb_3 	[.0..MAX_SIZE_URBB_UL] 	> 	 ; UNCOMPRESSED_RECEIVED_BLOCK_BITMAP,max 128
+}
+
+
+
+COMP 	abs 	"TBF Starting Time Absolute"
+{
+ 	 	t1 	 ; T1'
+ 	 	t3 	 ; T3
+ 	 	t2 	 ; T2
+}
+
+
+
+COMP 	tbf_s_time 	"TBF Starting Time"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	rel 	> 	 ; TBF Starting Time Relative
+ 	< (flag=0) 	 	abs 	> 	 ; TBF Starting Time Absolute
+}
+
+
+
+COMP 	fa_s2 	"FA Sub2"
+{
+ 	 	tbf_s_time 	 ; TBF_STARTING_TIME
+ 	CSN1_S1  	ts_alloc 	 ; TIMESLOT_ALLOCATION
+ 	.0  ; spare
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	block_struct 	> 	 ; Block Structure
+ 	< (flag=1) 	 	alloc_map 	[0..127] 	> 	 ; ALLOCATION_BITMAP
+}
+
+
+
+COMP 	f_alloc_ack 	"Fixed Allocation Uplink Ack/Nack"
+{
+ 	 	final_alloc 	 ; FINAL_ALLOCATION
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ts_overr 	> 	 ; TS_OVERRIDE
+ 	< (flag=1) 	 	fa_s2 	> 	 ; FA Sub2
+}
+
+
+
+COMP 	gamma_tn 	"Gamma Array"
+{
+ 	CSN1_S1  	gamma 	 ; GAMMA_TN
+}
+
+
+
+COMP 	pwr_par 	"Power Control Parameters"
+{
+ 	 	alpha 	 ; Alpha
+ 	 	gamma_tn 	[8] 	 ; GAMMA Array
+}
+
+
+
+COMP 	gmsk_8psk 	%REL99 AND FF_EGPRS% 	"GMSK_8PSK"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	gmsk_mean_bep_tn 	> 	 ; GMSK MEAN BEP TN
+ 	< (flag=1) 	 	psk8_mean_bep_tn 	> 	 ; PSK8 MEAN BEP TN
+}
+
+
+
+COMP 	gmsk_str 	%REL99 AND FF_EGPRS% 	"GMSK struct"
+{
+ 	 	m_bep 	 ; MEAN_BEP
+ 	 	cv_bep 	 ; CV_BEP
+}
+
+
+
+COMP 	psk8_str 	%REL99 AND FF_EGPRS% 	"PSK8 Struct"
+{
+ 	 	m_bep 	 ; MEAN_BEP
+ 	 	cv_bep 	 ; CV_BEP
+}
+
+
+
+COMP 	egprs_bep_lnk_qual_meas 	%REL99 AND FF_EGPRS% 	"EGPRS BEP Link Quality Measurements"
+{
+ 	CSN1_S1  	gmsk_str 	 ; GMSK Struct
+ 	CSN1_S1  	psk8_str 	 ; PSK8 Struct
+}
+
+
+
+COMP 	bep_tn 	%REL99 AND FF_EGPRS% 	"BEP per Time Slot"
+{
+ 	CSN1_S1  	gmsk_8psk 	 ; GMSK_8PSK
+}
+
+
+
+COMP 	bep_meas 	%REL99 AND FF_EGPRS% 	"BEP measurements"
+{
+ 	 	bep_tn 	[MAX_NUM_BEP_TN] 	 ; BEP Per Time Slot
+}
+
+
+
+COMP 	egprs_timesl_qual_meas 	%REL99 AND FF_EGPRS% 	"EGPRS Timeslot Link Quality Measurement"
+{
+ 	CSN1_S1  	bep_meas 	 ; BEP measurements
+ 	CSN1_S1  	ilev 	 ; I_LEVEL Structure
+}
+
+
+
+COMP 	egprs_chan_qual_rep 	%REL99 AND FF_EGPRS% 	"EGPRS Channel Quality Report"
+{
+ 	 	egprs_bep_lnk_qual_meas 	 ; EGPRS BEP Link Quality Measurements
+ 	 	c_value 	 ; C_VALUE
+ 	 	egprs_timesl_qual_meas 	 ; EGPRS Timeslot Link Quality Measurement
+}
+
+
+
+COMP 	egprs_ul_ack_nack_trnc_grp 	%REL99 AND FF_EGPRS% 	"EGPRS Ack/Nack desc and Fixed Alloc trunc group"
+{
+ 	 	ul_egprs_ack_nack_info 	 ; UL EGPRS Ack/Nack IE
+ 	< ((TAKE,1) > 0) 	CSN1_S1  	f_alloc_ack 	> 	 ; Fixed Allocation Uplink Ack/Nack
+}
+
+
+
+COMP 	release_99_str_d_ul_ack 	%REL99% 	"R99 structure"
+{
+ 	CSN1_S1  	p_ext_ta 	 ; Packet_Extend_Timing_Advance
+ 	 	tbf_est 	 ; TBF_EST
+}
+
+
+
+COMP 	ta_index_tn 	"TA index and timeslot structure"
+{
+ 	 	ta_index 	 ; TA_INDEX
+ 	 	ta_tn 	 ; TA_TIMESLOT
+}
+
+
+
+COMP 	pta 	"Packet Timing Advance"
+{
+ 	CSN1_S1  	ta_value 	 ; TIMING_ADVANCE_VALUE
+ 	CSN1_S1  	ta_index_tn 	 ; TA index and timeslot structure
+}
+
+
+
+COMP 	gprs_ul_ack_nack_info 	"GPRS Uplink Ack Nack structure"
+{
+ 	 	chan_coding_cmd 	 ; CHANNEL_CODING_COMMAND
+ 	 	ack_nack_des 	 ; Ack/Nack Description
+ 	CSN1_S1  	cr_tlli 	 ; CONTENTION_RESOLUTION_TLLI :
+ 	CSN1_S1  	pta 	 ; Packet Timing Advance
+ 	CSN1_S1  	pwr_par 	 ; Power Control Parameters
+ 	CSN1_S1  	ext_bits 	 ; Extension Structure
+ 	CSN1_S1  	f_alloc_ack 	 ; Fixed Allocation Uplink Ack/Nack
+ 	CSN1_S1  	release_99_str_d_ul_ack 	 	%REL99% ; R99 structure
+}
+
+
+
+COMP 	egprs_ul_ack_nack 	%REL99 AND FF_EGPRS% 	"EGPRS Uplink Ack Nack description"
+{
+ 	 	egprs_chan_coding_cmd 	 ; EGPRS_CHANNEL_CODING_COMMAND
+ 	 	ul_rlc_resegment 	 ; UL rlc block resegment
+ 	 	pre_emptive_tx 	 ; PRE_EMPTIVE_TRANSMISSION
+ 	 	prr_retx_req 	 ; PRR RETRANSMISSION REQUEST
+ 	 	arac_retx_req 	 ; arac retransmission request
+ 	CSN1_S1  	cr_tlli 	 ; CONTENTION_RESOLUTION_TLLI :
+ 	 	tbf_est 	 ; TBF_EST
+ 	CSN1_S1  	pta 	 ; Packet Timing Advance
+ 	CSN1_S1  	p_ext_ta 	 ; Packet_Extend_Timing_Advance
+ 	CSN1_S1  	pwr_par 	 ; Power Control Parameters
+ 	CSN1_S1  	ext_bits 	 ; Extension Structure
+ 	CSN1_CONCAT  	egprs_ul_ack_nack_trnc_grp 	 ; EGPRS Ack/Nack desc and Fixed Alloc trunc group
+}
+
+
+
+COMP 	egprs_ul_ack_nack_info 	%REL99 AND FF_EGPRS% 	"EGPRS Uplink Ack Nack IE"
+{
+ 	 	Choice_flag 	 ; Choice_flag
+ 	< (Choice_flag=0b00) 	 	egprs_ul_ack_nack 	> 	 ; EGPRS Uplink Ack Nack description
+}
+
+
+
+COMP 	release_99_str_grlc_prr 	%REL99% 	"R99 structure"
+{
+ 	 	flag 	 	%REL99 AND !FF_EGPRS% ; Structured Element Item
+ 	 	flag2 	 	%REL99 AND !FF_EGPRS% ; Structured Element Item
+ 	CSN1_S1  	egprs_bep_lnk_qual_meas 	 	%REL99 AND FF_EGPRS% ; EGPRS BEP Link Quality Measurements
+ 	CSN1_S1  	egprs_timesl_qual_meas 	 	%REL99 AND FF_EGPRS% ; EGPRS Timeslot Link Quality Measurement
+ 	CSN1_S1  	pfi 	 ; PFI
+ 	 	add_ms_rac 	 ; ADD_MS_RAC_INFO_AVAIL
+ 	 	retrans_of_prr 	 ; RETRANS_OF_PRR
+}
+
+
+
+COMP 	release_99_str_u_grlc_dl_ack 	%REL99% 	"R99 structure"
+{
+ 	CSN1_S1  	pfi 	 ; PF_Identifier
+}
+
+
+
+
+
+
+MSG 	u_grlc_resource_req 	uplink 	0b000101 ; Packet Resource Request
+{
+ 	 	msg_type 	 ; Message Type
+ 	CSN1_S1  	access_type 	 ; Access Type
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	glob_tfi 	> 	 ; Global TFI
+ 	< (flag=1) 	 	tlli_value 	> 	 ; TLLI
+ 	CSN1_S1 EXTERN @m_rr_com - ra_cap@ 	 	ra_cap 	 ; MS RA capability value
+ 	 	chan_req_des 	 ; Channel Request Description
+ 	CSN1_S1  	ma_ch_mark 	 ; MA_CHANGE_MARK
+ 	 	c_value 	 ; C_VALUE
+ 	CSN1_S1  	signvar 	 ; SIGN_VAR
+ 	 	ilev 	 ; I_LEVEL Structure
+ 	CSN1_S1  	release_99_str_grlc_prr 	 	%REL99% ; R99 structure
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_grlc_dl_ack 	uplink 	0b000010 ; Packet Downlink Ack/Nack
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	dl_tfi 	 ; DOWNLINK_TFI
+ 	 	ack_nack_des 	 ; Ack/Nack Description
+ 	CSN1_S1  	chan_req_des 	 ; Channel Request Description
+ 	 	chan_qual_rep 	 ; Channel Quality Report
+ 	CSN1_S1  	release_99_str_u_grlc_dl_ack 	 	%REL99% ; R99 structure
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_grlc_e_dl_ack 	uplink 	0b001000 	%REL99 AND FF_EGPRS% ; EGPRS Packet Downlink Ack/Nack
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	dl_tfi 	 ; DOWNLINK_TFI
+ 	 	is_out_of_mem 	 ; MS_OUT_OF_MEMORY
+ 	CSN1_S1  	egprs_chan_qual_rep 	 ; EGPRS Channel Quality Report
+ 	CSN1_S1  	chan_req_des 	 ; Channel Request Description
+ 	CSN1_S1  	pfi 	 ; PF_Identifier
+ 	CSN1_S1  	ext_bits 	 ; Extensions Bits IE
+ 	 	egprs_ack_nack_info 	 ; EGPRS Ack/Nack IE
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_grlc_ul_ack 	downlink 	0b001001 ; Packet Uplink Ack/Nack
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	page_mode 	 ; PAGE_MODE
+ 	.00  ; spare
+ 	 	ul_tfi 	 ; UPLINK_TFI
+ 	 	egprs_flag 	 ; EGPRS flag
+ 	< (egprs_flag=0) 	 	gprs_ul_ack_nack_info 	> 	 ; GPRS Uplink Ack Nack structure
+ 	< (egprs_flag=1) 	 	egprs_ul_ack_nack_info 	> 	 	%REL99 AND FF_EGPRS% ; EGPRS Uplink Ack Nack IE
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_grlc_ctrl_ack 	uplink 	0b000001 ; Packet Control Acknowledgement
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	tlli_value 	 ; TLLI
+ 	 	pctrl_ack 	 ; P_CTRL_ACK
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_grlc_add_ms_radio_cap 	uplink 	0b001011 	%REL99 AND FF_EGPRS% ; Additional MS Radio Access Capabilities
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	glob_tfi 	> 	 ; Global TFI
+ 	< (flag=1) 	 	tlli_value 	> 	 ; TLLI
+ 	EXTERN @m_rr_com - ra_cap@ 	 	ra_cap 	 ; MS RA capability value
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	u_grlc_ul_dummy 	uplink 	0b000011 ; Packet Uplink Dummy Control Block
+{
+ 	 	msg_type 	 ; Message Type
+ 	 	tlli_value 	 ; TLLI
+ 	S_PADDING_0 .00101011 (22) ; Spare Padding
+}
+
+
+
+
+
+

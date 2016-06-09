@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">mdl</DocName>
+        <DocNum Number="111" Project="6147"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the data link layer to the mobility management.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="97"/>
+            <Date Day="28" Month="5" Year="1997"/>
+            <Author>LE</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="97"/>
+            <Date Day="19" Month="4" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switch to new template. Switch to 32bit opcodes.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="4">
+        <Description>
+            <Section>This section contains all primitives that are defined for the MDL SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The MDL_ERROR_IND is used to indicate a layer 2 error to mobility management.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MDL_ERROR_IND</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mdl</DocName>
+                    <Name>ch_type</Name>
+                </ItemLink>
+                <Comment>channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mdl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mdl</DocName>
+                    <Name>cs</Name>
+                </ItemLink>
+                <Comment>error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="2" Month="1" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MDL_RELEASE_REQ is used to release a link, if MM detects that an unrecoverable error has occurred or too many recoverable errors has occurred.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MDL_RELEASE_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mdl</DocName>
+                    <Name>ch_type</Name>
+                </ItemLink>
+                <Comment>channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mdl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>service access point identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="2" Month="1" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the channel type.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ch_type</Name>
+                <Type>U8</Type>
+                <Comment>channel type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mdl</DocName>
+                <Name>VAL_ch_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="1" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains the service access point identifier.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sapi</Name>
+                <Type>U8</Type>
+                <Comment>service access point identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mdl</DocName>
+                <Name>VAL_sapi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="1" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains an error cause.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cs</Name>
+                <Type>U8</Type>
+                <Comment>error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mdl</DocName>
+                <Name>VAL_cs</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="1" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="12" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>CS_NR_SEQ_ERR added</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the MDL SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_type</Name>
+                <Comment>values for ch_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CH_TYPE_SACCH</Alias>
+                <Comment>SACCH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CH_TYPE_SDCCH</Alias>
+                <Comment>SDCCH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CH_TYPE_FACCH</Alias>
+                <Comment>FACCH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CH_TYPE_BCCH</Alias>
+                <Comment>BCCH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>CH_TYPE_CCCH</Alias>
+                <Comment>CCCH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>CH_TYPE_RACH</Alias>
+                <Comment>RACH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>CH_TYPE_NBR_CEL_BCCH</Alias>
+                <Comment>Neighbour Cell BCCH</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sapi</Name>
+                <Comment>values for sapi</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SAPI_0</Alias>
+                <Comment>SAPI 0</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>SAPI_3</Alias>
+                <Comment>SAPI 3</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cs</Name>
+                <Comment>values for cs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CS_T200_EXP</Alias>
+                <Comment>T200 expired (N200 + 1 times)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CS_REEST_REQ</Alias>
+                <Comment>re-establishment request</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CS_UNSOL_UA_RESP</Alias>
+                <Comment>unsolicited UA response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CS_UNSOL_DM_RESP</Alias>
+                <Comment>unsolicited DM response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>CS_UNSOL_DM_RESP_MULT_FRM</Alias>
+                <Comment>unsolicited DM response, multiple frame established state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>CS_UNSOL_SUP_RESP</Alias>
+                <Comment>unsolicited supervisory response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>CS_SEQ_ERR</Alias>
+                <Comment>sequence error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>CS_UFRM_W_INC_PARA</Alias>
+                <Comment>U frame with incorrect parameters</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>CS_SFRM_W_INC_PARA</Alias>
+                <Comment>S frame with incorrect parameters</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>CS_IFRM_W_INC_MBIT</Alias>
+                <Comment>I frame with incorrect use of M bit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>CS_IFRM_W_INC_LEN</Alias>
+                <Comment>I frame with incorrect length</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>CS_FRM_NOT_IMPL</Alias>
+                <Comment>frame not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>CS_SABM_MULT_FRM</Alias>
+                <Comment>SABM command, multiple frame established state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>CS_SABM_NO_INFO</Alias>
+                <Comment>SABM command with information field not allowed in this state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>CS_NR_SEQ_ERR</Alias>
+                <Comment>sequence error, perform abnormal release</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

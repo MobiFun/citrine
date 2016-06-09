@@ -1,0 +1,745 @@
+;********************************************************************************
+;*** File           : uart.pdf
+;*** Creation       : Wed Mar 11 09:58:54 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : uart
+;*** Document No.   : 8441.117.99.014
+;*** Document Date  : 2002-03-11
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: TVO
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:56:02 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-03-11"
+PRAGMA 	ID_AND_VERSION 	"8441.117.99.014"
+
+
+
+CONST 	UART_DLCI_NOT_MULTIPLEXED 	0 	; 
+
+
+
+VALTAB 	VAL_esc_valid
+VAL 	0 	UART_IO_ESC_UNDEF 	"values for escape sequence detection remain unchanged"
+VAL 	1 	UART_IO_ESC_VALID 	"values for escape sequence detection are valid"
+
+VALTAB 	VAL_xoff
+VAL 	19 	UART_IO_XOFF_DEFAULT 	"default value for XOff character"
+
+VALTAB 	VAL_xon
+VAL 	17 	UART_IO_XON_DEFAULT 	"default value for XOn character"
+
+VALTAB 	VAL_parity
+VAL 	255 	UART_IO_PA_UNDEF 	"parity remain unchanged"
+VAL 	0 	UART_IO_PA_NONE 	"no parity and no space"
+VAL 	1 	UART_IO_PA_EVEN 	"even parity"
+VAL 	2 	UART_IO_PA_ODD 	"odd parity"
+VAL 	3 	UART_IO_PA_SPACE 	"no parity but space"
+
+VALTAB 	VAL_flow_tx
+VAL 	255 	UART_IO_FC_TX_UNDEF 	"TX flow control mode remain unchanged"
+VAL 	0 	UART_IO_FC_TX_NONE 	"no TX flow control"
+VAL 	1 	UART_IO_FC_TX_RTS 	"RTS/CTS flow control"
+VAL 	2 	UART_IO_FC_TX_XOFF 	"XON/XOFF flow control"
+
+VALTAB 	VAL_esc_char
+VAL 	43 	UART_IO_ESC_CHAR_DEFAULT 	"default value for escape character ('+')"
+
+VALTAB 	VAL_flow_rx
+VAL 	255 	UART_IO_FC_RX_UNDEF 	"RX flow control mode remain unchanged"
+VAL 	0 	UART_IO_FC_RX_NONE 	"no RX flow control"
+VAL 	1 	UART_IO_FC_RX_RTS 	"RTS/CTS flow control"
+VAL 	2 	UART_IO_FC_RX_XOFF 	"XON/XOFF flow control"
+
+VALTAB 	VAL_nsb
+VAL 	255 	UART_IO_SB_UNDEF 	"stop bits remain unchanged"
+VAL 	1 	UART_IO_SB_1 	"one stop bit"
+VAL 	2 	UART_IO_SB_2 	"two stop bits"
+
+VALTAB 	VAL_speed
+VAL 	255 	UART_IO_SPEED_UNDEF 	"baud rate remain unchanged"
+VAL 	0 	UART_IO_SPEED_AUTO 	"auto detection of baud rate"
+VAL 	1 	UART_IO_SPEED_75 	"baud rate of 75 bits per second"
+VAL 	2 	UART_IO_SPEED_150 	"baud rate of 150 bits per second"
+VAL 	3 	UART_IO_SPEED_300 	"baud rate of 300 bits per second"
+VAL 	4 	UART_IO_SPEED_600 	"baud rate of 600 bits per second"
+VAL 	5 	UART_IO_SPEED_1200 	"baud rate of 1200 bits per second"
+VAL 	6 	UART_IO_SPEED_2400 	"baud rate of 2400 bits per second"
+VAL 	7 	UART_IO_SPEED_4800 	"baud rate of 4800 bits per second"
+VAL 	8 	UART_IO_SPEED_7200 	"baud rate of 7200 bits per second"
+VAL 	9 	UART_IO_SPEED_9600 	"baud rate of 9600 bits per second"
+VAL 	10 	UART_IO_SPEED_14400 	"baud rate of 14400 bits per second"
+VAL 	11 	UART_IO_SPEED_19200 	"baud rate of 19200 bits per second"
+VAL 	12 	UART_IO_SPEED_28800 	"baud rate of 28800 bits per second"
+VAL 	13 	UART_IO_SPEED_33900 	"baud rate of 33900 bits per second"
+VAL 	14 	UART_IO_SPEED_38400 	"baud rate of 38400 bits per second"
+VAL 	15 	UART_IO_SPEED_57600 	"baud rate of 57600 bits per second"
+VAL 	16 	UART_IO_SPEED_115200 	"baud rate of 115200 bits per second"
+VAL 	17 	UART_IO_SPEED_203125 	"baud rate of 203125 bits per second"
+VAL 	18 	UART_IO_SPEED_406250 	"baud rate of 406250 bits per second"
+VAL 	19 	UART_IO_SPEED_812500 	"baud rate of 812500 bits per second"
+
+VALTAB 	VAL_esc_gp
+VAL 	1000 	UART_IO_ESC_GP_DEFAULT 	"default value for guard period (1000 ms)"
+VAL 	0 	UART_IO_ESC_OFF 	"no escape sequence detection"
+
+VALTAB 	VAL_xoff_valid
+VAL 	0 	UART_IO_XOFF_UNDEF 	"XOff character remain unchanged"
+VAL 	1 	UART_IO_XOFF_VALID 	"XOff character valid"
+
+VALTAB 	VAL_xon_valid
+VAL 	0 	UART_IO_XON_UNDEF 	"XOn character remain unchanged"
+VAL 	1 	UART_IO_XON_VALID 	"XOn character valid"
+
+VALTAB 	VAL_bpc
+VAL 	255 	UART_IO_BPC_UNDEF 	"bits per character remain unchanged"
+VAL 	7 	UART_IO_BPC_7 	"7 bits per character"
+VAL 	8 	UART_IO_BPC_8 	"8 bits per character"
+
+VALTAB 	VAL_dti_conn
+VAL 	0 	UART_CONNECT_DTI 	"Connect DTI to UART"
+VAL 	1 	UART_DISCONNECT_DTI 	"Disconnect DTI from UART"
+
+VALTAB 	VAL_line_state
+VAL 	0 	UART_LINE_ON 	"activate line"
+VAL 	1 	UART_LINE_OFF 	"deactivate line"
+
+VALTAB 	VAL_detection
+VAL 	0 	UART_ESC_DETECTION_OFF 	"turn off escape sequence detection"
+VAL 	1 	UART_ESC_DETECTION_ON 	"turn on escape sequence detection"
+
+VALTAB 	VAL_cause
+VAL 	1 	UART_DETECT_ESC 	"escape sequence detected"
+VAL 	2 	UART_DETECT_DTR 	"DTR line of serial link drops"
+
+VALTAB 	VAL_error
+VAL 	8 	UART_ERROR_NO_CHANNEL 	"can not open VSI communication channel"
+VAL 	9 	UART_ERROR_MUX_ESTABLISH_FAIL 	"establishment of multiplexer operation fails"
+VAL 	10 	UART_ERROR_MUX_NO_RESPONSE 	"no response from TE multiplexer"
+
+VALTAB 	VAL_mode
+VAL 	0 	UART_MUX_MODE_BASIC 	"basic option"
+VAL 	1 	UART_MUX_MODE_ADVANCED 	"advanced option"
+
+VALTAB 	VAL_frame_type
+VAL 	0 	UART_MUX_FRAME_UIH 	"UIH frames used only"
+VAL 	1 	UART_MUX_FRAME_UI 	"UI frames used only"
+VAL 	2 	UART_MUX_FRAME_I 	"I frames used only"
+VAL 	0 	UART_MUX_FRAME_DEFAULT 	"default value"
+
+VALTAB 	VAL_n1
+VAL 	31 	UART_MUX_N1_BASIC_DEFAULT 	"default value for the basic option"
+VAL 	64 	UART_MUX_N1_ADVANCED_DEFAULT 	"default value for the advanced option"
+
+VALTAB 	VAL_t1
+VAL 	10 	UART_MUX_T1_DEFAULT 	"default value (100 ms)"
+
+VALTAB 	VAL_n2
+VAL 	3 	UART_MUX_N2_DEFAULT 	"default value"
+
+VALTAB 	VAL_t2
+VAL 	30 	UART_MUX_T2_DEFAULT 	"default value (300 ms)"
+
+VALTAB 	VAL_t3
+VAL 	10 	UART_MUX_T3_DEFAULT 	"default value (10 seconds)"
+
+VALTAB 	VAL_convergence
+VAL 	1 	UART_MUX_CONVERGENCE_UOS 	"unstructed octet stream"
+VAL 	2 	UART_MUX_CONVERGENCE_UOSV24 	"unstructed octet stream with transmission of V.24 signal states"
+VAL 	3 	UART_MUX_CONVERGENCE_UFD 	"uninterruptible framed data"
+VAL 	4 	UART_MUX_CONVERGENCE_IFD 	"interruptible framed data"
+VAL 	1 	UART_MUX_CONVERGENCE_DEFAULT 	"default value"
+
+VALTAB 	VAL_service
+VAL 	0 	UART_MUX_SERVICE_AT 	"AT command mode"
+VAL 	1 	UART_MUX_SERVICE_DATA 	"data service"
+VAL 	2 	UART_MUX_SERVICE_VOICE_0621 	"voice service (coded - GSM 06.21)"
+VAL 	3 	UART_MUX_SERVICE_VOICE_PCM64U 	"voice service (coded - PCM 64 kbits/s U-law)"
+VAL 	4 	UART_MUX_SERVICE_VOICE_ADPCM 	"voice service (coded - ADPCM 32 kbits/s)"
+VAL 	5 	UART_MUX_SERVICE_VOICE_PCM64A 	"voice service (coded - PCM 64 kbits/s A-law)"
+VAL 	6 	UART_MUX_SERVICE_VOICE_PCM128 	"voice service (coded - PCM 128 kbits/s)"
+VAL 	7 	UART_MUX_SERVICE_GPRS 	"GPRS data"
+VAL 	8 	UART_MUX_SERVICE_CS 	"Circuit-Switched data"
+VAL 	9 	UART_MUX_SERVICE_TRACE 	"Trace / Debug output"
+VAL 	0 	UART_MUX_SERVICE_DEFAULT 	"default value"
+
+
+
+
+VAR 	device 	"device number" 	B
+
+
+VAR 	dlci 	"data link connection identifier" 	B
+
+
+VAR 	speed 	"baud rate" 	B
+
+VAL 	@p_uart - VAL_speed@ 	
+
+VAR 	bpc 	"bits per character" 	B
+
+VAL 	@p_uart - VAL_bpc@ 	
+
+VAR 	nsb 	"stop bits" 	B
+
+VAL 	@p_uart - VAL_nsb@ 	
+
+VAR 	parity 	"parity of serial link" 	B
+
+VAL 	@p_uart - VAL_parity@ 	
+
+VAR 	flow_rx 	"flow control mode RX" 	B
+
+VAL 	@p_uart - VAL_flow_rx@ 	
+
+VAR 	flow_tx 	"flow control mode TX" 	B
+
+VAL 	@p_uart - VAL_flow_tx@ 	
+
+VAR 	xon_valid 	"indicator whether xon is valid" 	B
+
+VAL 	@p_uart - VAL_xon_valid@ 	
+
+VAR 	xon 	"XOn character for XON/XOFF flow control" 	B
+
+VAL 	@p_uart - VAL_xon@ 	
+
+VAR 	xoff_valid 	"indicator whether xoff is valid" 	B
+
+VAL 	@p_uart - VAL_xoff_valid@ 	
+
+VAR 	xoff 	"XOff character for XON/XOFF flow control" 	B
+
+VAL 	@p_uart - VAL_xoff@ 	
+
+VAR 	esc_valid 	"indicator whether esc_char and esc_gp are valid" 	B
+
+VAL 	@p_uart - VAL_esc_valid@ 	
+
+VAR 	esc_char 	"escape character" 	B
+
+VAL 	@p_uart - VAL_esc_char@ 	
+
+VAR 	esc_gp 	"guard period" 	S
+
+VAL 	@p_uart - VAL_esc_gp@ 	
+
+VAR 	dti_conn 	"DTI connect" 	B
+
+VAL 	@p_uart - VAL_dti_conn@ 	
+
+VAR 	direction 	"direction of the DTI link" 	B
+
+
+VAR 	link_id 	"identifier of DTI connection" 	L
+
+
+VAR 	entity_name 	"communication entity name" 	L
+
+
+VAR 	uart_instances 	"number of UART instances" 	B
+
+
+VAR 	line_state 	"state of line" 	B
+
+VAL 	@p_uart - VAL_line_state@ 	
+
+VAR 	detection 	"escape sequence detection" 	B
+
+VAL 	@p_uart - VAL_detection@ 	
+
+VAR 	cause 	"cause of indication" 	B
+
+VAL 	@p_uart - VAL_cause@ 	
+
+VAR 	error 	"error code" 	B
+
+VAL 	@p_uart - VAL_error@ 	
+
+VAR 	mode 	"transparency mechanism" 	B
+
+VAL 	@p_uart - VAL_mode@ 	
+
+VAR 	frame_type 	"type of frame" 	B
+
+VAL 	@p_uart - VAL_frame_type@ 	
+
+VAR 	n1 	"maximum frame size" 	S
+
+VAL 	@p_uart - VAL_n1@ 	
+
+VAR 	t1 	"acknowledgement timer" 	B
+
+VAL 	@p_uart - VAL_t1@ 	
+
+VAR 	n2 	"maximum numer of retransmissions" 	B
+
+VAL 	@p_uart - VAL_n2@ 	
+
+VAR 	t2 	"response timer for the multiplexer control channel" 	B
+
+VAL 	@p_uart - VAL_t2@ 	
+
+VAR 	t3 	"wake up response timer" 	B
+
+VAL 	@p_uart - VAL_t3@ 	
+
+VAR 	convergence 	"convergence layer" 	B
+
+VAL 	@p_uart - VAL_convergence@ 	
+
+VAR 	service 	"service on DLC" 	B
+
+VAL 	@p_uart - VAL_service@ 	
+
+VAR 	devId 	"device ID" 	L
+
+
+
+
+
+COMP 	comPar 	 "Parameters of serial link"
+{
+ 	speed 	 ; baud rate
+ 	bpc 	 ; bits per character
+ 	nsb 	 ; stop bits
+ 	parity 	 ; parity of serial link
+ 	flow_rx 	 ; flow control mode RX
+ 	flow_tx 	 ; flow control mode TX
+ 	xon_valid 	 ; indicator whether xon is valid
+ 	xon 	 ; XOn character for XON/XOFF flow control
+ 	xoff_valid 	 ; indicator whether xoff is valid
+ 	xoff 	 ; XOff character for XON/XOFF flow control
+ 	esc_valid 	 ; indicator whether esc_char and esc_gp are valid
+ 	esc_char 	 ; escape character
+ 	esc_gp 	 ; guard period
+}
+
+
+
+
+
+
+; UART_PARAMETERS_REQ 	0x7400
+; UART_PARAMETERS_CNF 	0x3400
+; UART_PARAMETERS_IND 	0x3401
+; UART_DTI_REQ 	0x7401
+; UART_DTI_CNF 	0x3402
+; UART_DTI_IND 	0x3403
+; UART_DISABLE_REQ 	0x7402
+; UART_DISABLE_CNF 	0x3404
+; UART_RING_REQ 	0x7403
+; UART_RING_CNF 	0x3405
+; UART_DCD_REQ 	0x7404
+; UART_DCD_CNF 	0x3406
+; UART_ESCAPE_REQ 	0x7405
+; UART_ESCAPE_CNF 	0x3407
+; UART_DETECTED_IND 	0x3408
+; UART_ERROR_IND 	0x3409
+; UART_MUX_START_REQ 	0x7406
+; UART_MUX_START_CNF 	0x340A
+; UART_MUX_DLC_ESTABLISH_IND 	0x340B
+; UART_MUX_DLC_ESTABLISH_RES 	0x7407
+; UART_MUX_DLC_RELEASE_REQ 	0x7408
+; UART_MUX_DLC_RELEASE_IND 	0x340C
+; UART_MUX_SLEEP_REQ 	0x7409
+; UART_MUX_SLEEP_IND 	0x340D
+; UART_MUX_WAKEUP_REQ 	0x740A
+; UART_MUX_WAKEUP_IND 	0x340E
+; UART_MUX_CLOSE_REQ 	0x740B
+; UART_MUX_CLOSE_IND 	0x340F
+; UART_DRIVER_SENT_IND 	0x740C
+; UART_DRIVER_RECEIVED_IND 	0x740D
+; UART_DRIVER_FLUSHED_IND 	0x740E
+; UART_DRIVER_CONNECT_IND 	0x740F
+; UART_DRIVER_DISCONNECT_IND 	0x7410
+; UART_DRIVER_CLEAR_IND 	0x7411
+
+
+
+PRIM 	UART_PARAMETERS_REQ 	0x7400
+{
+ 	device 	 ; device number
+ 	comPar 	 ; Parameters of serial link
+}
+
+
+
+
+
+
+PRIM 	UART_PARAMETERS_CNF 	0x3400
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_PARAMETERS_IND 	0x3401
+{
+ 	uart_instances 	 ; number of UART instances
+}
+
+
+
+
+
+
+PRIM 	UART_DTI_REQ 	0x7401
+{
+ 	dti_conn 	 ; DTI connect
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+ 	direction 	 ; direction of the DTI link
+ 	link_id 	 ; identifier of DTI connection
+ 	entity_name 	 ; communication entity name
+}
+
+
+
+
+
+
+PRIM 	UART_DTI_CNF 	0x3402
+{
+ 	dti_conn 	 ; DTI connect
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+}
+
+
+
+
+
+
+PRIM 	UART_DTI_IND 	0x3403
+{
+ 	dti_conn 	 ; DTI connect
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+}
+
+
+
+
+
+
+PRIM 	UART_DISABLE_REQ 	0x7402
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_DISABLE_CNF 	0x3404
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_RING_REQ 	0x7403
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+ 	line_state 	 ; states of line
+}
+
+
+
+
+
+
+PRIM 	UART_RING_CNF 	0x3405
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+}
+
+
+
+
+
+
+PRIM 	UART_DCD_REQ 	0x7404
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+ 	line_state 	 ; states of line
+}
+
+
+
+
+
+
+PRIM 	UART_DCD_CNF 	0x3406
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+}
+
+
+
+
+
+
+PRIM 	UART_ESCAPE_REQ 	0x7405
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+ 	detection 	 ; escape sequence detection
+}
+
+
+
+
+
+
+PRIM 	UART_ESCAPE_CNF 	0x3407
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+}
+
+
+
+
+
+
+PRIM 	UART_DETECTED_IND 	0x3408
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+ 	cause 	 ; cause of indication
+}
+
+
+
+
+
+
+PRIM 	UART_ERROR_IND 	0x3409
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+ 	error 	 ; error code
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_START_REQ 	0x7406
+{
+ 	device 	 ; device number
+ 	mode 	 ; transparency mechanism
+ 	frame_type 	 ; type of frame
+ 	n1 	 ; maximum frame size
+ 	t1 	 ; acknowledgement timer
+ 	n2 	 ; maximum numer of retransmissions
+ 	t2 	 ; response timer for the multiplexer control channel
+ 	t3 	 ; wake up response timer
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_START_CNF 	0x340A
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_DLC_ESTABLISH_IND 	0x340B
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+ 	convergence 	 ; convergence layer
+ 	n1 	 ; maximum frame size
+ 	service 	 ; service on DLC
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_DLC_ESTABLISH_RES 	0x7407
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+ 	n1 	 ; maximum frame size
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_DLC_RELEASE_REQ 	0x7408
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_DLC_RELEASE_IND 	0x340C
+{
+ 	device 	 ; device number
+ 	dlci 	 ; data link connection identifier
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_SLEEP_REQ 	0x7409
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_SLEEP_IND 	0x340D
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_WAKEUP_REQ 	0x740A
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_WAKEUP_IND 	0x340E
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_CLOSE_REQ 	0x740B
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_MUX_CLOSE_IND 	0x340F
+{
+ 	device 	 ; device number
+}
+
+
+
+
+
+
+PRIM 	UART_DRIVER_SENT_IND 	0x740C
+{
+ 	devId 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	UART_DRIVER_RECEIVED_IND 	0x740D
+{
+ 	devId 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	UART_DRIVER_FLUSHED_IND 	0x740E
+{
+ 	devId 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	UART_DRIVER_CONNECT_IND 	0x740F
+{
+ 	devId 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	UART_DRIVER_DISCONNECT_IND 	0x7410
+{
+ 	devId 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	UART_DRIVER_CLEAR_IND 	0x7411
+{
+ 	devId 	 ; Primitive Item
+}
+
+
+
+
+
+
+
+
+

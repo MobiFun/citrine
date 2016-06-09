@@ -1,0 +1,66 @@
+;********************************************************************************
+;*** File           : cci.pdf
+;*** Creation       : Wed Mar 11 09:57:44 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : cci
+;*** Document No.   : 8441.118.00.017
+;*** Document Date  : 2003-01-13
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: UT
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:37:42 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-01-13"
+PRAGMA 	ID_AND_VERSION 	"8441.118.00.017"
+
+
+
+
+
+
+VALTAB 	VAL_algo_type
+VAL 	0 	CCI_ALGO_V42 	"V42bis algorithm"
+
+VALTAB 	VAL_comp_inst
+VAL 	0 	CCI_COMP_INST_V42_0 	"first instance for V42bis"
+
+
+
+
+VAR 	algo_type 	"algorithm type" 	B
+
+VAL 	@p_cci - VAL_algo_type@ 	
+
+VAR 	comp_inst 	"compressor instance" 	B
+
+VAL 	@p_cci - VAL_comp_inst@ 	
+
+
+
+
+
+
+
+; CCI_INIT_REQ 	0x3604
+
+
+
+PRIM 	CCI_INIT_REQ 	0x3604
+{
+ 	algo_type 	 ; algorithm type
+ 	comp_inst 	 ; compressor instance
+}
+
+
+
+
+
+
+
+
+

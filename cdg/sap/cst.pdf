@@ -1,0 +1,97 @@
+;********************************************************************************
+;*** File           : cst.pdf
+;*** Creation       : Wed Mar 11 09:57:45 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : cst
+;*** Document No.   : 8415.060.99.003
+;*** Document Date  : 1999-09-21
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: Heiner
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:39:04 2007"
+PRAGMA 	LAST_MODIFIED 	"1999-09-21"
+PRAGMA 	ID_AND_VERSION 	"8415.060.99.003"
+
+
+
+
+
+
+
+
+
+VAR 	adc_values 	"AD conversion values" 	S
+
+
+VAR 	stop_address 	"contains stop address" 	L
+
+
+VAR 	error_code 	"Error code" 	B
+
+
+VAR 	index 	"Index" 	B
+
+
+
+
+
+
+
+
+; CST_ADC_IND 	0x5600
+; CST_VM_STOP_PLAY_IND 	0x5601
+; CST_VM_STOP_RECORD_IND 	0x5602
+; CST_SR_IND 	0x5603
+
+
+
+PRIM 	CST_ADC_IND 	0x5600
+{
+ 	adc_values 	[9] 	 ; AD conversion values
+}
+
+
+
+
+
+
+PRIM 	CST_VM_STOP_PLAY_IND 	0x5601
+{
+ 	stop_address 	 ; stop address
+}
+
+
+
+
+
+
+PRIM 	CST_VM_STOP_RECORD_IND 	0x5602
+{
+ 	stop_address 	 ; stop address
+}
+
+
+
+
+
+
+PRIM 	CST_SR_IND 	0x5603
+{
+ 	error_code 	 ; Error code
+ 	index 	 ; Index
+}
+
+
+
+
+
+
+
+
+

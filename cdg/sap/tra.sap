@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">tra</DocName>
+        <DocNum Number="106" Project="8411"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for fax and data transmission consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity. The entity, which is described in this document, is coloured grey in the following figure :</Section>
+            <Section>Figure 1-1: Architecture of the fax and data protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the fax and data protocol stack are:</Section>
+            <Section>1.1 RA - Rate Adaptation</Section>
+            <Section>This entity performs an adaptation between an asynchronous or synchronous data stream with several bit rates on to the fixed bit rate used at the TCH. This is performed by the rate adaptation functions RA1' and RA0 described in GSM 04.21.</Section>
+            <Section>1.2 RLP - Radio Link Protocol</Section>
+            <Section>This entity provides a Layer 2 protocol for asynchronous reliable data transfer as specified in GSM 04.22. It includes error correction, sequence numbers and a mechanism for repeating corrupted and lost messages.</Section>
+            <Section>1.3 L2R - Layer 2 Relay Functionality</Section>
+            <Section>The L2R provides relay functions in order to adapt the character-oriented data received from the TE via USART to the bit-oriented RLP protocol.</Section>
+            <Section>1.4 ACI - AT Command Interpreter</Section>
+            <Section>The ACI is specified in GSM 07.07. It is responsible for call establishment via the GSM voice protocol stack and terminal adaptation for asynchronous transparent character-oriented data transmission. The ACI is able to receive AT commands and send the replies over the USART driver to a remote PC. This makes it possible to control the voice and data protocol stack from a remote application running on a PC. The ACI also provides a unique interface for an internal MMI in the MS.</Section>
+            <Section>1.5 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the F&amp;D. The driver has to be able to perform flow control.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="98"/>
+            <Date Day="26" Month="3" Year="2001"/>
+            <Author>13</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>13:MG/SLO Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="98"/>
+            <Date Day="10" Month="6" Year="2002"/>
+            <Author>TVO</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Adaptation to use of DTI2 SAP</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>Rec. T.4 Standardisation of group 3 facsimile apparatus for document transmission;(CCITT-T.4, 1984)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>ITU-T Recommendation T.30; Series T: Terminal equipments and protocols for telematic services;Procedures for document facsimile transmission in the general switchedtelephone network;(ITU-T.30, 1996)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>ITU-T Recommendation T.31; Terminals for telematic services;Asynchronous facsimile DCE control - service class 1(ITU-T.31, 1995)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>ITU-T Recommendation T.32; Terminals for telematic services;Asynchronous facsimile DCE control - service class 2(ITU-T.32, 1995)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>Rec. T.35; Terminal equipment and protocols for telematic services;Procedures for the allocation of CCITT definde codes for non-standard facilities;(CCITT-T.35, 1991)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>ITU-T Recommendation V.25 ter; Series V: data communication over the telephone network;Interfaces and voiceband modems; Serial asynchronous automatic dialling and control(ITU-T V.25 ter, 1997)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>Rec. V.42 bis Data compression procedures for data circuit terminating equipment (DCE) using error correction procedures;(CCITT-V.42 bis, 1990)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>Rec. V.110 (Blue book, Vol. VIII, Fascicle VIII.1) Support of data terminal equipments (DTEs) with V-series type interfaces by an integrated services digital network (ISDN);(CCITT-V.110, 1988)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);GSM Public Land Mobile Network (PLMN) connection types;(GSM 3.10, September 1994, version 4.3.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Technical realisation of facsimile group 3 transparent;(GSM 3.45, September 1995, version 4.5.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Mobile radio interface layer 3 specification;(GSM 4.08, November 1996, version 4.17.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Rate adaptation on the Mobile Station - Base Station System (MS - BSS) Interface;(GSM 4.21, May 1995, version 4.6.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Radio Link Protocol (RLP) for data and telematic services on the Mobile Station - Base Station System (MS - BSS) interface and the Base Station System - Mobile-service Switching Centre (BSS - MSC) interface(GSM 4.22, September 1994, version 4.3.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Radio Link Protocol (RLP) for data and telematic services on the Mobile Station - Base Station System (MS - BSS) interface and the Base Station System - Mobile-service Switching Centre (BSS - MSC) interface(Amendment prA1 for GSM 4.22, version 4.3.0)(GSM 4.22, March 1995, version 4.4.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);General on Terminal Adaptation Functions (TAF) for Mobile Stations (MS);(GSM 7.01, December 1995, version 4.10.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Terminal Adaptation Functions (TAF) for services using asynchronous bearer capabilities;(GSM 7.02, September 1994, version 4.5.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Terminal Adaptation Functions (TAF) for services using synchronous bearer capabilities;(GSM 7.03, September 1994, version 4.5.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Use of Data Terminal Equipment - Data Circuit terminating Equipment (DTE - DCE) interface for Short Message Service (SMS) and Cell Broadcast Services (CBS);(GSM 7.05, November 1996, version 4.8.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);AT command set for GSM Mobile Equipment (ME)(GSM 7.07, May 1996, version 4.1.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>Digital cellular telecommunication system (Phase 2);Mobile Station (MS) conformance specification;Part 1: Conformance specification(GSM 11.10-1, November 1996, version 4.17.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Mobile Station (MS) conformance specification;Part 2: Protocol Implementation Conformance Statement (PICS)proforma specification(GSM 11.10-2, May 1996, version 4.15.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Mobile Station (MS) conformance specification;Part 3: Layer 3 (L3) Abstract Test Suite (ATS)(GSM 11.10-3, November 1996, version 4.17.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>Proposal for Rate Adaptation implemented on a DSP;(C. Bianconi, Texas Instruments, January 1998, version 1.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>MCU-DSP Interfaces for Data Applications;Specification S844(C. Bianconi, Texas Instruments, March 1998, version 0.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>Users Guide6147.300.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>Service Access Point RA8411.100.98.100; Condat GmbH [] Service Access Point L2R8411.102.98.100; Condat GmbH [] Service Access Point ACI8411.105.98.100; Condat GmbH [] Message Sequence Charts TRA8411.202.98.100; Condat GmbH [] Message Sequence Charts ACI8411.205.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[27]</RefId>
+            <RefTitle>Test Specification TRA8411.402.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[28]</RefId>
+            <RefTitle>Test Specification ACI8411.405.98.100; Condat GmbH [] SDL Specification TRA8411.502.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[29]</RefId>
+            <RefTitle>SDL Specification ACI8411.505.98.100; Condat GmbH [] Technical Documentation TRA8411.702.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="25">
+        <Description>
+            <Section>This section contains all primitives that are defined for the TRA SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The TRA_ACTIVATE_REQ is used to initialise the TRA entity. This is the first primitive, which should be passed to L2R after starting the TRA entity. It contains all parameters necessary for initialisation. Those parameters, which belong to the TRA layer are just passed on to the TRA entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TRA_ACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The TRA_ACTIVATE_CNF acknowledges the previous TRA_ACTIVATE_REQ. The acknowledge can be positive (ACK) or negative (NAK). It is negative, when the parameters of the TRA_ACTIVATE_REQ are invalid.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TRA_ACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>TRA</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tra</DocName>
+                    <Name>ack_flg</Name>
+                </ItemLink>
+                <Comment>acknowledge flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The TRA_DEACTIVATE_REQ is used to deactivate the TRA entity. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TRA_DEACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>TRA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The TRA_DEACTIVATE_CNF acknowledges the previous TRA_DEACTIVATE_REQ. The acknowledge is always positive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TRA_DEACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>TRA</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TRA_DTI_REQ is used to start data transfer between TRA and another entity via DTI. If this primitive is received the existing DTI connection will be removed and the new connection will be established.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TRA_DTI_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>TRA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tra</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tra</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>Link identifier of DTI</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tra</DocName>
+                    <Name>entity_name</Name>
+                </ItemLink>
+                <Control>[TRA_ENTITY_NAME_LEN]</Control>
+                <Comment>Communication entity name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tra</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>DTI direction</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="8" Year="2000"/>
+                <Author>SLO</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TRA_DTI_CNF is the response primitive to TRA_DTI_REQ.</Section>
+                <Section>The primitive does not have parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TRA_DTI_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>UART</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tra</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tra</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>Link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>SLO</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The TRA_DTI_IND is used by TRA to pass the control of the DTI back to the upper layer after detecting the escape sequence (standard: '+++'). The parameter link_id can be used to identify the DTI link.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TRA_DTI_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>TRA</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tra</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>UART replaced by DTI</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a string (zero terminated) which is the name of a neighbour entity, i.e. the entity handling a higher or lower protocol. The parameter is used to open the communication channel to this entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>entity_name</Name>
+                <Type>U8</Type>
+                <Comment>name of an neighbour entity</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tra</DocName>
+                <Name>VAL_entity_name</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the acknowledge flag in response and confirm primitives.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ack_flg</Name>
+                <Type>U8</Type>
+                <Comment>acknowledge flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tra</DocName>
+                <Name>VAL_ack_flg</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to identify the affected channel in case of multiplexing.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>link_id</Name>
+                <Type>U32</Type>
+                <Comment>link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="6" Year="2002"/>
+                <Author>TVO</Author>
+                <Comment>Changed to link id</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter controls if TRA uses the DTI in the normal way or if the primitives are inverted. In the normal way data are sent as DTI_DATA_IND and received as DTI_DATA_REQ. In the inverted mode data are send as DTI_DATA_REQ and received as DTI_DATA_IND (relay functionality).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_direction</Name>
+                <Type>U8</Type>
+                <Comment>DTI direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tra</DocName>
+                <Name>VAL_dti_direction</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines, if TRA shall be connected via the DTI to the upper layer or not.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_conn</Name>
+                <Type>U8</Type>
+                <Comment>DTI connect</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tra</DocName>
+                <Name>VAL_dti_conn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the TRA SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_entity_name</Name>
+                <Comment>values for entity_name</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>TRA_ENTITY_NAME_LEN</Alias>
+                <Comment>Max name length</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ack_flg</Name>
+                <Comment>values for ack_flg</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TRA_ACK</Alias>
+                <Comment>acknowledged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TRA_NAK</Alias>
+                <Comment>not acknowledged</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_direction</Name>
+                <Comment>values for dti_direction</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TRA_DTI_NORMAL</Alias>
+                <Comment>DTI used normally</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TRA_DTI_INVERTED</Alias>
+                <Comment>DTI is inverted</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_conn</Name>
+                <Comment>values for dti_conn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TRA_CONNECT_DTI</Alias>
+                <Comment>Connect DTI to TRA</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TRA_DISCONNECT_DTI</Alias>
+                <Comment>Connect DTI to upper layer</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

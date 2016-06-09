@@ -1,0 +1,1344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">mmcm</DocName>
+        <DocNum Number="104" Project="6147"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the mobility management to call control.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="97"/>
+            <Date Day="24" Month="6" Year="1997"/>
+            <Author>LE_et_al</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="97"/>
+            <Date Day="18" Month="4" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switch to new template. Switch to 32bit opcodes.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="97"/>
+            <Date Day="31" Month="7" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Cause concept changes.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="97"/>
+            <Date Day="12" Month="2" Year="2004"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Made MMCM from MMCC document.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the MMCM SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">MMCM</Value>
+            <Comment>Prefix with "MMCM"</Comment>
+        </Pragma>
+        <History>
+            <Date Day="8" Month="7" Year="1997"/>
+            <Author>VK</Author>
+            <Comment>inital</Comment>
+        </History>
+        <History>
+            <Date Day="12" Month="2" Year="2002"/>
+            <Author>HM</Author>
+            <Comment>MM_CAUSE instead of dummy definition</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="2" Year="2004"/>
+            <Author>HM</Author>
+            <Comment>added prefix section</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the MMCM SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>MM_CAUSE</Alias>
+            <Value ValueType="HEX">04</Value>
+            <Comment>Used in cause values to mark MM as the cause originating entity</Comment>
+        </Constant>
+        <Constant>
+            <Alias>TI_BERLIN</Alias>
+            <Value ValueType="DEC">1</Value>
+            <Comment>TI Berlin variant of the SAP</Comment>
+        </Constant>
+        <History>
+            <Date Day="8" Month="7" Year="1997"/>
+            <Author>VK</Author>
+            <Comment>inital</Comment>
+        </History>
+        <History>
+            <Date Day="12" Month="2" Year="2002"/>
+            <Author>HM</Author>
+            <Comment>MM_CAUSE instead of dummy definition</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="2" Year="2004"/>
+            <Author>HM</Author>
+            <Comment>added prefix section</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="7">
+        <Description>
+            <Section>This section contains all primitives that are defined for the MMCM SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_ESTABLISH_REQ primitive is used to request establishment of a MM connection for call control.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_ESTABLISH_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>CC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>org_entity</Name>
+                </ItemLink>
+                <Comment>originating entity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>estcs</Name>
+                </ItemLink>
+                <Comment>establishment cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="7" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>prio removed, is non-ambiguous using estcs</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>org_entity added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_ESTABLISH_CNF primitive is used to signal the successful establishment of the MM connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_ESTABLISH_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>CC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_ESTABLISH_IND primitive is used to signal the successful establishment of the MM connection for the mobile terminated call.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_ESTABLISH_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>CC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>d1</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>d2</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>dummy Parameter added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_DATA_REQ primitive is used to send a layer 3 CC message to the network.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>CC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>org_entity</Name>
+                </ItemLink>
+                <Comment>originating entity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>d2</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>dummy Parameter added</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>dummy parameter d1 =&gt; org_entity</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_DATA_IND primitive is used to forward a layer 3 CC message to CC.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>CC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>d1</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>d2</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>dummy Parameter added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_RELEASE_REQ primitive is used to release a MM connection for call control.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_RELEASE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>CC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>org_entity</Name>
+                </ItemLink>
+                <Comment>originating entity</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>org_entity added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_RELEASE_IND primitive is used to signal the failed establishment or the release of the MM connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_RELEASE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>CC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>release cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>relcs =&gt; cause</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_ERROR_IND primitive is used to signal an error occurred in RR or DL to CC.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>CC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>reest removed, contained no information, errcs =&gt; cause</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_REESTABLISH_REQ primitive is used to request re-establishment of a connection after break by a failure occurred in the lower layers.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_REESTABLISH_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>CC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_REESTABLISH_CNF primitive is used to signal the successful re-establishment of the MM connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_REESTABLISH_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>CC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_PROMPT_IND primitive is used to inform CC of the completion of the MM connection to the CC entity for a mobile station which supports "Network Initiated MO CM Connection Request". At this point yet no transaction identifier is assigned, so this primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_PROMPT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>CC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="28" Month="1" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_PROMPT_RES primitive is used to assign a transaction identifier. This is used for "Network Initiated MO CM Connection Request.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_PROMPT_RES</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>CC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="1" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>MMCC_PROMPT_RSP =&gt; MMCM_PROMPT_RES</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_PROMPT_REJ primitive may be the response to the MMCM_PROMPT_IND primitive. This is used for "Network Initiated MO CM Connection Request". A reason for the reject may be e.g. due to a temporary lack of free transaction identifiers.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_PROMPT_REJ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>CC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="28" Month="1" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMCM_SYNC_IND primitive is used to synchronize MM and CC.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMCM_SYNC_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>CC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>sync_info</Name>
+                </ItemLink>
+                <Comment>Synchronization info</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>chm =&gt; sync_info</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the  values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the used channel mode. For further details, see GSM 04.08 subclause 10.5.2.6.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ch_info</Name>
+                <Comment>Channel information</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ch_type</Name>
+                </ItemLink>
+                <Comment>Channel Type</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ch_mode</Name>
+                </ItemLink>
+                <Comment>Channel Mode</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>CHM_SIG_ONL (missing Y) renamed to CHM_SIG_ONLY</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>CHM_SPCH_HALF renamed to CHM_SPEECH_HALF</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>changed to struct with channel type and mode</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="10" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>+CHM_SPEECH_V2, +CHM_SPEECH_V3, -CHM_EFR_SPEECH</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>Channel Using Mode =&gt; Channel Information</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream. The array buf is defined as buf[1], size : one byte. Actually the memory beyond buf[1] is used for coded messages (FORTRAN style of array parameter).</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>Service Data Unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>bit buffer</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This is a container for a synchronization event from AS/RR to NAS. The sync_info can be in the form of a ch_info used for a UE on GSM RAT and synchronization_event used for a UE on UMTS RAT.r for a synchronisation event e parameter defines the originating entitity.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sync_info</Name>
+                <Comment>Container for synchronisation info</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmcm</DocName>
+                    <Name>ch_info</Name>
+                </ItemLink>
+                <Comment>channel info</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="26" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the  values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the used channel mode. For further details, see GSM 04.08 subclause 10.5.2.6.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ch_type</Name>
+                <Type>U8</Type>
+                <Comment>Channel Type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmcm</DocName>
+                <Name>VAL_ch_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>CHM_SIG_ONL (missing Y) renamed to CHM_SIG_ONLY</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>CHM_SPCH_HALF renamed to CHM_SPEECH_HALF</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>changed to struct with channel type and mode</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="10" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>+CHM_SPEECH_V2, +CHM_SPEECH_V3, -CHM_EFR_SPEECH</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>Channel Using Mode =&amp;gt; Channel Information</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the used channel mode. For further details, see GSM 04.08 subclause 10.5.2.6.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ch_mode</Name>
+                <Type>U8</Type>
+                <Comment>Channel Mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmcm</DocName>
+                <Name>VAL_ch_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>CHM_SIG_ONL (missing Y) renamed to CHM_SIG_ONLY</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>CHM_SPCH_HALF renamed to CHM_SPEECH_HALF</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>changed to struct with channel type and mode</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="10" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>+CHM_SPEECH_V2, +CHM_SPEECH_V3, -CHM_EFR_SPEECH</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>Channel Using Mode =&amp;gt; Channel Information</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the establishment cause.  This information is used for the Channel Request Messages of RR.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>estcs</Name>
+                <Type>U16</Type>
+                <Comment>establishment cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmcm</DocName>
+                <Name>VAL_estcs</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Halfrate channel sufficient definition added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the release or error cause. MMXX_ERROR_IND is always caused by the reception of a RR_ABORT_IND primitive, thus only the values which are marked as (RR_ABORT_IND) in the RR SAP document are possible to be received as error cause by this primive, all error causes are possible to be received by MMXX_RELEASE_IND.</Section>
+                <Section>In this SAP document are only the possible MM causes defined, for the possible RR causes see the RR SAP document.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>MM cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmcm</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>MM causes added</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="11" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Added 0x8310, 0x8311, 0x8312</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Only MM causes now, for RR causes see RR SAP.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream. The array buf is defined as buf[1], size : one byte. Actually the memory beyond buf[1] is used for coded messages (FORTRAN style of array parameter).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream. The array buf is defined as buf[1], size : one byte. Actually the memory beyond buf[1] is used for coded messages (FORTRAN style of array parameter).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream. The array buf is defined as buf[1], size : one byte. Actually the memory beyond buf[1] is used for coded messages (FORTRAN style of array parameter).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>bit buffer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies a transaction.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ti</Name>
+                <Type>U8</Type>
+                <Comment>transaction identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmcm</DocName>
+                <Name>VAL_ti</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>'0..6' corrected to '0-6' in Values: section</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used as dummy to avoid unnecessary copying of data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d1</Name>
+                <Type>U8</Type>
+                <Comment>dummy, not used</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used as dummy to avoid unnecessary copying of data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d2</Name>
+                <Type>U8</Type>
+                <Comment>dummy, not used</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the originating entitity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>org_entity</Name>
+                <Type>U8</Type>
+                <Comment>originating entity</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmcm</DocName>
+                <Name>VAL_org_entity</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="26" Month="1" Year="2004"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the MMCM SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_mode</Name>
+                <Comment>values for ch_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CHM_SIG_ONLY</Alias>
+                <Comment>signalling only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CHM_SPEECH</Alias>
+                <Comment>speech full rate or half rate version 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">33</Value>
+                <Alias>CHM_SPEECH_V2</Alias>
+                <Comment>speech full rate or half rate version 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">65</Value>
+                <Alias>CHM_SPEECH_V3</Alias>
+                <Comment>speech full rate or half rate version 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CHM_DATA_9_6</Alias>
+                <Comment>data 9.6 kBit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>CHM_DATA_4_8</Alias>
+                <Comment>data 4.8 kBit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">19</Value>
+                <Alias>CHM_DATA_2_4</Alias>
+                <Comment>data 2.4 kBit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>CHM_DATA_14_4</Alias>
+                <Comment>data 2.4 kBit/s</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="8" Month="3" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_type</Name>
+                <Comment>values for ch_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CH_SDCCH</Alias>
+                <Comment>SDCCH channel</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CH_TCH_F</Alias>
+                <Comment>TCH Fullrate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CH_TCH_H</Alias>
+                <Comment>TCH Halfrate</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="8" Month="3" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_estcs</Name>
+                <Comment>values for estcs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0400</Value>
+                <Alias>ESTCS_SERV_REQ_MM</Alias>
+                <Comment>service requested by MM (Location updating or detach)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04A0</Value>
+                <Alias>ESTCS_EMERGE</Alias>
+                <Comment>emergency call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04C0</Value>
+                <Alias>ESTCS_CAL_REEST</Alias>
+                <Comment>call reestablishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04E0</Value>
+                <Alias>ESTCS_MOB_ORIG_SPCH</Alias>
+                <Comment>mobile originated speech call by CC</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04E1</Value>
+                <Alias>ESTCS_MOB_ORIG_DATA</Alias>
+                <Comment>mobile originated data call by CC</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04E2</Value>
+                <Alias>ESTCS_MOB_ORIG_DATA_HR_SUFF</Alias>
+                <Comment>mobile originated data call by CC, halfrate channel sufficient</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="8" Month="3" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0402</Value>
+                <Alias>MMCS_IMSI_IN_HLR</Alias>
+                <Comment>IMSI unknown in HLR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0403</Value>
+                <Alias>MMCS_ILLEGAL_MS</Alias>
+                <Comment>Illegal MS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0404</Value>
+                <Alias>MMCS_IMSI_IN_VLR</Alias>
+                <Comment>IMSI unknown in VLR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0405</Value>
+                <Alias>MMCS_IMEI_NOT_ACCEPTED</Alias>
+                <Comment>IMEI not accepted</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0406</Value>
+                <Alias>MMCS_ILLEGAL_ME</Alias>
+                <Comment>Illegal ME</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">040B</Value>
+                <Alias>MMCS_PLMN_NOT_ALLOWED</Alias>
+                <Comment>PLMN not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">040C</Value>
+                <Alias>MMCS_LA_NOT_ALLOWED</Alias>
+                <Comment>Location Area not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">040D</Value>
+                <Alias>MMCS_ROAMING_NOT_ALLOWED</Alias>
+                <Comment>Roaming not allowed in this location area</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0411</Value>
+                <Alias>MMCS_NETWORK_FAILURE</Alias>
+                <Comment>Network failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0416</Value>
+                <Alias>MMCS_CONGESTION</Alias>
+                <Comment>Congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0420</Value>
+                <Alias>MMCS_SERVICE_NOT_SUPPORTED</Alias>
+                <Comment>Service option not supported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0421</Value>
+                <Alias>MMCS_SERVICE_NOT_SUBSCRIBED</Alias>
+                <Comment>Requested service option not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0422</Value>
+                <Alias>MMCS_SERVICE_ORDER</Alias>
+                <Comment>Service option temporarily out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0426</Value>
+                <Alias>MMCS_IDENTIFIY</Alias>
+                <Comment>Call cannot be identified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0430</Value>
+                <Alias>MMCS_RETRY_IN_NEW_CELL</Alias>
+                <Comment>retry upon entry into a new cell (mapped 0x0430..0x043f -&gt; 0x0430)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">045F</Value>
+                <Alias>MMCS_INCORRECT_MESSAGE</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0460</Value>
+                <Alias>MMCS_INVALID_MAND_MESSAGE</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0461</Value>
+                <Alias>MMCS_MESSAGE_TYPE_NOT_IMPLEM</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0462</Value>
+                <Alias>MMCS_MESSAGE_TYPE_INCOMPAT</Alias>
+                <Comment>Message type not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0463</Value>
+                <Alias>MMCS_IE_NOT_IMPLEM</Alias>
+                <Comment>Information element non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0464</Value>
+                <Alias>MMCS_CONDITIONAL_IE</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0465</Value>
+                <Alias>MMCS_MESSAGE_INCOMPAT</Alias>
+                <Comment>Message not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">046F</Value>
+                <Alias>MMCS_UNSPECIFIED</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C400</Value>
+                <Alias>MMCS_SUCCESS</Alias>
+                <Comment>No error, successful operation (MM)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C480</Value>
+                <Alias>MMCS_NO_REGISTRATION</Alias>
+                <Comment>MS is not registered or deregistration started</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C481</Value>
+                <Alias>MMCS_TIMER_RECOVERY</Alias>
+                <Comment>time-out in MM during establishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C482</Value>
+                <Alias>MMCS_NO_REESTABLISH</Alias>
+                <Comment>Cell does not support call reestablishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C483</Value>
+                <Alias>MMCS_INT_PREEM</Alias>
+                <Comment>Preemptive release, e.g. MO-MT clash in MM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C484</Value>
+                <Alias>MMCS_PLMN_NOT_IDLE_MODE</Alias>
+                <Comment>reject, not in idle mode (MMR_PLMN_IND)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C488</Value>
+                <Alias>MMCS_AUTHENTICATION_REJECTED</Alias>
+                <Comment>AUTHENTICATION REJECT received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C489</Value>
+                <Alias>MMCS_SIM_REMOVED</Alias>
+                <Comment>A valid SIM is not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C4FF</Value>
+                <Alias>MMCS_INT_NOT_PRESENT</Alias>
+                <Comment>No error cause (MM)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="8" Month="3" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ti</Name>
+                <Comment>values for ti</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias/>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias/>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>6</MaxValue>
+                <Comment>ms originated transaction</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>8</MinValue>
+                <MaxValue>14</MaxValue>
+                <Comment>ms originated transaction</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="8" Month="3" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_org_entity</Name>
+                <Comment>values for org_entity</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>ORG_ENTITY_CC</Alias>
+                <Comment>originating entity is CC</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>ORG_ENTITY_SS</Alias>
+                <Comment>originating entity is SS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>ORG_ENTITY_SMS</Alias>
+                <Comment>originating entity is SMS</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="8" Month="3" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

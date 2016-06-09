@@ -1,0 +1,1073 @@
+;********************************************************************************
+;*** File           : 8010_152_ps_include.pdf
+;*** Creation       : Wed Mar 11 09:57:54 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_152_ps_include
+;*** Document No.   : 8010.152.02.023
+;*** Document Date  : 2003-10-15
+;*** Document Status: APPROVED
+;*** Document Author: LOE
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:28:58 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-10-15"
+PRAGMA 	ID_AND_VERSION 	"8010.152.02.023"
+PRAGMA 	PREFIX 	PS 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+CONST 	BCC_MAX 	7 	; Maximum value of BCC
+CONST 	SIZE_TMSI 	4 	; Size in bytes of Temporary Mobile Subscriber Identity (TMSI)
+CONST 	SIZE_P_TMSI 	4 	; Size in bytes of Packet Temporary Mobile Subscriber Identity (P-TMSI)
+CONST 	CPICH_RSCP_MAX 	-25 	; Maximum value of CPICH RSCPs for a UMTS cell is -25 dBm
+CONST 	CPICH_RSCP_MIN 	-115 	; Minimum value of CPICH RSCPs for a UMTS cell is -115 dBm
+CONST 	SIZE_KC 	8 	; Size in bytes of Ciphering Key
+CONST 	MAX_EQUIVALENT_PLMNS 	5 	; Maximum number of equivalent PLMNs
+CONST 	MAX_FORBIDDEN_LAI 	10 	; Maximum number of forbidden location areas in a forbidden location area list.
+CONST 	MAX_GSM_NCELLS 	32 	; Maximum number if GSM neighbour cells when camped on a UMTS cell for dual mode operations (see [3G 25.331]).
+CONST 	MAX_GSM_NCELL_INDEX 	31 	; Maximum value of a GSM neighbour cell index for indexing a cell in a GSM neighbour cell list when camped on a UMTS cell for dual mode operations.
+CONST 	MAX_UMTS_NCELLS 	64 	; Maximum number of UMTS FDD neighbour cells on one UARFCN when camped on a GSM cell for dual mode operations (see [3G 05.08]).
+CONST 	MAX_UMTS_NCELLS_PER_UARFCN 	32 	; Maximum number of UMTS FDD neighbour cells one frequency when camped on a GSM cell for dual mode operations (see [3G 05.08]).
+CONST 	MAX_UMTS_NCELL_UARFCNS 	3 	; Maximum number of UMTS FDD channels on which neighbour cells can exist
+CONST 	MAX_UMTS_PRECONFIGURATIONS 	16 	; Maximum number of UMTS pre-configurations
+CONST 	NCC_MAX 	7 	; Maximum value of NCC cell
+CONST 	PSC_MAX 	0x01FF 	; Maximum value of Primary Scrambling Code
+CONST 	PSC_MIN 	0x0000 	; Minimum value of Primary Scrambling Code
+CONST 	SIZE_ACC 	2 	; Number of bytes used to contain the EFACC of the (U)SIM, see [3G 11.11] and [3G 31.102].
+CONST 	SIZE_AI 	2 	; Number of bytes used to contain Additional Information from EFAD of the (U)SIM, see [3G 11.11] and [3G 31.102].
+CONST 	SIZE_IMSI_MAX 	15 	; Maximum number of digits in an IMSI
+CONST 	SIZE_IMSI_MIN 	6 	; Minimum number of digits in an IMSI
+CONST 	SIZE_LAC 	2 	; Minimum size of location area information
+CONST 	SIZE_MCC 	3 	; Size in bytes of mobile country code.
+CONST 	SIZE_MNC_MAX 	3 	; Three digit (byte) mobile network code
+CONST 	SIZE_MNC_MIN 	2 	; Two digit (byte) mobile network code
+CONST 	MAX_START_VALUE 	0xFFFFF 	; Maximum value of START parameter
+CONST 	SIZE_CK 	0x0010 	; Number of bytes used to contain the Ciphering Key from EFKEYS of the (U)SIM, see [3G 11.11] and [3G 31.102].
+CONST 	SIZE_IK 	0x0010 	; Number of bytes used to contain the Integrity Key from EFKEYS of the (U)SIM, see [3G 11.11] and [3G 31.102].
+CONST 	SIZE_CN_COMMON_GSM_NAS_SI 	0x0008 	; Number of bytes used to contain a CN Common GSM NAS System Information IE from a network cell [3G 25.331]
+CONST 	MAX_UL_SDU 	255 	; Max number of unacknowledged SDUs transferred between RATs.
+CONST 	MIN_BCD_VALUE 	0 	; Minimum value of a BCD digit according to [3G 24.008].
+CONST 	MAX_BCD_VALUE 	9 	; Maximum value of a BCD digit according to [3G 24.008].
+CONST 	MIN_KEY_SEQ_NUM 	0x00 	; Minimum value of ciphering key sequence number.
+CONST 	MAX_KEY_SEQ_NUM 	0x06 	; Maximum value of ciphering key sequence number.
+CONST 	KEY_SEQ_INVALID 	0x07 	; Corresponds to ciphering key not available, see [3G 24.008] [3G 11.11] and [3G 31.102].
+CONST 	MIN_ARFCN_VALUE 	0 	; ARFCN range, see [3G 05.05]
+CONST 	MAX_ARFCN_VALUE 	1023 	; ARFCN range, see [3G 05.05]
+CONST 	MIN_ARFCN_GSM900E_LOW 	0 	; ARFCN range, see [3G 05.05]
+CONST 	MAX_ARFCN_GSM900E_LOW 	124 	; ARFCN range, see [3G 05.05]
+CONST 	MIN_ARFCN_GSM900E_HIGH 	975 	; ARFCN range, see [3G 05.05]
+CONST 	MAX_ARFCN_GSM900E_HIGH 	1023 	; ARFCN range, see [3G 05.05]
+CONST 	MIN_ARFCN_GSM900P 	1 	; ARFCN range, see [3G 05.05]
+CONST 	MAX_ARFCN_GSM900P 	124 	; ARFCN range, see [3G 05.05]
+CONST 	MIN_ARFCN_GSM850 	128 	; ARFCN range, see [3G 05.05]
+CONST 	MAX_ARFCN_GSM850 	251 	; ARFCN range, see [3G 05.05]
+CONST 	MIN_ARFCN_GSM450 	259 	; ARFCN range, see [3G 05.05]
+CONST 	MAX_ARFCN_GSM450 	293 	; ARFCN range, see [3G 05.05]
+CONST 	MIN_ARFCN_GSM480 	306 	; ARFCN range, see [3G 05.05]
+CONST 	MAX_ARFCN_GSM480 	340 	; ARFCN range, see [3G 05.05]
+CONST 	MIN_ARFCN_GSM1800 	512 	; ARFCN range, see [3G 05.05]
+CONST 	MAX_ARFCN_GSM1800 	885 	; ARFCN range, see [3G 05.05]
+CONST 	MIN_ARFCN_GSM1900 	512 	; ARFCN range, see [3G 05.05]
+CONST 	MAX_ARFCN_GSM1900 	810 	; ARFCN range, see [3G 05.05]
+CONST 	MIN_RSSI_GSM 	-110 	; Minimum GSM RSSI in dBm.
+CONST 	MAX_RSSI_GSM 	-20 	; Maximum GSM RSSI in dBm.
+CONST 	MIN_RSSI_UMTS 	-48 	; Minimum UMTS RSSI in 0.5 dBm units.
+CONST 	MAX_RSSI_UMTS 	0 	; Maximum UMTS RSSI in 0.5 dBm units.
+CONST 	MIN_UARFCN 	0x0000 	; UARFCN range, see [3G 25.101]
+CONST 	MAX_UARFCN 	0x3FFF 	; UARFCN range, see [3G 25.101]
+
+
+
+VALTAB 	VAL_pkt_flow_id
+VAL 	0x00 	PFI_BEST_EFFORT 	"Best Effort"
+VAL 	0x01 	PFI_SIGNALING 	"Signalling"
+VAL 	0x02 	PFI_SMS 	"SMS"
+VAL 	0xFF 	PKT_FLOW_ID_NOT_PRES 	"Value FF is used to indicate when Packet Flow Identifier is not present."
+
+VALTAB 	VAL_content
+VAL 	0x00 	ACC_INDEX_CLASSES_8_TO_15 	"Index to use in content array for classes 8 to 15"
+VAL 	0x01 	ACC_INDEX_CLASSES_0_TO_7 	"Index to use in content array for classes 0 to 7"
+VAL 	0x01 	ACC_MASK_CLASS_00 	"Mask for accessing access class 0"
+VAL 	0x02 	ACC_MASK_CLASS_01 	"Mask for accessing access class 1"
+VAL 	0x04 	ACC_MASK_CLASS_02 	"Mask for accessing access class 2"
+VAL 	0x08 	ACC_MASK_CLASS_03 	"Mask for accessing access class 3"
+VAL 	0x10 	ACC_MASK_CLASS_04 	"Mask for accessing access class 4"
+VAL 	0x20 	ACC_MASK_CLASS_05 	"Mask for accessing access class 5"
+VAL 	0x40 	ACC_MASK_CLASS_06 	"Mask for accessing access class 6"
+VAL 	0x80 	ACC_MASK_CLASS_07 	"Mask for accessing access class 7"
+VAL 	0x01 	ACC_MASK_CLASS_08 	"Mask for accessing access class 8"
+VAL 	0x02 	ACC_MASK_CLASS_09 	"Mask for accessing access class 9"
+VAL 	0x04 	ACC_MASK_CLASS_10 	"Mask for accessing access class 10"
+VAL 	0x08 	ACC_MASK_CLASS_11 	"Mask for accessing access class 11"
+VAL 	0x10 	ACC_MASK_CLASS_12 	"Mask for accessing access class 12"
+VAL 	0x20 	ACC_MASK_CLASS_13 	"Mask for accessing access class 13"
+VAL 	0x40 	ACC_MASK_CLASS_14 	"Mask for accessing access class 14"
+VAL 	0x80 	ACC_MASK_CLASS_15 	"Mask for accessing access class 15"
+
+VALTAB 	VAL_access_modes
+VAL 	0 	GSM_VOICE_ONLY 	"GSM voice only mode"
+VAL 	1 	GSM 	"GSM voice and data mode"
+VAL 	2 	GSM_GPRS 	"GSM voice and data with GPRS mode"
+VAL 	3 	UMTS_FDD 	"UMTS FDD only mode"
+VAL 	4 	GSM_GPRS_UMTS_FDD 	"GSM voice and data, GPRS and UMTS mode"
+
+VALTAB 	VAL_arfcn_rssi
+VAL 	MIN_RSSI_GSM - MAX_RSSI_GSM 	"Range of averaged received signal strength"
+
+VALTAB 	VAL_attach_detach_allowed
+VAL 	0 	ATTACH_DETACH_NOT_ALLOWED 	"Attach/detach not allowed"
+VAL 	1 	ATTACH_DETACH_ALLOWED 	"Attach/detach allowed"
+
+VALTAB 	VAL_service_level
+VAL 	0x00 	LIMITED_SERVICE 	"Camped on acceptable cell. This indicates that the cell is selected for limited service."
+VAL 	0x01 	NORMAL_SERVICE 	"Camped on suitable cell. This indicates that the cell is selected for normal service."
+VAL 	0x02 	NORMAL_SERVICE_OPERATOR_CELL 	"Camped on a suitable operator cell. This indicates that the cell is selected for normal service, and is reserved for operator use."
+
+VALTAB 	VAL_cn_domain
+VAL 	0x00 	CN_DOMAIN_CS 	"Circuit switched core network domain"
+VAL 	0x01 	CN_DOMAIN_PS 	"Packet switched core network domain"
+VAL 	0x02 	CN_DOMAIN_NOT_IMPORTANT 	"Core network domain not important"
+
+VALTAB 	VAL_cpich_ec_n0
+VAL 	MIN_RSSI_UMTS - MAX_RSSI_UMTS 	"The CPICH Ec/N0 parameter has a range from -24 to 0 dB in steps of 0.5. The value is multiplied with 2 to avoid using floating-point numbers."
+
+VALTAB 	VAL_cpich_rscp
+VAL 	CPICH_RSCP_MIN - CPICH_RSCP_MAX 	"The range of CPICH RSCP is -115 to -25 dBm in steps of 1."
+
+VALTAB 	VAL_est_service
+VAL 	0x00 	SERVICE_SPEECH 	"CS Speech call"
+VAL 	0x01 	SERVICE_MULTIMEDIA 	"CS Multimedia call"
+VAL 	0x02 	SERVICE_FAX 	"CS Fax call"
+VAL 	0x03 	SERVICE_NT_CSD 	"Non transparent CS data call"
+VAL 	0x04 	SERVICE_T_CSD 	"Transparent CS data call"
+VAL 	0x05 	SERVICE_EMERGE 	"CS emergency speech call"
+
+VALTAB 	VAL_arfcn
+VAL 	MIN_ARFCN_VALUE - MAX_ARFCN_VALUE 	"Range of ARFCN, see [3G 05.05]"
+
+VALTAB 	VAL_gsm_band_priority
+VAL 	0 	EU_BAND 	"EU band has priority"
+VAL 	1 	US_BAND 	"US band has priority"
+
+VALTAB 	VAL_bcc
+VAL 	0 - BCC_MAX 	"Range of BCC"
+
+VALTAB 	VAL_ncc
+VAL 	0 - NCC_MAX 	"Range of NCC"
+
+VALTAB 	VAL_gsm_frequency_band
+VAL 	0x0000 	GSM_BAND_NOT_SET 	"No channel numbers."
+VAL 	0x0001 	GSM450 	"Channel numbers from 259 to 293 for GSM450"
+VAL 	0x0002 	GSM480 	"Channel numbers from 306 to 340 for GSM480"
+VAL 	0x0004 	GSM850 	"Channel numbers from 128 to 251 for GSM850"
+VAL 	0x0008 	GSM900P 	"Channel numbers from 1 to 124 for P-GSM900"
+VAL 	0x0010 	GSM900E 	"Channel numbers from 0 to 124, and 975 to 1023 for E-GSM900"
+VAL 	0x0020 	GSM1800 	"Channel numbers from 512 to 885 for GSM1800"
+VAL 	0x0040 	GSM1900 	"Channel numbers from 512 to 810 for GSM1900"
+VAL 	0x0039 	GSM1800_BAND_INDICATOR 	"All channel numbers. Channel numbers from 512 to 810 are to be interpreted as GSM1800 channel numbers."
+VAL 	0x0046 	GSM1900_BAND_INDICATOR 	"All channel numbers. Channel numbers from 512 to 810 are to be interpreted as GSM1900 channel numbers."
+
+VALTAB 	VAL_gsm_ncell_index
+VAL 	0 - MAX_GSM_NCELL_INDEX 	"Range of index"
+
+VALTAB 	VAL_bsic_valid
+VAL 	0x00 	BSIC_NOT_VALIDATED 	"BSIC for the cell on this channel is not validated or not matched to that of the specified cell."
+VAL 	0x01 	BSIC_VALIDATED 	"BSIC for the cell on this channel is validated and matches that of the specified cell."
+
+VALTAB 	VAL_llc_mode
+VAL 	0 	LLC_UNACKNOWLEDGED 	"Unacknowledged SAPI"
+VAL 	1 	LLC_ACKNOWLEDGED 	"Acknowledged SAPI"
+
+VALTAB 	VAL_meas_mode
+VAL 	0 	MEASURE_IDLE 	"Measurements without a configured DCH"
+VAL 	1 	MEASURE_DEDICATED 	"Measurements with a configured DCH"
+
+VALTAB 	VAL_nmo
+VAL 	0 	RR_NMO_I 	"Network mode of operation I, only one Paging channel for both: PCCCH or  CCCH"
+VAL 	1 	RR_NMO_II 	"Network mode of operation II, Paging only on CCCH"
+VAL 	2 	RR_NMO_III 	"Network mode of operation III, Paging on CCCH for CS and either on CCCH or on PCCCH for GPRS, if PCCH allocated in the cell"
+
+VALTAB 	VAL_search_mode
+VAL 	0 	SEARCH_MODE_AUTO 	"Automatic network scan"
+VAL 	1 	SEARCH_MODE_MAN 	"Manual network scan"
+
+VALTAB 	VAL_t3212
+VAL 	1 - 255 	"(6 * value) minutes"
+VAL 	0 	NO_PERIODIC_UPDATE 	"No periodic updating"
+
+VALTAB 	VAL_mnc
+VAL 	MIN_BCD_VALUE - MAX_BCD_VALUE 	"Range of a MNC digit."
+
+VALTAB 	VAL_mcc
+VAL 	MIN_BCD_VALUE - MAX_BCD_VALUE 	"Range of a MCC digit."
+
+VALTAB 	VAL_rat
+VAL 	0 	RAT_GSM 	"GSM"
+VAL 	1 	RAT_UMTS_FDD 	"UMTS FDD"
+
+VALTAB 	VAL_radio_prio
+VAL 	0 	RADIO_PRIO_1 	"radio priority 1 (highest)"
+VAL 	1 	RADIO_PRIO_2 	"radio priority 2"
+VAL 	2 	RADIO_PRIO_3 	"radio priority 3"
+VAL 	3 	RADIO_PRIO_4 	"radio priority 4 (lowest)"
+
+VALTAB 	VAL_rel_ind
+VAL 	0 	REL_IND_NO 	"Non-local deactivation"
+VAL 	1 	REL_IND_YES 	"Local deactivation"
+
+VALTAB 	VAL_ksi
+VAL 	MIN_KEY_SEQ_NUM - MAX_KEY_SEQ_NUM 	"Range of sequence number"
+VAL 	KEY_SEQ_INVALID 	 	"Sequence number value indicating that the key is not present (initial value on (U)SIM)"
+
+VALTAB 	VAL_sapi
+VAL 	0 	SAPI_0 	"SAPI 0 (GSM only)"
+VAL 	1 	SAPI_1 	"SAP for MM"
+VAL 	3 	SAPI_3 	"SAP 1 for SNDCP or SAPI 3 (GSM only)"
+VAL 	5 	SAPI_5 	"SAP 2 for SNDCP"
+VAL 	7 	SAPI_7 	"SAP for SMS"
+VAL 	9 	SAPI_9 	"SAP 3 for SNDCP"
+VAL 	11 	SAPI_11 	"SAP 4 for SNDCP"
+VAL 	255 	SAPI_INVALID 	"Invalid SAPI identifier"
+
+VALTAB 	VAL_sim_type
+VAL 	0 	SIM_PRESENT 	"SIM present"
+VAL 	1 	USIM_PRESENT 	"USIM present"
+
+VALTAB 	VAL_uarfcn_rssi
+VAL 	-100 - -25 	"Range of averaged received signal strength in dBm."
+
+VALTAB 	VAL_uarfcn
+VAL 	MIN_UARFCN - MAX_UARFCN 	"UARFCN range, see [3G 25.101]."
+
+VALTAB 	VAL_cell_status
+VAL 	0x00 	CELL_STATUS_UNKNOWN 	"It is not known whether this cell is suitable or acceptable at this time."
+VAL 	0x01 	CELL_STATUS_UNACCEPTABLE 	"The cell is not acceptable or suitable as defined by the criteria in [3G 25.304]"
+VAL 	0x02 	CELL_STATUS_ACCEPTABLE 	"The cell is acceptable as defined by the criteria in [3G 25.304]."
+VAL 	0x03 	CELL_STATUS_SUITABLE 	"The cell is suitable as defined by the criteria in [3G 25.304]"
+
+VALTAB 	VAL_psc
+VAL 	PSC_MIN - PSC_MAX 	"Range og Primary Scrambling Code"
+
+VALTAB 	VAL_threshold
+VAL 	0 - MAX_START_VALUE 	"The THRESHOLD value is 20 bits long"
+
+VALTAB 	VAL_start_val
+VAL 	0 - MAX_START_VALUE 	"The START value is max 20 bits"
+
+VALTAB 	VAL_tx_diversity
+VAL 	0x00 	TX_DIVERSITY_USED 	"TX diversity used for a cell"
+VAL 	0x01 	TX_DIVERSITY_NOT_USED 	"TX diversity not used for a cell"
+
+VALTAB 	VAL_sgsn_rel
+VAL 	0x00 	SGSN_UNKNOWN 	"SGSN release unknown/uninitialized"
+VAL 	0x01 	SGSN_98_OLDER 	"SGSN is release 98 or older"
+VAL 	0x02 	SGSN_99_ONWARDS 	"SGSN is relesase 99 or onwards"
+
+VALTAB 	VAL_peak
+VAL 	0 	PEAK_SUB 	"Subscribed peak throughput"
+VAL 	1 	PEAK_1K 	"Up to 1 000 octet/s"
+VAL 	2 	PEAK_2K 	"Up to 2 000 octet/s"
+VAL 	3 	PEAK_4K 	"Up to 4 000 octet/s"
+VAL 	4 	PEAK_8K 	"Up to 8 000 octet/s"
+VAL 	5 	PEAK_16K 	"Up to 16 000 octet/s"
+VAL 	6 	PEAK_32K 	"Up to 32 000 octet/s"
+VAL 	7 	PEAK_64K 	"Up to 64 000 octet/s"
+VAL 	8 	PEAK_128K 	"Up to 128 000 octet/s"
+VAL 	9 	PEAK_256K 	"Up to 256 000 octet/s"
+
+VALTAB 	VAL_relclass
+VAL 	0 	RELCLASS_SUB 	"Subscribed reliability class"
+VAL 	1 	GTP_LLC_RLC_PROT 	"Acknowledged GTP, LLC, and RLC; Protected data"
+VAL 	2 	LLC_RLC_PROT 	"Unacknowledged GTP; Acknowledged LLC and RLC, Protected data"
+VAL 	3 	RLC_PROT 	"Unacknowledged GTP and LLC; Acknowledged RLC, Protected data"
+VAL 	4 	PROT 	"Unacknowledged GTP, LLC, and RLC, Protected data"
+VAL 	5 	NO_REL 	"Unacknowledged GTP, LLC, and RLC, Unprotected data"
+
+VALTAB 	VAL_delay
+VAL 	0 	DELAY_SUB 	"Subscribed delay class"
+VAL 	1 	DELAY_1 	"Delay class 1"
+VAL 	2 	DELAY_2 	"Delay class 2"
+VAL 	3 	DELAY_3 	"Delay class 3"
+VAL 	4 	DELAY_4 	"Delay class 4 (best effort)"
+
+VALTAB 	VAL_mean
+VAL 	0 	MEAN_SUB 	"Subscribed mean throughput"
+VAL 	1 	MEAN_100 	"100 octet/h"
+VAL 	2 	MEAN_200 	"200 octet/h"
+VAL 	3 	MEAN_500 	"500 octet/h"
+VAL 	4 	MEAN_1K 	"1 000 octet/h"
+VAL 	5 	MEAN_2K 	"2 000 octet/h"
+VAL 	6 	MEAN_5K 	"5 000 octet/h"
+VAL 	7 	MEAN_10K 	"10 000 octet/h"
+VAL 	8 	MEAN_20K 	"20 000 octet/h"
+VAL 	9 	MEAN_50K 	"50 000 octet/h"
+VAL 	10 	MEAN_100K 	"100 000 octet/h"
+VAL 	11 	MEAN_200K 	"200 000 octet/h"
+VAL 	12 	MEAN_500K 	"500 000 octet/h"
+VAL 	13 	MEAN_1M 	"1 000 000 octet/h"
+VAL 	14 	MEAN_2M 	"2 000 000 octet/h"
+VAL 	15 	MEAN_5M 	"5 000 000 octet/h"
+VAL 	16 	MEAN_10M 	"10 000 000 octet/h"
+VAL 	17 	MEAN_20M 	"20 000 000 octet/h"
+VAL 	18 	MEAN_50M 	"50 000 000 octet/h"
+VAL 	31 	MEAN_BEST 	"Best effort"
+
+VALTAB 	VAL_preced
+VAL 	0 	PRECED_SUB 	"Subscribed precedence"
+VAL 	1 	PRIO_HIGH 	"High priority"
+VAL 	2 	PRIO_NORM 	"Normal priority"
+VAL 	3 	PRIO_LOW 	"Low priority"
+
+VALTAB 	VAL_guar_br_dl
+VAL 	0 	GUAR_BR_DL_SUB 	"Subscribed guaranteed uplink data rate"
+
+VALTAB 	VAL_max_rate_dl
+VAL 	0 	MAX_BR_DL_SUB 	"Subscribed maximum downlink data rate"
+VAL 	255 	MAX_BR_DL_0 	"0 kbps downlink data rate"
+
+VALTAB 	VAL_max_sdu
+VAL 	0 	MAX_SDU_SUB 	"Subscribed maximum SDU size"
+VAL 	151 	MAX_SDU_1502 	"Value not corresponding to binary coding of SDU size declared constant"
+VAL 	152 	MAX_SDU_1510 	"do."
+VAL 	153 	MAX_SDU_1520 	"do."
+
+VALTAB 	VAL_order
+VAL 	0 	ORDER_NO 	"Without delivery order ('no')"
+VAL 	1 	ORDER_YES 	"With delivery order ('yes')"
+VAL 	2 	ORDER_SUB 	"Subscribed delivery order"
+
+VALTAB 	VAL_del_err_sdu
+VAL 	0 	DEL_ERR_NO 	"Erroneous SDUs are not delivered ('no')"
+VAL 	1 	DEL_ERR_YES 	"Erroneous SDUs are delivered ('yes')"
+VAL 	2 	DEL_ERR_NODETECT 	"No detect ('-')"
+VAL 	3 	DEL_ERR_SUB 	"Subscribed delivery of erroneous SDUs"
+
+VALTAB 	VAL_tc
+VAL 	0 	TC_CONV 	"Conversational class"
+VAL 	1 	TC_STREAM 	"Streaming class"
+VAL 	2 	TC_INTER 	"Interactive class"
+VAL 	3 	TC_BG 	"Background class"
+VAL 	4 	TC_SUB 	"Subscribed traffic class"
+
+VALTAB 	VAL_max_rate_ul
+VAL 	0 	MAX_BR_UL_SUB 	"Subscribed maximum uplink data rate"
+VAL 	255 	MAX_BR_UL_0 	"0 kbps uplink data rate"
+
+VALTAB 	VAL_guar_br_ul
+VAL 	0 	GUAR_BR_UL_SUB 	"Subscribed guaranteed uplink data rate"
+
+VALTAB 	VAL_handling_pri
+VAL 	0 	HANDLING_PRI_SUB 	"Subscribed traffic handling priority"
+VAL 	1 	HANDLING_PRI_1 	"Priority level 1"
+VAL 	2 	HANDLING_PRI_2 	"Priority level 2"
+VAL 	3 	HANDLING_PRI_3 	"Priority level 3"
+
+VALTAB 	VAL_xfer_delay
+VAL 	0 	XFER_DELAY_SUB 	"Subscribed transfer delay"
+
+
+
+
+VAR 	qos_not_present 	"QoS parameters absent. From nas_include sap" 	L
+
+
+VAR 	pkt_flow_id 	"packet flow identifier" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_pkt_flow_id@ 	
+
+VAR 	min_qos_not_present 	"QoS parameters absent" 	L
+
+
+VAR 	delay 	"delay class" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_delay@ 	
+
+VAR 	relclass 	"reliability class" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_relclass@ 	
+
+VAR 	peak 	"peak throughput" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_peak@ 	
+
+VAR 	preced 	"precedence class" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_preced@ 	
+
+VAR 	mean 	"mean throughput" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_mean@ 	
+
+VAR 	tc 	"traffic class; R99 / UMTS" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_tc@ 	
+
+VAR 	order 	"delivery order; R99 / UMTS" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_order@ 	
+
+VAR 	del_err_sdu 	"delivery of erroneous SDU; R99 / UMTS" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_del_err_sdu@ 	
+
+VAR 	max_sdu 	"max SDU size; R99 / UMTS" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_max_sdu@ 	
+
+VAR 	max_rate_ul 	"max bit-rate uplink; R99 / UMTS" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_max_rate_ul@ 	
+
+VAR 	max_rate_dl 	"max bit-rate downlink; R99 / UMTS" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_max_rate_dl@ 	
+
+VAR 	xfer_delay 	"transfer delay; R99 / UMTS" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_xfer_delay@ 	
+
+VAR 	handling_pri 	"traffic handling priority; R99 / UMTS" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_handling_pri@ 	
+
+VAR 	guar_br_ul 	"guaranteed bit-rate uplink; R99 / UMTS" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_guar_br_ul@ 	
+
+VAR 	guar_br_dl 	"guaranteed bit-rate downlink; R99 / UMTS" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_guar_br_dl@ 	
+
+VAR 	ratio_mant 	"mantissa" 	B
+
+
+VAR 	ratio_exp 	"exponent" 	B
+
+
+VAR 	sgsn_rel 	"sgsn release version" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_sgsn_rel@ 	
+
+VAR 	content 	"Content of access control class" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_content@ 	
+
+VAR 	access_modes 	"Supported access modes." 	B
+
+VAL 	@p_8010_152_ps_include - VAL_access_modes@ 	
+
+VAR 	op 	"UE operation mode" 	B
+
+
+VAR 	ai 	"Additional information" 	B
+
+
+VAR 	arfcn_rssi 	"GSM channel RSSI measurement" 	C
+
+VAL 	@p_8010_152_ps_include - VAL_arfcn_rssi@ 	
+
+VAR 	attach_detach_allowed 	"Attach/detach allowed" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_attach_detach_allowed@ 	
+
+VAR 	service_level 	"Cell service level" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_service_level@ 	
+
+VAR 	cn_domain 	"Core network domain identity" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_cn_domain@ 	
+
+VAR 	cpich_ec_n0 	"UMTS cell measurement value of CPICH Ec/N0" 	C
+
+VAL 	@p_8010_152_ps_include - VAL_cpich_ec_n0@ 	
+
+VAR 	cpich_rscp 	"UMTS cell measurement value of CPICH RSCP" 	C
+
+VAL 	@p_8010_152_ps_include - VAL_cpich_rscp@ 	
+
+VAR 	est_service 	"Establishment service requested" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_est_service@ 	
+
+VAR 	arfcn 	"GSM channel number" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_arfcn@ 	
+
+VAR 	gsm_band_priority 	"GSM band priority" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_gsm_band_priority@ 	
+
+VAR 	ncc 	"NCC" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_ncc@ 	
+
+VAR 	bcc 	"BCC" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_bcc@ 	
+
+VAR 	gsm_frequency_band 	"Frequency band specification" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_gsm_frequency_band@ 	
+
+VAR 	gsm_ncell_index 	"GSM neighbour cell index" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_gsm_ncell_index@ 	
+
+VAR 	bsic_valid 	"BSIC validated" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_bsic_valid@ 	
+
+VAR 	identity 	"Content of IMSI" 	B
+
+
+VAR 	key 	"Ciphering key" 	B
+
+
+VAR 	ul_sequence_number 	"Sequence number of last unacknowledged uplink SDU" 	B
+
+
+VAR 	dl_sequence_number 	"Sequence number of last unacknowledged downlink SDU (used by the network)" 	B
+
+
+VAR 	llc_mode 	"LLC mode" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_llc_mode@ 	
+
+VAR 	lac_elements 	"Location area code element" 	B
+
+
+VAR 	meas_mode 	"Measurement mode" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_meas_mode@ 	
+
+VAR 	mem_handle 	"Memory handle" 	L
+
+
+VAR 	nmo 	"Network mode of operation" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_nmo@ 	
+
+VAR 	search_mode 	"Search mode for network scan" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_search_mode@ 	
+
+VAR 	content_p_tmsi 	"Content of P-TMSI" 	B
+
+
+VAR 	peak_throughput 	"Peak throughput QoS parameter" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_peak@ 	
+
+VAR 	t3212 	"Periodic updating timer" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_t3212@ 	
+
+VAR 	mcc 	"Mobile country code" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_mcc@ 	
+
+VAR 	mnc 	"Mobile network code" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_mnc@ 	
+
+VAR 	rat 	"Radio access technology" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_rat@ 	
+
+VAR 	radio_prio 	"Radio priority" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_radio_prio@ 	
+
+VAR 	rel_ind 	"Local Release Indicator" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_rel_ind@ 	
+
+VAR 	rac 	"Container for packet switched routing area code" 	B
+
+
+VAR 	ksi 	"Key set identifier" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_ksi@ 	
+
+VAR 	sapi 	"Service Access Point Identifier" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_sapi@ 	
+
+VAR 	l_buf 	"Length in bits" 	S
+
+
+VAR 	o_buf 	"Offset in bits" 	S
+
+
+VAR 	buf 	"Message content" 	B
+
+
+VAR 	sim_type 	"Type of subscriber card present." 	B
+
+VAL 	@p_8010_152_ps_include - VAL_sim_type@ 	
+
+VAR 	content_tmsi 	"Content of TMSI" 	B
+
+
+VAR 	uarfcn_rssi 	"UMTS channel RSSI measurement" 	C
+
+VAL 	@p_8010_152_ps_include - VAL_uarfcn_rssi@ 	
+
+VAR 	uarfcn 	"UMTS channel number" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_uarfcn@ 	
+
+VAR 	ciphering_key 	"Ciphering key" 	B
+
+
+VAR 	integrity_key 	"Integrity protection key" 	B
+
+
+VAR 	cell_status 	"Cell suitability status" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_cell_status@ 	
+
+VAR 	psc 	"FDD primary scrambling code" 	S
+
+VAL 	@p_8010_152_ps_include - VAL_psc@ 	
+
+VAR 	threshold 	"THRESHOLD value" 	L
+
+VAL 	@p_8010_152_ps_include - VAL_threshold@ 	
+
+VAR 	start_val 	"START value (20 bits)" 	L
+
+VAL 	@p_8010_152_ps_include - VAL_start_val@ 	
+
+VAR 	tx_diversity 	"UMTS FDD TX diversity indicator" 	B
+
+VAL 	@p_8010_152_ps_include - VAL_tx_diversity@ 	
+
+
+
+
+COMP 	acc 	 "Container for the access control class field from (U)SIM, see [3G 11.11] and [3G 31.102]"
+{
+ 	content 	[SIZE_ACC] 	 ; Content of access control class
+}
+
+
+
+COMP 	ad 	 "Container for the administrative data field from (U)SIM, see [3G 11.11] and [3G 31.102]"
+{
+ 	op 	 ; UE operation mode
+ 	ai 	[SIZE_AI] 	 ; Additional information
+}
+
+
+
+COMP 	gsm_bands 	 "GSM bands"
+{
+ 	gsm_frequency_band 	 ; Frequency band specification
+ 	gsm_band_priority 	 ; GSM band priority
+}
+
+
+
+COMP 	bsic 	 "GSM BSIC"
+{
+ 	ncc 	 ; NCC
+ 	bcc 	 ; BCC
+}
+
+
+
+COMP 	gsm_cell_description 	 "GSM channel number and band specification"
+{
+ 	gsm_frequency_band 	 ; Band specification
+ 	arfcn 	 ; Channel number
+ 	bsic 	 ; BSIC
+}
+
+
+
+COMP 	gsm_ncell_list 	 "GSM neighbour cell list"
+{
+ 	gsm_cell_description 	[1.. MAX_GSM_NCELLS] 	 ; GSM neighbour cell descriptions
+}
+
+
+
+COMP 	gsm_ncell_measurement 	 "GSM neighbour cell measurement result"
+{
+ 	gsm_cell_description 	 ; GSM neighbour cell description
+ 	bsic_valid 	 ; BSIC validated
+ 	< () 	arfcn_rssi 	> 	 ; Average received signal level
+}
+
+
+
+COMP 	gsm_ncell_results 	 "GSM neighbour cell results"
+{
+ 	gsm_ncell_measurement 	[1.. MAX_GSM_NCELLS] 	 ; GSM neighbour cell descriptions
+}
+
+
+
+COMP 	imsi 	 "Container for a subscriber id"
+{
+ 	identity 	[SIZE_IMSI_MIN..SIZE_IMSI_MAX] 	 ; Content of IMSI
+}
+
+
+
+COMP 	k_c 	 "Container for GSM ciphering parameter"
+{
+ 	key 	[SIZE_KC] 	 ; Ciphering key
+ 	ksi 	 ; Ciphering key sequence number
+}
+TYPEDEF COMP k_c 	k_c_gprs 	 "Container for GPRS ciphering parameter"
+
+
+
+COMP 	gsm_key_set 	 "Contains information related to ciphering"
+{
+ 	k_c 	 ; KC
+ 	k_c_gprs 	 ; KC-GPRS
+}
+
+
+
+COMP 	ul_sdus 	 "Sequence numbers and mem handles pr. NSAPI"
+{
+ 	ul_sequence_number 	 ; Sequence number of last unacknowledged uplink SDU
+ 	dl_sequence_number 	 ; Sequence number of last unacknowledged downlink SDU (used by the network)
+ 	mem_handle 	PTR [0 .. MAX_UL_SDU] 	 ; List of unacknowledged uplink SDUs
+}
+
+
+
+COMP 	lac 	 "Container for location area code"
+{
+ 	lac_elements 	[SIZE_LAC] 	 ; Location area code element
+}
+
+
+
+COMP 	operation_mode 	 "Supported radio access technologies"
+{
+ 	access_modes 	 ; Supported access modes
+ 	< () 	gsm_bands 	> 	 ; GSM bands
+}
+
+
+
+COMP 	nas_system_info 	 "NAS system information"
+{
+ 	lac 	 ; Location area code
+ 	< () 	rac 	> 	 ; Routing area code
+ 	nmo 	 ; Network mode of operation
+ 	attach_detach_allowed 	 ; Attach / detach allowed
+ 	t3212 	 ; Periodic updating timer
+}
+
+
+
+COMP 	p_tmsi 	 "Container for P-TMSI"
+{
+ 	content_p_tmsi 	[SIZE_P_TMSI] 	 ; Content of P-TMSI
+}
+
+
+
+COMP 	plmn_id 	 "Container for a GSM MAP network identifier"
+{
+ 	mcc 	[SIZE_MCC] 	 ; Mobile country code
+ 	mnc 	[SIZE_MNC_MIN..SIZE_MNC_MAX] 	 ; Mobile network code
+}
+TYPEDEF COMP plmn_id 	selected_plmn 	 "Selected network identifier"
+TYPEDEF COMP plmn_id 	home_plmn 	 "Home network identifier"
+TYPEDEF COMP plmn_id 	equivalent_plmn 	 "Equivalent network identifier"
+
+
+
+COMP 	lai 	 "Container for location area information"
+{
+ 	plmn_id 	 ; Network ID
+ 	lac 	 ; Location area code
+}
+
+
+
+COMP 	forbidden_lai 	 "Container for forbidden location area list"
+{
+ 	lai 	[1.. MAX_FORBIDDEN_LAI] 	 ; location area information
+}
+
+
+
+COMP 	equivalent_plmn_list 	 "Container for equivalent PLMN list"
+{
+ 	equivalent_plmn 	[0..MAX_EQUIVALENT_PLMNS] 	 ; Equivalent PLMN
+}
+
+
+
+COMP 	rai 	 "Container for packet switched routing area identification"
+{
+ 	lai 	 ; Location area information
+ 	rac 	 ; Routing area code
+}
+
+
+
+COMP 	ps_loci 	 "Container for packet switched location information"
+{
+ 	rai 	 ; Routing area identification
+ 	< () 	p_tmsi 	> 	 ; P-TMSI
+}
+
+
+
+COMP 	sdu 	 "Container for a message"
+{
+ 	l_buf 	 ; Length in bits
+ 	o_buf 	 ; Offset in bits
+ 	buf 	[1] 	 ; Message content
+}
+
+
+
+COMP 	tmsi 	 "Container for TMSI"
+{
+ 	content_tmsi 	[SIZE_TMSI] 	 ; Content of TMSI
+}
+
+
+
+COMP 	loci 	 "Container for location information"
+{
+ 	lai 	 ; Location area information
+ 	< () 	tmsi 	> 	 ; TMSI
+}
+
+
+
+COMP 	umts_cell_description 	 "Container for cell description information for a UMTS cell"
+{
+ 	uarfcn 	 ; UMTS Channel number
+ 	psc 	 ; UMTS Primary scrambling code
+ 	< () 	tx_diversity 	> 	 ; UMTS TX diversity indicator
+}
+
+
+
+COMP 	key_set 	 "Ciphering and integrity keys for a CN domain"
+{
+ 	ksi 	 ; Key set identifier
+ 	ciphering_key 	[SIZE_CK] 	 ; Ciphering key
+ 	integrity_key 	[SIZE_IK] 	 ; Integrity protection key
+}
+
+
+
+COMP 	umts_ncell_list 	 "UMTS neighbour cell list"
+{
+ 	umts_cell_description 	[1.. MAX_UMTS_NCELLS] 	 ; UMTS neighbour cell descriptions
+}
+
+
+
+COMP 	umts_ncell_measurement 	 "UMTS neighbour cell measurement result"
+{
+ 	psc 	 ; Primary scrambling code
+ 	cell_status 	 ; Cell suitability status
+ 	< () 	cpich_rscp 	> 	 ; CPICH RSCP
+ 	< () 	cpich_ec_n0 	> 	 ; CPICH Ec/N0
+}
+
+
+
+COMP 	umts_ncell_results 	 "UMTS neighbour cell results"
+{
+ 	uarfcn 	 ; Channel
+ 	uarfcn_rssi 	 ; Channel RSSI
+ 	umts_ncell_measurement 	[1..MAX_UMTS_NCELLS_PER_UARFCN] 	 ; Cell measurements
+}
+
+
+
+COMP 	cs_security_parms 	 "Contains parameters related to ciphering and integrity protection for CS domain."
+{
+ 	key_set 	 ; Ciphering and integrity keys
+ 	< () 	start_val 	> 	 ; Start value (PS)
+}
+TYPEDEF COMP cs_security_parms 	ps_security_parms 	 "Contains parameters related to ciphering and integrity protection for PS domain."
+
+
+
+COMP 	umts_security_info 	 "Contains information related to UMTS ciphering and integrity protection."
+{
+ 	< () 	threshold 	> 	 ; THRESHOLD value
+ 	cs_security_parms 	 ; UMTS circuit switched security parameters
+ 	ps_security_parms 	 ; UMTS packet switched security parameters
+}
+
+
+
+COMP 	security_info 	 "Contains information related to ciphering and integrity protection."
+{
+ 	sim_type 	 ; SIM type
+ 	< () 	gsm_key_set 	> 	 ; GSM specific security information
+ 	< () 	umts_security_info 	> 	 ; UMTS specific security information
+}
+
+
+
+COMP 	qos_r97 	 "quality of service R97"
+{
+ 	delay 	 ; delay class
+ 	relclass 	 ; reliability class
+ 	peak 	 ; peak throughput
+ 	preced 	 ; precedence class
+ 	mean 	 ; mean throughput
+}
+
+
+
+COMP 	sdu_err_ratio 	 "SDU error ratio"
+{
+ 	ratio_mant 	 ; mantissa
+ 	ratio_exp 	 ; exponent
+}
+TYPEDEF COMP sdu_err_ratio 	ber 	 "Residual bit error ratio"
+
+
+
+COMP 	qos_r99 	 "quality of service R99"
+{
+ 	tc 	 ; traffic class; R99 / UMTS
+ 	order 	 ; delivery order; R99 / UMTS
+ 	del_err_sdu 	 ; delivery of erroneous SDU; R99 / UMTS
+ 	max_sdu 	 ; max SDU size; R99 / UMTS
+ 	max_rate_ul 	 ; max bit-rate uplink; R99 / UMTS
+ 	max_rate_dl 	 ; max bit-rate downlink; R99 / UMTS
+ 	ber 	 ; residual BER; R99 / UMTS
+ 	sdu_err_ratio 	 ; SDU error ratio; R99 / UMTS
+ 	xfer_delay 	 ; transfer delay; R99 / UMTS
+ 	handling_pri 	 ; traffic handling priority; R99 / UMTS
+ 	guar_br_ul 	 ; guaranteed bit-rate uplink; R99 / UMTS
+ 	guar_br_dl 	 ; guaranteed bit-rate downlink; R99 / UMTS
+}
+
+
+
+UNION 	min_qos 	 "quality of service"
+{
+ 	is_min_qos_not_present 	min_qos_not_present 	 ; QoS parameters absent
+ 	is_min_R97 	qos_r97 	 ; R97 QoS parameters
+ 	is_min_R99 	qos_r99 	 ; R99 QoS parameters
+}
+
+
+
+UNION 	qos 	 "quality of service"
+{
+ 	is_qos_not_present 	qos_not_present 	 ; QoS parameters absent
+ 	is_R97 	qos_r97 	 ; R97 QoS parameters
+ 	is_R99 	qos_r99 	 ; R99 QoS parameters
+}
+
+
+
+
+
+
+; PS_EXPORT 	0x0000
+
+
+
+PRIM 	PS_EXPORT 	0x0000
+{
+ 	acc 	 ; Access control class
+ 	ad 	 ; Administrative data
+ 	arfcn 	 ; GSM channel number
+ 	arfcn_rssi 	 ; GSM channel RSSI measurement
+ 	bsic 	 ; GSM BSIC
+ 	cn_domain 	 ; Core network domain identity
+ 	cpich_ec_n0 	 ; UMTS cell measurement value of CPICH Ec/N0
+ 	cpich_rscp 	 ; UMTS cell measurement value of CPICH RSCP
+ 	est_service 	 ; Establisment service
+ 	cs_security_parms 	 ; UMTS security parameters
+ 	equivalent_plmn 	 ; Equivalent network identifier
+ 	equivalent_plmn_list 	 ; Container for equivalent PLMN list
+ 	forbidden_lai 	 ; Container for forbidden location area list
+ 	gsm_cell_description 	 ; GSM channel number and band specification
+ 	gsm_frequency_band 	 ; Frequency band specification
+ 	gsm_ncell_index 	 ; GSM neighbour cell index
+ 	gsm_ncell_list 	 ; GSM neighbour cell list
+ 	gsm_ncell_measurement 	 ; GSM neighbour cell measurement result
+ 	gsm_ncell_results 	 ; GSM neighbour cell results
+ 	gsm_key_set 	 ; GSM Key Set for Ciphering
+ 	home_plmn 	 ; Home network identifier
+ 	imsi 	 ; Container for a subscriber id
+ 	k_c 	 ; KC
+ 	k_c_gprs 	 ; KC-GPRS
+ 	key_set 	 ; UMTS key set for ciphering and integrity handling
+ 	ksi 	 ; UMTS key set identifier
+ 	lac 	 ; Container for location area code
+ 	lai 	 ; Container for location area information
+ 	loci 	 ; Location information
+ 	llc_mode 	 ; LLC mode
+ 	meas_mode 	 ; Measurement mode
+ 	mem_handle 	 ; Memory Handle
+ 	nas_system_info 	 ; NAS system information
+ 	operation_mode 	 ; Supported radio access technologies.
+ 	p_tmsi 	 ; Packet temporary mobile subscriber identity
+ 	peak_throughput 	 ; Peak Trhoughput QoS Parameter
+ 	plmn_id 	 ; Container for a GSM MAP network identifier
+ 	ps_loci 	 ; Packet switched location information
+ 	ps_security_parms 	 ; UMTS security parameters
+ 	psc 	 ; FDD primary scrambling code
+ 	radio_prio 	 ; Radio Priority
+ 	rac 	 ; Routing Area Code
+ 	rai 	 ; Routing Area Identification
+ 	rat 	 ; Radio Access Technology Identifier
+ 	rel_ind 	 ; Local Release Indicator
+ 	sapi 	 ; Service Access Point Identifier
+ 	search_mode 	 ; Search mode for network scan
+ 	security_info 	 ; Security Information
+ 	selected_plmn 	 ; Selected network identifier
+ 	start_val 	 ; UMTS START value
+ 	sim_type 	 ; Subscriber card type
+ 	tmsi 	 ; Temporary mobile subscriber identity
+ 	tx_diversity 	 ; UMTS FDD TX diversity indicator
+ 	uarfcn 	 ; UMTS channel number
+ 	uarfcn_rssi 	 ; UMTS channel RSSI measurement
+ 	ul_sdus 	 ; List of Unacknowledged SDUs
+ 	umts_cell_description 	 ; Container for cell description information for a UMTS cell
+ 	umts_ncell_list 	 ; UMTS neighbour cell list
+ 	umts_ncell_measurement 	 ; UMTS neighbour cell measurement result
+ 	umts_ncell_results 	 ; UMTS neighbour cell results
+ 	umts_security_info 	 ; UMTS security information
+ 	service_level 	 ; Service Level
+ 	qos 	 ; quality of service
+ 	qos_r97 	 ; R97 quality of service
+ 	qos_r99 	 ; R99 quality of service
+ 	min_qos 	 ; minimum quality of service
+ 	pkt_flow_id 	 ; Packet Flow Identifier
+ 	sdu 	 ; Container for a message
+}
+
+
+
+
+
+
+
+
+

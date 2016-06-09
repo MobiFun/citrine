@@ -1,0 +1,1846 @@
+;********************************************************************************
+;*** File           : cc.mdf
+;*** Creation       : Thu Jun 19 15:32:09 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : cc
+;*** Document No.   : 6147.600.97.110
+;*** Document Date  : 2004-01-26
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:18:32 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-01-26"
+PRAGMA 	ID_AND_VERSION 	"6147.600.97.110"
+PRAGMA 	CCDNAME 	CC 	; CCD name tag
+PRAGMA 	PREFIX 	M_CC 	; Prefix with 'M_CC'
+
+
+
+CONST 	L3MAX 	251 	; maximum size of a L3 buffer
+CONST 	MAX_SS_VERSION 	1 	; maximum length in SS version
+CONST 	MAX_USER_USER_LENGTH 	128 	; maximum length of user-user info [ 24.008 c.p. 10.5.4.25]
+
+
+
+VALTAB 	VAL_access_ident
+VAL 	DEF 	 	"reserved"
+VAL 	0 	AI_OCT_ID 	"octet identifier"
+
+VALTAB 	VAL_state
+VAL 	DEF 	 	"reserved"
+VAL 	0 	CS_0 	"null"
+VAL 	2 	CS_01 	"MM connection pending"
+VAL 	35 	CS_03 	"Wait for network information"
+VAL 	37 	CS_05 	"CC-Establishment confirmed"
+VAL 	38 	CS_06 	"Recall present"
+VAL 	1 	CS_1 	"call initiated"
+VAL 	3 	CS_3 	"mobile originating call proceeding"
+VAL 	4 	CS_4 	"call delivered"
+VAL 	6 	CS_6 	"call present"
+VAL 	7 	CS_7 	"call received"
+VAL 	8 	CS_8 	"connect request"
+VAL 	9 	CS_9 	"mobile terminating call confirmed"
+VAL 	10 	CS_10 	"active"
+VAL 	11 	CS_11 	"disconnect request"
+VAL 	12 	CS_12 	"disconnect indication"
+VAL 	19 	CS_19 	"release request"
+VAL 	26 	CS_26 	"mobile originating modify"
+VAL 	27 	CS_27 	"mobile terminating modify"
+VAL 	28 	CS_28 	"connect indication"
+
+VALTAB 	VAL_cause
+RANGE 	0 .. 31 	"Normal, unspecified"
+RANGE 	32 .. 47 	"Resources unavailable, unspecified"
+RANGE 	48 .. 63 	"Service or option not available, unspecified"
+RANGE 	64 .. 79 	"Service or option not implemented, unspecified"
+RANGE 	80 .. 95 	"Semantically incorrect message"
+RANGE 	96 .. 111 	"Protocol error, unspecified"
+RANGE 	112 .. 127 	"Interworking, unspecified"
+VAL 	1 	CAUSE_UNASSIGN 	"Unassigned (unallocated) Note 9 number"
+VAL 	3 	CAUSE_NO_ROUTE 	"No route to destination"
+VAL 	6 	CAUSE_CHAN_UNACCEPT 	"Channel unacceptable"
+VAL 	8 	CAUSE_BARRED 	"Operator determined barring"
+VAL 	16 	CAUSE_CALL_CLEAR 	"Normal call clearing"
+VAL 	17 	CAUSE_USER_BUSY 	"User busy"
+VAL 	18 	CAUSE_NO_RESPONSE 	"No user responding"
+VAL 	19 	CAUSE_ALERT_NO_ANSWER 	"User alerting, no answer"
+VAL 	21 	CAUSE_CALL_REJECT 	"Call rejected"
+VAL 	22 	CAUSE_NUM_CHANGED 	"Number changed"
+VAL 	25 	CAUSE_PREEMPTION 	"Pre-emption"
+VAL 	26 	CAUSE_USER_CLEAR 	"Non selected user clearing"
+VAL 	27 	CAUSE_DEST_ORDER 	"Destination out of order"
+VAL 	28 	CAUSE_NUM_FORMAT 	"Invalid number format (incomplete number)"
+VAL 	29 	CAUSE_FACILITY_REJECT 	"Facility rejected"
+VAL 	30 	CAUSE_STATUS_ENQUIRY 	"Response to STATUS ENQUIRY"
+VAL 	31 	CAUSE_UNSPECIFIED 	"Normal, unspecified"
+VAL 	34 	CAUSE_NO_CHAN_AVAIL 	"No circuit/channel available"
+VAL 	38 	CAUSE_NETWORK_ORDER 	"Network out of order"
+VAL 	41 	CAUSE_TEMP_FAIL 	"Temporary failure"
+VAL 	42 	CAUSE_SWITCH_CONGEST 	"Switching equipment congestion"
+VAL 	43 	CAUSE_INFO_DISCARD 	"Access information discarded"
+VAL 	44 	CAUSE_REQ_CHAN_UNAVAIL 	"requested circuit/channel not available"
+VAL 	47 	CAUSE_RESOURCE_UNAVAIL 	"Resources unavailable, unspecified"
+VAL 	49 	CAUSE_QOS_UNAVAIL 	"Quality of service unavailable"
+VAL 	50 	CAUSE_FACILITY_UNSUBSCRIB 	"Requested facility not subscribed"
+VAL 	55 	CAUSE_BARRED_IN_CUG 	"Incoming calls barred within the CUG"
+VAL 	57 	CAUSE_BEARER_CAP_AUTHORIZ 	"Bearer capability not authorized"
+VAL 	58 	CAUSE_BEARER_CAP_UNAVAIL 	"Bearer capability not presently available"
+VAL 	63 	CAUSE_SERVICE_UNAVAIL 	"Service or option not available, unspecified"
+VAL 	65 	CAUSE_BEARER_NOT_IMPLEM 	"Bearer service not implemented"
+VAL 	68 	CAUSE_ACM_MAX 	"ACM equal to or greater than ACMmax"
+VAL 	69 	CAUSE_FACILITY_NOT_IMPLEM 	"Requested facility not implemented"
+VAL 	70 	CAUSE_RESTICT_BEARER_CAP 	"Only restricted digital information bearer capability is available"
+VAL 	79 	CAUSE_SERVICE_NOT_IMPLEM 	"Service or option not implemented, unspecified"
+VAL 	81 	CAUSE_INVALID_TI 	"Invalid transaction identifier value"
+VAL 	87 	CAUSE_USER_NOT_IN_CUG 	"User not member of CUG"
+VAL 	88 	CAUSE_INCOMPAT_DEST 	"Incompatible destination"
+VAL 	91 	CAUSE_INVALID_TRANS_NET 	"Invalid transit network selection"
+VAL 	95 	CAUSE_INCORRECT_MESSAGE 	"Semantically incorrect message"
+VAL 	96 	CAUSE_INVALID_MAND_INFO 	"Invalid mandatory information"
+VAL 	97 	CAUSE_MESSAGE_TYPE_NOT_IMPLEM 	"Message type non-existent or not implemented"
+VAL 	98 	CAUSE_MESSAGE_TYPE_INCOMPAT 	"Message type not compatible with protocol state"
+VAL 	99 	CAUSE_INFO_ELEM_NOT_IMPLEM 	"Information element nonistent or not implemented"
+VAL 	100 	CAUSE_COND_INFO_ELEM 	"Conditional IE error"
+VAL 	101 	CAUSE_MESSAGE_INCOMPAT 	"Message not compatible with protocol state"
+VAL 	102 	CAUSE_TIMER 	"Recovery on timer expiry"
+VAL 	111 	CAUSE_PROTOCOL 	"Protocol error, unspecified"
+VAL 	127 	CAUSE_INTERWORKING 	"Interworking, unspecified"
+
+VALTAB 	VAL_code
+VAL 	DEF 	 	"reserved"
+VAL 	0 	CSTD_GSM 	"GSM standardized coding"
+
+VALTAB 	VAL_cs
+VAL 	0 	CS_Q931 	"standardized coding as described in CCITT Rec. Q.931"
+VAL 	1 	CS_INTERNATIONAL 	"reserved for other international standards"
+VAL 	2 	CS_NATIONAL 	"national standard"
+VAL 	3 	CS_GSM_PLMN 	"standard defined for the GSM PLMNS as described in 10.86/GSM 04.08"
+
+VALTAB 	VAL_compress
+VAL 	0 	COMP_NO 	"data compression not possible"
+VAL 	1 	COMP_YES 	"data compression possible"
+
+VALTAB 	VAL_config
+VAL 	DEF 	 	"reserved"
+VAL 	0 	CONF_POINT_TO_POINT 	"point-to-point"
+
+VALTAB 	VAL_congest_lev
+VAL 	DEF 	 	"reserved"
+VAL 	0 	CL_RECEIVER_READY 	"receiver ready"
+VAL 	15 	CL_RECEIVER_NOT_READY 	"receiver not ready"
+
+VALTAB 	VAL_conn_elem
+VAL 	0 	CE_TRANSPA 	"transparent"
+VAL 	1 	CE_RLP 	"non transparent (RLP)"
+VAL 	2 	CE_TRANSPA_PREF 	"both, transparent preferred"
+VAL 	3 	CE_RLP_PREF 	"both, non transparent preferred"
+
+VALTAB 	VAL_dtmf
+VAL 	0 	DTMF_EARLY 	"Reserved for earlier versions of the protocol."
+VAL 	1 	DTMF_CURRENT 	"The mobile station supports DTMF as specified in section 5.5.7 of GSM 4.08."
+
+VALTAB 	VAL_duplex
+VAL 	0 	DUPLEX_HALF 	"half duplex"
+VAL 	1 	DUPLEX_FULL 	"full duplex"
+
+VALTAB 	VAL_establish
+VAL 	DEF 	 	"reserved"
+VAL 	0 	ESTAB_DEMAND 	"demand"
+
+VALTAB 	VAL_hold
+VAL 	0 	HLD_IDLE 	""
+VAL 	1 	HLD_HOLD_REQ 	""
+VAL 	2 	HLD_CALL_HELD 	""
+VAL 	3 	HLD_RETRIEVE_REQ 	""
+
+VALTAB 	VAL_trans_cap
+VAL 	DEF 	 	"reserved"
+VAL 	0 	ITC_SPEECH 	"speech"
+VAL 	1 	ITC_DIGITAL_UNRESTRICTED 	"unrestricted digital information"
+VAL 	2 	ITC_AUDIO 	"audio 3.1 kHz, ex PLMN"
+VAL 	3 	ITC_FAX_GROUP_3 	"fascimile group 3"
+VAL 	5 	ITC_OTHER 	"Other ITC (See octet 5a)"
+VAL 	6 	ITC_AUXILIARY_SPEECH 	"Auxiliary speech"
+VAL 	7 	ITC_NETWORK_RESERVED 	"reserved, to be used in the network."
+
+VALTAB 	VAL_intermed_rate
+VAL 	DEF 	 	"reserved"
+VAL 	2 	IR_8_KBIT 	"8 kbit/s"
+VAL 	3 	IR_16_KBIT 	"16 kbit/s"
+
+VALTAB 	VAL_l1_ident
+VAL 	DEF 	 	"reserved"
+VAL 	1 	L1_OCT_ID 	"octet identifier"
+
+VALTAB 	VAL_l2_ident
+VAL 	DEF 	 	"reserved"
+VAL 	2 	L2_OCT_ID 	"octet identifier"
+
+VALTAB 	VAL_loc
+VAL 	DEF 	 	"reserved"
+VAL 	0 	LOC_USER 	"user"
+VAL 	1 	LOC_PRIV_NET_LOCAL_USER 	"private network serving the local user"
+VAL 	2 	LOC_PUB_NET_LOCAL_USER 	"public network serving the local user"
+VAL 	3 	LOC_TRANSIT_NET 	"transit network"
+VAL 	4 	LOC_PUB_NET_REMOTE_USER 	"public network serving the remote user"
+VAL 	5 	LOC_PRIV_NET_REMOTE_USER 	"private network serving the remote user"
+VAL 	7 	LOC_INTERNATIONAL_NET 	"international network"
+VAL 	10 	LOC_BEYOND_POINT 	"network beyond interworking point"
+
+VALTAB 	VAL_modem_type
+VAL 	DEF 	 	"reserved"
+VAL 	0 	MT_NONE 	"none"
+VAL 	1 	MT_V21 	"V.21"
+VAL 	2 	MT_V22 	"V.22"
+VAL 	3 	MT_V22BIS 	"V.22 bis"
+VAL 	4 	MT_V23 	"V.23, (GSM R97 only)"
+VAL 	5 	MT_V26TER 	"V.26 ter"
+VAL 	6 	MT_V32 	"V.32"
+VAL 	7 	MT_UNDEF 	"modem for undefined interface"
+VAL 	8 	MT_AUTO 	"autobauding type 1"
+
+VALTAB 	VAL_mpty
+VAL 	0 	MPTY_IDLE 	""
+VAL 	1 	MPTY_REQ 	""
+VAL 	2 	MPTY_CALL 	""
+VAL 	3 	MPTY_SPLIT 	""
+
+VALTAB 	VAL_negotiate
+VAL 	DEF 	 	"reserved"
+VAL 	0 	NEGOTIATE_NO 	"in-band negotiation not possible"
+
+VALTAB 	VAL_nirr
+VAL 	0 	NIRR_NO_MEANING 	"No meaning is associated with this value."
+VAL 	1 	NIRR_DATA 	"Data up to and including 4.8 kb/s, full rate, non-transparent, 6 kb/s radio interface rate is requested."
+
+VALTAB 	VAL_nic_rx
+VAL 	0 	NIC_RX_NO 	"cannot accept data with network independent clock (i.e. sender does not support this optional procedure)"
+VAL 	1 	NIC_RX_YES 	"can accept data with network independent clock (i.e. sender does support this optional procedure)"
+
+VALTAB 	VAL_nic_tx
+VAL 	0 	NIC_TX_NO 	"does not require to send data with network independent clock"
+VAL 	1 	NIC_TX_YES 	"requires to send data with network independent clock"
+
+VALTAB 	VAL_nd
+VAL 	DEF 	 	"reserved"
+VAL 	0 	ND_USER_SUSPEND 	""
+VAL 	1 	ND_USED_RESUME 	""
+VAL 	2 	ND_BEARER_CHANGE 	""
+
+VALTAB 	VAL_npi
+VAL 	DEF 	 	"reserved"
+VAL 	0 	NPI_UNKNOWN 	"unknown"
+VAL 	1 	NPI_ISDN 	"ISDN/telephony numbering plan (Rec. E.164/E.163)"
+VAL 	3 	NPI_X121 	"data numbering plan (Recommendation X.121)"
+VAL 	4 	NPI_F69 	"telex numbering plan (Recommendation F.69)"
+VAL 	8 	NPI_NATIONAL 	"national numbering plan"
+VAL 	9 	NPI_PRIVATE 	"private numbering plan"
+VAL 	11 	NPI_CTS 	"Reserved for CTS"
+VAL 	15 	NPI_EXTENSTION 	"reserved for extension"
+
+VALTAB 	VAL_num_data
+VAL 	0 	NDATA_7 	"7 bits"
+VAL 	1 	NDATA_8 	"8 bits (this value is also used in the case of bit oriented protocols)"
+
+VALTAB 	VAL_num_stop
+VAL 	0 	NSTOP_1 	"1 bit (This value is also used in the case of synchronous mode)"
+VAL 	1 	NSTOP_2 	"2 bits"
+
+VALTAB 	VAL_odd_even
+VAL 	0 	OE_EVEN 	"even number of address signals"
+VAL 	1 	OE_ODD 	"odd number of address signals"
+
+VALTAB 	VAL_parity
+VAL 	DEF 	 	"reserved"
+VAL 	0 	PARITY_ODD 	"odd"
+VAL 	2 	PARITY_EVEN 	"even"
+VAL 	3 	PARITY_NONE 	"none"
+VAL 	4 	PARITY_0 	"forced to 0"
+VAL 	5 	PARITY_1 	"forced to 1"
+
+VALTAB 	VAL_present
+VAL 	DEF 	 	"reserved"
+VAL 	0 	PRES_ALLOWED 	"Presentation allowed"
+VAL 	1 	PRES_RESTRICTED 	"Presentation restricted"
+VAL 	2 	PRES_NOT_AVAIL 	"Number not available due to interworking"
+
+VALTAB 	VAL_progress_desc
+VAL 	DEF 	 	"Unspecific"
+VAL 	1 	PROG_NO_END_TO_END_PLMN 	"Call is not end-to-end PLMN/ISDN, further call progress information may be available in-band"
+VAL 	2 	PROG_DEST_NON_PLMN 	"Destination address in non-PLMN/ISDN"
+VAL 	3 	PROG_ORIGIN_NON_PLMN 	"Origination address in non-PLMN/ISDN"
+VAL 	4 	PROG_RETURN_TO_PLMN 	"Call has returned to the PLMN/ISDN"
+VAL 	8 	PROG_INBAND_AVAIL 	"In-band information or appropriate pattern now available"
+VAL 	32 	PROG_END_TO_END_PLMN 	"Call is end-to-end PLMN/ISDN"
+VAL 	64 	PROG_QUEUEING 	"Queueing"
+
+VALTAB 	VAL_rad_chan_req
+VAL 	DEF 	 	"reserved"
+VAL 	1 	RCR_FULL_ONLY 	"full rate support only mobile station"
+VAL 	2 	RCR_HALF_PREF 	"dual rate support mobile station/half rate preferred"
+VAL 	3 	RCR_FULL_PREF 	"dual rate support mobile station/full rate preferred"
+
+VALTAB 	VAL_rate_adapt
+VAL 	0 	RA_NONE 	"no rate adaption"
+VAL 	1 	RA_V110 	"V.110/X.30 rate adaption"
+VAL 	2 	RA_X31 	"CCITT X.31 flag stuffing"
+VAL 	3 	RA_OTHER 	"Other rate adaption"
+
+VALTAB 	VAL_repeat
+VAL 	DEF 	 	"Reserved"
+VAL 	1 	REPEAT_CIRCULAR 	"Circular for successive selection 'mode 1 alternate mode 2'"
+VAL 	2 	REPEAT_FALLBACK 	"Support of fallback - mode 1 preferred, mode 2 if setup of mode 1 fails"
+VAL 	3 	REPEAT_SEQUENTIAL 	"Sequential for successive selection 'mode 1 and then mode 2' (GSM R97 only)"
+
+VALTAB 	VAL_screen
+VAL 	0 	SCR_USER_UNSCREENED 	"User-provided, not screened"
+VAL 	1 	SCR_USER_PASSED 	"User-provided, verified and passed"
+VAL 	2 	SCR_USER_FAILED 	"User-provided, verified and failed"
+VAL 	3 	SCR_NETWORD 	"Network provided"
+
+VALTAB 	VAL_signal
+VAL 	DEF 	 	"reserved"
+VAL 	0 	SIGNAL_DIAL_ON 	"dial tone on"
+VAL 	1 	SIGNAL_BACK_ON 	"ring back tone on"
+VAL 	2 	SIGNAL_INTERCEPT_ON 	"intercept tone on"
+VAL 	3 	SIGNAL_CONGEST_ON 	"network congestion tone on"
+VAL 	4 	SIGNAL_BUSY_ON 	"busy tone on"
+VAL 	5 	SIGNAL_CONFIRM_ON 	"confirm tone on"
+VAL 	6 	SIGNAL_ANSWER_ON 	"answer tone on"
+VAL 	7 	SIGNAL_WAITING_ON 	"call waiting tone on"
+VAL 	8 	SIGNAL_HOOK_OFF_ON 	"off-hook warning tone on"
+VAL 	63 	SIGNAL_TONES_OFF 	"tones off"
+VAL 	79 	SIGNAL_ALERT_OFF 	"alerting off"
+
+VALTAB 	VAL_sig_access_prot
+VAL 	DEF 	 	"reserved"
+VAL 	1 	SIAP_I440 	"I.440/450"
+VAL 	3 	SIAP_X28_INDIV_NUI 	"X.28 - dedicated PAD, individual NUI (GSM R97 only)"
+VAL 	4 	SIAP_X28_UNIV_NUI 	"X.28 - dedicated PAD, universal NUI (GSM R97 only)"
+VAL 	5 	SIAP_X28_NON_DEDIC 	"X.28 - non dedicated PAD (GSM R97 only)"
+VAL 	6 	SIAP_X32 	"X.32"
+
+VALTAB 	VAL_structure
+VAL 	DEF 	 	"reserved"
+VAL 	0 	STRC_SERV_DATA_INTEG 	"service data unit integrity"
+VAL 	3 	STRC_UNSTRUCTURED 	"unstructured"
+
+VALTAB 	VAL_sync_async
+VAL 	0 	SYNCHRONOUS 	"synchronous"
+VAL 	1 	ASYNCHRONOUS 	"asynchronous"
+
+VALTAB 	VAL_trans_mode
+VAL 	0 	TM_CIRCUIT 	"circuit mode"
+VAL 	1 	TM_PACKET 	"packet mode"
+
+VALTAB 	VAL_ton
+VAL 	DEF 	 	"reserved"
+VAL 	0 	TON_UNKNOWN 	"unknown"
+VAL 	1 	TON_INTERNATIONAL 	"international number"
+VAL 	2 	TON_NATIONAL 	"national number"
+VAL 	3 	TON_NETWORK 	"network specific number"
+VAL 	4 	TON_DEDICATED 	"dedicated access, short code"
+VAL 	7 	TON_EXTENSION 	"reserved for extention"
+
+VALTAB 	VAL_tos
+VAL 	DEF 	 	"reserved"
+VAL 	0 	TOS_NSAP 	"NSAP (X.213/ISO 8348 AD2)"
+VAL 	2 	TOS_USER 	"User specified"
+
+VALTAB 	VAL_user_inf_l1_prot
+VAL 	DEF 	 	"reserved"
+VAL 	0 	L1_DEFAULT 	"default layer 1 protocol"
+
+VALTAB 	VAL_user_inf_l2_prot
+VAL 	DEF 	 	"reserved"
+VAL 	6 	L2_X25 	"recommendation X.25, link level"
+VAL 	8 	L2_ISO6429 	"ISO 6429, codeset 0 (DC1/DC3)"
+VAL 	10 	L2_VIDEOTEX 	"videotex profile 1"
+VAL 	12 	L2_COPFC 	"COPnoFlCt (Character oriented Protocol with no Flow Control mechanism)"
+VAL 	13 	L2_X75 	"X.75 layer 2 modified (CAPI)"
+
+VALTAB 	VAL_user_rate
+VAL 	DEF 	 	"reserved"
+VAL 	1 	UR_0_3_KBIT 	"rate : 0.3 kbit/s Recommendation X.1 and V.110"
+VAL 	2 	UR_1_2_KBIT 	"rate : 1.2 kbit/s Recommendation X.1 and V.110"
+VAL 	3 	UR_2_4_KBIT 	"rate : 2.4 kbit/s Recommendation X.1 and V.110"
+VAL 	4 	UR_4_8_KBIT 	"rate : 4.8 kbit/s Recommendation X.1 and V.110"
+VAL 	5 	UR_9_6_KBIT 	"rate : 9.6 kbit/s Recommendation X.1 and V.110"
+VAL 	6 	UR_12_0_KBIT_TRANS 	"rate : 12.0 kbit/s transparent"
+VAL 	7 	UR_1_2_KBIT_V23 	"rate: 1.2 kbit/s, 75bit/s V.23, X.1, V.110 (GSM R97 only)"
+
+VALTAB 	VAL_pd
+RANGE 	16 .. 63 	"Reserved for other network layer or through layer 3 protocols including Rec.X.25"
+RANGE 	64 .. 79 	"National use"
+RANGE 	80 .. 254 	"Reserved for other network through layer or layer 3 protocols including Rec.X.25"
+VAL 	DEF 	 	"reserved"
+VAL 	0 	PD_USER 	"User specific protocol"
+VAL 	1 	PD_HIGH_LAYER 	"OSI high layer protocols"
+VAL 	2 	PD_X244 	"X.244"
+VAL 	3 	PD_SYS_MANAGE 	"Reserved for system management convergence function"
+VAL 	4 	PD_IA5 	"IA5 characters"
+VAL 	7 	PD_V120 	"Rec.V.120 rate adaption"
+VAL 	8 	PD_Q931 	"Q.931 (I.451) user-network call control messages"
+
+VALTAB 	VAL_speech_vers1
+VAL 	0 	SPEECH_VERS_FR 	"full rate speech version 1"
+VAL 	1 	SPEECH_VERS_HR 	"half rate speech version 1"
+VAL 	2 	SPEECH_VERS_EFR 	"full rate speech version 2 (enhanced full rate)"
+VAL 	5 	SPEECH_VERS_AMR_HR 	"half rate speech version 3 (AHS)"
+VAL 	4 	SPEECH_VERS_AMR_FR 	"full rate speech version 3 (AFS)"
+VAL 	0xF 	SPEECH_VERS_NONE 	"no speech version given"
+
+VALTAB 	VAL_modem_type_2
+VAL 	0 	OTHER_MODEM_TYPE_NONE 	"No other modem type specified"
+VAL 	1 	OTHER_MODEM_TYPE_V32BIS 	"V.32bis (GSM R97 only)"
+VAL 	2 	OTHER_MODEM_TYPE_V34 	"V.34"
+
+VALTAB 	VAL_fnur
+VAL 	0 	FNUR_NOT_APPLICABLE 	"Fixed network user rate not applicable"
+VAL 	1 	FNUR_9600 	"FNUR 9.6 kbit/s"
+VAL 	2 	FNUR_14400 	"FNUR 14.4 kbit/s"
+VAL 	3 	FNUR_19200 	"FNUR 19.2 kbit/s"
+VAL 	4 	FNUR_28800 	"FNUR 28.8 kbit/s"
+VAL 	5 	FNUR_38400 	"FNUR 38.4 kbit/s"
+VAL 	6 	FNUR_48000 	"FNUR 48.0 kbit/s"
+VAL 	7 	FNUR_56000 	"FNUR 56.0 kbit/s"
+VAL 	8 	FNUR_64000 	"FNUR 64.0 kbit/s"
+VAL 	9 	FNUR_33600 	"FNUR 33.6 kbit/s - bit transparent (UMTS only)"
+VAL 	10 	FNUR_32000 	"FNUR 32.0 kbit/s - I.460"
+VAL 	11 	FNUR_31200 	"FNUR 31.2 kbit/s - V.34 (UMTS and 3,1 khz only)"
+
+VALTAB 	VAL_acc
+VAL 	0 	ACC_EMPTY 	"No channel codings acceptable"
+VAL 	1 	ACC_48 	"TCH 4.8 acceptable"
+VAL 	2 	ACC_96 	"TCH 9.6 acceptable"
+VAL 	8 	ACC_144 	"TCH 14.4 acceptable"
+VAL 	11 	ACC_ALL 	"All channel codings acceptable"
+
+VALTAB 	VAL_acc_ext_288 	%REL99%
+VAL 	0 	acc_ext_288_not_ok 	%REL99% 	"TCH/28.8 not acceptable"
+VAL 	1 	acc_ext_288_ok 	%REL99% 	"TCH/28.8 acceptable"
+
+VALTAB 	VAL_acc_ext_320 	%REL99%
+VAL 	0 	acc_ext_320_not_ok 	%REL99% 	"TCH/32.0 not acceptable"
+VAL 	1 	acc_ext_320_ok 	%REL99% 	"TCH/32.0 acceptable"
+
+VALTAB 	VAL_acc_ext_432 	%REL99%
+VAL 	0 	acc_ext_432_not_ok 	%REL99% 	"TCH/43.2 not acceptable"
+VAL 	1 	acc_ext_432_ok 	%REL99% 	"TCH/43.2 acceptable"
+
+VALTAB 	VAL_ch_cod_asym 	%REL99%
+VAL 	0 	CH_COD_SYM_PREF 	%REL99% 	"Channel coding symmetry preferred"
+VAL 	1 	CH_COD_DL_BIAS 	%REL99% 	"Downlink biased channel coding asymmetry preferred"
+VAL 	2 	CH_COD_UL_BIAS 	%REL99% 	"Uplink biased channel coding asymmetry preferred"
+VAL 	3 	CH_COD_SYM_PREFX 	%REL99% 	"Unused, interpret as Channel coding symmetry preferred"
+
+VALTAB 	VAL_mTch
+VAL 	0 	MAX_TCH_1 	"Maximum of 1 TCH"
+VAL 	1 	MAX_TCH_2 	"Maximum of 2 TCH"
+VAL 	2 	MAX_TCH_3 	"Maximum of 3 TCH"
+VAL 	3 	MAX_TCH_4 	"Maximum of 4 TCH"
+VAL 	4 	MAX_TCH_5 	"Maximum of 5 TCH"
+VAL 	5 	MAX_TCH_6 	"Maximum of 6 TCH"
+VAL 	6 	MAX_TCH_7 	"Maximum of 7 TCH"
+VAL 	7 	MAX_TCH_8 	"Maximum of 8 TCH"
+
+VALTAB 	VAL_uimi
+VAL 	0 	UIMI_NOT_ALLOWED 	"User initiated modification not allowed/required"
+VAL 	1 	UIMI_MAX_1_TCH 	"User initiated modification up to 1 TCH/F"
+VAL 	2 	UIMI_MAX_2_TCH 	"User initiated modification up to 2 TCH/F"
+VAL 	3 	UIMI_MAX_3_TCH 	"User initiated modification up to 3 TCH/F"
+VAL 	4 	UIMI_MAX_4_TCH 	"User initiated modification up to 4 TCH/F"
+
+VALTAB 	VAL_waiur
+VAL 	DEF 	 	"Reserved"
+VAL 	0 	WAIUR_NOT_APPLICABLE 	"Wanted Air Interface user rate not applicable"
+VAL 	1 	WAIUR_9600 	"WAIUR 9.6 kbit/s"
+VAL 	2 	WAIUR_14400 	"WAIUR 14.4 kbit/s"
+VAL 	3 	WAIUR_19200 	"WAIUR 19.2 kbit/s"
+VAL 	5 	WAIUR_28800 	"WAIUR 28.8 kbit/s"
+VAL 	6 	WAIUR_38400 	"WAIUR 38.4 kbit/s"
+VAL 	7 	WAIUR_43200 	"WAIUR 43.2 kbit/s"
+VAL 	8 	WAIUR_57600 	"WAIUR 57.6 kbit/s"
+VAL 	9 	WAIUR_38400_INT_1 	"Interpreted as 38.4 kbps by the network"
+VAL 	10 	WAIUR_38400_INT_2 	"Interpreted as 38.4 kbps by the network"
+VAL 	11 	WAIUR_38400_INT_3 	"Interpreted as 38.4 kbps by the network"
+VAL 	12 	WAIUR_38400_INT_4 	"Interpreted as 38.4 kbps by the network"
+
+VALTAB 	VAL_ccbs_act
+VAL 	0 	CCBS_NO 	"CCBS is not possible"
+VAL 	1 	CCBS_YES 	"CCBS is possible"
+
+VALTAB 	VAL_pcp
+VAL 	0 	PCP_NO 	"Mobile does not support prolonged clearing procedure"
+VAL 	1 	PCP_YES 	"Mobile supports prolonged clearing procedure"
+
+VALTAB 	VAL_rcl_type
+VAL 	0 	CCBS 	"CCBS"
+VAL 	1 	CCBS_1 	"Shall be treated as CCBS (intended for other similar types of Recall)"
+VAL 	2 	CCBS_2 	"Shall be treated as CCBS (intended for other similar types of Recall)"
+VAL 	3 	CCBS_3 	"Shall be treated as CCBS (intended for other similar types of Recall)"
+VAL 	4 	CCBS_4 	"Shall be treated as CCBS (intended for other similar types of Recall)"
+VAL 	5 	CCBS_5 	"Shall be treated as CCBS (intended for other similar types of Recall)"
+VAL 	6 	CCBS_6 	"Shall be treated as CCBS (intended for other similar types of Recall)"
+
+VALTAB 	VAL_coding_bc3x1
+VAL 	0 	CODING_BC3X_SPEECH 	"Octet 3x of IE Bearer Capabilities indicates speech codec version"
+VAL 	1 	CODING_BC3X_OTHER 	"Octet 3x of IE Bearer Capabilities used for other extension of octet 3"
+
+VALTAB 	VAL_ctm
+VAL 	0 	CTM_NO 	"Mobile does not support prolonged clearing procedure"
+VAL 	1 	CTM_YES 	"Mobile supports prolonged clearing procedure"
+
+VALTAB 	VAL_other_itc 	%REL99%
+VAL 	DEF 	 	"Reserved"
+VAL 	0 	ITC_DIGITAL_RESTRICTED 	%REL99% 	"Restricted digital information"
+
+VALTAB 	VAL_other_ra 	%REL99%
+VAL 	DEF 	 	"Reserved"
+VAL 	0 	RA_V120 	%REL99% 	"V.120"
+VAL 	1 	RA_H223_H245 	%REL99% 	"H.223 and H.245"
+VAL 	2 	RA_PIAFS 	%REL99% 	"PIAFS"
+
+VALTAB 	VAL_ra_header 	%REL99%
+VAL 	0 	RA_NO_HEADER 	%REL99% 	"Rate adaption header not included"
+VAL 	1 	RA_HEADER_INCLUDED 	%REL99% 	"Rate adaption header included"
+
+VALTAB 	VAL_multiple_frame 	%REL99%
+VAL 	0 	MULTIPLE_FRAME_NO 	%REL99% 	"Multiple frame establishment not supported, only UI frames allowed"
+VAL 	1 	MULTIPLE_FRAME_YES 	%REL99% 	"Multiple frame establishment supported"
+
+VALTAB 	VAL_mode_of_operation 	%REL99%
+VAL 	0 	BIT_TRANSPARENT 	%REL99% 	"Bit transparent mode of operation"
+VAL 	1 	PROTOCOL_SENSITIVE 	%REL99% 	"Protocol sensitive mode of operation"
+
+VALTAB 	VAL_lli_negotiation 	%REL99%
+VAL 	0 	LLI_DEFAULT 	%REL99% 	"Default LLI=256 only"
+VAL 	1 	LLI_FULL 	%REL99% 	"Full protocol negotiation"
+
+VALTAB 	VAL_assignor_assignee 	%REL99%
+VAL 	0 	DEFAULT_ASSIGNEE 	%REL99% 	"Message originator is default assignee"
+VAL 	1 	ASSIGNOR_ONLY 	%REL99% 	"Message originator is assignor only"
+
+VALTAB 	VAL_in_out_band_negotiation 	%REL99%
+VAL 	0 	INBAND_NEGOTIATION 	%REL99% 	"Negotiation is done inband using logical link zero"
+VAL 	1 	OUTBAND_NEGOTIATION 	%REL99% 	"Negotiation is done with USER INFORMATION messages on a temporary signalling connection"
+
+VALTAB 	VAL_max_nof_supp_bearers
+VAL 	DEF 	 	"Reserved"
+VAL 	1 	MAX_NOF_SUPP_BEARER_1 	"1  bearer suppported"
+
+VALTAB 	VAL_max_nof_supp_speech_bearers
+VAL 	DEF 	 	"Reserved"
+VAL 	0 	MAX_NOF_SUPP_SPEECH_BEARER_0 	"0 speech bearer suppported"
+VAL 	1 	MAX_NOF_SUPP_SPEECH_BEARER_1 	"1 speech bearer suppported"
+
+VALTAB 	VAL_cause_no_cli 	%REL99%
+VAL 	DEF 	 	"Other values shall be interpreted as Unavailable"
+VAL 	0 	CAUSE_NO_CLI_UNAVAILABLE 	%REL99% 	"CLI is unavailable"
+VAL 	1 	CAUSE_NO_CLI_USER_REJECT 	%REL99% 	"CLI rejected by remote user"
+VAL 	2 	CAUSE_NO_CLI_INTERACT_OTHER_SERVICE 	%REL99% 	"Interaction with other service"
+VAL 	3 	CAUSE_NO_CLI_PAYPHONE 	%REL99% 	"Coin line/payphone"
+
+VALTAB 	VAL_priority_grant 	%REL99%
+VAL 	0 	PRIO_NONE 	%REL99% 	"no priority applied"
+VAL 	1 	PRIO_4 	%REL99% 	"call priority level 4"
+VAL 	2 	PRIO_3 	%REL99% 	"call priority level 3"
+VAL 	3 	PRIO_2 	%REL99% 	"call priority level 2"
+VAL 	4 	PRIO_1 	%REL99% 	"call priority level 1"
+VAL 	5 	PRIO_0 	%REL99% 	"call priority level 0"
+VAL 	6 	PRIO_B 	%REL99% 	"call priority level B"
+VAL 	7 	PRIO_A 	%REL99% 	"call priority level A"
+
+VALTAB 	VAL_alerting_pat 	%REL99%
+VAL 	DEF 	 	"Reserved"
+VAL 	0 	ALERT_1 	%REL99% 	"alerting pattern 1"
+VAL 	1 	ALERT_2 	%REL99% 	"alerting pattern 2"
+VAL 	2 	ALERT_3 	%REL99% 	"alerting pattern 3"
+VAL 	4 	ALERT_5 	%REL99% 	"alerting pattern 5"
+VAL 	5 	ALERT_6 	%REL99% 	"alerting pattern 6"
+VAL 	6 	ALERT_7 	%REL99% 	"alerting pattern 7"
+VAL 	7 	ALERT_8 	%REL99% 	"alerting pattern 8"
+VAL 	8 	ALERT_9 	%REL99% 	"alerting pattern 9"
+
+
+
+
+VAR 	access_ident 	"Access identity" 	
+ 	2
+
+VAL 	@m_cc - VAL_access_ident@ 	
+
+VAR 	state 	"Call state value" 	
+ 	6
+
+VAL 	@m_cc - VAL_state@ 	
+
+VAR 	cause 	"Cause value" 	
+ 	7
+
+VAL 	@m_cc - VAL_cause@ 	
+
+VAR 	code 	"Coding standard" 	
+ 	1
+
+VAL 	@m_cc - VAL_code@ 	
+
+VAR 	cs 	"Coding standard" 	
+ 	2
+
+VAL 	@m_cc - VAL_cs@ 	
+
+VAR 	compress 	"Compression" 	
+ 	1
+
+VAL 	@m_cc - VAL_compress@ 	
+
+VAR 	config 	"Configuration" 	
+ 	1
+
+VAL 	@m_cc - VAL_config@ 	
+
+VAR 	congest_lev 	"Congestion level" 	
+ 	4
+
+VAL 	@m_cc - VAL_congest_lev@ 	
+
+VAR 	conn_elem 	"Connection element" 	
+ 	2
+
+VAL 	@m_cc - VAL_conn_elem@ 	
+
+VAR 	diag 	"Diagnostics" 	
+ 	8
+
+
+VAR 	dtmf 	"DTMF" 	
+ 	1
+
+VAL 	@m_cc - VAL_dtmf@ 	
+
+VAR 	duplex 	"Duplex mode" 	
+ 	1
+
+VAL 	@m_cc - VAL_duplex@ 	
+
+VAR 	establish 	"Establishment" 	
+ 	1
+
+VAL 	@m_cc - VAL_establish@ 	
+
+VAR 	ext_hlci 	"Extended high layer characteristics identification" 	
+ 	7
+
+
+VAR 	fac 	"Facility information" 	
+ 	8
+
+
+VAR 	hlci 	"High layer characteristics identification" 	
+ 	7
+
+
+VAR 	hold 	"Hold auxiliary state" 	
+ 	2
+
+VAL 	@m_cc - VAL_hold@ 	
+
+VAR 	trans_cap 	"Information transfer capability" 	
+ 	3
+
+VAL 	@m_cc - VAL_trans_cap@ 	
+
+VAR 	intermed_rate 	"Intermediate rate" 	
+ 	2
+
+VAL 	@m_cc - VAL_intermed_rate@ 	
+
+VAR 	interpret 	"Interpretation" 	
+ 	3
+
+
+VAR 	key 	"Keypad information" 	
+ 	7
+
+
+VAR 	l1_ident 	"Layer 1 identity" 	
+ 	2
+
+VAL 	@m_cc - VAL_l1_ident@ 	
+
+VAR 	l2_ident 	"Layer 2 identity" 	
+ 	2
+
+VAL 	@m_cc - VAL_l2_ident@ 	
+
+VAR 	loc 	"Location" 	
+ 	4
+
+VAL 	@m_cc - VAL_loc@ 	
+
+VAR 	llc 	"Low layer information" 	
+ 	8
+
+
+VAR 	msg_type 	"Message Type" 	
+ 	8
+
+
+VAR 	modem_type 	"Modem type" 	
+ 	5
+
+VAL 	@m_cc - VAL_modem_type@ 	
+
+VAR 	mpty 	"Multi party auxiliary state" 	
+ 	2
+
+VAL 	@m_cc - VAL_mpty@ 	
+
+VAR 	negotiate 	"Negotiation" 	
+ 	1
+
+VAL 	@m_cc - VAL_negotiate@ 	
+
+VAR 	nirr 	"Negotiation of intermediate rate request" 	
+ 	1
+
+VAL 	@m_cc - VAL_nirr@ 	
+
+VAR 	nic_rx 	"Network independent clock on Rx" 	
+ 	1
+
+VAL 	@m_cc - VAL_nic_rx@ 	
+
+VAR 	nic_tx 	"Network independent clock on Tx" 	
+ 	1
+
+VAL 	@m_cc - VAL_nic_tx@ 	
+
+VAR 	nd 	"Notification description" 	
+ 	7
+
+VAL 	@m_cc - VAL_nd@ 	
+
+VAR 	num 	"Number digit" 	
+ 	4
+
+
+VAR 	npi 	"Numbering plan identification" 	
+ 	4
+
+VAL 	@m_cc - VAL_npi@ 	
+
+VAR 	num_data 	"Number of data bits" 	
+ 	1
+
+VAL 	@m_cc - VAL_num_data@ 	
+
+VAR 	num_stop 	"Number of stop bits" 	
+ 	1
+
+VAL 	@m_cc - VAL_num_stop@ 	
+
+VAR 	odd_even 	"Odd / even indication" 	
+ 	1
+
+VAL 	@m_cc - VAL_odd_even@ 	
+
+VAR 	parity 	"Parity" 	
+ 	3
+
+VAL 	@m_cc - VAL_parity@ 	
+
+VAR 	present 	"Presentation indicator" 	
+ 	2
+
+VAL 	@m_cc - VAL_present@ 	
+
+VAR 	prot_prof 	"Presentation method of protocol profile" 	
+ 	2
+
+
+VAR 	progress_desc 	"Progress description" 	
+ 	7
+
+VAL 	@m_cc - VAL_progress_desc@ 	
+
+VAR 	rad_chan_req 	"Radio channel requirement" 	
+ 	2
+
+VAL 	@m_cc - VAL_rad_chan_req@ 	
+
+VAR 	rate_adapt 	"Rate adaption" 	
+ 	2
+
+VAL 	@m_cc - VAL_rate_adapt@ 	
+
+VAR 	rec 	"Recommendation" 	
+ 	7
+
+
+VAR 	repeat 	"Repeat indicator" 	
+ 	4
+
+VAL 	@m_cc - VAL_repeat@ 	
+
+VAR 	repeat_2 	"Repeat indicator" 	
+ 	4
+
+VAL 	@m_cc - VAL_repeat@ 	
+
+VAR 	repeat_3 	"Repeat indicator" 	
+ 	4
+
+VAL 	@m_cc - VAL_repeat@ 	
+
+VAR 	screen 	"Screening indicator" 	
+ 	2
+
+VAL 	@m_cc - VAL_screen@ 	
+
+VAR 	signal 	"Signal" 	
+ 	8
+
+VAL 	@m_cc - VAL_signal@ 	
+
+VAR 	sig_access_prot 	"Signalling access protocol" 	
+ 	3
+
+VAL 	@m_cc - VAL_sig_access_prot@ 	
+
+VAR 	ver 	"SS version information" 	
+ 	8
+
+
+VAR 	structure 	"Structure" 	
+ 	2
+
+VAL 	@m_cc - VAL_structure@ 	
+
+VAR 	subaddr 	"Subaddress information" 	
+ 	8
+
+
+VAR 	sync_async 	"Synchronous / Asyncronous" 	
+ 	1
+
+VAL 	@m_cc - VAL_sync_async@ 	
+
+VAR 	trans_mode 	"Transfer mode" 	
+ 	1
+
+VAL 	@m_cc - VAL_trans_mode@ 	
+
+VAR 	ton 	"Type of number" 	
+ 	3
+
+VAL 	@m_cc - VAL_ton@ 	
+
+VAR 	tos 	"Type of subaddress" 	
+ 	3
+
+VAL 	@m_cc - VAL_tos@ 	
+
+VAR 	user_inf_l1_prot 	"User information layer 1 protocol" 	
+ 	4
+
+VAL 	@m_cc - VAL_user_inf_l1_prot@ 	
+
+VAR 	user_inf_l2_prot 	"User information layer 2 protocol" 	
+ 	5
+
+VAL 	@m_cc - VAL_user_inf_l2_prot@ 	
+
+VAR 	user_rate 	"User rate" 	
+ 	4
+
+VAL 	@m_cc - VAL_user_rate@ 	
+
+VAR 	info 	"User-user information" 	
+ 	8
+
+
+VAR 	pd 	"User-user protocol discriminator" 	
+ 	8
+
+VAL 	@m_cc - VAL_pd@ 	
+
+VAR 	speech_vers1 	"Speech Version Indication No. 1" 	
+ 	4
+
+VAL 	@m_cc - VAL_speech_vers1@ 	
+
+VAR 	speech_vers2 	"Speech Version Indication No. 2" 	
+ 	4
+
+VAL 	@m_cc - VAL_speech_vers1@ 	
+
+VAR 	speech_vers3 	"Speech Version Indication No. 3" 	
+ 	4
+
+VAL 	@m_cc - VAL_speech_vers1@ 	
+
+VAR 	speech_vers4 	"Speech Version Indication No. 4" 	
+ 	4
+
+VAL 	@m_cc - VAL_speech_vers1@ 	
+
+VAR 	speech_vers5 	"Speech Version Indication No. 5" 	
+ 	4
+
+VAL 	@m_cc - VAL_speech_vers1@ 	
+
+VAR 	modem_type_2 	"Other Modem Type" 	
+ 	2
+
+VAL 	@m_cc - VAL_modem_type_2@ 	
+
+VAR 	fnur 	"Fixed Network User Rate" 	
+ 	5
+
+VAL 	@m_cc - VAL_fnur@ 	
+
+VAR 	acc 	"Acceptable Channel Codings" 	
+ 	4
+
+VAL 	@m_cc - VAL_acc@ 	
+
+VAR 	acc_ext_288 	%REL99% 	"Acceptable Channel Codings 28.8" 	
+ 	1
+
+VAL 	@m_cc - VAL_acc_ext_288@ 	
+
+VAR 	acc_ext_320 	%REL99% 	"Acceptable Channel Codings 32.0" 	
+ 	1
+
+VAL 	@m_cc - VAL_acc_ext_320@ 	
+
+VAR 	acc_ext_432 	"Acceptable Channel Codings 43.2" 	
+ 	1
+
+VAL 	@m_cc - VAL_acc_ext_432@ 	
+
+VAR 	ch_cod_asym 	%REL99% 	"Channel coding asymmetry indication" 	
+ 	2
+
+VAL 	@m_cc - VAL_ch_cod_asym@ 	
+
+VAR 	mTch 	"Maximum Traffic Channels" 	
+ 	3
+
+VAL 	@m_cc - VAL_mTch@ 	
+
+VAR 	uimi 	"User Initiated Modification Ind" 	
+ 	3
+
+VAL 	@m_cc - VAL_uimi@ 	
+
+VAR 	waiur 	"Wanted Air Interface User Rate" 	
+ 	4
+
+VAL 	@m_cc - VAL_waiur@ 	
+
+VAR 	ccbs_act 	"ccbs_activation" 	
+ 	1
+
+VAL 	@m_cc - VAL_ccbs_act@ 	
+
+VAR 	pcp 	"PCP" 	
+ 	1
+
+VAL 	@m_cc - VAL_pcp@ 	
+
+VAR 	rcl_type 	"Recall Type" 	
+ 	3
+
+VAL 	@m_cc - VAL_rcl_type@ 	
+
+VAR 	setup_msg 	"Setup message" 	
+ 	8
+
+
+VAR 	coding_bc3x1 	"Meaning of BC octet 3a" 	
+ 	1
+
+VAL 	@m_cc - VAL_coding_bc3x1@ 	
+
+VAR 	coding_bc3x2 	"Meaning of BC octet 3b" 	
+ 	1
+
+VAL 	@m_cc - VAL_coding_bc3x1@ 	
+
+VAR 	coding_bc3x3 	"Meaning of BC octet 3c" 	
+ 	1
+
+VAL 	@m_cc - VAL_coding_bc3x1@ 	
+
+VAR 	coding_bc3x4 	"Meaning of BC octet 3d" 	
+ 	1
+
+VAL 	@m_cc - VAL_coding_bc3x1@ 	
+
+VAR 	coding_bc3x5 	"Meaning of BC octet 3e" 	
+ 	1
+
+VAL 	@m_cc - VAL_coding_bc3x1@ 	
+
+VAR 	ctm 	"Support of CTM text telephony" 	
+ 	1
+
+VAL 	@m_cc - VAL_ctm@ 	
+
+VAR 	other_itc 	%REL99% 	"Other ITC" 	
+ 	2
+
+VAL 	@m_cc - VAL_other_itc@ 	
+
+VAR 	other_ra 	%REL99% 	"Other Rate adaption" 	
+ 	2
+
+VAL 	@m_cc - VAL_other_ra@ 	
+
+VAR 	ra_header 	%REL99% 	"Rate adaption header" 	
+ 	1
+
+VAL 	@m_cc - VAL_ra_header@ 	
+
+VAR 	multiple_frame 	%REL99% 	"Multiple frame establishment support" 	
+ 	1
+
+VAL 	@m_cc - VAL_multiple_frame@ 	
+
+VAR 	mode_of_operation 	%REL99% 	"Mode of operation" 	
+ 	1
+
+VAL 	@m_cc - VAL_mode_of_operation@ 	
+
+VAR 	lli_negotiation 	%REL99% 	"Logical link identifier negotiation" 	
+ 	1
+
+VAL 	@m_cc - VAL_lli_negotiation@ 	
+
+VAR 	assignor_assignee 	%REL99% 	"Assignor/assignee" 	
+ 	1
+
+VAL 	@m_cc - VAL_assignor_assignee@ 	
+
+VAR 	in_out_band_negotiation 	%REL99% 	"Inband/Out of band negotiation" 	
+ 	1
+
+VAL 	@m_cc - VAL_in_out_band_negotiation@ 	
+
+VAR 	max_nof_supp_bearers 	"Maximum number of supported bearers" 	
+ 	4
+
+VAL 	@m_cc - VAL_max_nof_supp_bearers@ 	
+
+VAR 	max_nof_supp_speech_bearers 	"Maximum number of supported speech bearers" 	
+ 	4
+
+VAL 	@m_cc - VAL_max_nof_supp_speech_bearers@ 	
+
+VAR 	cause_no_cli 	%REL99% 	"Cause of no CLI_" 	
+ 	8
+
+VAL 	@m_cc - VAL_cause_no_cli@ 	
+
+VAR 	priority_grant 	%REL99% 	"Prioritiy granted" 	
+ 	4
+
+VAL 	@m_cc - VAL_priority_grant@ 	
+
+VAR 	alerting_pat 	%REL99% 	"Alerting pattern" 	
+ 	4
+
+VAL 	@m_cc - VAL_alerting_pat@ 	
+
+
+
+
+COMP 	aux_states 	"Auxiliary states"
+{
+ 	+ 	.000  ; Spare
+ 	 	hold 	 ; Hold auxiliary state
+ 	* 	 	mpty 	 ; MPTY auxiliary state
+}
+
+
+
+COMP 	bearer_cap 	"Bearer capability"
+{
+ 	+ 	 	rad_chan_req 	 ; Radio channel requirement
+ 	 	code 	 ; Coding standard
+ 	 	trans_mode 	 ; Transfer mode
+ 	- 	 	trans_cap 	 ; Information transfer capability
+ 	 	coding_bc3x1 	 ; Meaning of octet 3a
+ 	 	ctm 	 ; Support of CTM text telephony
+ 	.0  ; Spare
+ 	- 	 	speech_vers1 	 ; Speech version indication no. 1
+ 	 	coding_bc3x2 	 ; Meaning of octet 3b
+ 	.00  ; Spare
+ 	- 	 	speech_vers2 	 ; Speech version indication no. 2
+ 	 	coding_bc3x3 	 ; Meaning of octet 3c
+ 	.00  ; Spare
+ 	- 	 	speech_vers3 	 ; Speech version indication no. 3
+ 	 	coding_bc3x4 	 ; Meaning of octet 3d
+ 	.00  ; Spare
+ 	- 	 	speech_vers4 	 ; Speech version indication no. 4
+ 	 	coding_bc3x5 	 ; Meaning of octet 3e
+ 	.00  ; Spare
+ 	* 	 	speech_vers5 	 ; Speech version indication no. 5
+ 	+ 	 	compress 	 ; Compression
+ 	 	structure 	 ; Structure
+ 	 	duplex 	 ; Duplex mode
+ 	 	config 	 ; Configuration
+ 	 	nirr 	 ; Negotiation of intermed. rate req.
+ 	* 	 	establish 	 ; Establishment
+ 	+ 	 	access_ident 	 ; Access identity
+ 	 	rate_adapt 	 ; Rate adaption
+ 	- 	 	sig_access_prot 	 	%REL99% ; Structured Element Item
+ 	 	other_itc 	 	%REL99% ; Other ITC
+ 	 	other_ra 	 	%REL99% ; Other Rate Adaption
+ 	- 	.000  	%REL99% ; Spare
+ 	 	ra_header 	 	%REL99% ; Rate adaption header
+ 	 	multiple_frame 	 	%REL99% ; Multiple frame support
+ 	 	mode_of_operation 	 	%REL99% ; Mode of operation
+ 	 	lli_negotiation 	 	%REL99% ; Logical Link Identifier Negotiation
+ 	 	assignor_assignee 	 	%REL99% ; Assignor / assignee
+ 	 	in_out_band_negotiation 	 	%REL99% ; Inband / outband negotiation
+ 	* 	.0  	%REL99% ; Spare
+ 	* 	 	sig_access_prot 	 	%!REL99% ; Signalling access protocol
+ 	+ 	 	l1_ident 	 ; Layer 1 identity
+ 	 	user_inf_l1_prot 	 ; User information layer 1 protocol
+ 	- 	 	sync_async 	 ; Synchronous / Asyncronous
+ 	 	num_stop 	 ; Number of stop bits
+ 	 	negotiate 	 ; Negotiation
+ 	 	num_data 	 ; Number of data bits
+ 	- 	 	user_rate 	 ; User rate
+ 	 	intermed_rate 	 ; Intermediate rate
+ 	 	nic_tx 	 ; Network independent clock on Tx
+ 	 	nic_rx 	 ; Network independent clock on Rx
+ 	- 	 	parity 	 ; Parity
+ 	 	conn_elem 	 ; Connection element
+ 	- 	 	modem_type 	 ; Modem type
+ 	 	modem_type_2 	 ; Other Modem type
+ 	- 	 	fnur 	 ; Fixed network user rate
+ 	 	acc 	 ; Acceptable Channel Codings
+ 	- 	 	mTch 	 ; Maximum Traffic Channels
+ 	 	uimi 	 ; User initiated Modification Ind
+ 	- 	 	waiur 	 	%REL99% ; Wanted Air Interface User Rate
+ 	 	acc_ext_288 	 	%REL99% ; Acceptable channel codings ext. 28.8
+ 	 	acc_ext_320 	 	%REL99% ; Acceptable channel codings ext. 32.0
+ 	 	acc_ext_432 	 	%REL99% ; Acceptable channel codings ext. 43.2
+ 	 	ch_cod_asym 	 	%REL99% ; Channel coding asymmetry indcation
+ 	* 	.00  	%REL99% ; Spare
+ 	* 	 	waiur 	 	%!REL99% ; Wanted Air Interface User Rate
+ 	+ 	 	l2_ident 	 ; Layer 2 identity
+ 	* 	 	user_inf_l2_prot 	 ; User information layer 2 protocol
+}
+TYPEDEF COMP bearer_cap 	bearer_cap_2 	"Bearer capability"
+
+
+
+COMP 	call_ctrl_cap 	"Call Control Capabilities"
+{
+ 	 	max_nof_supp_bearers 	 	%REL99% ; MAX_NOF_SUP_BEARER
+ 	.00  	%REL99% ; Spare
+ 	.000000  	%!REL99% ; Spare
+ 	 	pcp 	 ; PCP
+ 	 	dtmf 	 ; DTMF
+ 	.0000  	%REL99% ; Spare
+ 	 	max_nof_supp_speech_bearers 	 	%REL99% ; MAX_NOF_SPEECH_BEARERS
+}
+
+
+
+COMP 	call_state 	"Call state"
+{
+ 	 	cs 	 ; Coding standard II
+ 	 	state 	 ; Call state value
+}
+
+
+
+COMP 	dl_called_num 	"Called party BCD number"
+{
+ 	+ 	 	ton 	 ; Type of number
+ 	* 	 	npi 	 ; Numbering plan identification
+ 	BCDEVEN  	num 	[0..32] 	 ; Number digit
+}
+
+
+
+COMP 	ul_called_num 	"Called party BCD number"
+{
+ 	+ 	 	ton 	 ; Type of number
+ 	* 	 	npi 	 ; Numbering plan identification
+ 	BCDEVEN  	num 	[0..80] 	 ; Number digit
+}
+
+
+
+COMP 	called_subaddr 	"Called party subaddress"
+{
+ 	+ 	 	tos 	 ; Type of subaddress
+ 	 	odd_even 	 ; Odd / even indication
+ 	* 	.000  ; Spare
+ 	 	subaddr 	[0..20] 	 ; Subaddress information
+}
+
+
+
+COMP 	calling_num 	"Calling party BCD number"
+{
+ 	+ 	 	ton 	 ; Type of number
+ 	- 	 	npi 	 ; Numbering plan identification
+ 	 	present 	 ; Presentation indicator
+ 	.000  ; Spare
+ 	* 	 	screen 	 ; Screening indicator
+ 	BCDEVEN  	num 	[0..22] 	 ; Number digit (0..20)
+}
+
+
+
+COMP 	calling_subaddr 	"Calling party subaddress"
+{
+ 	+ 	 	tos 	 ; Type of subaddress
+ 	 	odd_even 	 ; Odd / even Indication
+ 	* 	.000  ; spare
+ 	 	subaddr 	[0..20] 	 ; Subaddress information
+}
+
+
+
+COMP 	cc_cause 	"Cause"
+{
+ 	+ 	 	cs 	 ; Coding standard II
+ 	.0  ; Spare
+ 	- 	 	loc 	 ; Location
+ 	* 	 	rec 	 ; Recommendation
+ 	* 	 	cause 	 ; Cause value
+ 	 	diag 	[0..27] 	 ; Diagnostics
+}
+TYPEDEF COMP cc_cause 	cc_cause_2 	"Cause"
+
+
+
+COMP 	clir_suppr 	"CLIR suppression"
+{
+}
+
+
+
+COMP 	clir_invoc 	"CLIR invocation"
+{
+}
+
+
+
+COMP 	connect_num 	"Connected number"
+{
+ 	+ 	 	ton 	 ; Type of number
+ 	- 	 	npi 	 ; Number plan identification
+ 	 	present 	 ; Presentation indicator
+ 	.000  ; Spare
+ 	* 	 	screen 	 ; Screening indicator
+ 	BCDEVEN  	num 	[0..22] 	 ; Number digit
+}
+
+
+
+COMP 	connect_subaddr 	"Connected subaddress"
+{
+ 	+ 	 	tos 	 ; Type of subaddress
+ 	 	odd_even 	 ; Odd / even indicator
+ 	* 	.000  ; Spare
+ 	 	subaddr 	[0..20] 	 ; Subaddress information
+}
+
+
+
+COMP 	facility 	"Facility"
+{
+ 	 	fac 	[0..L3MAX] 	 ; Facility information
+}
+TYPEDEF COMP facility 	fac_adv 	"Facility"
+
+
+
+COMP 	high_layer_comp 	"High layer compatibility"
+{
+ 	+ 	 	cs 	 ; Coding standard II
+ 	 	interpret 	 ; Interpretation
+ 	* 	 	prot_prof 	 ; Presentation method of protocol profile
+ 	+ 	 	hlci 	 ; High layer characteristics identification
+ 	* 	 	ext_hlci 	 ; Extended high layer characteristics identification
+}
+TYPEDEF COMP high_layer_comp 	high_layer_comp_2 	"High layer compatibility"
+
+
+
+COMP 	key_facility 	"Keypad facility"
+{
+ 	.0  ; Spare
+ 	 	key 	 ; Keypad information
+}
+
+
+
+COMP 	low_layer_comp 	"Low layer compatibility"
+{
+ 	 	llc 	[0..16] 	 ; Low layer information
+}
+TYPEDEF COMP low_layer_comp 	low_layer_comp_2 	"Low layer compatibility"
+
+
+
+COMP 	more_data 	"More data"
+{
+}
+
+
+
+COMP 	notific 	"Notification indicator"
+{
+ 	* 	 	nd 	 ; Notification description
+}
+
+
+
+COMP 	progress 	"Progress indicator"
+{
+ 	+ 	 	cs 	 ; Coding standard II
+ 	.0  ; Spare
+ 	* 	 	loc 	 ; Location
+ 	* 	 	progress_desc 	 ; Progress description
+}
+
+
+
+COMP 	reverse_call 	"Reverse call setup direction"
+{
+}
+
+
+
+COMP 	ss_version 	"SS Version Indicator"
+{
+ 	 	ver 	[0.. MAX_SS_VERSION] 	 ; SS version information
+}
+
+
+
+COMP 	user_user 	"User-user"
+{
+ 	 	pd 	 ; User-user protocol discriminator
+ 	 	info 	[0..MAX_USER_USER_LENGTH] 	 ; User-user information
+}
+
+
+
+COMP 	allowed_actions 	"Allowed Actions"
+{
+ 	 	ccbs_act 	 ; ccbs_activation
+ 	.0000000  ; Spare
+}
+
+
+
+COMP 	recall_type 	"Recall Type"
+{
+ 	.00000  ; Spare
+ 	 	rcl_type 	 ; recall_type
+}
+
+
+
+COMP 	setup_cont 	"Setup Container"
+{
+ 	 	setup_msg 	[0..L3MAX] 	 ; Setup message
+}
+
+
+
+COMP 	redirecting_num 	"Redirecting party BCD number"
+{
+ 	+ 	 	ton 	 ; Type of number
+ 	- 	 	npi 	 ; Numbering plan identification
+ 	 	present 	 ; Presentation indicator
+ 	.000  ; Spare
+ 	* 	 	screen 	 ; Screening indicator
+ 	BCDEVEN  	num 	[0..32] 	 ; Number digits
+}
+
+
+
+COMP 	redirecting_subaddr 	"Redirection party subaddress"
+{
+ 	+ 	 	tos 	 ; Type of subaddress
+ 	 	odd_even 	 ; Odd / even Indication
+ 	* 	.000  ; spare
+ 	 	subaddr 	[0..20] 	 ; Subaddress information
+}
+
+
+
+COMP 	cause_of_no_cli 	%REL99% 	"Cause of no CLI"
+{
+ 	 	cause_no_cli 	 	%REL99% ; Cause of no CLI
+}
+
+
+
+COMP 	immediate_mod 	"Immediate Modification Indicator"
+{
+}
+
+
+
+COMP 	alerting_pattern 	%REL99% 	"Alerting pattern"
+{
+ 	.0000  ; Spare
+ 	 	alerting_pat 	 	%REL99% ; alerting
+}
+
+
+
+
+
+
+MSG 	d_alert 	downlink 	0b00000001 ; Alerting
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	progress 	0x1E 	 ; Progress indicator
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+}
+
+
+
+MSG 	u_alert 	uplink 	0b00000001 ; Alerting
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+ 	GSM4_TLV  	ss_version 	0x7F 	 ; SS version
+}
+
+
+
+MSG 	u_call_conf 	uplink 	0b00001000 ; Call confirmed
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_TV  	repeat 	0x0D 	 ; Repeat Indicator
+ 	GSM4_TLV  	bearer_cap 	0x04 	 ; Bearer capability 1
+ 	GSM4_TLV  	bearer_cap_2 	0x04 	 ; Bearer capability 2
+ 	GSM4_TLV  	cc_cause 	0x08 	 ; CC Cause
+ 	GSM4_TLV  	call_ctrl_cap 	0x15 	 ; CC Capabilities
+}
+
+
+
+MSG 	d_call_proceed 	downlink 	0b00000010 ; Call proceeding
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_TV  	repeat 	0x0D 	 ; Repeat Indicator
+ 	GSM4_TLV  	bearer_cap 	0x04 	 ; Bearer capability 1
+ 	GSM4_TLV  	bearer_cap_2 	0x04 	 ; Bearer capability 2
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	progress 	0x1E 	 ; Progress indicator
+ 	GSM1_TV  	priority_grant 	0x08 	 	%REL99% ; Priority granted
+}
+
+
+
+MSG 	b_congest_ctrl 	both 	0b00111001 ; Congestion control
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	congest_lev 	 ; Congestion level
+ 	.0000  ; Spare half octet
+ 	GSM4_TLV  	cc_cause 	0x08 	 ; CC Cause
+}
+
+
+
+MSG 	d_connect 	downlink 	0b00000111 ; Connect
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	progress 	0x1E 	 ; Progress indicator
+ 	GSM4_TLV  	connect_num 	0x4C 	 ; Connected number
+ 	GSM4_TLV  	connect_subaddr 	0x4D 	 ; Connected subaddress
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+}
+
+
+
+MSG 	u_connect 	uplink 	0b00000111 ; Connect
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	connect_subaddr 	0x4D 	 ; Connected subaddress
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+ 	GSM4_TLV  	ss_version 	0x7F 	 ; SS version
+}
+
+
+
+MSG 	b_connect_ack 	both 	0b00001111 ; Connect acknowledge
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_disconnect 	downlink 	0b00100101 ; Disconnect
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	cc_cause 	 ; CC Cause
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	progress 	0x1E 	 ; Progress indicator
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+ 	GSM4_TLV  	allowed_actions 	0x7B 	 ; Allowed Actions
+}
+
+
+
+MSG 	u_disconnect 	uplink 	0b00100101 ; Disconnect
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	cc_cause 	 ; CC Cause
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+ 	GSM4_TLV  	ss_version 	0x7F 	 ; SS version
+}
+
+
+
+MSG 	u_emerge_setup 	uplink 	0b00001110 ; Emergency setup
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	bearer_cap 	0x04 	 ; Bearer capability
+}
+
+
+
+MSG 	d_facility 	downlink 	0b00111010 ; Facility
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	facility 	 ; Facility
+}
+
+
+
+MSG 	u_facility 	uplink 	0b00111010 ; Facility
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	facility 	 ; Facility
+ 	GSM4_TLV  	ss_version 	0x7F 	 ; SS version
+}
+
+
+
+MSG 	u_hold 	uplink 	0b00011000 ; Hold
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_hold_ack 	downlink 	0b00011001 ; Hold Acknowledge
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_hold_rej 	downlink 	0b00011010 ; Hold Reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	cc_cause 	 ; CC Cause
+}
+
+
+
+MSG 	b_modify 	both 	0b00010111 ; Modify
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	bearer_cap 	 ; Bearer capability
+ 	GSM4_TLV  	low_layer_comp 	0x7C 	 ; Low layer comp.
+ 	GSM4_TLV  	high_layer_comp 	0x7D 	 ; High layer comp.
+ 	GSM2_T  	reverse_call 	0xA3 	 ; Reverse call setup direction direction
+ 	GSM2_T  	immediate_mod 	0xA4 	 ; Immediate Modification indictation
+}
+
+
+
+MSG 	b_modify_comp 	both 	0b00011111 ; Modify complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	bearer_cap 	 ; Bearer capability
+ 	GSM4_TLV  	low_layer_comp 	0x7C 	 ; Low layer comp.
+ 	GSM4_TLV  	high_layer_comp 	0x7D 	 ; High layer comp.
+ 	GSM2_T  	reverse_call 	0xA3 	 ; Reverse call setup direction direction
+}
+
+
+
+MSG 	b_modify_rej 	both 	0b00010011 ; Modify reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	bearer_cap 	 ; Bearer capability
+ 	GSM4_LV  	cc_cause 	 ; CC Cause
+ 	GSM4_TLV  	low_layer_comp 	0x7C 	 ; Low layer comp.
+ 	GSM4_TLV  	high_layer_comp 	0x7D 	 ; High layer comp.
+}
+
+
+
+MSG 	b_notify 	both 	0b00111110 ; Notify
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	notific 	 ; Notification indicator
+}
+
+
+
+MSG 	d_progress 	downlink 	0b00000011 ; Progress
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	progress 	 ; Progress indicator
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+}
+
+
+
+MSG 	d_release 	downlink 	0b00101101 ; Release
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	cc_cause 	0x08 	 ; CC Cause
+ 	GSM4_TLV  	cc_cause_2 	0x08 	 ; Second cause
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+}
+
+
+
+MSG 	u_release 	uplink 	0b00101101 ; Release
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	cc_cause 	0x08 	 ; CC Cause
+ 	GSM4_TLV  	cc_cause_2 	0x08 	 ; Second cause
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+ 	GSM4_TLV  	ss_version 	0x7F 	 ; SS version
+}
+
+
+
+MSG 	d_release_comp 	downlink 	0b00101010 ; Release complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	cc_cause 	0x08 	 ; CC Cause
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+}
+
+
+
+MSG 	u_release_comp 	uplink 	0b00101010 ; Release complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	cc_cause 	0x08 	 ; CC Cause
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+ 	GSM4_TLV  	ss_version 	0x7F 	 ; SS version
+}
+
+
+
+MSG 	u_retrieve 	uplink 	0b00011100 ; Retrieve
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_retrieve_ack 	downlink 	0b00011101 ; Retrieve Acknowledge
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_retrieve_rej 	downlink 	0b00011110 ; Retrieve Reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	cc_cause 	 ; CC Cause
+}
+
+
+
+MSG 	d_setup 	downlink 	0b00000101 ; Setup
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_TV  	repeat 	0x0D 	 ; BC repeat indicator
+ 	GSM4_TLV  	bearer_cap 	0x04 	 ; Bearer capability 1
+ 	GSM4_TLV  	bearer_cap_2 	0x04 	 ; Bearer capability 2
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility
+ 	GSM4_TLV  	progress 	0x1E 	 ; Progress indicator
+ 	GSM3_TV  	signal 	0x34 	 ; Signal
+ 	GSM4_TLV  	calling_num 	0x5C 	 ; Calling party number BCD
+ 	GSM4_TLV  	calling_subaddr 	0x5D 	 ; Calling party sub-address
+ 	GSM4_TLV  	dl_called_num 	0x5E 	 ; Called party BCD number
+ 	GSM4_TLV  	called_subaddr 	0x6D 	 ; Called party sub-address
+ 	GSM4_TLV  	redirecting_num 	0x74 	 ; Redirecting party BCD number
+ 	GSM4_TLV  	redirecting_subaddr 	0x75 	 ; Redirecting party sub-address
+ 	GSM1_TV  	repeat_2 	0x0D 	 ; LLC repeat indicator
+ 	GSM4_TLV  	low_layer_comp 	0x7C 	 ; Low layer compatibility I
+ 	GSM4_TLV  	low_layer_comp_2 	0x7C 	 ; Low layer compatibility II
+ 	GSM1_TV  	repeat_3 	0x0D 	 ; HLC repeat indicator
+ 	GSM4_TLV  	high_layer_comp 	0x7D 	 ; High layer compatibility i
+ 	GSM4_TLV  	high_layer_comp_2 	0x7D 	 ; High layer compatibility ii
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+ 	GSM1_TV  	priority_grant 	0x08 	 	%REL99% ; Priority granted
+ 	GSM4_TLV  	alerting_pattern 	0x19 	 	%REL99% ; Alert
+ 	GSM4_TLV  	cause_of_no_cli 	0x3A 	 	%REL99% ; Cause of no CLI
+}
+
+
+
+MSG 	u_setup 	uplink 	0b00000101 ; Setup
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_TV  	repeat 	0x0D 	 ; BC repeat indicator
+ 	GSM4_TLV  	bearer_cap 	0x04 	 ; Bearer capability 1
+ 	GSM4_TLV  	bearer_cap_2 	0x04 	 ; Bearer capability 2
+ 	GSM4_TLV  	facility 	0x1C 	 ; Facility (simple recall alignment)
+ 	GSM4_TLV  	calling_subaddr 	0x5D 	 ; Calling party sub-address
+ 	GSM4_TLV  	ul_called_num 	0x5E 	 ; Called party BCD number
+ 	GSM4_TLV  	called_subaddr 	0x6D 	 ; Called party sub-address
+ 	GSM1_TV  	repeat_2 	0x0D 	 ; LLC repeat indicator
+ 	GSM4_TLV  	low_layer_comp 	0x7C 	 ; Low layer compatibility I
+ 	GSM4_TLV  	low_layer_comp_2 	0x7C 	 ; Low layer compatibility II
+ 	GSM1_TV  	repeat_3 	0x0D 	 ; HLC repeat indicator
+ 	GSM4_TLV  	high_layer_comp 	0x7D 	 ; High layer compatibility i
+ 	GSM4_TLV  	high_layer_comp_2 	0x7D 	 ; High layer compatibility ii
+ 	GSM4_TLV  	user_user 	0x7E 	 ; User-user
+ 	GSM4_TLV  	ss_version 	0x7F 	 ; SS version
+ 	GSM2_T  	clir_suppr 	0xA1 	 ; CLIR suppression
+ 	GSM2_T  	clir_invoc 	0xA2 	 ; CLIR invocation
+ 	GSM4_TLV  	call_ctrl_cap 	0x15 	 ; CC capabilities
+ 	GSM4_TLV  	fac_adv 	0x1D 	 ; Facility (advanced recall alignment)
+}
+
+
+
+MSG 	u_start_dtmf 	uplink 	0b00110101 ; Start DTMF
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_TV  	key_facility 	0x2C 	 ; Keypad facility
+}
+
+
+
+MSG 	d_start_dtmf_ack 	downlink 	0b00110110 ; Start DTMF Acknowledge
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_TV  	key_facility 	0x2C 	 ; Keypad facility
+}
+
+
+
+MSG 	d_start_dtmf_rej 	downlink 	0b00110111 ; Start DTMF reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	cc_cause 	 ; CC Cause
+}
+
+
+
+MSG 	b_status 	both 	0b00111101 ; Status
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	cc_cause 	 ; CC Cause
+ 	GSM3_V  	call_state 	 ; Call state
+ 	GSM4_TLV  	aux_states 	0x24 	 ; Auxiliary states
+}
+
+
+
+MSG 	b_status_enq 	both 	0b00110100 ; Status enquiry
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	u_stop_dtmf 	uplink 	0b00110001 ; Stop DTMF
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_stop_dtmf_ack 	downlink 	0b00110010 ; Stop DTMF acknowledge
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	b_user_info 	both 	0b00010000 ; User information
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	user_user 	 ; User-user
+ 	GSM2_T  	more_data 	0xA0 	 ; More data
+}
+
+
+
+MSG 	u_start_cc 	uplink 	0b00001001 ; Start_CC
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	call_ctrl_cap 	0x15 	 ; CC Capabilities
+}
+
+
+
+MSG 	d_recall 	downlink 	0b00001011 ; Recall
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	recall_type 	 ; Recall Type
+ 	GSM4_LV  	facility 	 ; Facility
+}
+
+
+
+MSG 	u_cc_est_conf 	uplink 	0b00000110 ; CC-Establishment confirmed
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_TV  	repeat 	0x0D 	 ; Repeat Indicator
+ 	GSM4_TLV  	bearer_cap 	0x04 	 ; Bearer capability 1
+ 	GSM4_TLV  	bearer_cap_2 	0x04 	 ; Bearer capability 2
+ 	GSM4_TLV  	cc_cause 	0x08 	 ; CC Cause
+}
+
+
+
+MSG 	d_cc_establishment 	downlink 	0b00000100 ; CC-Establishment
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	setup_cont 	 ; Setup Container
+}
+
+
+
+
+
+

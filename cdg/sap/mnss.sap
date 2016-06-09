@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">mnss</DocName>
+        <DocNum Number="102" Project="6147"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the supplementary services to the man machine interface.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="96"/>
+            <Date Day="2" Month="9" Year="1997"/>
+            <Author>VK</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="97"/>
+            <Date Day="6" Month="2" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Cause Concept realized, removed MNSS_ERROR_IND.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="97"/>
+            <Date Day="8" Month="2" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switch to use of common SAP: use SS_ORIGINATING_ENTITY of gsmcom.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="97"/>
+            <Date Day="1" Month="8" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switch to new template. Switch to 32bit opcodes. Mutually exchanged DL/UL flag of opcodes which was both wrong in the SAP+xxx_pei.c.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="104" Year="97"/>
+            <Date Day="1" Month="8" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Considered 04.06 clause 5.8.5 (max. L3 msg length = 251) as an upper limit for facilities and set FACILITY_LEN to 251.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>2 Constants</Section>
+        </Description>
+        <Constant>
+            <Alias>FACILITY_LEN</Alias>
+            <Value ValueType="DEC">251</Value>
+            <Comment>Max. length of facility considering L2 constraints</Comment>
+        </Constant>
+        <Constant>
+            <Alias>VERSION_LEN</Alias>
+            <Value ValueType="DEC">8</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>SS_ORIGINATING_ENTITY</Alias>
+            <ItemLink>
+                <DocName DocType="SAP">gsmcom</DocName>
+                <Name>SS_ORIGINATING_ENTITY</Name>
+            </ItemLink>
+            <Comment>mask for indicating the originating entity of a cause is SS</Comment>
+        </Constant>
+        <History>
+            <Date Day="16" Month="12" Year="1996"/>
+            <Author>LE</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="30" Month="5" Year="1997"/>
+            <Author>MS</Author>
+            <Comment>Revised</Comment>
+        </History>
+        <History>
+            <Date Day="8" Month="8" Year="1997"/>
+            <Author>SZ</Author>
+            <Comment>facility len 100 -> 251</Comment>
+        </History>
+        <History>
+            <Date Day="7" Month="2" Year="2002"/>
+            <Author>SBK</Author>
+            <Comment>Added constant for identification of SS due to Cause Concept</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="7" Year="2002"/>
+            <Author>HM</Author>
+            <Comment>Considered 04.06 5.8.5 to determine FACILITY_LEN</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="12">
+        <Description>
+            <Section>This section contains all primitives that are defined for the MNSS SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>With the MNSS_BEGIN_REQ a new call independent supplementary service transaction is started.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNSS_BEGIN_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>fac_inf</Name>
+                </ItemLink>
+                <Comment>facility information</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>ss_ver</Name>
+                </ItemLink>
+                <Comment>ss version</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Opcode changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MNSS_FACILITY_REQ sends a facility information element for an ongoing transaction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNSS_FACILITY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>fac_inf</Name>
+                </ItemLink>
+                <Comment>facility information</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>ss_ver</Name>
+                </ItemLink>
+                <Comment>ss version</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Opcode changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MNSS_END_REQ sends a facility information and finishes the call independent supplementary service transaction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNSS_END_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>fac_inf</Name>
+                </ItemLink>
+                <Comment>facility information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Opcode changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MNSS_BEGIN_IND is used to start a mobile terminated call independent supplementary service transaction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNSS_BEGIN_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>SS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>fac_inf</Name>
+                </ItemLink>
+                <Comment>facility information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Opcode changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MNSS_FACILITY_IND is used to forward a facility information to the MMI during a call independent supplementary service transaction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNSS_FACILITY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>SS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>fac_inf</Name>
+                </ItemLink>
+                <Comment>facility information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Opcode changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MNSS_END_IND is used to forward a facility information to MMI and to finish the call independent supplementary service transaction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNSS_END_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>SS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>cause; The following causes can occur within this primitive: all those mentioned in 4.3 and all possible within the MMSS_RELEASE_IND and MMSS_ERROR_IND primitives of the MMSS SAP</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>fac_inf</Name>
+                </ItemLink>
+                <Comment>facility information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>cause added</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Opcode changed</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter contains a facility information element.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>fac_inf</Name>
+                <Comment>facility information</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>l_fac</Name>
+                </ItemLink>
+                <Comment>facility length</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>o_fac</Name>
+                </ItemLink>
+                <Comment>facility offset</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>fac</Name>
+                </ItemLink>
+                <Control>[FACILITY_LEN]</Control>
+                <Comment>facility content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>len USHORT -> UBYTE</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>structure aligned to T_sdu for decoding in MMI</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter contains a ss version number.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ss_ver</Name>
+                <Comment>ss version</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>len</Name>
+                </ItemLink>
+                <Comment>length of ss version</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnss</DocName>
+                    <Name>ver</Name>
+                </ItemLink>
+                <Control>[VERSION_LEN]</Control>
+                <Comment>ss version content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies a transaction.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ti</Name>
+                <Type>U8</Type>
+                <Comment>Transaction Identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnss</DocName>
+                <Name>VAL_ti</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains a facility information element.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_fac</Name>
+                <Type>U16</Type>
+                <Comment>facility length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>len USHORT -&amp;gt; UBYTE</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>structure aligned to T_sdu for decoding in MMI</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains a facility information element.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_fac</Name>
+                <Type>U16</Type>
+                <Comment>facility offset</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>len USHORT -&amp;gt; UBYTE</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>structure aligned to T_sdu for decoding in MMI</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains a facility information element.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>fac</Name>
+                <Type>U8</Type>
+                <Comment>facility content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="8" Year="1997"/>
+                <Author>SZ</Author>
+                <Comment>len USHORT -&amp;gt; UBYTE</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>structure aligned to T_sdu for decoding in MMI</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The ?parameter defines an error cause for a call independent supplementary service transaction.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnss</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="2" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Cause Concept realised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains a ss version number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>len</Name>
+                <Type>U8</Type>
+                <Comment>length of ss version</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains a ss version number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ver</Name>
+                <Type>U8</Type>
+                <Comment>ss version content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the MNSS SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ti</Name>
+                <Comment>values for ti</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>TI_RES_MO</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>TI_RES_MT</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>6</MaxValue>
+                <Comment>ms originated identifier</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>8</MinValue>
+                <MaxValue>14</MaxValue>
+                <Comment>ms terminated transaction</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000000000</Value>
+                <Alias>MNSS_CAUSE_UNASSIGN</Alias>
+                <Comment>Unassigned (unallocated) Note 9 number</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000000011</Value>
+                <Alias>MNSS_CAUSE_NO_ROUTE</Alias>
+                <Comment>No route to destination</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000000110</Value>
+                <Alias>MNSS_CAUSE_CHAN_UNACCEPT</Alias>
+                <Comment>Channel unacceptable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000001000</Value>
+                <Alias>MNSS_CAUSE_BARRED</Alias>
+                <Comment>Operator determined barring</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000010000</Value>
+                <Alias>MNSS_CAUSE_CALL_CLEAR</Alias>
+                <Comment>Normal call clearing</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000010001</Value>
+                <Alias>MNSS_CAUSE_USER_BUSY</Alias>
+                <Comment>User busy</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000010010</Value>
+                <Alias>MNSS_CAUSE_NO_RESPONSE</Alias>
+                <Comment>No user responding</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000010011</Value>
+                <Alias>MNSS_CAUSE_ALERT_NO_ANSWER</Alias>
+                <Comment>User alerting, no answer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000010101</Value>
+                <Alias>MNSS_CAUSE_CALL_REJECT</Alias>
+                <Comment>Call rejected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000010110</Value>
+                <Alias>MNSS_CAUSE_NUM_CHANGED</Alias>
+                <Comment>Number changed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000011001</Value>
+                <Alias>MNSS_CAUSE_PREEMPTION</Alias>
+                <Comment>Pre-emption</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000011010</Value>
+                <Alias>MNSS_CAUSE_USER_CLEAR</Alias>
+                <Comment>Non selected user clearing</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000011011</Value>
+                <Alias>MNSS_CAUSE_DEST_ORDER</Alias>
+                <Comment>Destination out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000011100</Value>
+                <Alias>MNSS_CAUSE_NUM_FORMAT</Alias>
+                <Comment>Invalid number format (incomplete number)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000011101</Value>
+                <Alias>MNSS_CAUSE_FACILITY_REJECT</Alias>
+                <Comment>Facility rejected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000011110</Value>
+                <Alias>MNSS_CAUSE_STATUS_ENQUIRY</Alias>
+                <Comment>Response to STATUS ENQUIRY</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000011111</Value>
+                <Alias>MNSS_CAUSE_UNSPECIFIED</Alias>
+                <Comment>Normal, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000100010</Value>
+                <Alias>MNSS_CAUSE_NO_CHAN_AVAIL</Alias>
+                <Comment>No circuit/channel available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000100110</Value>
+                <Alias>MNSS_CAUSE_NETWORK_ORDER</Alias>
+                <Comment>Network out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000101001</Value>
+                <Alias>MNSS_CAUSE_TEMP_FAIL</Alias>
+                <Comment>Temporary failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000101010</Value>
+                <Alias>MNSS_CAUSE_SWITCH_CONGEST</Alias>
+                <Comment>Switching equipment congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000101011</Value>
+                <Alias>MNSS_CAUSE_INFO_DISCARD</Alias>
+                <Comment>Access information discarded</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000101100</Value>
+                <Alias>MNSS_CAUSE_REQ_CHAN_UNAVAIL</Alias>
+                <Comment>requested circuit/channel not available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000101111</Value>
+                <Alias>MNSS_CAUSE_RESOURCE_UNAVAIL</Alias>
+                <Comment>Resources unavailable, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000110001</Value>
+                <Alias>MNSS_CAUSE_QOS_UNAVAIL</Alias>
+                <Comment>Quality of service unavailable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000110010</Value>
+                <Alias>MNSS_CAUSE_FACILITY_UNSUBSCRIB</Alias>
+                <Comment>Requested facility not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000110111</Value>
+                <Alias>MNSS_CAUSE_BARRED_IN_CUG</Alias>
+                <Comment>Incoming calls barred within the CUG</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000111001</Value>
+                <Alias>MNSS_CAUSE_BEARER_CAP_AUTHORIZ</Alias>
+                <Comment>Bearer capability not authorized</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000111010</Value>
+                <Alias>MNSS_CAUSE_BEARER_CAP_UNAVAIL</Alias>
+                <Comment>Bearer capability not presently available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011000111111</Value>
+                <Alias>MNSS_CAUSE_SERVICE_UNAVAIL</Alias>
+                <Comment>Service or option not available, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001000001</Value>
+                <Alias>MNSS_CAUSE_BEARER_NOT_IMPLEM</Alias>
+                <Comment>Bearer service not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001000100</Value>
+                <Alias>MNSS_CAUSE_ACM_MAX</Alias>
+                <Comment>ACM equal to or greater than ACMmax</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001000101</Value>
+                <Alias>MNSS_CAUSE_FACILITY_NOT_IMPLEM</Alias>
+                <Comment>Requested facility not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001000110</Value>
+                <Alias>MNSS_CAUSE_RESTICT_BEARER_CAP</Alias>
+                <Comment>Only restricted digital information bearer capability is available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001001111</Value>
+                <Alias>MNSS_CAUSE_SERVICE_NOT_IMPLEM</Alias>
+                <Comment>Service or option not implemented, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001010001</Value>
+                <Alias>MNSS_CAUSE_INVALID_TI</Alias>
+                <Comment>Invalid transaction identifier value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001010111</Value>
+                <Alias>MNSS_CAUSE_USER_NOT_IN_CUG</Alias>
+                <Comment>User not member of CUG</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001011000</Value>
+                <Alias>MNSS_CAUSE_INCOMPAT_DEST</Alias>
+                <Comment>Incompatible destination</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001011011</Value>
+                <Alias>MNSS_CAUSE_INVALID_TRANS_NET</Alias>
+                <Comment>Invalid transit network selection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001011111</Value>
+                <Alias>MNSS_CAUSE_INCORRECT_MESSAGE</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001100000</Value>
+                <Alias>MNSS_CAUSE_INVALID_MAND_INFO</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001100001</Value>
+                <Alias>MNSS_CAUSE_MESSAGE_TYPE_NOT_IMPLEM</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001100010</Value>
+                <Alias>MNSS_CAUSE_MESSAGE_TYPE_INCOMPAT</Alias>
+                <Comment>Message type not compatible with protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001100011</Value>
+                <Alias>MNSS_CAUSE_INFO_ELEM_NOT_IMPLEM</Alias>
+                <Comment>Information element non existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001100100</Value>
+                <Alias>MNSS_CAUSE_COND_INFO_ELEM</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001100101</Value>
+                <Alias>MNSS_CAUSE_MESSAGE_INCOMPAT</Alias>
+                <Comment>Message not compatible with protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001100110</Value>
+                <Alias>MNSS_CAUSE_TIMER</Alias>
+                <Comment>Recovery on timer expiry</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001101111</Value>
+                <Alias>MNSS_CAUSE_PROTOCOL</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">0000011001111111</Value>
+                <Alias>MNSS_CAUSE_INTERWORKING</Alias>
+                <Comment>Interworking, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1000011011111111</Value>
+                <Alias>MNSS_CAUSE_NO_NET_CAUSE</Alias>
+                <Comment>Network initiated without cause</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

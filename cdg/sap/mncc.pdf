@@ -1,0 +1,1342 @@
+;********************************************************************************
+;*** File           : mncc.pdf
+;*** Creation       : Wed Mar 11 09:58:24 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mncc
+;*** Document No.   : 6147.101.96.116
+;*** Document Date  : 2003-07-03
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:47:40 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-07-03"
+PRAGMA 	ID_AND_VERSION 	"6147.101.96.116"
+PRAGMA 	PREFIX 	MNCC 	; Prefix with 'MNCC'
+
+
+
+CONST 	FACILITY_LEN 	251 	; Max. length of facility considering L2 constraints
+CONST 	USER_LEN 	128 	; 
+CONST 	MAX_CC_CALLING_NUMBER 	22 	; max. length of calling party BCD number (MT SETUP)
+CONST 	MAX_CC_REDIR_NUMBER 	32 	; max. length of redirecting number (MT SETUP)
+CONST 	MAX_CC_CALLED_NUMBER 	80 	; max. length of called party BCD number (MO SETUP)
+CONST 	SUB_LENGTH 	20 	; 
+CONST 	MAX_BC_LEN 	10 	; 
+EXTERN CONST 	@p_gsmcom - CC_ORIGINATING_ENTITY@ 	CC_ORIGINATING_ENTITY 	; mask for indicating the originating entity of a cause is CC
+EXTERN CONST 	@p_gsmcom - ACI_ORIGINATING_ENTITY@ 	ACI_ORIGINATING_ENTITY 	; mask for indicating the originating entity of a cause is ACI
+CONST 	TI_BERLIN 	1 	; TI Berlin variant of the SAP
+CONST 	MAX_CC_CAUSE_LENGTH 	30 	; Max. length of the raw cause variable
+
+
+
+VALTAB 	VAL_ti
+VAL 	0 - 6 	"ms originated identifier"
+VAL 	8 - 14 	"ms terminated transaction"
+VAL 	7 	TI_RES_1 	"reserved"
+VAL 	15 	TI_RES_2 	"reserved"
+
+VALTAB 	VAL_progress_desc
+VAL 	1 	PROG_NO_END_TO_END_PLMN 	"call is not end-to-end PLMN/ISDN, further call progress information may be available in-band"
+VAL 	2 	PROG_DEST_NON_PLMN 	"destination address in non-PLMN/ISDN"
+VAL 	3 	PROG_ORIGIN_NON_PLMN 	"origination address in non-PLMN/ISDN"
+VAL 	4 	PROG_RETURN_TO_PLMN 	"call has returned to the PLMN/ISDN"
+VAL 	8 	PROG_INBAND_AVAIL 	"in-band information or appropriate pattern now available"
+VAL 	32 	PROG_END_TO_END_PLMN 	"call is end-to-end PLMN/ISDN"
+VAL 	64 	PROG_QUEUEING 	"queueing"
+VAL 	254 	PROG_UNSPECIFIC 	"unspecific, used when coding standard is not equal to GSM; note that the value chosen here must not collide with any defined value of  the progress description IE of the air interface"
+VAL 	255 	PROG_NOT_PRES 	"not present"
+
+VALTAB 	VAL_fac_context
+VAL 	0 	FAC_IN_ALERT 	"Facility information in ALERT message"
+VAL 	1 	FAC_IN_CALL_PROCEED 	"Facility information in CALL PROCEEDING message"
+VAL 	2 	FAC_IN_DISCONNECT 	"Facility information in DISCONNECT message"
+VAL 	3 	FAC_IN_RELEASE 	"Facility information in RELEASE message"
+VAL 	4 	FAC_IN_CONNECT 	"Facility information in CONNECT message"
+VAL 	5 	FAC_IN_SETUP 	"Facility information in SETUP message"
+VAL 	6 	FAC_IN_FACILITY 	"Facility information in USER INFORMATION message"
+VAL 	7 	FAC_IN_RELEASE_COMP 	"Facility information in RELEASE COMPLETE message"
+VAL 	8 	FAC_IN_RECALL 	"Facility information in RECALL message"
+
+VALTAB 	VAL_info_context
+VAL 	0 	USER_IN_ALERT 	"User information in ALERT message"
+VAL 	1 	USER_IN_DISCONNECT 	"User information in DISCONNECT message"
+VAL 	2 	USER_IN_PROGRESS 	"User information in PROGRESS message"
+VAL 	3 	USER_IN_RELEASE 	"User information in RELEASE message"
+VAL 	4 	USER_IN_CONNECT 	"User information in CONNECT message"
+VAL 	5 	USER_IN_SETUP 	"User information in SETUP message"
+VAL 	6 	USER_IN_USER 	"User information in USER INFORMATION message"
+
+VALTAB 	VAL_pd
+VAL 	16 - 63 	"reserved for other network layer or through layer 3 protocols including Rec.X.25"
+VAL 	64 - 79 	"national use"
+VAL 	80 - 254 	"reserved for other network through layer or layer 3 protocols including Rec.X.25"
+VAL 	0 	PD_USER 	"user specific protocol"
+VAL 	1 	PD_HIGH_LAYER 	"OSI high layer protocols"
+VAL 	2 	PD_X244 	"X.244"
+VAL 	3 	PD_SYS_MANAGE 	"reserved for system management convergence function"
+VAL 	4 	PD_IA5 	"IA5 characters"
+VAL 	7 	PD_V120 	"Rec.V.120 rate adaption"
+VAL 	8 	PD_Q931 	"Q.931 (I.451) user-network call control messages"
+
+VALTAB 	VAL_serv
+VAL 	0 	SERV_SPEECH 	"speech"
+VAL 	1 	SERV_DATA 	"data"
+VAL 	255 	SERV_NOT_PRES 	"not present"
+
+VALTAB 	VAL_cause
+VAL 	0b0000010100000001 	CAUSE_UNASSIGN 	"unassigned (unallocated) number"
+VAL 	0b0000010100000011 	CAUSE_NO_ROUTE 	"no route to destination"
+VAL 	0b0000010100000110 	CAUSE_CHAN_UNACCEPT 	"channel unacceptable"
+VAL 	0b0000010100001000 	CAUSE_BARRED 	"operator determined barring"
+VAL 	0b0000010100010000 	CAUSE_CALL_CLEAR 	"normal call clearing"
+VAL 	0b0000010100010001 	CAUSE_USER_BUSY 	"user busy"
+VAL 	0b0000010100010010 	CAUSE_NO_RESPONSE 	"no user responding"
+VAL 	0b0000010100010011 	CAUSE_ALERT_NO_ANSWER 	"user alerting, no answer"
+VAL 	0b0000010100010101 	CAUSE_CALL_REJECT 	"call rejected"
+VAL 	0b0000010100010110 	CAUSE_NUM_CHANGED 	"number changed"
+VAL 	0b0000010100011001 	CAUSE_PREEMPTION 	"pre-emption"
+VAL 	0b0000010100011010 	CAUSE_USER_CLEAR 	"non selected user clearing"
+VAL 	0b0000010100011011 	CAUSE_DEST_ORDER 	"destination out of order"
+VAL 	0b0000010100011100 	CAUSE_NUM_FORMAT 	"invalid number format (incomplete number)"
+VAL 	0b0000010100011101 	CAUSE_FACILITY_REJECT 	"facility rejected"
+VAL 	0b0000010100011110 	CAUSE_STATUS_ENQUIRY 	"response to status enquiry"
+VAL 	0b0000010100011111 	CAUSE_UNSPECIFIED 	"normal, unspecified"
+VAL 	0b0000010100100010 	CAUSE_NO_CHAN_AVAIL 	"no circuit / channel available"
+VAL 	0b0000010100100110 	CAUSE_NETWORK_ORDER 	"network out of order"
+VAL 	0b0000010100101001 	CAUSE_TEMP_FAIL 	"temporary failure"
+VAL 	0b0000010100101010 	CAUSE_SWITCH_CONGEST 	"switching equipment congestion"
+VAL 	0b0000010100101011 	CAUSE_INFO_DISCARD 	"access information discarded"
+VAL 	0b0000010100101100 	CAUSE_REQ_CHAN_UNAVAIL 	"requested circuit / channel not available"
+VAL 	0b0000010100101111 	CAUSE_RESOURCE_UNAVAIL 	"resources unavailable, unspecified"
+VAL 	0b0000010100110001 	CAUSE_QOS_UNAVAIL 	"quality of service unavailable"
+VAL 	0b0000010100110010 	CAUSE_FACILITY_UNSUBSCRIB 	"requested facility not subscribed"
+VAL 	0b0000010100110111 	CAUSE_BARRED_IN_CUG 	"incoming calls barred within the CUG"
+VAL 	0b0000010100111001 	CAUSE_BEARER_CAP_AUTHORIZ 	"bearer capability not authorized"
+VAL 	0b0000010100111010 	CAUSE_BEARER_CAP_UNAVAIL 	"bearer capability not presently available"
+VAL 	0b0000010100111111 	CAUSE_SERVICE_UNAVAIL 	"service or option not available, unspecified"
+VAL 	0b0000010101000001 	CAUSE_BEARER_NOT_IMPLEM 	"bearer service not implemented"
+VAL 	0b0000010101000100 	CAUSE_ACM_MAX 	"ACM equal or greater than ACMmax"
+VAL 	0b0000010101000101 	CAUSE_FACILITY_NOT_IMPLEM 	"requested facility not implemented"
+VAL 	0b0000010101000110 	CAUSE_RESTICT_BEARER_CAP 	"only restricted digital information bearer capability is available"
+VAL 	0b0000010101001111 	CAUSE_SERVICE_NOT_IMPLEM 	"service or option not implemented, unspecified"
+VAL 	0b0000010101010001 	CAUSE_INVALID_TI 	"invalid transaction identifier value"
+VAL 	0b0000010101010111 	CAUSE_USER_NOT_IN_CUG 	"user not member of CUG"
+VAL 	0b0000010101011000 	CAUSE_INCOMPAT_DEST 	"incompatible destination (originated by net)"
+VAL 	0b0000010101011011 	CAUSE_INVALID_TRANS_NET 	"invalid transit network selection"
+VAL 	0b0000010101011111 	CAUSE_INCORRECT_MESSAGE 	"semantically incorrect message"
+VAL 	0b0000010101100000 	CAUSE_INVALID_MAND_INFO 	"invalid mandatory information"
+VAL 	0b0000010101100001 	CAUSE_MESSAGE_TYPE_NOT_IMPLEM 	"message type non-existent or not implemented"
+VAL 	0b0000010101100010 	CAUSE_MESSAGE_TYPE_INCOMPAT 	"message type not compatible with protocol state"
+VAL 	0b0000010101100011 	CAUSE_INFO_ELEM_NOT_IMPLEM 	"information element non-existent or not implemented"
+VAL 	0b0000010101100100 	CAUSE_COND_INFO_ELEM 	"conditional information element error"
+VAL 	0b0000010101100101 	CAUSE_MESSAGE_INCOMPAT 	"message not compatible with protocol state"
+VAL 	0b0000010101100110 	CAUSE_TIMER 	"recovery on timer expiry"
+VAL 	0b0000010101101111 	CAUSE_PROTOCOL 	"protocol error, unspecified"
+VAL 	0b0000010101111111 	CAUSE_INTERWORKING 	"interworking, unspecified"
+VAL 	0b0100010100011101 	CAUSE_MS_FACILITY_REJECT 	"facility rejected (originated by MS)"
+VAL 	0b0100010101000001 	CAUSE_MS_BEARER_NOT_IMPLEM 	"bearer service not implemented (originated by MS)"
+VAL 	0b0100010101010001 	CAUSE_MS_INVALID_TI 	"invalid transaction identifier value (originated by MS)"
+VAL 	0b0100010101011000 	CAUSE_MS_INCOMPAT_DEST 	"incompatible destination (originated by MS)"
+VAL 	0b0100010101100000 	CAUSE_MS_INVALID_MAND_INFO 	"invalid mandatory information (originated by MS)"
+VAL 	0b0100010101100100 	CAUSE_MS_COND_INFO_ELEM 	"conditional information element error (originated by MS)"
+VAL 	0b0100010101100101 	CAUSE_MS_MESSAGE_INCOMPAT 	"message not compatible with protocol state (originated by MS)"
+VAL 	0b0100010101100110 	CAUSE_MS_TIMER 	"recovery on timer expiry (originated by MS)"
+VAL 	0b1000010100000000 	CAUSE_MODIFY_SUCCESS 	"in-call modification successfully performed, MODIFY COMPLETE message received"
+VAL 	0b1000010100000010 	CAUSE_HOLD_SUCCESS 	"hold successfully performed, HOLD ACKNOWLEDGE message received"
+VAL 	0b1000010100000011 	CAUSE_RETRIEVE_SUCCESS 	"retrieve successfully performed, RETRIEVE ACKNOWLEDGE message received"
+VAL 	0b1000010100000100 	CAUSE_DTMF_START_SUCCESS 	"start of DTMF successfully performed, START DTMF ACKNOWLEDGE message received"
+VAL 	0b1000010100000101 	CAUSE_DTMF_STOP_SUCCESS 	"stop of DTMF successfully performed, STOP DTMF ACKNOWLEDGE message received"
+VAL 	0b1000010111111111 	CAUSE_NO_NET_CAUSE 	"network initiated without cause"
+VAL 	0b1100010100000000 	CAUSE_SUCCESS 	"operation successfully performed (e.g. a call establishment); this cause is used only if no more specific cause applies"
+VAL 	0b1100010100000001 	CAUSE_DTMF_NOT_ALLOWED 	"DTMF is currently not allowed (no speech TCH)"
+VAL 	0b1100010100000010 	CAUSE_DTMF_BUFFER_FULL 	"DTMF storage buffer overflow"
+VAL 	0b1100010100000011 	CAUSE_DTMF_ABORTED 	"DTMF was aborted (e.g. due to state change)"
+VAL 	0b1100010100000100 	CAUSE_MAX_NO_RECALLS_REACHED 	"maximum number of recalls (CCBS) was reached"
+VAL 	0b1100010100000101 	CAUSE_MAX_NO_CALLS_REACHED 	"maximum number of calls was reached"
+VAL 	0b1100010100000110 	CAUSE_CHANNEL_SYNC 	"channel mode or type information (changed)"
+VAL 	0b1100010100000111 	CAUSE_REEST_STARTED 	"call re-establishment started"
+VAL 	0b1100010100001000 	CAUSE_REEST_FINISHED 	"call re-establishment is finished"
+VAL 	0b1100010111111111 	CAUSE_NO_MS_CAUSE 	"MS initiated without cause"
+
+VALTAB 	VAL_nd
+VAL 	0 	ND_USER_SUSPEND 	"user suspended"
+VAL 	1 	ND_USER_RESUME 	"user resumed"
+VAL 	2 	ND_BEAR_CHANGE 	"bearer change"
+VAL 	255 	ND_NOT_PRES 	"not present"
+
+VALTAB 	VAL_tos
+VAL 	0 	TOS_NSAP 	"NSAP (X.213/ISO 8348 AD2)"
+VAL 	2 	TOS_USER_SPEC 	"user specified"
+VAL 	255 	TOS_NOT_PRES 	"not present"
+
+VALTAB 	VAL_odd_even
+VAL 	0 	OE_EVEN 	"even number of address signals"
+VAL 	1 	OE_ODD 	"odd number of address signals"
+
+VALTAB 	VAL_key
+VAL 	0x30 	DIG_0 	"digit '0'"
+VAL 	0x31 	DIG_1 	"digit '1'"
+VAL 	0x32 	DIG_2 	"digit '2'"
+VAL 	0x33 	DIG_3 	"digit '3'"
+VAL 	0x34 	DIG_4 	"digit '4'"
+VAL 	0x35 	DIG_5 	"digit '5'"
+VAL 	0x36 	DIG_6 	"digit '6'"
+VAL 	0x37 	DIG_7 	"digit '7'"
+VAL 	0x38 	DIG_8 	"digit '8'"
+VAL 	0x39 	DIG_9 	"digit '9'"
+VAL 	0x41 	DIG_A 	"'A'"
+VAL 	0x42 	DIG_B 	"'B'"
+VAL 	0x43 	DIG_C 	"'C'"
+VAL 	0x44 	DIG_D 	"'D'"
+VAL 	0x2A 	DIG_STAR 	"'('"
+VAL 	0x23 	DIG_HASH 	"'#'"
+VAL 	0x7F 	DIG_RES 	"reserved"
+
+VALTAB 	VAL_ch_mode
+VAL 	0 	CHM_SIG_ONLY 	"signalling only"
+VAL 	1 	CHM_SPEECH 	"speech full rate or half rate version 1"
+VAL 	33 	CHM_SPEECH_V2 	"speech full rate or half rate version 2"
+VAL 	65 	CHM_SPEECH_V3 	"speech full rate or half rate version 3"
+VAL 	3 	CHM_DATA_9_6 	"data 9.6 kBit/s"
+VAL 	11 	CHM_DATA_4_8 	"data 4.8 kBit/s"
+VAL 	19 	CHM_DATA_2_4 	"data 2.4 kBit/s"
+VAL 	15 	CHM_DATA_14_4 	"data 2.4 kBit/s"
+
+VALTAB 	VAL_ch_type
+VAL 	0 	CH_SDCCH 	"SDCCH channel"
+VAL 	1 	CH_TCH_F 	"TCH Fullrate"
+VAL 	2 	CH_TCH_H 	"TCH Halfrate"
+
+VALTAB 	VAL_more_data
+VAL 	0 	MD_NO_MORE_DATA 	"no more data"
+VAL 	1 	MD_MORE_DATA 	"more data"
+VAL 	255 	MD_NOT_PRES 	"not present"
+
+VALTAB 	VAL_prio
+VAL 	0 	PRIO_NORM_CALL 	"normal call"
+VAL 	1 	PRIO_EMERG_CALL 	"emergency call"
+
+VALTAB 	VAL_clir_sup
+VAL 	0 	CLR_SUP 	"CLIR suppressed"
+VAL 	1 	CLR_SUP_NOT 	"CLIR not suppressed"
+VAL 	0xFF 	CLR_NOT_PRES 	"CLIR not present"
+
+VALTAB 	VAL_sig
+VAL 	0 	SIG_DIAL_TONE_ON 	"dial tone on"
+VAL 	1 	SIG_RING_BACK_TONE_ON 	"ring back tone on"
+VAL 	2 	SIG_INT_TONE_ON 	"intercept tone on"
+VAL 	3 	SIG_NET_CONG_TONE_ON 	"network congestion tone on"
+VAL 	4 	SIG_BUSY_TONE_ON 	"busy tone on"
+VAL 	5 	SIG_CONF_TONE_ON 	"confirm tone on"
+VAL 	6 	SIG_ANS_TONE_ON 	"answer tone on"
+VAL 	7 	SIG_CALL_WAIT_TONE_ON 	"call waiting tone on"
+VAL 	8 	SIG_OFF_HOOK_WARN_TONE_ON 	"off-hook warning tone on"
+VAL 	63 	SIG_TONES_OFF 	"tones off"
+VAL 	79 	SIG_ALERT_OFF 	"alerting off"
+VAL 	255 	SIG_NOT_PRES 	"not present"
+
+VALTAB 	VAL_congest_lev
+VAL 	0 	CL_RECEIVER_READY 	"receiver ready"
+VAL 	15 	CL_RECEIVER_NOT_READY 	"receiver not ready"
+VAL 	255 	CL_NOT_PRES 	"not present"
+
+VALTAB 	VAL_ss_version
+VAL 	0 	SS_VERSION_2 	"phase 2 service, ellipsis notation and phase 2 error handling"
+VAL 	1 	SS_VERSION_3 	"SS-Protocol version 3 and phase 2 error handling"
+VAL 	255 	SS_VER_NOT_PRES 	"not present"
+
+VALTAB 	VAL_ri
+VAL 	1 	RI_CIRCULAR 	"circular"
+VAL 	2 	RI_FALLBACK 	"fallback"
+VAL 	3 	RI_SEQUENTIAL 	"sequential"
+VAL 	255 	RI_NOT_PRES 	"not present"
+
+VALTAB 	VAL_transfer_cap
+VAL 	0 	ITC_NONE 	"No ITC - i.e. 3,1 kHz Audio"
+VAL 	1 	ITC_UDI 	"Unrestricted Digital"
+VAL 	2 	ITC_RDI 	"Restricted Digital"
+
+VALTAB 	VAL_parity
+VAL 	0 	PARITY_ODD 	"odd parity"
+VAL 	2 	PARITY_EVEN 	"even parity"
+VAL 	3 	PARITY_NONE 	"no parity"
+VAL 	4 	PARITY_FORCED_TO_0 	"parity forced to zero"
+VAL 	5 	PARITY_FORCED_TO_1 	"parity forced to one"
+
+VALTAB 	VAL_bearer_serv
+VAL 	0 	BEARER_SERV_SYNC 	"synchronous"
+VAL 	1 	BEARER_SERV_ASYNC 	"asynchronous"
+VAL 	2 	BEARER_SERV_PAD_ACCESS 	"PAD access (async)"
+VAL 	3 	BEARER_SERV_PACKET_ACCESS 	"packet access (sync)"
+VAL 	4 	BEARER_SERV_FAX 	"fax"
+VAL 	5 	BEARER_SERV_SPEECH 	"Speech"
+VAL 	6 	BEARER_SERV_AUX_SPEECH 	"Auxiliary Speech"
+VAL 	7 	BEARER_SERV_SPEECH_CTM 	"Speech with CTM (TTY) support"
+VAL 	8 	BEARER_SERV_AUX_SPEECH_CTM 	"Auxiliary Speech CTM (TTY) support"
+VAL 	255 	BEARER_SERV_NOT_PRES 	"not present"
+
+VALTAB 	VAL_modem_type
+VAL 	0 	MT_NONE 	"modem type none"
+VAL 	1 	MT_V21 	"modem type V.21"
+VAL 	2 	MT_V22 	"modem type V.22"
+VAL 	3 	MT_V22_BIS 	"modem type V.22bis"
+VAL 	4 	MT_V23 	"modem type V.23"
+VAL 	5 	MT_V26_TER 	"modem type V.26ter"
+VAL 	6 	MT_V32 	"modem type V.32"
+VAL 	7 	MT_UNDEF 	"modem type for undefined interface"
+VAL 	8 	MT_AUTOBAUD 	"modem type autobauding type 1"
+VAL 	9 	MT_V32_BIS 	"modem type V.32bis"
+VAL 	10 	MT_V34 	"modem type V.34"
+
+VALTAB 	VAL_rate
+VAL 	1 	UR_0_3_KBIT 	"rate : 0.3 kbit/s Recommendation X.1 and V.110"
+VAL 	2 	UR_1_2_KBIT 	"rate : 1.2 kbit/s Recommendation X.1 and V.110"
+VAL 	3 	UR_2_4_KBIT 	"rate : 2.4 kbit/s Recommendation X.1 and V.110"
+VAL 	4 	UR_4_8_KBIT 	"rate : 4.8 kbit/s Recommendation X.1 and V.110"
+VAL 	5 	UR_9_6_KBIT 	"rate : 9.6 kbit/s Recommendation X.1 and V.110"
+VAL 	6 	UR_12_0_KBIT_TRANS 	"rate : 12.0 kbit/s transparent"
+VAL 	7 	UR_1_2_KBIT_V23 	"rate : 1.2 kbit/s/75 bit/s Recommendation V.23, X.1,V.110."
+VAL 	8 	UR_14_4_KBIT 	"rate : 14.4 kbit/s"
+VAL 	255 	UR_NOT_PRES 	"not present"
+
+VALTAB 	VAL_flow_control
+VAL 	8 	INBAND_FLOW_CONTROL 	"inband flow control (ISO 6429)"
+VAL 	12 	NO_FLOW_CONTROL 	"no flow control (COPnoFLCT)"
+VAL 	255 	OUTBAND_FLOW_CONTROL 	"outband flow control"
+
+VALTAB 	VAL_conn_elem
+VAL 	0 	CONN_ELEM_TRANS 	"transparent"
+VAL 	1 	CONN_ELEM_NON_TRANS 	"non transparent (RLP)"
+VAL 	2 	CONN_ELEM_TRANS_PREF 	"both, transparent preferred"
+VAL 	3 	CONN_ELEM_NON_TRANS_PREF 	"both, non transparent (RLP) preferred"
+VAL 	255 	CONN_ELEM_NOT_PRES 	"not present"
+
+VALTAB 	VAL_stop_bits
+VAL 	0 	STOP_1_BIT 	"one stop bit"
+VAL 	1 	STOP_2_BIT 	"two stop bits"
+
+VALTAB 	VAL_rate_adaption
+VAL 	0 	RATE_ADAPT_NONE 	"No rate adaption"
+VAL 	1 	RATE_ADAPT_V110 	"Information transfer capability for ISDN Asynchronous"
+VAL 	2 	RATE_ADAPT_X31 	"X.31 Flag stuffing"
+VAL 	3 	RATE_ADAPT_V120 	"Information transfer capability for ISDN Synchronous"
+VAL 	4 	RATE_ADAPT_H223_H245 	"H.223 and H.245"
+VAL 	5 	RATE_ADAPT_PIAFS 	"PIAFS"
+
+VALTAB 	VAL_data_bits
+VAL 	0 	DATA_7_BIT 	"seven data bits"
+VAL 	1 	DATA_8_BIT 	"eight data bits"
+
+VALTAB 	VAL_diagnostic
+VAL 	129 	DIAG_MOC_BAR_CUG 	"Outgoing calls barred within CUG"
+VAL 	130 	DIAG_NO_CUG_SELECTED 	"No CUG selected"
+VAL 	131 	DIAG_UNKNOWN_CUG_INDEX 	"Unknown CUG index"
+VAL 	132 	DIAG_INCOMPAT_CUG_INDEX 	"CUG index incompatible with requested basic service"
+VAL 	133 	DIAG_CUG_FAIL_UNSPEC 	"CUG call Failure unspecified"
+VAL 	134 	DIAG_CLIR_NOT_SUBSCRIBED 	"CLIR not subscribed"
+VAL 	135 	DIAG_CCBS_POSSIBLE 	"CCBS possible"
+VAL 	136 	DIAG_CCBS_NOT_POSSIBLE 	"CCBS not possible"
+
+VALTAB 	VAL_ss_diag
+VAL 	1 	SS_DIAG_MOC_BAR_CUG 	"Outgoing calls barred within CUG"
+VAL 	2 	SS_DIAG_NO_CUG_SELECTED 	"No CUG selected"
+VAL 	3 	SS_DIAG_UNKNOWN_CUG_INDEX 	"Unknown CUG index"
+VAL 	4 	SS_DIAG_INCOMPAT_CUG_INDEX 	"CUG index incompatible with requested basic service"
+VAL 	5 	SS_DIAG_CUG_FAIL_UNSPEC 	"CUG call Failure unspecified"
+VAL 	6 	SS_DIAG_CLIR_NOT_SUBSCRIBED 	"CLIR not subscribed"
+VAL 	7 	SS_DIAG_CCBS_POSSIBLE 	"CCBS possible"
+VAL 	8 	SS_DIAG_CCBS_NOT_POSSIBLE 	"CCBS not possible"
+VAL 	255 	SS_DIAG_NOT_PROVIDED 	"Not Provided"
+
+VALTAB 	VAL_sns_mode
+VAL 	0 	SNS_MODE_VOICE 	"voice calls"
+VAL 	1 	SNS_MODE_VAF_VOICE 	"voice alternating FAX, voice first"
+VAL 	2 	SNS_MODE_FAX 	"FAX calls"
+VAL 	3 	SNS_MODE_VAD_VOICE 	"voice alternating data, voice first"
+VAL 	4 	SNS_MODE_DATA 	"data calls"
+VAL 	5 	SNS_MODE_VAF_FAX 	"voice alternating FAX, FAX first"
+VAL 	6 	SNS_MODE_VAD_DATA 	"voice alternating data, data first"
+VAL 	7 	SNS_MODE_VFD 	"voice followed by data"
+
+VALTAB 	VAL_dtmf_mod
+VAL 	0 	DTMF_MOD_AUTO 	"automatic mode with fixed duration"
+VAL 	1 	DTMF_MOD_MAN_START 	"manual mode start sending DTMF digit"
+VAL 	2 	DTMF_MOD_MAN_STOP 	"manual mode stop sending DTMF digit"
+
+VALTAB 	VAL_bc_mod
+VAL 	0 	BC_MOD_CODE 	"code bearer capabilities"
+VAL 	1 	BC_MOD_DECODE 	"decode bearer capabilities"
+
+VALTAB 	VAL_rcl_type
+VAL 	0 	RCL_CCBS 	"CCBS"
+VAL 	1 	RCL_CCBS_1 	"treated as CCBS"
+VAL 	2 	RCL_CCBS_2 	"treated as CCBS"
+VAL 	3 	RCL_CCBS_3 	"treated as CCBS"
+VAL 	4 	RCL_CCBS_4 	"treated as CCBS"
+VAL 	5 	RCL_CCBS_5 	"treated as CCBS"
+VAL 	6 	RCL_CCBS_6 	"treated as CCBS"
+
+VALTAB 	VAL_synccs
+VAL 	0 	SYNCCS_MPTY_EVENT 	"Multi party event"
+VAL 	0xFFFF 	SYNCCS_NOT_PRESENT 	"Synchronization cause not present"
+
+VALTAB 	VAL_mpty_event
+VAL 	0 	MPTY_BUILD_SENT 	"BuildMPTY Invoke sent"
+VAL 	1 	MPTY_BUILD_FAIL 	"BuildMPTY Invoke failed"
+VAL 	2 	MPTY_BUILD_SUCCESS 	"BuildMPTY Invoke ok"
+VAL 	3 	MPTY_SPLIT_SENT 	"SplitMPTY Invoke sent"
+VAL 	4 	MPTY_SPLIT_FAIL 	"SplitMPTY Invoke failed"
+VAL 	5 	MPTY_SPLIT_SUCCESS 	"SplitMPTY Invoke Return Result ok"
+VAL 	6 	MPTY_HOLD_SENT 	"HoldMPTY Invoke sent"
+VAL 	7 	MPTY_HOLD_FAIL 	"HoldMPTY Invoke failed"
+VAL 	8 	MPTY_HOLD_SUCCESS 	"HoldMPTY Invoke ok"
+VAL 	9 	MPTY_RETRIEVE_SENT 	"RetrieveMPTY Invoke"
+VAL 	10 	MPTY_RETRIEVE_FAIL 	"RetrieveMPTY Invoke failed"
+VAL 	11 	MPTY_RETRIEVE_SUCCESS 	"RetrieveMPTY Invoke Return Result ok"
+VAL 	0xFF 	MPTY_NOT_PRESENT 	"Parameter not present"
+
+VALTAB 	VAL_ctm_ena
+VAL 	2 - 255 	"reserved, to be treated as CTM not supported"
+VAL 	0 	CTM_DISABLED 	"CTM not supported"
+VAL 	1 	CTM_ENABLED 	"CTM supported"
+
+VALTAB 	VAL_ton
+VAL 	0 	TON_UNKNOWN 	"unknown"
+VAL 	1 	TON_INT_NUMB 	"international number"
+VAL 	2 	TON_NAT_NUMB 	"national number"
+VAL 	3 	TON_NET_SPEC_NUMB 	"network specific number"
+VAL 	4 	TON_DED_ACC_SC 	"dedicated access, short code"
+VAL 	255 	TON_NOT_PRES 	"type of number not present"
+
+VALTAB 	VAL_npi
+VAL 	0 	NPI_UNKNOW 	"unknown"
+VAL 	1 	NPI_ISDN_TEL_NUMB_PLAN 	"ISDN/telephony numbering plan"
+VAL 	3 	NPI_DATA_NUMB_PLAN 	"data numbering plan"
+VAL 	4 	NPI_TELEX_NUMB_PLAN 	"telex numbering plan"
+VAL 	8 	NPI_NAT_NUMB_PLAN 	"national numbering plan"
+VAL 	9 	NPI_PRIV_NUMB_PLAN 	"private numbering plan"
+VAL 	255 	NPI_NOT_PRES 	"numbering plan identification not present"
+
+VALTAB 	VAL_present
+VAL 	0 	PRES_PRES_ALLOW 	"presentation allowed"
+VAL 	1 	PRES_PRES_REST 	"presentation restricted"
+VAL 	2 	PRES_NUMB_NOT_AVAIL 	"number not available due to interworking"
+VAL 	255 	PRES_NOT_PRES 	"not present"
+
+VALTAB 	VAL_screen
+VAL 	0 	SCREEN_USER_PROV_NOT_SCREEN 	"user provided, not screened"
+VAL 	1 	SCREEN_USER_PROV_VER_PASS 	"user provided, verified and passed"
+VAL 	2 	SCREEN_USER_PROV_VER_FAIL 	"user provided, verified and failed"
+VAL 	3 	SCREEN_NET_PROV 	"network provided"
+VAL 	255 	SCREEN_IND_NOT_PRES 	"not present"
+
+
+
+
+VAR 	ti 	"transaction identifier" 	B
+
+VAL 	@p_mncc - VAL_ti@ 	
+
+VAR 	progress_desc 	"progress description" 	B
+
+VAL 	@p_mncc - VAL_progress_desc@ 	
+
+VAR 	fac_context 	"facility information element context" 	B
+
+VAL 	@p_mncc - VAL_fac_context@ 	
+
+VAR 	info_context 	"user to user message context" 	B
+
+VAL 	@p_mncc - VAL_info_context@ 	
+
+VAR 	pd 	"user to user protocol discriminator" 	B
+
+VAL 	@p_mncc - VAL_pd@ 	
+
+VAR 	c_info 	"length of user to user data" 	B
+
+
+VAR 	info 	"user to user information" 	B
+
+
+VAR 	serv 	"service code" 	B
+
+VAL 	@p_mncc - VAL_serv@ 	
+
+VAR 	cause 	"cause" 	S
+
+VAL 	@p_mncc - VAL_cause@ 	
+
+VAR 	nd 	"notification description" 	B
+
+VAL 	@p_mncc - VAL_nd@ 	
+
+VAR 	c_num 	"number of BCD digits" 	B
+
+
+VAR 	num 	"bcd" 	B
+
+
+VAR 	c_called_num 	"number of BCD digits" 	B
+
+
+VAR 	called_num 	"bcd" 	B
+
+
+VAR 	tos 	"type of subaddress" 	B
+
+VAL 	@p_mncc - VAL_tos@ 	
+
+VAR 	odd_even 	"odd / even indicator" 	B
+
+VAL 	@p_mncc - VAL_odd_even@ 	
+
+VAR 	c_subaddr 	"length of subaddress information" 	B
+
+
+VAR 	subaddr 	"subaddress information" 	B
+
+
+VAR 	key 	"DTMF digit" 	B
+
+VAL 	@p_mncc - VAL_key@ 	
+
+VAR 	ch_type 	"Channel Type" 	B
+
+VAL 	@p_mncc - VAL_ch_type@ 	
+
+VAR 	ch_mode 	"Channel Mode" 	B
+
+VAL 	@p_mncc - VAL_ch_mode@ 	
+
+VAR 	more_data 	"more data" 	B
+
+VAL 	@p_mncc - VAL_more_data@ 	
+
+VAR 	prio 	"priority" 	B
+
+VAL 	@p_mncc - VAL_prio@ 	
+
+VAR 	clir_sup 	"CLIR suppression" 	B
+
+VAL 	@p_mncc - VAL_clir_sup@ 	
+
+VAR 	sig 	"signal" 	B
+
+VAL 	@p_mncc - VAL_sig@ 	
+
+VAR 	congest_lev 	"Congestion Level" 	B
+
+VAL 	@p_mncc - VAL_congest_lev@ 	
+
+VAR 	ss_version 	"SS Version number" 	B
+
+VAL 	@p_mncc - VAL_ss_version@ 	
+
+VAR 	ri 	"repeat indicator" 	B
+
+VAL 	@p_mncc - VAL_ri@ 	
+
+VAR 	rate 	"user rate" 	B
+
+VAL 	@p_mncc - VAL_rate@ 	
+
+VAR 	bearer_serv 	"bearer service" 	B
+
+VAL 	@p_mncc - VAL_bearer_serv@ 	
+
+VAR 	conn_elem 	"connection element" 	B
+
+VAL 	@p_mncc - VAL_conn_elem@ 	
+
+VAR 	stop_bits 	"stop bits" 	B
+
+VAL 	@p_mncc - VAL_stop_bits@ 	
+
+VAR 	data_bits 	"data bits" 	B
+
+VAL 	@p_mncc - VAL_data_bits@ 	
+
+VAR 	parity 	"parity" 	B
+
+VAL 	@p_mncc - VAL_parity@ 	
+
+VAR 	flow_control 	"flow control" 	B
+
+VAL 	@p_mncc - VAL_flow_control@ 	
+
+VAR 	modem_type 	"modem type" 	B
+
+VAL 	@p_mncc - VAL_modem_type@ 	
+
+VAR 	rate_adaption 	"rate_adaption" 	B
+
+VAL 	@p_mncc - VAL_rate_adaption@ 	
+
+VAR 	transfer_cap 	"transfer_cap" 	B
+
+VAL 	@p_mncc - VAL_transfer_cap@ 	
+
+VAR 	l_fac 	"facility length" 	S
+
+
+VAR 	o_fac 	"facility offset" 	S
+
+
+VAR 	fac 	"facility content" 	B
+
+
+VAR 	diagnostic 	"Diagnostic Information" 	B
+
+VAL 	@p_mncc - VAL_diagnostic@ 	
+
+VAR 	sns_mode 	"Single numbering scheme mode" 	B
+
+VAL 	@p_mncc - VAL_sns_mode@ 	
+
+VAR 	dtmf_mod 	"Mode for sending DTMF digit" 	B
+
+VAL 	@p_mncc - VAL_dtmf_mod@ 	
+
+VAR 	bc_mod 	"Mode for conversion of bearer capabilities" 	B
+
+VAL 	@p_mncc - VAL_bc_mod@ 	
+
+VAR 	bc_len 	"coded bearer cap length" 	B
+
+
+VAR 	bc 	"coded bearer cap" 	B
+
+
+VAR 	req_id 	"Request identifier of originator" 	B
+
+
+VAR 	rcl_type 	"recall type" 	B
+
+VAL 	@p_mncc - VAL_rcl_type@ 	
+
+VAR 	synccs 	"Synchronization cause" 	S
+
+VAL 	@p_mncc - VAL_synccs@ 	
+
+VAR 	mpty_event 	"multi party event" 	B
+
+VAL 	@p_mncc - VAL_mpty_event@ 	
+
+VAR 	c_redir_num 	"number of BCD digits" 	B
+
+
+VAR 	redir_num 	"bcd" 	B
+
+
+VAR 	ctm_ena 	"CTM support send to NW in BC indicating speech" 	B
+
+VAL 	@p_mncc - VAL_ctm_ena@ 	
+
+VAR 	ton 	"type of number" 	B
+
+VAL 	@p_mncc - VAL_ton@ 	
+
+VAR 	npi 	"numbering plan identification" 	B
+
+VAL 	@p_mncc - VAL_npi@ 	
+
+VAR 	present 	"presentation indicator" 	B
+
+VAL 	@p_mncc - VAL_present@ 	
+
+VAR 	screen 	"screening indicator" 	B
+
+VAL 	@p_mncc - VAL_screen@ 	
+
+VAR 	ss_diag 	"Supplementary Diagnostic Element" 	B
+
+VAL 	@p_mncc - VAL_ss_diag@ 	
+
+VAR 	c_raw_cause 	"Number of cause bytes" 	B
+
+
+VAR 	raw_cause 	"cause as received from network" 	B
+
+
+VAR 	rad_chan_req 	"rad_chan_req" 	B
+
+
+
+
+
+COMP 	user 	 "user to user data"
+{
+ 	info_context 	 ; user to user message context
+ 	pd 	 ; user to user protocol discriminator
+ 	c_info 	 ; length of user to user data
+ 	info 	[USER_LEN] 	 ; user to user information
+}
+
+
+
+COMP 	calling_party 	 "calling party"
+{
+ 	ton 	 ; type of number
+ 	npi 	 ; numbering plan identification
+ 	present 	 ; presentation indicator
+ 	screen 	 ; screening indicator
+ 	c_num 	 ; number of BCD digits
+ 	num 	[MAX_CC_CALLING_NUMBER] 	 ; bcd
+}
+TYPEDEF COMP calling_party 	connected_number 	 "connected number"
+
+
+
+COMP 	called_party 	 "called party address"
+{
+ 	ton 	 ; numbering type
+ 	npi 	 ; numbering plan
+ 	c_called_num 	 ; number of BCD digits
+ 	called_num 	[MAX_CC_CALLED_NUMBER] 	 ; bcd
+}
+
+
+
+COMP 	calling_party_sub 	 "calling party subaddress"
+{
+ 	tos 	 ; type of subaddress
+ 	odd_even 	 ; odd / even indicator
+ 	c_subaddr 	 ; length of subaddress information
+ 	subaddr 	[SUB_LENGTH] 	 ; subaddress information
+}
+TYPEDEF COMP calling_party_sub 	called_party_sub 	 "called party subaddress"
+TYPEDEF COMP calling_party_sub 	connected_number_sub 	 "connected number subaddress"
+TYPEDEF COMP calling_party_sub 	redirecting_party_sub 	 "redirecting party subaddress"
+
+
+
+COMP 	ch_info 	 "Channel using mode"
+{
+ 	ch_type 	 ; Channel Type
+ 	ch_mode 	 ; Channel Mode
+}
+
+
+
+COMP 	bcpara 	 "bearer capability parameter"
+{
+ 	rate 	 ; user rate
+ 	bearer_serv 	 ; bearer service
+ 	conn_elem 	 ; connection element
+ 	stop_bits 	 ; stop bits
+ 	data_bits 	 ; data bits
+ 	parity 	 ; parity
+ 	flow_control 	 ; flow control
+ 	modem_type 	 ; modem type
+ 	rate_adaption 	 ; rate_adaption
+ 	transfer_cap 	 ; transfer_cap
+ 	rad_chan_req 	 ; rad_chan_req
+}
+TYPEDEF COMP bcpara 	bcpara2 	 "bearer capability parameter"
+
+
+
+COMP 	fac_inf 	 "facility information"
+{
+ 	l_fac 	 ; facility length
+ 	o_fac 	 ; facility offset
+ 	fac 	[FACILITY_LEN] 	 ; facility content
+}
+
+
+
+COMP 	bcconf 	 "bearer capability configuration"
+{
+ 	bc_len 	 ; coded bearer cap length
+ 	bc 	[MAX_BC_LEN] 	 ; coded bearer cap
+}
+TYPEDEF COMP bcconf 	bcconf2 	 "second bearer capability configuration"
+
+
+
+COMP 	redirecting_party 	 "redirecting party address"
+{
+ 	ton 	 ; numbering type
+ 	npi 	 ; numbering plan
+ 	present 	 ; presentation indicator
+ 	screen 	 ; screening indicator
+ 	c_redir_num 	 ; number of BCD digits
+ 	redir_num 	[MAX_CC_REDIR_NUMBER] 	 ; bcd
+}
+
+
+
+
+
+
+; MNCC_ALERT_IND 	0x8000400B
+; MNCC_CALL_PROCEED_IND 	0x8001400B
+; MNCC_DISCONNECT_IND 	0x8002400B
+; MNCC_HOLD_CNF 	0x8003400B
+; MNCC_MODIFY_CNF 	0x8004400B
+; MNCC_MODIFY_IND 	0x8005400B
+; MNCC_NOTIFY_IND 	0x8006400B
+; MNCC_PROGRESS_IND 	0x8007400B
+; MNCC_REJECT_IND 	0x8008400B
+; MNCC_RELEASE_CNF 	0x8009400B
+; MNCC_RELEASE_IND 	0x800A400B
+; MNCC_RETRIEVE_CNF 	0x800B400B
+; MNCC_SETUP_CNF 	0x800C400B
+; MNCC_SETUP_COMPL_IND 	0x800D400B
+; MNCC_SETUP_IND 	0x800E400B
+; MNCC_START_DTMF_CNF 	0x800F400B
+; MNCC_BEARER_CAP_CNF 	0x8013400B
+; MNCC_SYNC_IND 	0x8010400B
+; MNCC_USER_IND 	0x8011400B
+; MNCC_FACILITY_IND 	0x8012400B
+; MNCC_PROMPT_IND 	0x8014400B
+; MNCC_RECALL_IND 	0x8015400B
+; MNCC_STATUS_IND 	0x8016400B
+; MNCC_SETUP_REQ 	0x8000000B
+; MNCC_SETUP_RES 	0x8001000B
+; MNCC_ALERT_REQ 	0x8002000B
+; MNCC_DISCONNECT_REQ 	0x8003000B
+; MNCC_RELEASE_REQ 	0x8004000B
+; MNCC_MODIFY_REQ 	0x8005000B
+; MNCC_CONFIGURE_REQ 	0x8006000B
+; MNCC_NOTIFY_REQ 	0x8007000B
+; MNCC_START_DTMF_REQ 	0x8008000B
+; MNCC_HOLD_REQ 	0x8009000B
+; MNCC_RETRIEVE_REQ 	0x800A000B
+; MNCC_FACILITY_REQ 	0x800B000B
+; MNCC_USER_REQ 	0x800C000B
+; MNCC_BEARER_CAP_REQ 	0x800D000B
+; MNCC_PROMPT_RES 	0x800E000B
+; MNCC_PROMPT_REJ 	0x800F000B
+; MNCC_REJECT_REQ 	0x8010000B
+; MNCC_SYNC_REQ 	0x8011000B
+; MNCC_STATUS_RES 	0x8012000B
+
+
+
+PRIM 	MNCC_ALERT_IND 	0x8000400B
+{
+ 	ti 	 ; transaction identifier
+ 	progress_desc 	 ; progress indicator
+}
+
+
+
+
+
+
+PRIM 	MNCC_CALL_PROCEED_IND 	0x8001400B
+{
+ 	ti 	 ; transaction identifier
+ 	progress_desc 	 ; progress indicator
+ 	ri 	 ; repeat indicator
+ 	bcpara 	 ; bearer cap parameter
+ 	bcpara2 	 ; bearer cap parameter
+}
+
+
+
+
+
+
+PRIM 	MNCC_DISCONNECT_IND 	0x8002400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; The following causes can occur within this primitive:  all those  of 4.6 defined by the GSM standard and originated by the network, i.e. those starting with 0b00...  and MNCC_CAUSE_MS_COND_INFO_ELEM, MNCC_CAUSE_MS_INVALID_MAND_INFO and all those previously indicated via MNCC_DISCONNECT_REQ.
+ 	diagnostic 	 ; Additional cause info
+ 	ss_diag 	 ; Additional supplementary service diagnostic info
+ 	progress_desc 	 ; progress description
+ 	c_raw_cause 	 ; Number of cause bytes
+ 	raw_cause 	[MAX_CC_CAUSE_LENGTH] 	 ; cause as received from NW
+}
+
+
+
+
+
+
+PRIM 	MNCC_HOLD_CNF 	0x8003400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; Cause; The following causes can occur within this primitive:  all those  of 4.6 defined by the GSM standard and originated by the network, i.e. those starting with 0b00...  and  MNCC_CAUSE_HOLD_SUCCESS. It is possible for the network to not add a Cause IE. In this case, cause is MNCC_CAUSE_NO_NET_CAUSE
+}
+
+
+
+
+
+
+PRIM 	MNCC_MODIFY_CNF 	0x8004400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; The following causes can occur within this primitive:  all those  of 4.6 defined by the GSM standard and originated by the network, i.e. those starting with 0b00...  and  MNCC_CAUSE_MODIFY_SUCCESS, MNCC_CAUSE_MS_TIMER.
+ 	c_raw_cause 	 ; Number of cause bytes
+ 	raw_cause 	[MAX_CC_CAUSE_LENGTH] 	 ; cause as received from NW
+}
+
+
+
+
+
+
+PRIM 	MNCC_MODIFY_IND 	0x8005400B
+{
+ 	ti 	 ; transaction identifier
+ 	serv 	 ; service code
+}
+
+
+
+
+
+
+PRIM 	MNCC_NOTIFY_IND 	0x8006400B
+{
+ 	ti 	 ; transaction identifier
+ 	nd 	 ; notification
+}
+
+
+
+
+
+
+PRIM 	MNCC_PROGRESS_IND 	0x8007400B
+{
+ 	ti 	 ; transaction identifier
+ 	progress_desc 	 ; progress indicator
+}
+
+
+
+
+
+
+PRIM 	MNCC_REJECT_IND 	0x8008400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; reject cause; The following causes can occur within this primitive: MNCC_CAUSE_MS_INCOMPAT_DEST, MNCC_CAUSE_MS_TIMER of 4.6 and all possible within the MMCC_RELEASE_IND and MMCC_ERROR_IND primitives of the MMCC SAP.
+}
+
+
+
+
+
+
+PRIM 	MNCC_RELEASE_CNF 	0x8009400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; The following causes can occur within this primitive: all those  of 4.6 defined by the GSM standard and originated by the network, i.e. those starting with 0b00...  and MNCC_CAUSE_NO_NET_CAUSE and MNCC_CAUSE_MS_MESSAGE_INCOMPAT, MNCC_CAUSE_MS_TIMER.
+ 	c_raw_cause 	 ; Number of cause bytes
+ 	raw_cause 	[MAX_CC_CAUSE_LENGTH] 	 ; cause as received from NW
+}
+
+
+
+
+
+
+PRIM 	MNCC_RELEASE_IND 	0x800A400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; The following causes can occur within this primitive:  all those  of 4.6 defined by the GSM standard and originated by the network, i.e. those starting with 0b00...  and MNCC_CAUSE_NO_NET_CAUSE and MNCC_CAUSE_MS_MESSAGE_INCOMPAT, MNCC_CAUSE_MS_INVALID_TI, MNCC_CAUSE_MS_BEARER_NOT_IMPLEM, MNCC_CAUSE_MS_COND_INFO_ELEM, MNCC_CAUSE_MS_INVALID_MAND_INFO, MNCC_CAUSE_MAX_NO_CALLS_REACHED, MNCC_CAUSE_MAX_NO_RECALLS_REACHED, MNCC_CAUSE_MS_INCOMPAT_DEST, MNCC_CAUSE_MS_FACILITY_REJECT, MNCC_CAUSE_MS_TIMER of 4.6 and all possible within the MMCC_RELEASE_IND (CCBS) and all causes sent by higher layers within MNCC_DISCONNECT_REQ (CCBS and when no network connection) and the MMCC_ERROR_IND primitive of the MMCC SAP.
+ 	c_raw_cause 	 ; Number of cause bytes
+ 	raw_cause 	[MAX_CC_CAUSE_LENGTH] 	 ; cause as received from NW
+}
+
+
+
+
+
+
+PRIM 	MNCC_RETRIEVE_CNF 	0x800B400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; The following causes can occur within this primitive:  all those  of 4.6 defined by the GSM standard and originated by the network, i.e. those starting with 0b00...  and  MNCC_CAUSE_RETRIEVE_SUCCESS. It is possible for the network to not add a Cause IE. In this case, cause is MNCC_CAUSE_NO_NET_CAUSE
+}
+
+
+
+
+
+
+PRIM 	MNCC_SETUP_CNF 	0x800C400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; (resulting) cause; The following causes can occur within this primitive:  MNCC_CAUSE_SUCCESS, MNCC_CAUSE_MS_TIMER.
+ 	progress_desc 	 ; progress description
+ 	connected_number 	 ; connected number
+ 	connected_number_sub 	 ; connected sub address
+}
+
+
+
+
+
+
+PRIM 	MNCC_SETUP_COMPL_IND 	0x800D400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; (resulting) cause; The following causes can occur within this primitive:  MNCC_CAUSE_SUCCESS, MNCC_CAUSE_MS_TIMER.
+}
+
+
+
+
+
+
+PRIM 	MNCC_SETUP_IND 	0x800E400B
+{
+ 	ti 	 ; transaction identifier
+ 	ri 	 ; repeat indicator
+ 	bcpara 	 ; bearer cap parameter
+ 	bcpara2 	 ; bearer cap parameter
+ 	progress_desc 	 ; progress indicator
+ 	sig 	 ; signal
+ 	calling_party 	 ; calling party
+ 	calling_party_sub 	 ; calling party sub
+ 	called_party 	 ; called party
+ 	called_party_sub 	 ; called party sub
+ 	redirecting_party 	 ; redirecting party
+ 	redirecting_party_sub 	 ; redirecting party sub
+}
+
+
+
+
+
+
+PRIM 	MNCC_START_DTMF_CNF 	0x800F400B
+{
+ 	ti 	 ; transaction identifier
+ 	key 	 ; keypad digit
+ 	cause 	 ; cause; The following causes can occur within this primitive:  all those  of 4.6 defined by the GSM standard and originated by the network, i.e. those starting with 0b00...  and MNCC_CAUSE_DTMF_NOT_ALLOWED, MNCC_CAUSE_DTMF_BUFFER_FULL, MNCC_CAUSE_DTMF_ABORTED, MNCC_CAUSE_DTMF_START_SUCCESS, MNCC_CAUSE_MS_TIMER.
+ 	dtmf_mod 	 ; dtmf mode
+}
+
+
+
+
+
+
+PRIM 	MNCC_BEARER_CAP_CNF 	0x8013400B
+{
+ 	req_id 	 ; request id
+ 	bc_mod 	 ; conversion mode
+ 	bcconf 	 ; coded bearer cap
+ 	bcpara 	 ; decoded bearer cap
+ 	bcconf2 	 ; coded bearer cap2
+ 	bcpara2 	 ; decoded bearer cap2
+ 	cause 	 ; translation cause; The following causes can occur within this primitive:  MNCC_CAUSE_SUCCESS, MNCC_CAUSE_MS_INCOMPAT_DEST.
+}
+
+
+
+
+
+
+PRIM 	MNCC_SYNC_IND 	0x8010400B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; The following causes can occur within this primitive: MNCC_CAUSE_CHANNEL_SYNC, MNCC_CAUSE_REEST_STARTED, MNCC_CAUSE_REEST_FINISHED.
+ 	ch_info 	 ; channel mode
+}
+
+
+
+
+
+
+PRIM 	MNCC_USER_IND 	0x8011400B
+{
+ 	ti 	 ; transaction identifier
+ 	congest_lev 	 ; congestion level
+ 	more_data 	 ; more data
+ 	user 	 ; user to user
+}
+
+
+
+
+
+
+PRIM 	MNCC_FACILITY_IND 	0x8012400B
+{
+ 	ti 	 ; transaction identifier
+ 	fac_context 	 ; facility context
+ 	fac_inf 	 ; facility information
+}
+
+
+
+
+
+
+PRIM 	MNCC_PROMPT_IND 	0x8014400B
+{
+}
+
+
+
+
+
+
+PRIM 	MNCC_RECALL_IND 	0x8015400B
+{
+ 	ti 	 ; transaction identifier
+ 	ri 	 ; repeat indicator
+ 	bcpara 	 ; bearer cap parameter
+ 	bcpara2 	 ; bearer cap parameter
+ 	called_party 	 ; called party address
+ 	called_party_sub 	 ; called party sub
+ 	rcl_type 	 ; recall type
+}
+
+
+
+
+
+
+PRIM 	MNCC_STATUS_IND 	0x8016400B
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MNCC_SETUP_REQ 	0x8000000B
+{
+ 	ti 	 ; transaction identifier
+ 	prio 	 ; priority
+ 	ri 	 ; repeat indicator
+ 	bcpara 	 ; bearer cap parameter
+ 	bcpara2 	 ; bearer cap parameter
+ 	called_party 	 ; called party address
+ 	called_party_sub 	 ; called party sub
+ 	clir_sup 	 ; clir suppression
+ 	fac_inf 	 ; facility information
+}
+
+
+
+
+
+
+PRIM 	MNCC_SETUP_RES 	0x8001000B
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MNCC_ALERT_REQ 	0x8002000B
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MNCC_DISCONNECT_REQ 	0x8003000B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; Only standard-defined, MS originated values shall be used which are in addition compliant to the CC peer to peer protocol.
+ 	fac_inf 	 ; facility information
+ 	ss_version 	 ; ss version
+}
+
+
+
+
+
+
+PRIM 	MNCC_RELEASE_REQ 	0x8004000B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; Only standard-defined, MS originated values shall be used which are in addition compliant to the CC peer to peer protocol. In addition MNCC_CAUSE_NO_MS_CAUSE could be used if compliant to the CC peer to peer protocol in the current situation.
+ 	fac_inf 	 ; facility information
+ 	ss_version 	 ; ss version
+}
+
+
+
+
+
+
+PRIM 	MNCC_MODIFY_REQ 	0x8005000B
+{
+ 	ti 	 ; transaction identifier
+ 	serv 	 ; service code
+}
+
+
+
+
+
+
+PRIM 	MNCC_CONFIGURE_REQ 	0x8006000B
+{
+ 	called_party_sub 	 ; called party subaddress
+ 	bcpara 	 ; bearer cap parameter
+ 	sns_mode 	 ; single numbering mode
+ 	ctm_ena 	 ; CTM support enabled
+}
+
+
+
+
+
+
+PRIM 	MNCC_NOTIFY_REQ 	0x8007000B
+{
+ 	ti 	 ; transaction identifier
+ 	nd 	 ; notification description
+}
+
+
+
+
+
+
+PRIM 	MNCC_START_DTMF_REQ 	0x8008000B
+{
+ 	ti 	 ; transaction identifier
+ 	key 	 ; keypad digit
+ 	dtmf_mod 	 ; DTMF mode
+}
+
+
+
+
+
+
+PRIM 	MNCC_HOLD_REQ 	0x8009000B
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MNCC_RETRIEVE_REQ 	0x800A000B
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MNCC_FACILITY_REQ 	0x800B000B
+{
+ 	ti 	 ; transaction identifier
+ 	fac_inf 	 ; facility information
+ 	ss_version 	 ; ss version
+}
+
+
+
+
+
+
+PRIM 	MNCC_USER_REQ 	0x800C000B
+{
+ 	ti 	 ; transaction identifier
+ 	congest_lev 	 ; congestion level
+ 	more_data 	 ; more data
+ 	user 	 ; user to user
+}
+
+
+
+
+
+
+PRIM 	MNCC_BEARER_CAP_REQ 	0x800D000B
+{
+ 	req_id 	 ; request id
+ 	bc_mod 	 ; conversion mode
+ 	bcconf 	 ; coded bearer cap
+ 	bcpara 	 ; decoded bearer cap
+ 	bcconf2 	 ; coded bearer cap2
+ 	bcpara2 	 ; decoded bearer cap2
+}
+
+
+
+
+
+
+PRIM 	MNCC_PROMPT_RES 	0x800E000B
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MNCC_PROMPT_REJ 	0x800F000B
+{
+}
+
+
+
+
+
+
+PRIM 	MNCC_REJECT_REQ 	0x8010000B
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; Only standard-defined, MS originated values shall be used which are in addition compliant to the CC peer to peer protocol. In addition MNCC_CAUSE_NO_MS_CAUSE could be used if compliant to the CC peer to peer protocol in the current situation.
+}
+
+
+
+
+
+
+PRIM 	MNCC_SYNC_REQ 	0x8011000B
+{
+ 	synccs 	 ; synchronization cause
+ 	ti 	 ; transaction identifier
+ 	mpty_event 	 ; multi party event
+}
+
+
+
+
+
+
+PRIM 	MNCC_STATUS_RES 	0x8012000B
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+
+
+

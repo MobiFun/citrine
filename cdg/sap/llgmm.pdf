@@ -1,0 +1,183 @@
+;********************************************************************************
+;*** File           : llgmm.pdf
+;*** Creation       : Wed Mar 11 09:58:16 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : llgmm
+;*** Document No.   : 8441.103.99.014
+;*** Document Date  : 2003-03-21
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: ANS
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:44:54 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-03-21"
+PRAGMA 	ID_AND_VERSION 	"8441.103.99.014"
+
+
+
+CONST 	LLGMM_MAX_SEQ_NR 	511 	; maximum sequence number value
+CONST 	LLGMM_NUM_SAPIS 	16 	; number of SAPIs (not all are available)
+CONST 	LLGMM_TLLI_INVALID 	0xFFFFFFFF 	; invalid TLLI value
+
+
+
+VALTAB 	VAL_ciphering_algorithm
+VAL 	0 	LLGMM_CIPHER_NO_ALGORITHM 	"no ciphering algorithm"
+VAL 	1 	LLGMM_CIPHER_GPRS_A5_1 	"GPRS A5/1 ciphering algorithm"
+VAL 	2 	LLGMM_CIPHER_GPRS_A5_2 	"GPRS A5/2 ciphering algorithm"
+VAL 	255 	LLGMM_CIPHER_NA 	"value n/a"
+
+VALTAB 	VAL_trigger_cause
+VAL 	1 	LLGMM_TRICS_PAGE_RESPONSE 	"trigger was sent due to a received paging message"
+VAL 	3 	LLGMM_TRICS_CELL_UPDATE 	"trigger was sent because of a cell update"
+VAL 	4 	LLGMM_TRICS_CELL_UPDATE_NULL_FRAME 	%REL99% 	"LLC can use NULL frame for cell updates"
+
+VALTAB 	VAL_error_cause
+VAL 	0 - 99 	"reserved for GRR error causes"
+VAL 	DEF 	 	"invalid error cause"
+VAL 	0b1101000001100100 	LLGMM_ERRCS_INVALID_UA 	"invalid UA response"
+VAL 	0b1101000001100101 	LLGMM_ERRCS_SABM_INVALID_XID 	"invalid XID response during connection establishment"
+VAL 	0b1101000001100110 	LLGMM_ERRCS_SABM_NO_PEER_RES 	"no peer response during connection establishment"
+VAL 	0b1101000001100111 	LLGMM_ERRCS_XID_INVALID_XID 	"invalid XID response during parameter negotiation"
+VAL 	0b1101000001101000 	LLGMM_ERRCS_XID_NO_PEER_RES 	"no peer response during parameter negotiation"
+VAL 	0b1101000001101001 	LLGMM_ERRCS_DISC_NO_PEER_RES 	"no peer response during release of connection"
+VAL 	0b1101000001101010 	LLGMM_ERRCS_MULT_ASS_TLLI 	"possible multiple assignment of a TLLI value"
+VAL 	0b1101000001101011 	LLGMM_ERRCS_DM1_RECEIVED 	"unsolicited DM response with F bit 1 in state ABM"
+VAL 	0b1101000001101100 	LLGMM_ERRCS_DM1_RECEIVED_REEST 	"unsolicited DM response with F bit 1 in state Timer Recovery; re-establishment procedure initiated"
+VAL 	0b1101000001101101 	LLGMM_ERRCS_ACK_NO_PEER_RES_REEST 	"no peer response during waiting for acknowledgement; re-establishment procedure initiated"
+VAL 	0b1101000001101110 	LLGMM_ERRCS_PEER_BUSY_REEST 	"peer receiver busy condition; re-establishment procedure initiated"
+VAL 	0b1101000001101111 	LLGMM_ERRCS_FRMR_COND 	"frame rejection condition; frame discarded"
+VAL 	0b1101000001110000 	LLGMM_ERRCS_FRMR_COND_REEST 	"frame rejection condition; re-establishment procedure initiated"
+VAL 	0b1101000001110001 	LLGMM_ERRCS_FRMR_RECEIVED 	"FRMR response received; frame discarded"
+VAL 	0b1101000001110010 	LLGMM_ERRCS_L3_REEST 	"layer 3 initiated re-establishment procedure"
+VAL 	0b1101000001110011 	LLGMM_ERRCS_PEER_REEST 	"peer initiated re-establishment procedure"
+VAL 	0b1101000001110100 	LLGMM_ERRCS_DM0_RECEIVED_REEST 	"unsolicited DM response with F bit 0; re-establishment procedure initiated"
+
+VALTAB 	VAL_susp_cause
+VAL 	DEF 	 	"suspension because of Attach or RAU"
+VAL 	0 	LLGMM_RAU 	"suspension because of Attach or RAU, GRR has to be suspended"
+VAL 	1 	LLGMM_CALL 	"suspension because of GSM establishment request"
+VAL 	2 	LLGMM_LIMITED 	"suspension because of limited service"
+VAL 	3 	LLGMM_PERIODIC_RAU 	"suspension because of periodic RAU"
+VAL 	4 	LLGMM_NO_GPRS_SERVICE 	"suspension because of no service or no GPRS supported"
+
+
+
+
+VAR 	old_tlli 	"old temporary logical link identifier" 	L
+
+
+VAR 	new_tlli 	"new temporary logical link identifier" 	L
+
+
+VAR 	key 	"ciphering key content" 	B
+
+
+VAR 	ciphering_algorithm 	"ciphering algorithm" 	B
+
+VAL 	@p_llgmm - VAL_ciphering_algorithm@ 	
+
+VAR 	trigger_cause 	"cause of the trigger primitive" 	B
+
+VAL 	@p_llgmm - VAL_trigger_cause@ 	
+
+VAR 	error_cause 	"error cause" 	S
+
+VAL 	@p_llgmm - VAL_error_cause@ 	
+
+VAR 	susp_cause 	"suspension cause" 	B
+
+VAL 	@p_llgmm - VAL_susp_cause@ 	
+
+
+
+
+COMP 	llgmm_kc 	 "GPRS ciphering key"
+{
+ 	key 	[8] 	 ; ciphering key content
+}
+
+
+
+
+
+
+; LLGMM_ASSIGN_REQ 	0x2100
+; LLGMM_TRIGGER_REQ 	0x2101
+; LLGMM_SUSPEND_REQ 	0x2102
+; LLGMM_RESUME_REQ 	0x2103
+; LLGMM_STATUS_IND 	0x6100
+; LLGMM_TLLI_IND 	0x6101
+
+
+
+PRIM 	LLGMM_ASSIGN_REQ 	0x2100
+{
+ 	old_tlli 	 ; old temporary logical link entity
+ 	new_tlli 	 ; new temporary logical link entity
+ 	llgmm_kc 	 ; ciphering key
+ 	ciphering_algorithm 	 ; ciphering algorithm
+}
+
+
+
+
+
+
+PRIM 	LLGMM_TRIGGER_REQ 	0x2101
+{
+ 	trigger_cause 	 ; trigger cause
+}
+
+
+
+
+
+
+PRIM 	LLGMM_SUSPEND_REQ 	0x2102
+{
+ 	susp_cause 	 ; suspension cause
+}
+
+
+
+
+
+
+PRIM 	LLGMM_RESUME_REQ 	0x2103
+{
+}
+
+
+
+
+
+
+PRIM 	LLGMM_STATUS_IND 	0x6100
+{
+ 	error_cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	LLGMM_TLLI_IND 	0x6101
+{
+ 	new_tlli 	 ; Newly received TLLI
+}
+
+
+
+
+
+
+
+
+

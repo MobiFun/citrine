@@ -1,0 +1,57 @@
+In their internal development environment, TI had a way to build L1 standalone,
+i.e., omitting the G23 protocol stack and other large and complex pieces of the
+full firmware.  Such an ability is essential for sane development, and the
+abundant references to OP_L1_STANDALONE throughout the codebase confirm that TI
+had it indeed.
+
+However, we (FreeCalypso) don't have a way to build an OP_L1_STANDALONE image
+exactly the way TI did it - we don't have all of the necessary source - the
+glue pieces specific to this configuration are missing.  Nor do we necessarily
+need to imitate what TI did in this department: it appears that TI's standalone
+L1 build omitted GPF (with the exception of OS and OSX) and everything that
+lives in Riviera land, but for us the situation is different: we already have
+a successful build with Riviera and GPF, but no L1, thus we simply need to add
+L1 to what we have.  Our idea of standalone L1 simply means building without
+the G23 stack, which we have yet to begin integrating.
+
+In the standard firmware build, there is a component called L1 PEI.  It is part
+of the G23 stack, and has header and library dependencies of the latter - thus
+it is *not* part of the L1 code proper.  However, it performs some essential
+initialization steps, and runs the L1A task.  We don't know how TI handled
+these functions in their standalone L1 build - we don't have that part of their
+source, not even in the otherwise complete LoCosto version, not even if we were
+targeting LoCosto hardware.
+
+Our solution: we are going to lift l1_pei out of LoCosto's g23m-gsm, and hack
+up a special version of it that won't have the standard complement of G23
+header and library dependencies.  It is virtually certain that TI did something
+different, but our hack-solution should work for our needs.
+
+Because our standalone L1 build is a specially stripped-down version of the
+regular fw build, and not at all like TI's standalone L1, we do NOT define
+OP_L1_STANDALONE.  Instead we have a different preprocessor symbol:
+CONFIG_L1_STANDALONE.
+
+The standard version of l1_pei calls vsi_c_open() to get queue handles of
+several G23 stack entities; it connects by name to "PL", "MMI", and if GPRS is
+enabled, also to "GRR", "LLC" and "SND".  If we leave these connect-by-name
+calls unchanged in our L1 standalone version, our pei_init() will always return
+PEI_ERROR and never successfully initialize, which would not be very useful.
+If we removed these vsi_c_open() calls and the associated OSX queue setup, the
+first osx_send_prim() addressed to the queue in question will crash, so that
+approach wouldn't be useful either.
+
+What we would like to do is redirect all outbound messages emitted by our
+standalone L1 to the debug serial interface, using GPF's TST entity, just as if
+an L1 REDIRECT or DUPLICATE command was given to a complete GSM fw image.
+However, simply connecting our queues to TST won't work, as TST is not designed
+to receive "internal" protocol stack primitives directly.  When the routing
+facility is used to DUPLICATE or REDIRECT a prim to an external entity, the
+code in gpf/frame/route.c sends a special "wrapper" prim to TST, and we need to
+replicate this wrapping in order to achieve the same effect.
+
+Our solution: we are going to construct a special forwarder entity called L1IF,
+and the connect-by-name calls in l1_pei which normally point to PL, MMI etc
+will point to L1IF instead.  L1IF will run in the passive body variant, and its
+pei_primitive() function will replicate the routing facility's logic for
+forwarding PS primitives to TST.  Whew!

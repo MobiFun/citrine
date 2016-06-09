@@ -1,0 +1,392 @@
+;********************************************************************************
+;*** File           : ppp.pdf
+;*** Creation       : Wed Mar 11 09:58:36 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : ppp
+;*** Document No.   : 8441.116.99.016
+;*** Document Date  : 2002-10-21
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: STW
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:51:00 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-10-21"
+PRAGMA 	ID_AND_VERSION 	"8441.116.99.016"
+
+
+
+CONST 	PPP_LOGIN_NAME_LENGTH 	33 	; Length of login name 
+CONST 	PPP_PASSWORD_LENGTH 	25 	; Length of password
+EXTERN CONST 	@p_gsmcom - PPP_ORIGINATING_ENTITY@ 	PPP_ORIGINATING_ENTITY 	; mask for indicating the originating entity of a cause is PPP
+
+
+
+VALTAB 	VAL_mru
+VAL 	1500 	PPP_MRU_DEFAULT 	"default value for mru"
+
+VALTAB 	VAL_ap
+VAL 	0 	PPP_AP_NO 	"no authentication"
+VAL 	1 	PPP_AP_PAP 	"password authentication protocol"
+VAL 	2 	PPP_AP_CHAP 	"challenge handshake authentication protocol"
+VAL 	3 	PPP_AP_AUTO 	"automatic authentication"
+
+VALTAB 	VAL_accm
+VAL 	0xFFFFFFFF 	PPP_ACCM_DEFAULT 	"default value for accm"
+VAL 	0x00000000 	PPP_ACCM_OFF 	"disable control character mapping"
+
+VALTAB 	VAL_rt
+VAL 	3 	PPP_RT_DEFAULT 	"default value for restart timer"
+
+VALTAB 	VAL_mc
+VAL 	10 	PPP_MC_DEFAULT 	"default value for max configure"
+
+VALTAB 	VAL_mt
+VAL 	2 	PPP_MT_DEFAULT 	"default value for max terminate"
+
+VALTAB 	VAL_mf
+VAL 	5 	PPP_MF_DEFAULT 	"default value for max failure"
+
+VALTAB 	VAL_ppp_cause
+VAL 	0b1100111100000001 	PPP_TERM_OK_MMI 	"successful terminated (MMI initiated)"
+VAL 	0b1100111100000010 	PPP_TERM_OK_PEER 	"successful terminated (PPP peer initiated)"
+VAL 	0b1100111100000011 	PPP_TERM_NO_RESPONSE 	"no response from the PPP peer"
+VAL 	0b1100111100000100 	PPP_TERM_LOOP_BACK 	"looped-back link detected"
+VAL 	0b1100111100000101 	PPP_TERM_LCP_NOT_CONVERGE 	"LCP configuration is not converging"
+VAL 	0b1100111100000110 	PPP_TERM_IPCP_NOT_CONVERGE 	"IPCP configuration is not converging"
+VAL 	0b1100111100000111 	PPP_TERM_IPCP_NOT_STARTED 	"PPP peer did not start IPCP configuration"
+VAL 	0b1100111100001000 	PPP_TERM_NO_CHANNEL 	"can not open communication channels"
+VAL 	0b1100111100001001 	PPP_TERM_PROT_REJ_UNEXPECTED 	"unexpected Protocol Rejection from PPP peer"
+VAL 	0b1100111100001010 	PPP_TERM_USE_AUTHED_FAILED 	"user authentication failed"
+VAL 	0b1100111100001011 	PPP_TERM_PROT_ERROR_UNSPEC 	"unspecified protocol error"
+
+VALTAB 	VAL_ppp_hc
+VAL 	0 	PPP_HC_OFF 	"no header compression"
+VAL 	1 	PPP_HC_VJ 	"Van Jacobson header compression"
+
+VALTAB 	VAL_ip
+VAL 	0x00000000 	PPP_IP_DYNAMIC 	"dynaminc IP address negotiation"
+
+VALTAB 	VAL_dns1
+VAL 	0x00000000 	PPP_DNS1_DYNAMIC 	"dynaminc primary DNS server address negotiation"
+
+VALTAB 	VAL_dns2
+VAL 	0x00000000 	PPP_DNS2_DYNAMIC 	"dynaminc secondary DNS server address negotiation"
+
+VALTAB 	VAL_mode
+VAL 	0 	PPP_CLIENT 	"start PPP as client"
+VAL 	1 	PPP_SERVER 	"start PPP as server"
+VAL 	2 	PPP_TRANSPARENT 	"start PPP in transparent mode"
+
+VALTAB 	VAL_lower_layer
+VAL 	0 	PPP_LOWER_LAYER_DOWN 	"lower layer is not available"
+VAL 	1 	PPP_LOWER_LAYER_UP 	"lower layer is available"
+
+VALTAB 	VAL_connected_direction
+VAL 	0 	PPP_DTI_CONN_PEER 	"DTI channel is connected to Peer Layer"
+VAL 	1 	PPP_DTI_CONN_PROT 	"DTI channel is connected to Protocol Layer"
+
+
+
+
+VAR 	mru 	"maximum receive unit" 	S
+
+VAL 	@p_ppp - VAL_mru@ 	
+
+VAR 	ap 	"authentication protocol" 	B
+
+VAL 	@p_ppp - VAL_ap@ 	
+
+VAR 	accm 	"async control character map" 	L
+
+VAL 	@p_ppp - VAL_accm@ 	
+
+VAR 	rt 	"restart timer" 	B
+
+VAL 	@p_ppp - VAL_rt@ 	
+
+VAR 	mc 	"max configure" 	B
+
+VAL 	@p_ppp - VAL_mc@ 	
+
+VAR 	mt 	"max terminate" 	B
+
+VAL 	@p_ppp - VAL_mt@ 	
+
+VAR 	mf 	"max failure" 	B
+
+VAL 	@p_ppp - VAL_mf@ 	
+
+VAR 	ppp_cause 	"PPP error cause" 	S
+
+VAL 	@p_ppp - VAL_ppp_cause@ 	
+
+VAR 	ppp_hc 	"header compression of PPP connection" 	B
+
+VAL 	@p_ppp - VAL_ppp_hc@ 	
+
+VAR 	msid 	"max slot identifier" 	B
+
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	Buf 	"protocol configuration options" 	B
+
+
+VAR 	peer_entity 	"PPP-peer communication channel name value" 	B
+
+
+VAR 	protocol_entity 	"network protocol communication channel name value" 	B
+
+
+VAR 	name_len 	"length of name" 	B
+
+
+VAR 	name 	"login name" 	B
+
+
+VAR 	password_len 	"length of password" 	B
+
+
+VAR 	password 	"login password" 	B
+
+
+VAR 	ip 	"Internet Protocol address" 	L
+
+VAL 	@p_ppp - VAL_ip@ 	
+
+VAR 	dns1 	"primary DNS server address" 	L
+
+VAL 	@p_ppp - VAL_dns1@ 	
+
+VAR 	dns2 	"secondary DNS server address" 	L
+
+VAL 	@p_ppp - VAL_dns2@ 	
+
+VAR 	mode 	"working mode" 	B
+
+VAL 	@p_ppp - VAL_mode@ 	
+
+VAR 	lower_layer 	"status of lower layer" 	B
+
+VAL 	@p_ppp - VAL_lower_layer@ 	
+
+VAR 	peer_direction 	"Direction for the Peer Layer" 	B
+
+
+VAR 	prot_direction 	"Direction for the Protocol Layer" 	B
+
+
+VAR 	peer_link_id 	"Link Id to Peer Layer" 	L
+
+
+VAR 	prot_link_id 	"Link Id to Protocol Layer" 	L
+
+
+VAR 	connected_direction 	"DTI direction" 	B
+
+VAL 	@p_ppp - VAL_connected_direction@ 	
+
+
+
+
+COMP 	sdu 	 "list of protocol configuration options"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	Buf 	[1] 	 ; protocol configuration options
+}
+
+
+
+COMP 	peer_channel 	 "PPP-peer communication channel name"
+{
+ 	peer_entity 	[6] 	 ; PPP-peer communication channel name value
+}
+
+
+
+COMP 	protocol_channel 	 "network protocol communication channel name"
+{
+ 	protocol_entity 	[6] 	 ; network protocol communication channel name value
+}
+
+
+
+COMP 	login 	 "authentication values"
+{
+ 	name_len 	 ; length of name
+ 	name 	[PPP_LOGIN_NAME_LENGTH] 	 ; login name
+ 	password_len 	 ; length of password
+ 	password 	[PPP_PASSWORD_LENGTH] 	 ; login password
+}
+
+
+
+
+
+
+; PPP_ESTABLISH_REQ 	0x7500
+; PPP_ESTABLISH_CNF 	0x3500
+; PPP_TERMINATE_REQ 	0x7501
+; PPP_TERMINATE_IND 	0x3501
+; PPP_PDP_ACTIVATE_IND 	0x3502
+; PPP_PDP_ACTIVATE_RES 	0x7502
+; PPP_PDP_ACTIVATE_REJ 	0x7503
+; PPP_MODIFICATION_REQ 	0x7504
+; PPP_MODIFICATION_CNF 	0x3503
+; PPP_DTI_CONNECTED_IND 	0x3504
+; NEW_POWER_STATUS 	0x7505
+
+
+
+PRIM 	PPP_ESTABLISH_REQ 	0x7500
+{
+ 	mode 	 ; working mode
+ 	mru 	 ; maximum receive unit
+ 	ap 	 ; authentication protocol
+ 	login 	 ; authentication values
+ 	accm 	 ; async control character map
+ 	rt 	 ; restart timer
+ 	mc 	 ; max configure
+ 	mt 	 ; max terminate
+ 	mf 	 ; max failure
+ 	ppp_hc 	 ; header compression of PPP connection
+ 	ip 	 ; Internet Protocol address
+ 	dns1 	 ; primary DNS server address
+ 	dns2 	 ; secondary DNS server address
+ 	peer_channel 	 ; PPP-peer communication channel name
+ 	protocol_channel 	 ; network protocol communication channel name
+ 	peer_direction 	 ; direction of PPP peer communication channel
+ 	prot_direction 	 ; direction of PPP protocol communication channel
+ 	peer_link_id 	 ; link id for peer channel
+ 	prot_link_id 	 ; link id for protocol channel
+}
+
+
+
+
+
+
+PRIM 	PPP_ESTABLISH_CNF 	0x3500
+{
+ 	mru 	 ; maximum receive unit
+ 	ppp_hc 	 ; header compression of PPP connection
+ 	msid 	 ; max slot identifier
+ 	ip 	 ; Internet Protocol address
+ 	dns1 	 ; primary DNS server address
+ 	dns2 	 ; secondary DNS server address
+}
+
+
+
+
+
+
+PRIM 	PPP_TERMINATE_REQ 	0x7501
+{
+ 	lower_layer 	 ; status of lower layer
+}
+
+
+
+
+
+
+PRIM 	PPP_TERMINATE_IND 	0x3501
+{
+ 	ppp_cause 	 ; PPP error cause
+}
+
+
+
+
+
+
+PRIM 	PPP_PDP_ACTIVATE_IND 	0x3502
+{
+ 	ppp_hc 	 ; header compression of PPP connection
+ 	msid 	 ; max slot identifier
+ 	sdu 	 ; list of protocol configuration options
+}
+
+
+
+
+
+
+PRIM 	PPP_PDP_ACTIVATE_RES 	0x7502
+{
+ 	ppp_hc 	 ; header compression of PPP connection
+ 	msid 	 ; max slot identifier
+ 	ip 	 ; Internet Protocol address
+ 	sdu 	 ; list of protocol configuration options
+}
+
+
+
+
+
+
+PRIM 	PPP_PDP_ACTIVATE_REJ 	0x7503
+{
+ 	ppp_cause 	 ; PPP error cause
+}
+
+
+
+
+
+
+PRIM 	PPP_MODIFICATION_REQ 	0x7504
+{
+ 	ppp_hc 	 ; header compression of PPP connection
+ 	msid 	 ; max slot identifier
+}
+
+
+
+
+
+
+PRIM 	PPP_MODIFICATION_CNF 	0x3503
+{
+ 	ppp_hc 	 ; header compression of PPP connection
+ 	msid 	 ; max slot identifier
+}
+
+
+
+
+
+
+PRIM 	PPP_DTI_CONNECTED_IND 	0x3504
+{
+ 	connected_direction 	 ; connection DTI channel direction
+}
+
+
+
+
+
+
+PRIM 	NEW_POWER_STATUS 	0x7505
+{
+}
+
+
+
+
+
+
+
+
+

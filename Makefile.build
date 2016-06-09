@@ -1,0 +1,16 @@
+# The primary Makefile invokes ${MAKE} with this sub-Makefile
+# just like the typical subdirectory Makefiles.
+# This invokation happens after the processconf.sh step,
+# hence the include below.
+
+include	include/config.mk
+
+default: ${BUILD_DEFAULT_IMAGE}
+
+${BUILD_COMPONENTS}: FRC
+	cd $@; ${MAKE} ${MFLAGS}
+
+ramImage flashImage: ${BUILD_COMPONENTS}
+	cd finlink; ${MAKE} ${MFLAGS} $@
+
+FRC:

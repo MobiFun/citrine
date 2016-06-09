@@ -1,0 +1,1323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">dti</DocName>
+        <DocNum Number="110" Project="8411"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for fax and data transmission consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity. The entity, which is described in this document, is coloured grey in the following figure :</Section>
+            <Section>Figure 1-1: Architecture of the GSM/GPRS protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the GPRS protocol stack are:</Section>
+            <Section>1.1 GRR (RLC/MAC) - Radio Link Control/Medium Access Control</Section>
+            <Section>This layer contains two functions: The Radio Link Control function provides a radio-solution-dependent reliable link. The Medium Access Control function controls the access signalling (request and grant) procedures for the radio channel, and the mapping of LLC frames onto the GSM physical channel.</Section>
+            <Section>1.2 LLC - Logical Link Control</Section>
+            <Section>The LLC entity provides multiple highly reliable logical links for asynchronous data transfer between the MS and the network. It supports variable-length information frames, acknowledged and unacknowledged data transfer, flow and sequence control, error detection and recovery, notification of unrecoverable errors, user identity confidentiality, and ciphering of user and signaling data.</Section>
+            <Section>1.3 GMM - GPRS Mobility Management</Section>
+            <Section>The GMM entity provides procedures for the mobility of the MS, such as informing the network of its present location, and user identity confidentiality. It manages the GMM context (attach, detach, routing area updating), supports security functions such as authentication of user and MS, controls ciphering of data, and initiates the response to paging messages.</Section>
+            <Section>1.4 SM - Session Management</Section>
+            <Section>The main function of the session management (SM) is to support PDP context handling of the user terminal. Session Management activates, modifies and deletes the contexts for packet data protocols (PDP). Session Management services are provided at the SMREG-SAP and the SNSM-SAP for anonymous and non-anonymous access. The non-anonymous and anonymous access procedures for PDP context activation and PDP context deactivation are available at the SMREG-SAP. In addition there exists a PDP context modification for non-anonymous PDP contexts.</Section>
+            <Section>1.5 SNDCP - Subnetwork Dependant Convergence Protocol</Section>
+            <Section>SNDCP carries out all functions related to transfer of Network layer Protocol Data Units (N-PDUs) over GPRS in a transparent way. SNDCP helps to improve channel efficiency by means of compression techniques. The set of protocol entities above SNDCP consists of commonly used network protocols. They all use the same SNDCP entity, which then performs multiplexing of data coming from different sources to be sent using the service provided by the LLC layer.</Section>
+            <Section>1.6 GACI - GPRS AT Command Interpreter</Section>
+            <Section>The ACI is the GPRS extension of the ACI. It is specified in GSM 07.60. It is responsible for processing of the GPRS related AT Commands to setup, activate and deactivate the PDP context parameter. It also provides functionality for the interworking between GMM/SM/SNDCP and a packet oriented protocol like PPP.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the GPRS. The driver has to be able to perform flow control.</Section>
+            <Section>1.8 TOM - Tunnelling of Messages</Section>
+            <Section>The TOM entity is present if and only if HS136 is supported (the feature flag FF_HS136 is enabled).</Section>
+            <Section>The main function of TOM is to tunnel non-GSM signalling messages between the MS and the SGSN. The only non-GSM signalling which is currently supported by TOM is for the EGPRS-136 system (according to IS-136-376). Data transfer in both uplink and downlink direction is possible. Two different priorities (high, low) of signalling data transfer are supported. TOM uses the unacknowledged mode of LLC and the acknowledged mode of GRR (RLC/MAC).</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="00"/>
+            <Date Day="14" Month="1" Year="2000"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="00"/>
+            <Date Day="26" Month="4" Year="2000"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>MG, GPI SAP converted to DTI SAP</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="00"/>
+            <Date Day="27" Month="4" Year="2000"/>
+            <Author>HK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added parameters</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="00"/>
+            <Date Day="11" Month="5" Year="2000"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Adaptation for NT CSD</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="00"/>
+            <Date Day="31" Month="5" Year="2000"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Primitive opcodes changed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="00"/>
+            <Date Day="14" Month="6" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Test primitives added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="00"/>
+            <Date Day="29" Month="6" Year="2000"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Default for C_ID added</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 05.02 version 8.0.0 Release 1999Digital cellular telecommunications system (Phase 2+);Multiplexing and multiple access on the radio path</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 04.60 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station (MS) - Base Station System (BSS) interface;Radio Link Control/ Medium Access Control (RLC/MAC) protocol</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 04.08 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface layer 3 specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 03.64 version 6.1.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Overall description of the GPRS radio interface; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 03.60 version 6.3.1 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Service description; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 04.07 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface signalling layer 3; General aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 04.64 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station - Serving GPRS Support Node (MS-SGSN)Logical Link Control (LLC) layer specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 05.08 version 6.4.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem link control</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 05.10 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem synchronization</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 03.20 TS 100 929: July 1998 (GSM 03.20 version 6.0.1)Security related network functions, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Draft GSM 03.22: August 1998 (GSM 03.22 version 6.1.0)Functions related to Mobile Station (MS) in idle mode and group receive mode, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 04.65 V6.3.0: Subnetwork Dependant Convergence Protocol ETSI, March 1999</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>ITU-T V42bis ITU-T, Recommendation V.42 bis 1990</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 09.60 GPRS Tunneling Protocol (GTP) across the Gn and Gp Interface</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>RFC 1661 IETF STD 51 July 1994The Point-to-Point Protocol (PPP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>RFC 1662 IETF STD 51 July 1994PPP in HDLC-like Framing</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>RFC 1570 January 1994PPP LCP Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>RFC 1989 August 1996PPP Link Quality Monitoring</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>RFC 1332 May 1992The PPP Internet Protocol Control Protocol (IPCP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>RFC 1877 December 1995PPP IPCP Extensions for Name Server Addresses</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>RFC 2153 May 1997PPP Vendor Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>RFC 1334 October 1992PPP Authentication Protocols (for Password Authentication Protocol only)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>RFC 1994 August 1996PPP Challenge Handshake Authentication Protocol (CHAP)</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="55">
+        <Description>
+            <Section>This section contains all primitives that are defined for the DTI SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>DTI_READY_IND is used for flow control and indicates that the entity is ready to get the next DTI_DATA_REQ primitive.</Section>
+                <Section>This primitive has no parameters.</Section>
+                <Section>This primitive must not be changed or extended.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI_READY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>DTI</Sender>
+                    <Receiver>UL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>tui</Name>
+                </ItemLink>
+                <Comment>transmission unit identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>c_id</Name>
+                </ItemLink>
+                <Comment>channel identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>op_ack</Name>
+                </ItemLink>
+                <Comment>operation mode (acknowledged or not)</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>transmission unit identifier added and primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>added channel identifier, operation mode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI_GETDATA_REQ is used for flow control and indicates that the higher layer is ready to get the next DTI_DATA_IND primitive.</Section>
+                <Section>This primitive has no parameters.</Section>
+                <Section>This primitive must not be changed or extended.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI_GETDATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>UL</Sender>
+                    <Receiver>DTI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>tui</Name>
+                </ItemLink>
+                <Comment>transmission unit identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>c_id</Name>
+                </ItemLink>
+                <Comment>channel identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>op_ack</Name>
+                </ItemLink>
+                <Comment>operation mode (acknowledged or not)</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>transmission unit identifier added and primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>added channel identifier, operation mode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI_DATA_REQ is used to pass on data from the upper layer to the entity.</Section>
+                <Section>The list of generic data descriptors contains the data.</Section>
+                <Section>This primitive must not be changed or extended.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>UL</Sender>
+                    <Receiver>DTI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>tui</Name>
+                </ItemLink>
+                <Comment>transmission unit identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>c_id</Name>
+                </ItemLink>
+                <Comment>channel identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>p_id</Name>
+                </ItemLink>
+                <Comment>protocol identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>op_ack</Name>
+                </ItemLink>
+                <Comment>operation mode (acknowledged or not)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_flow</Name>
+                </ItemLink>
+                <Comment>flow control state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_line_sa</Name>
+                </ItemLink>
+                <Comment>line state sa</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_line_sb</Name>
+                </ItemLink>
+                <Comment>line state sb</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_escape</Name>
+                </ItemLink>
+                <Comment>escape state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>desc_list</Name>
+                </ItemLink>
+                <Comment>list of generic data descriptors</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>transmission unit identifier added and primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>added channel identifier, operation mode, protocol identifier</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>States for NT CSD added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI_DATA_IND is used to pass on data from the entity to the upper layer.</Section>
+                <Section>The list of generic data descriptors contains the data.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>DTI</Sender>
+                    <Receiver>UL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>tui</Name>
+                </ItemLink>
+                <Comment>transmission unit identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>c_id</Name>
+                </ItemLink>
+                <Comment>channel identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>p_id</Name>
+                </ItemLink>
+                <Comment>protocol identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>op_ack</Name>
+                </ItemLink>
+                <Comment>operation mode (acknowledged or not)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_flow</Name>
+                </ItemLink>
+                <Comment>flow control state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_line_sa</Name>
+                </ItemLink>
+                <Comment>line state sa</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_line_sb</Name>
+                </ItemLink>
+                <Comment>line state sb</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_escape</Name>
+                </ItemLink>
+                <Comment>escape state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>desc_list</Name>
+                </ItemLink>
+                <Comment>list of generic data descriptors</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>transmission unit identifier added and primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>added channel identifier, operation mode, protocol identifier</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>States for NT CSD added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI_DATA_TEST_REQ is the test primitive of DTI_DATA_REQ.</Section>
+                <Section>The test data sdu contains the data.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI_DATA_TEST_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>UL</Sender>
+                    <Receiver>DTI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>tui</Name>
+                </ItemLink>
+                <Comment>transmission unit identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>c_id</Name>
+                </ItemLink>
+                <Comment>channel identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>p_id</Name>
+                </ItemLink>
+                <Comment>protocol identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>op_ack</Name>
+                </ItemLink>
+                <Comment>operation mode (acknowledged or not)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_flow</Name>
+                </ItemLink>
+                <Comment>flow control state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_line_sa</Name>
+                </ItemLink>
+                <Comment>line state sa</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_line_sb</Name>
+                </ItemLink>
+                <Comment>line state sb</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_escape</Name>
+                </ItemLink>
+                <Comment>escape state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>test data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI_DATA_TEST_IND is the test primitive of DTI_DATA_IND.</Section>
+                <Section>The test data sdu contains the data.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI_DATA_TEST_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>DTI</Sender>
+                    <Receiver>UL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>tui</Name>
+                </ItemLink>
+                <Comment>transmission unit identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>c_id</Name>
+                </ItemLink>
+                <Comment>channel identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>p_id</Name>
+                </ItemLink>
+                <Comment>protocol identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>op_ack</Name>
+                </ItemLink>
+                <Comment>operation mode (acknowledged or not)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_flow</Name>
+                </ItemLink>
+                <Comment>flow control state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_line_sa</Name>
+                </ItemLink>
+                <Comment>line state sa</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_line_sb</Name>
+                </ItemLink>
+                <Comment>line state sb</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>st_escape</Name>
+                </ItemLink>
+                <Comment>escape state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>test data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI_DUMMY_REQ is there to avoid a warning during compilation. It creates a reference on the parameter desc. Otherwise the compiler gives a warning, that the parameter desc is defined but not used.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI_DUMMY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>UL</Sender>
+                    <Receiver>DTI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>desc</Name>
+                </ItemLink>
+                <Comment>generic data descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter defines a list of data descriptors.</Section>
+                <Section>It is implemented as a linked list where the element 'first' is a pointer to the first generic data descriptor (see 4.2).</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>desc_list</Name>
+                <Comment>list of generic data descriptors</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>list_len</Name>
+                </ItemLink>
+                <Comment>length in octets of whole data</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>first</Name>
+                </ItemLink>
+                <Comment>pointer to first generic data descriptor</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'len' contains the number of valid octets within the data buffer. The member 'buffer' contains the content of the descriptor. The length of the descriptor content is specified when the descriptor is allocated.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>desc</Name>
+                <Comment>generic data descriptor</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>next</Name>
+                </ItemLink>
+                <Comment>next generic data descriptor</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>len</Name>
+                </ItemLink>
+                <Comment>length of content in octets</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>buffer</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>buffer content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the data.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>test data</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>test data</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines a list of data descriptors.</Section>
+                <Section>It is implemented as a linked list where the element 'first' is a pointer to the first generic data descriptor (see 4.2).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>list_len</Name>
+                <Type>U16</Type>
+                <Comment>length in octets of whole data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines a list of data descriptors.</Section>
+                <Section>It is implemented as a linked list where the element 'first' is a pointer to the first generic data descriptor (see 4.2).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>first</Name>
+                <Type>U32</Type>
+                <Comment>pointer to first generic data descriptor</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'len' contains the number of valid octets within the data buffer. The member 'buffer' contains the content of the descriptor. The length of the descriptor content is specified when the descriptor is allocated.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>next</Name>
+                <Type>U32</Type>
+                <Comment>next generic data descriptor</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'len' contains the number of valid octets within the data buffer. The member 'buffer' contains the content of the descriptor. The length of the descriptor content is specified when the descriptor is allocated.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>len</Name>
+                <Type>U16</Type>
+                <Comment>length of content in octets</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'len' contains the number of valid octets within the data buffer. The member 'buffer' contains the content of the descriptor. The length of the descriptor content is specified when the descriptor is allocated.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buffer</Name>
+                <Type>U8</Type>
+                <Comment>buffer content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Every entity which use the DTI (Data Transmission Interface) must include this identifier in all DTI primitives to determine the sender of the primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tui</Name>
+                <Type>U16</Type>
+                <Comment>transmission unit identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to identify the affected channel in case of multiplexing. For example in GPRS this will be the affected NSAPI.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_id</Name>
+                <Type>U8</Type>
+                <Comment>channel identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti</DocName>
+                <Name>VAL_c_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="6" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Default added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the type of PDP packet.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p_id</Name>
+                <Type>U8</Type>
+                <Comment>protocol identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti</DocName>
+                <Name>VAL_p_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>Copied from PPP, renamed constants</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>DTI_PID_FRAME added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates whether acknowledged operation shall be applied or not. In GPRS this will be the distinction between the former SN_DATA_REQ and SN_UNITDATA_REQ primitives, for example.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>op_ack</Name>
+                <Type>U8</Type>
+                <Comment>operation mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti</DocName>
+                <Name>VAL_op_ack</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the state of the flow control. The state of the flow control can be mapped onto the X bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_FLOW_ON as a default.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>st_flow</Name>
+                <Type>U8</Type>
+                <Comment>flow control state</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti</DocName>
+                <Name>VAL_st_flow</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the status bit SA, which can be mapped onto the SA bit of a V110 frame (ISDN).). If this parameter is not used it should be set to DTI_SA_ON as a default.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>st_line_sa</Name>
+                <Type>U8</Type>
+                <Comment>line state sa</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti</DocName>
+                <Name>VAL_st_line_sa</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the status bit SA, which can be mapped onto the SB bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SB_ON as a default.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>st_line_sb</Name>
+                <Type>U8</Type>
+                <Comment>line state sb</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti</DocName>
+                <Name>VAL_st_line_sb</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the escape status. If this parameter is not used it should be set to DTI_ESC_OFF as a default.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>st_escape</Name>
+                <Type>U8</Type>
+                <Comment>escape state</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti</DocName>
+                <Name>VAL_st_escape</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>test data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the DTI SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_c_id</Name>
+                <Comment>values for c_id</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_NSAPI_0</Alias>
+                <Comment>escape mechanism for future extensions</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_NSAPI_1</Alias>
+                <Comment>Point-To-Multipoint Multicast information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DTI_NSAPI_2</Alias>
+                <Comment>reserved for future use</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>DTI_NSAPI_3</Alias>
+                <Comment>reserved for future use</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>DTI_NSAPI_4</Alias>
+                <Comment>reserved for future use</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>DTI_NSAPI_5</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>DTI_NSAPI_6</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>DTI_NSAPI_7</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>DTI_NSAPI_8</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>DTI_NSAPI_9</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>DTI_NSAPI_10</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>DTI_NSAPI_11</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>DTI_NSAPI_12</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>DTI_NSAPI_13</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>DTI_NSAPI_14</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>DTI_NSAPI_15</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>DTI_C_ID_DEFAULT</Alias>
+                <Comment>Default value for c_id</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_p_id</Name>
+                <Comment>values for p_id</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">21</Value>
+                <Alias>DTI_PID_IP</Alias>
+                <Comment>simple ip packet</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">2D</Value>
+                <Alias>DTI_PID_CTCP</Alias>
+                <Comment>Van Jacobson compressed TCP/IP header</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">2F</Value>
+                <Alias>DTI_PID_UTCP</Alias>
+                <Comment>Van Jacobson uncompressed TCP/IP header</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>DTI_PID_FRAME</Alias>
+                <Comment>PPP frame</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_op_ack</Name>
+                <Comment>values for op_ack</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>OP_ACK</Alias>
+                <Comment>acknowledged operation mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>OP_UNACK</Alias>
+                <Comment>unacknowledged operation mode</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_st_flow</Name>
+                <Comment>values for st_flow</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_FLOW_ON</Alias>
+                <Comment>flow control is inactive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_FLOW_OFF</Alias>
+                <Comment>flow control is active</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_st_line_sa</Name>
+                <Comment>values for st_line_sa</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_SA_ON</Alias>
+                <Comment>SA is inactive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_SA_OFF</Alias>
+                <Comment>SA is active</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_st_line_sb</Name>
+                <Comment>values for st_line_sb</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_SB_ON</Alias>
+                <Comment>SB is inactive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_SB_OFF</Alias>
+                <Comment>SB is active</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_st_escape</Name>
+                <Comment>values for st_escape</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_ESC_OFF</Alias>
+                <Comment>No escape detected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_ESC_ON</Alias>
+                <Comment>Escape detected</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

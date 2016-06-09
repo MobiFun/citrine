@@ -1,0 +1,2 @@
+1,$s/\<ANLG_FAM\>/ANALOG/g
+w

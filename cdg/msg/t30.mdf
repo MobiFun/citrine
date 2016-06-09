@@ -1,0 +1,930 @@
+;********************************************************************************
+;*** File           : t30.mdf
+;*** Creation       : Thu Jun 19 15:32:14 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : t30
+;*** Document No.   : 8411.620.98.101
+;*** Document Date  : 2000-02-04
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: UB
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:21:26 2007"
+PRAGMA 	LAST_MODIFIED 	"2000-02-04"
+PRAGMA 	ID_AND_VERSION 	"8411.620.98.101"
+
+
+
+CONST 	MAX_NSF_LEN 	720 	; number of bits in non-standard facility element.
+
+
+
+VALTAB 	VAL_v8
+VAL 	0 	v8_not_avail 	"V.8 is not available"
+VAL 	1 	v8_avail 	"V.8 is available"
+
+VALTAB 	VAL_n_byte
+VAL 	0 	NB_256_BYTES 	"256 octets preferred in ECM"
+VAL 	1 	NB_64_BYTES 	"64 octets preferred in ECM"
+
+VALTAB 	VAL_ready_tx_fax
+VAL 	0 	RTF_NO_TX_RDY 	"not ready to transmit a facsimile document"
+VAL 	1 	RTF_TX_RDY 	"ready to transmit a facsimile document"
+
+VALTAB 	VAL_rec_fax_op
+VAL 	0 	RFO_NO_RX_RDY 	"not ready to receive a facsimile document"
+VAL 	1 	RFO_RX_RDY 	"ready to receive a facsimile document"
+
+VALTAB 	VAL_data_sig_rate
+VAL 	DEF 	 	"undefined signalling rate"
+VAL 	0 	DSR_2400_V27 	"signalling rate 2400 bps V.27 ter"
+VAL 	4 	DSR_4800_V27 	"signalling rate 4800 bps V.27 ter"
+VAL 	12 	DSR_7200_V29 	"signalling rate 7200 bps V.29"
+VAL 	13 	DSR_7200_V17 	"signalling rate 7200 bps V.17"
+VAL 	8 	DSR_9600_V29 	"signalling rate 9600 bps V.29"
+VAL 	9 	DSR_9600_V17 	"signalling rate 9600 bps V.17"
+VAL 	5 	DSR_12000_V17 	"signalling rate 12000 bps V.17"
+VAL 	1 	DSR_14000_V17 	"signalling rate 14400 bps V.19"
+
+VALTAB 	VAL_R8_lines_pels
+VAL 	0 	R8LP_R8_ONLY 	"vertical resolution is specified by R8 only"
+VAL 	1 	R8LP_R8_EXTENDED 	"vertical resolution is specified not only by R8"
+
+VALTAB 	VAL_two_dim_coding
+VAL 	0 	TDC_NO_2D_CODING 	"no 2D T.4 coding"
+VAL 	1 	TDC_2D_CODING 	"2D T.4 coding"
+
+VALTAB 	VAL_rec_width
+VAL 	0 	RW_WIDTH_215_MM 	"Scan line length of 215 mm"
+VAL 	1 	RW_WIDTH_303_MM 	"Scan line length of 215, 255 and 303 mm"
+VAL 	2 	RW_WIDTH_255_MM 	"Scan line length of 215 and 255 mm"
+VAL 	3 	RW_WIDTH_INVALID 	"Invalid scan line length"
+
+VALTAB 	VAL_max_rec_len
+VAL 	0 	MRL_A4 	"Maximum recording length A4 (297 mm)"
+VAL 	1 	MRL_UNLIMITED 	"Unlimited recording length"
+VAL 	2 	MRL_B4 	"Maximum recording length B4 (364 mm)"
+VAL 	3 	MRL_INVALID 	"Invalid recording length"
+
+VALTAB 	VAL_min_scan_time
+VAL 	0 	MST_20_MS 	"20 ms at 3.85 1/mm: T7.7 = T3.85"
+VAL 	1 	MST_40_MS 	"40 ms at 3.85 1/mm: T7.7 = T3.85"
+VAL 	2 	MST_10_MS 	"10 ms at 3.85 1/mm: T7.7 = T3.85"
+VAL 	3 	MST_5_MS 	"5 ms at 3.85 1/mm: T7.7 = T3.85"
+VAL 	4 	MST_10_MS_HALF 	"10 ms at 3.85 1/mm: T7.7 = 1/2 T3.85"
+VAL 	5 	MST_20_MS_HALF 	"20 ms at 3.85 1/mm: T7.7 = 1/2 T3.85"
+VAL 	6 	MST_40_MS_HALF 	"40 ms at 3.85 1/mm: T7.7 = 1/2 T3.85"
+VAL 	7 	MST_0_MS 	"0 ms at 3.85 1/mm: T7.7 = T3.85"
+
+VALTAB 	VAL_uncomp_mode
+VAL 	0 	UCM_COMPRESSED 	"T.4 data (can be send)/(are) in compressed mode"
+VAL 	1 	UCM_UNCOMPRESSED 	"T.4 data (can be send)/(are) in uncompressed mode"
+
+VALTAB 	VAL_err_corr_mode
+VAL 	0 	ECM_OFF 	"Error correction mode is not possible/off"
+VAL 	1 	ECM_ON 	"Error correction mode is possible/on"
+
+VALTAB 	VAL_t6_coding
+VAL 	0 	T6_CODING_OFF 	"T.6 coding is not possible/off"
+VAL 	1 	T6_CODING_ON 	"T.6 coding is possible/on"
+
+VALTAB 	VAL_R8_lines
+VAL 	0 	R8_LINES_OFF 	"R8 x 15.4 lines/mm is not possible/off"
+VAL 	1 	R8_LINES_ON 	"R8 x 15.4 lines/mm is possible/on"
+
+VALTAB 	VAL_r_300_pels
+VAL 	0 	R300_PELS_OFF 	"Res 300 x 300 pels /25.4 mm is not possible/off"
+VAL 	1 	R300_PELS_ON 	"Res 300 x 300 pels /25.4 mm is possible/on"
+
+VALTAB 	VAL_R16_lines_pels
+VAL 	0 	R16_LINES_PELS_OFF 	"R16 x 15.4 lines/mm and/or 400 x 400 pels/24.4 mm mode is not possible/off"
+VAL 	1 	R16_LINES_PELS_ON 	"R16 x 15.4 lines/mm and/or 400 x 400 pels/24.4 mm mode is possible/on"
+
+VALTAB 	VAL_i_res_pref
+VAL 	0 	IRP_NO_INCH_BASED 	"Inch-based resolution not preferred"
+VAL 	1 	IRP_INCH_BASED 	"Inch-based resolution preferred"
+
+VALTAB 	VAL_m_res_pref
+VAL 	0 	IRP_NO_METRIC_BASED 	"Metric-based resolution not preferred"
+VAL 	1 	IRP_METRIC_BASED 	"Metric-based resolution preferred"
+
+VALTAB 	VAL_min_scan_time_hr
+VAL 	0 	MST_T154_EQ_T77 	"T15.4 = T7.7"
+VAL 	1 	MST_T154_EQ_HALF_T77 	"T15.4 = 0.5 x T7.7"
+
+VALTAB 	VAL_sel_polling
+VAL 	0 	SEP_NO_POLLING 	"Selective polling not possible"
+VAL 	1 	SEP_POLLING 	"Selective polling possible"
+
+VALTAB 	VAL_subaddr
+VAL 	0 	SA_NO_SUBADDRESSING 	"Sub-addressing is not possible/intended"
+VAL 	1 	SA_SUBADDRESSNIG 	"Sub-addressing is possible/intended"
+
+VALTAB 	VAL_password
+VAL 	0 	PW_NO_PASSWORD 	"Password checking is not possible/intended"
+VAL 	1 	PW_PASSWORD 	"Password checking is possible/intended"
+
+VALTAB 	VAL_ready_tx_doc
+VAL 	0 	RTD_TX_READY 	"Ready to transmit a data file"
+VAL 	1 	RTD_NOT_TX_READY 	"Not ready to transmit a data file"
+
+VALTAB 	VAL_bft
+VAL 	0 	BFT_NO_BIN_FILE_TX 	"Not possible/intended to transmit a binary file"
+VAL 	1 	BFT_BIN_FILE_TX 	"Possibility/intention to transmit a binary file"
+
+VALTAB 	VAL_dtm
+VAL 	0 	DTM_NO_DOC_TX_MODE 	"Not possible/intended to perform the DTM"
+VAL 	1 	DTM_DOC_TX_MODE 	"Possibility/intention to perform the DTM"
+
+VALTAB 	VAL_edi
+VAL 	0 	EDI_NO_ELEC_DATA_XCHNG 	"Not possible/intended to perform EDI"
+VAL 	1 	EDI_ELEC_DATA_XCHNG 	"Possibility/intention to perform EDI"
+
+VALTAB 	VAL_btm
+VAL 	0 	BTM_NO_BASIC_TRANS_MODE 	"Not possible/intended to perform the BTM"
+VAL 	1 	BTM_BASIC_TRANS_MODE 	"Possibility/intention to perform the BTM"
+
+VALTAB 	VAL_ready_tx_mixed
+VAL 	0 	RTM_NO_READY_TX_MIXED 	"Not ready to transmit a character or mixed mode document"
+VAL 	1 	RTM_READY_TX_MIXED 	"Ready to transmit a character or mixed mode document"
+
+VALTAB 	VAL_char_mode
+VAL 	0 	CM_NO_CHARACTER_MODE 	"Not possible/intended to perform the character mode"
+VAL 	1 	CM_CHARACTER_MODE 	"Possibility/intention to perform the character mode"
+
+VALTAB 	VAL_mixed_mode
+VAL 	0 	MM_NO_MIXED_MODE 	"Not possible/intended to perform the mixed mode"
+VAL 	1 	MM_MIXED_MODE 	"Possibility/intention to perform the mixed mode"
+
+VALTAB 	VAL_proc_mode_26
+VAL 	0 	PM_NO_PROC_MODE_26 	"Not possible/intended to perform the processable mode 26"
+VAL 	1 	PM_PROC_MODE_26 	"Possibility/intention to perform the processable mode 26"
+
+VALTAB 	VAL_dig_network_cap
+VAL 	0 	DNC_NO_DIGITAL_NETWORK 	"Terminal is not on a digital network"
+VAL 	1 	DNC_DIGITAL_NETWORK 	"Terminal is on a digital network"
+
+VALTAB 	VAL_duplex
+VAL 	0 	DUP_HALF_DUPLEX 	"Operate in half duplex mode only"
+VAL 	1 	DUP_FULL_DUPLEX 	"Operate in full-duplex or half duplex mode"
+
+VALTAB 	VAL_jpeg
+VAL 	0 	JPG_NO_CODING 	"Not able/intent to code documents in JPEG"
+VAL 	1 	JPG_CODING 	"Able/intent to code documents in JPEG"
+
+VALTAB 	VAL_full_colour
+VAL 	0 	FC_NO_FULL_COLOR_MODE 	"Not able/intent to work in full colour mode"
+VAL 	1 	FC_FULL_COLOR_MODE 	"Able/intent to work in full colour mode"
+
+VALTAB 	VAL_r_12_bits_pel_comp
+VAL 	0 	BPP_8_BITS_PER_PEL 	"Images must/are digitised with 8 bits/pel"
+VAL 	1 	BPP_12_BITS_PER_PEL 	"Images may be/are digitised with up to 12 bits/pel"
+
+VALTAB 	VAL_no_subsamp
+VAL 	0 	NS_USE_4_1_1_SUB 	"Use the 4:1:1 sub-sampling ratio for the chrominance components in the image data"
+VAL 	1 	NS_NO_SUBSAMPLING 	"Use no sub-sampling ratio for the chrominance components in the image data"
+
+VALTAB 	VAL_cust_illum
+VAL 	0 	CI_USE_D50_ILLUM 	"Only the standard D50 illuminant for colour images supported/used"
+VAL 	1 	CI_CUSTOM_ILLUM 	"Standard D50 illuminant and other illuminants are supported/used for colour images"
+
+VALTAB 	VAL_cust_gamut
+VAL 	0 	CG_STD_GAMUT_RNG 	"Only the default gamut range for colour images supported/used"
+VAL 	1 	CG_CUST_GAMUT_RNG 	"Other gamut  ranges are supported/used for colour images"
+
+VALTAB 	VAL_na_letter
+VAL 	0 	NLT_NO_NORTH_AMERICAN_LETTER 	"No North American Letter format is supported/used"
+VAL 	1 	NLT_NORTH_AMERICAN_LETTER 	"No North American Letter format is supported/used"
+
+VALTAB 	VAL_na_legal
+VAL 	0 	NLG_NO_NORTH_AMERICAN_LEGAL 	"No North American Legal format is supported/used"
+VAL 	1 	NLG_NORTH_AMERICAN_LEGAL 	"No North American Legal format is supported/used"
+
+VALTAB 	VAL_sing_prog_seq_coding_basic
+VAL 	0 	SPG_NO_SINGLE_PROG_BASIC 	"No single-progression sequential coding basic is supported/used"
+VAL 	1 	SPG_SINGLE_PROG_BASIC 	"Single-progression sequential coding basic is supported/used"
+
+VALTAB 	VAL_sing_prog_seq_coding_L0
+VAL 	0 	SPG_NO_SINGLE_PROG_L0 	"No single-progression sequential coding optional L0 is supported/used"
+VAL 	1 	SPG_SINGLE_PROG_L0 	"Single-progression sequential coding optional L0 is supported/used"
+
+VALTAB 	VAL_frame_size
+VAL 	0 	FS_256_OCTETS 	"Frame size of 256 octets is used if ECM is active"
+VAL 	1 	FS_64_OCTETS 	"Frame size of 64 octets is used if ECM is active"
+
+VALTAB 	VAL_resolution_type
+VAL 	0 	RT_METRIC_BASED 	"Metric based resolution"
+VAL 	1 	RT_INCH_BASED 	"Inch based resolution"
+
+VALTAB 	VAL_huffman_tables
+VAL 	0 	HT_NO_HUFFMAN_TABLES 	"No default Huffman tables used"
+VAL 	1 	HT_HUFFMAN_TABLES 	"Default Huffman tables used"
+
+
+
+
+VAR 	fcf 	"Facsimile control field" 	
+ 	8
+
+
+VAR 	cld_sub_nr 	"called subscriber number" 	
+ 	8
+
+
+VAR 	clg_sub_nr 	"calling subscriber number" 	
+ 	8
+
+
+VAR 	tra_sub_nr 	"transmitting subscriber number" 	
+ 	8
+
+
+VAR 	pm_sub_addr 	"Polling mode sub-address" 	
+ 	8
+
+
+VAR 	sub_addr 	"Sub-address" 	
+ 	8
+
+
+VAR 	non_std_fac 	"Non-standard facility content" 	
+ 	MAX_NSF_LEN
+
+
+VAR 	pm_pword 	"Password for polling" 	
+ 	8
+
+
+VAR 	sm_pword 	"Password for sendingf" 	
+ 	8
+
+
+VAR 	v8 	"V.8" 	
+ 	1
+
+VAL 	@m_t30 - VAL_v8@ 	
+
+VAR 	n_byte 	"no. of octets preferred" 	
+ 	1
+
+VAL 	@m_t30 - VAL_n_byte@ 	
+
+VAR 	ready_tx_fax 	"Ready to transmit a facsimile document (polling)" 	
+ 	1
+
+VAL 	@m_t30 - VAL_ready_tx_fax@ 	
+
+VAR 	rec_fax_op 	"Receiver fax operation" 	
+ 	1
+
+VAL 	@m_t30 - VAL_rec_fax_op@ 	
+
+VAR 	data_sig_rate 	"data signalling rate" 	
+ 	4
+
+VAL 	@m_t30 - VAL_data_sig_rate@ 	
+
+VAR 	R8_lines_pels 	"R8 x 7.7 lines/mm and/or 200 x 200 pels/25.4 mm" 	
+ 	1
+
+VAL 	@m_t30 - VAL_R8_lines_pels@ 	
+
+VAR 	two_dim_coding 	"two dimensional coding" 	
+ 	1
+
+VAL 	@m_t30 - VAL_two_dim_coding@ 	
+
+VAR 	rec_width 	"recording width" 	
+ 	2
+
+VAL 	@m_t30 - VAL_rec_width@ 	
+
+VAR 	max_rec_len 	"maximum recording length" 	
+ 	2
+
+VAL 	@m_t30 - VAL_max_rec_len@ 	
+
+VAR 	min_scan_time 	"minimum scan line time" 	
+ 	3
+
+VAL 	@m_t30 - VAL_min_scan_time@ 	
+
+VAR 	uncomp_mode 	"uncompressed mode" 	
+ 	1
+
+VAL 	@m_t30 - VAL_uncomp_mode@ 	
+
+VAR 	err_corr_mode 	"error correction mode" 	
+ 	1
+
+VAL 	@m_t30 - VAL_err_corr_mode@ 	
+
+VAR 	t6_coding 	"T6 coding" 	
+ 	1
+
+VAL 	@m_t30 - VAL_t6_coding@ 	
+
+VAR 	R8_lines 	"R8 lines" 	
+ 	1
+
+VAL 	@m_t30 - VAL_R8_lines@ 	
+
+VAR 	r_300_pels 	"Res 300 x 300 pels/25.4 mm" 	
+ 	1
+
+VAL 	@m_t30 - VAL_r_300_pels@ 	
+
+VAR 	R16_lines_pels 	"R16 x 15.4 lines/mm and/or 400 x 400 pels/24.4 mm" 	
+ 	1
+
+VAL 	@m_t30 - VAL_R16_lines_pels@ 	
+
+VAR 	i_res_pref 	"Inch-based resolution preferred" 	
+ 	1
+
+VAL 	@m_t30 - VAL_i_res_pref@ 	
+
+VAR 	m_res_pref 	"Metric-based resolution preferred" 	
+ 	1
+
+VAL 	@m_t30 - VAL_m_res_pref@ 	
+
+VAR 	min_scan_time_hr 	"Minimum scan line time for higher resolutions" 	
+ 	1
+
+VAL 	@m_t30 - VAL_min_scan_time_hr@ 	
+
+VAR 	sel_polling 	"Selective polling" 	
+ 	1
+
+VAL 	@m_t30 - VAL_sel_polling@ 	
+
+VAR 	subaddr 	"Sub-addressing" 	
+ 	1
+
+VAL 	@m_t30 - VAL_subaddr@ 	
+
+VAR 	password 	"Password flag" 	
+ 	1
+
+VAL 	@m_t30 - VAL_password@ 	
+
+VAR 	ready_tx_doc 	"Ready to transmit a data file" 	
+ 	1
+
+VAL 	@m_t30 - VAL_ready_tx_doc@ 	
+
+VAR 	bft 	"Binary file transfer" 	
+ 	1
+
+VAL 	@m_t30 - VAL_bft@ 	
+
+VAR 	dtm 	"Document transfer mode" 	
+ 	1
+
+VAL 	@m_t30 - VAL_dtm@ 	
+
+VAR 	edi 	"Electronic data interchange" 	
+ 	1
+
+VAL 	@m_t30 - VAL_edi@ 	
+
+VAR 	btm 	"Basic transfer mode" 	
+ 	1
+
+VAL 	@m_t30 - VAL_btm@ 	
+
+VAR 	ready_tx_mixed 	"Ready to transmit a character or mixed mode document" 	
+ 	1
+
+VAL 	@m_t30 - VAL_ready_tx_mixed@ 	
+
+VAR 	char_mode 	"Character mode" 	
+ 	1
+
+VAL 	@m_t30 - VAL_char_mode@ 	
+
+VAR 	mixed_mode 	"Mixed mode" 	
+ 	1
+
+VAL 	@m_t30 - VAL_mixed_mode@ 	
+
+VAR 	proc_mode_26 	"Processable mode" 	
+ 	1
+
+VAL 	@m_t30 - VAL_proc_mode_26@ 	
+
+VAR 	dig_network_cap 	"Digital network capability" 	
+ 	1
+
+VAL 	@m_t30 - VAL_dig_network_cap@ 	
+
+VAR 	duplex 	"Duplex and half duplex capabilities" 	
+ 	1
+
+VAL 	@m_t30 - VAL_duplex@ 	
+
+VAR 	jpeg 	"JPEG coding" 	
+ 	1
+
+VAL 	@m_t30 - VAL_jpeg@ 	
+
+VAR 	full_colour 	"Full color mode" 	
+ 	1
+
+VAL 	@m_t30 - VAL_full_colour@ 	
+
+VAR 	r_12_bits_pel_comp 	"Digitise 12 Bits/pel component" 	
+ 	1
+
+VAL 	@m_t30 - VAL_r_12_bits_pel_comp@ 	
+
+VAR 	no_subsamp 	"No sub-sampling" 	
+ 	1
+
+VAL 	@m_t30 - VAL_no_subsamp@ 	
+
+VAR 	cust_illum 	"Custom illuminant" 	
+ 	1
+
+VAL 	@m_t30 - VAL_cust_illum@ 	
+
+VAR 	cust_gamut 	"Custom gamut range" 	
+ 	1
+
+VAL 	@m_t30 - VAL_cust_gamut@ 	
+
+VAR 	na_letter 	"North American Letter" 	
+ 	1
+
+VAL 	@m_t30 - VAL_na_letter@ 	
+
+VAR 	na_legal 	"North American Legal" 	
+ 	1
+
+VAL 	@m_t30 - VAL_na_legal@ 	
+
+VAR 	sing_prog_seq_coding_basic 	"Single-progression sequential Coding basic" 	
+ 	1
+
+VAL 	@m_t30 - VAL_sing_prog_seq_coding_basic@ 	
+
+VAR 	sing_prog_seq_coding_L0 	"Single-progression sequential Coding Optional L0" 	
+ 	1
+
+VAL 	@m_t30 - VAL_sing_prog_seq_coding_L0@ 	
+
+VAR 	frame_size 	"Frame size" 	
+ 	1
+
+VAL 	@m_t30 - VAL_frame_size@ 	
+
+VAR 	resolution_type 	"Resolution type selection" 	
+ 	1
+
+VAL 	@m_t30 - VAL_resolution_type@ 	
+
+VAR 	huffman_tables 	"Preferred Huffman tables" 	
+ 	1
+
+VAL 	@m_t30 - VAL_huffman_tables@ 	
+
+
+
+
+COMP 	cap0_rcv 	"Basic facsimile capabilities receiver"
+{
+ 	.00000  ; reserved bits
+ 	 	v8 	 ; V.8
+ 	 	n_byte 	 ; no. of octets preferred
+ 	.0  ; reserved bits
+ 	 	ready_tx_fax 	 ; ready to transmit a facsimile document (polling)
+ 	 	rec_fax_op 	 ; receiver fax operation
+ 	 	data_sig_rate 	 ; data signalling rate
+ 	 	R8_lines_pels 	 ; R8 x 7.7 lines/mm and/or 200 x 200 pels/25.4 mm
+ 	 	two_dim_coding 	 ; two-dimensional coding
+ 	 	rec_width 	 ; recording-width
+ 	 	max_rec_len 	 ; maximum recording length
+ 	 	min_scan_time 	 ; minimum scan line time
+}
+
+
+
+COMP 	cap1_rcv 	"Extended facsimile capabilities 1 receiver"
+{
+ 	.0  ; reserved bit
+ 	 	uncomp_mode 	 ; uncompressed mode
+ 	 	err_corr_mode 	 ; error correction mode
+ 	.000  ; reserved bits
+ 	 	t6_coding 	 ; T.6 coding
+}
+
+
+
+COMP 	cap2_rcv 	"Extended facsimile capabilities 2 receiver"
+{
+ 	.0000000  ; reserved bits
+}
+
+
+
+COMP 	cap3_rcv 	"Extended facsimile capabilities 3 receiver"
+{
+ 	 	R8_lines 	 ; R8 x 15.4 lines/mm
+ 	 	r_300_pels 	 ; Res 300 x 300 pels/25.4 mm
+ 	 	R16_lines_pels 	 ; R16 x 15.4 lines/mm and/or 400 x 400 pels/25.4 mm
+ 	 	i_res_pref 	 ; inch-based resolution preferred
+ 	 	m_res_pref 	 ; metric-based resolution preferred
+ 	 	min_scan_time_hr 	 ; minimum scan line time for higher resolutions
+ 	 	sel_polling 	 ; selective polling
+}
+
+
+
+COMP 	cap4_rcv 	"Extended facsimile capabilities 4 receiver"
+{
+ 	 	subaddr 	 ; subaddressing
+ 	 	password 	 ; password flag
+ 	 	ready_tx_doc 	 ; ready to transmit a data file (polling)
+ 	.0  ; reserved bit
+ 	 	bft 	 ; Binary File Transfer (BFT)
+ 	 	dtm 	 ; Document Transfer Mode (DTM)
+ 	 	edi 	 ; Electronic Data Interchange (EDI)
+}
+
+
+
+COMP 	cap5_rcv 	"Extended facsimile capabilities 5 receiver"
+{
+ 	 	btm 	 ; Basic Transfer Mode (BTM)
+ 	.0  ; reserved bit
+ 	 	ready_tx_mixed 	 ; ready to transmit a character or mixed mode document (polling)
+ 	 	char_mode 	 ; character mode
+ 	.0  ; reserved bit
+ 	 	mixed_mode 	 ; mixed mode (Annex E/T.4)
+ 	.0  ; reserved bit
+}
+
+
+
+COMP 	cap6_rcv 	"Extended facsimile capabilities 6 receiver"
+{
+ 	 	proc_mode_26 	 ; processable mode 26
+ 	 	dig_network_cap 	 ; digital network capability
+ 	 	duplex 	 ; duplex and half duplex capabilities
+ 	 	jpeg 	 ; JPEG coding
+ 	 	full_colour 	 ; full colour mode
+ 	.0  ; reserved bit
+ 	 	r_12_bits_pel_comp 	 ; Digitise 12 bits/pel component
+}
+
+
+
+COMP 	cap7_rcv 	"Extended facsimile capabilities 7 receiver"
+{
+ 	 	no_subsamp 	 ; no subsampling
+ 	 	cust_illum 	 ; custom illuminant
+ 	 	cust_gamut 	 ; custom gamut range
+ 	 	na_letter 	 ; North American Letter (215.9 x 279.4 mm)
+ 	 	na_legal 	 ; North American Legal (215.9 x 355.6 mm)
+ 	 	sing_prog_seq_coding_basic 	 ; single-progression sequential coding basic
+ 	 	sing_prog_seq_coding_L0 	 ; single-progression sequential coding optional L0
+}
+
+
+
+COMP 	cap0_snd 	"Basic facsimile capabilities sender"
+{
+ 	.000000000  ; reserved bits
+ 	 	rec_fax_op 	 ; receiver fax operation
+ 	 	data_sig_rate 	 ; data signalling rate
+ 	 	R8_lines_pels 	 ; R8 x 7.7 lines/mm and/or 200 x 200 pels/25.4 mm
+ 	 	two_dim_coding 	 ; two-dimensional coding
+ 	 	rec_width 	 ; recording-width
+ 	 	max_rec_len 	 ; maximum recording length
+ 	 	min_scan_time 	 ; minimum scan line time
+}
+
+
+
+COMP 	cap1_snd 	"Extended facsimile capabilities 1 sender"
+{
+ 	.0  ; reserved bit
+ 	 	uncomp_mode 	 ; uncompressed mode
+ 	 	err_corr_mode 	 ; error correction mode
+ 	 	frame_size 	 ; frame size
+ 	.00  ; reserved bits
+ 	 	t6_coding 	 ; T.6 coding
+}
+
+
+
+COMP 	cap2_snd 	"Extended facsimile capabilities 2 sender"
+{
+ 	.0000000  ; reserved bits
+}
+
+
+
+COMP 	cap3_snd 	"Extended facsimile capabilities 3 sender"
+{
+ 	 	R8_lines 	 ; R8 x 15.4 lines/mm
+ 	 	r_300_pels 	 ; Res 300 x 300 pels/25.4 mm
+ 	 	R16_lines_pels 	 ; R16 x 15.4 lines/mm and/or 400 x 400 pels/25.4 mm
+ 	 	resolution_type 	 ; resolution type selection
+ 	.000  ; reserved bits
+}
+
+
+
+COMP 	cap4_snd 	"Extended facsimile capabilities 4 sender"
+{
+ 	 	subaddr 	 ; subaddressing
+ 	 	password 	 ; password flag
+ 	.00  ; reserved bits
+ 	 	bft 	 ; Binary File Transfer (BFT)
+ 	 	dtm 	 ; Document Transfer Mode (DTM)
+ 	 	edi 	 ; Electronic Data Interchange (EDI)
+}
+
+
+
+COMP 	cap5_snd 	"Extended facsimile capabilities 5 sender"
+{
+ 	 	btm 	 ; Basic Transfer Mode (BTM)
+ 	.00  ; reserved bit
+ 	 	char_mode 	 ; character mode
+ 	.0  ; reserved bit
+ 	 	mixed_mode 	 ; mixed mode (Annex E/T.4)
+ 	.0  ; reserved bit
+}
+
+
+
+COMP 	cap6_snd 	"Extended facsimile capabilities 6 sender"
+{
+ 	 	proc_mode_26 	 ; processable mode 26
+ 	 	dig_network_cap 	 ; digital network capability
+ 	 	duplex 	 ; duplex and half duplex capabilities
+ 	 	jpeg 	 ; JPEG coding
+ 	 	full_colour 	 ; full colour mode
+ 	 	huffman_tables 	 ; preferred Huffman tables
+ 	 	r_12_bits_pel_comp 	 ; Digitise 12 bits/pel component
+}
+
+
+
+COMP 	cap7_snd 	"Extended facsimile capabilities 7 sender"
+{
+ 	 	no_subsamp 	 ; no subsampling
+ 	 	cust_illum 	 ; custom illuminant
+ 	 	cust_gamut 	 ; custom gamut range
+ 	 	na_letter 	 ; North American Letter (215.9 x 279.4 mm)
+ 	 	na_legal 	 ; North American Legal (215.9 x 355.6 mm)
+ 	 	sing_prog_seq_coding_basic 	 ; single-progression sequential coding basic
+ 	 	sing_prog_seq_coding_L0 	 ; single-progression sequential coding optional L0
+}
+
+
+
+
+
+
+MSG 	BCS_DIS 	both 	0b00000001 ; BCS Digital identification signal
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	 	cap0_rcv 	 ; basic facsimile capabilities receiver
+ 	! 	 	cap1_rcv 	 ; extended facsimile capabilities 1 receiver
+ 	! 	 	cap2_rcv 	 ; extended facsimile capabilities 2 receiver
+ 	! 	 	cap3_rcv 	 ; extended facsimile capabilities 3 receiver
+ 	! 	 	cap4_rcv 	 ; extended facsimile capabilities 4 receiver
+ 	! 	 	cap5_rcv 	 ; extended facsimile capabilities 5 receiver
+ 	! 	 	cap6_rcv 	 ; extended facsimile capabilities 6 receiver
+ 	# 	 	cap7_rcv 	 ; extended facsimile capabilities 7 receiver
+}
+
+
+
+MSG 	BCS_CSI 	both 	0b00000010 ; BCS Called subscriber identification
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	T30_IDENT  	cld_sub_nr 	[0..20] 	 ; called subscriber number
+}
+
+
+
+MSG 	BCS_NSF 	both 	0b00000100 ; BCS Non standard facilities
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	 	non_std_fac 	[.MAX_NSF_LEN] 	 ; Non standard facilities
+}
+
+
+
+MSG 	BCS_DTC 	both 	0b10000001 ; BCS Digital transmit command
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	 	cap0_rcv 	 ; basic facsimile capabilities receiver
+ 	! 	 	cap1_rcv 	 ; extended facsimile capabilities 1 receiver
+ 	! 	 	cap2_rcv 	 ; extended facsimile capabilities 2 receiver
+ 	! 	 	cap3_rcv 	 ; extended facsimile capabilities 3 receiver
+ 	! 	 	cap4_rcv 	 ; extended facsimile capabilities 4 receiver
+ 	! 	 	cap5_rcv 	 ; extended facsimile capabilities 5 receiver
+ 	! 	 	cap6_rcv 	 ; extended facsimile capabilities 6 receiver
+ 	# 	 	cap7_rcv 	 ; extended facsimile capabilities 7 receiver
+}
+
+
+
+MSG 	BCS_CIG 	both 	0b10000010 ; BCS Called subscriber identification
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	T30_IDENT  	clg_sub_nr 	[0..20] 	 ; calling subscriber number
+}
+
+
+
+MSG 	BCS_NSC 	both 	0b10000100 ; BCS Non standard facilities command
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	 	non_std_fac 	[.MAX_NSF_LEN] 	 ; Non standard facilities
+}
+
+
+
+MSG 	BCS_PWD_POLL 	both 	0b10000011 ; BCS password send
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	T30_IDENT  	pm_pword 	[0..20] 	 ; Password for polling
+}
+
+
+
+MSG 	BCS_SEP 	both 	0b10000101 ; BCS Selective polling
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	T30_IDENT  	pm_sub_addr 	[0..20] 	 ; Sub address
+}
+
+
+
+MSG 	BCS_DCS 	both 	0b01000001 ; BCS Digital command signal
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	 	cap0_snd 	 ; basic facsimile capabilities sender
+ 	! 	 	cap1_snd 	 ; extended facsimile capabilities 1 sender
+ 	! 	 	cap2_snd 	 ; extended facsimile capabilities 2 sender
+ 	! 	 	cap3_snd 	 ; extended facsimile capabilities 3 sender
+ 	! 	 	cap4_snd 	 ; extended facsimile capabilities 4 sender
+ 	! 	 	cap5_snd 	 ; extended facsimile capabilities 5 sender
+ 	! 	 	cap6_snd 	 ; extended facsimile capabilities 6 sender
+ 	# 	 	cap7_snd 	 ; extended facsimile capabilities 7 sender
+}
+
+
+
+MSG 	BCS_TSI 	both 	0b01000010 ; BCS Transmitting Subscriber Identification
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	T30_IDENT  	tra_sub_nr 	[0..20] 	 ; transmitter subscriber number
+}
+
+
+
+MSG 	BCS_NSS 	both 	0b01000100 ; BCS Non standard facilities set up
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	 	non_std_fac 	[.MAX_NSF_LEN] 	 ; Non standard facilities
+}
+
+
+
+MSG 	BCS_SUB 	both 	0b01000011 ; BCS Sub address
+{
+ 	 	fcf 	 ; Facsimile control field
+ 	T30_IDENT  	sub_addr 	[0..20] 	 ; Sub address
+}
+
+
+
+MSG 	BCS_PWD_SND 	both 	0b01000101 ; BCS password receive
+{
+ 	GSM3_V  	fcf 	 ; Facsimile control field
+ 	T30_IDENT  	sm_pword 	[0..20] 	 ; Password for sending
+}
+
+
+
+MSG 	BCS_CFR 	both 	0b00100001 ; BCS Confirmation to receive
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_FTT 	both 	0b00100010 ; BCS Failure to train
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_EOM 	both 	0b01110001 ; BCS End of message
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_MPS 	both 	0b01110010 ; BCS Multiple page signal
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_EOP 	both 	0b01110100 ; BCS End of procedure
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_PRI_EOM 	both 	0b01111001 ; BCS Procedure interrupt EOM
+{
+ 	GSM3_V  	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_PRI_MPS 	both 	0b01111010 ; BCS Procedure interrupt MPS
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_PRI_EOP 	both 	0b01111100 ; BCS Procedure interrupt EOP
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_MCF 	both 	0b00110001 ; BCS Message confirmation
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_RTP 	both 	0b00110011 ; BCS Retrain positive
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_RTN 	both 	0b00110010 ; BCS Retrain negative
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_PIP 	both 	0b00110101 ; BCS Procedure interrupt positive
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_PIN 	both 	0b00110100 ; BCS Procedure interrupt negative
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_DCN 	both 	0b01011111 ; BCS Disconnect
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+MSG 	BCS_CRP 	both 	0b01011000 ; BCS Command repeat
+{
+ 	 	fcf 	 ; Facsimile control field
+}
+
+
+
+
+
+

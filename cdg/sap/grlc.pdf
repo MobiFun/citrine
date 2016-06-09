@@ -1,0 +1,384 @@
+;********************************************************************************
+;*** File           : grlc.pdf
+;*** Creation       : Wed Mar 11 09:58:06 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : grlc
+;*** Document No.   : 8010.126.02.009
+;*** Document Date  : 2003-06-06
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: AGR
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:42:56 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-06-06"
+PRAGMA 	ID_AND_VERSION 	"8010.126.02.009"
+PRAGMA 	PREFIX 	GRLC 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	NO 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+
+
+
+VALTAB 	VAL_sapi
+VAL 	1 	SAPI_1 	"SAP for GMM"
+VAL 	3 	SAPI_3 	"SAP 1 for SNDCP"
+VAL 	5 	SAPI_5 	"SAP 2 for SNDCP"
+VAL 	7 	SAPI_7 	"SAP for SMS"
+VAL 	9 	SAPI_9 	"SAP 3 for SNDCP"
+VAL 	11 	SAPI_11 	"SAP 4 for SNDCP"
+VAL 	255 	SAPI_TEST_MODE 	"This signs a primitive as GRLC-self generated for test purposes"
+
+VALTAB 	VAL_peak
+VAL 	0 	PEAK_SUB 	"Subscribed peak throughput"
+VAL 	1 	PEAK_1K 	"Up to 1 000 octet/s"
+VAL 	2 	PEAK_2K 	"Up to 2 000 octet/s"
+VAL 	3 	PEAK_4K 	"Up to 4 000 octet/s"
+VAL 	4 	PEAK_8K 	"Up to 8 000 octet/s"
+VAL 	5 	PEAK_16K 	"Up to 16 000 octet/s"
+VAL 	6 	PEAK_32K 	"Up to 32 000 octet/s"
+VAL 	7 	PEAK_64K 	"Up to 64 000 octet/s"
+VAL 	8 	PEAK_128K 	"Up to 128 000 octet/s"
+VAL 	9 	PEAK_256K 	"Up to 256 000 octet/s"
+
+VALTAB 	VAL_relclass
+VAL 	0 	RELCLASS_SUB 	"Subscribed reliability class"
+VAL 	1 	GTP_LLC_RLC_PROT 	"Acknowledged GTP, LLC, and RLC; Protected data"
+VAL 	2 	LLC_RLC_PROT 	"Unacknowledged GTP; Acknowledged LLC and RLC, Protected data"
+VAL 	3 	RLC_PROT 	"Unacknowledged GTP and LLC; Acknowledged RLC, Protected data"
+VAL 	4 	PROT 	"Unacknowledged GTP, LLC, and RLC, Protected data"
+VAL 	5 	NO_REL 	"Unacknowledged GTP, LLC, and RLC, Unprotected data"
+
+VALTAB 	VAL_delay
+VAL 	0 	DELAY_SUB 	"Subscribed delay class"
+VAL 	1 	DELAY_1 	"Delay class 1"
+VAL 	2 	DELAY_2 	"Delay class 2"
+VAL 	3 	DELAY_3 	"Delay class 3"
+VAL 	4 	DELAY_4 	"Delay class 4 (best effort)"
+
+VALTAB 	VAL_mean
+VAL 	0 	MEAN_SUB 	"Subscribed mean throughput"
+VAL 	1 	MEAN_100 	"100 octet/h"
+VAL 	2 	MEAN_200 	"200 octet/h"
+VAL 	3 	MEAN_500 	"500 octet/h"
+VAL 	4 	MEAN_1K 	"1 000 octet/h"
+VAL 	5 	MEAN_2K 	"2 000 octet/h"
+VAL 	6 	MEAN_5K 	"5 000 octet/h"
+VAL 	7 	MEAN_10K 	"10 000 octet/h"
+VAL 	8 	MEAN_20K 	"20 000 octet/h"
+VAL 	9 	MEAN_50K 	"50 000 octet/h"
+VAL 	10 	MEAN_100K 	"100 000 octet/h"
+VAL 	11 	MEAN_200K 	"200 000 octet/h"
+VAL 	12 	MEAN_500K 	"500 000 octet/h"
+VAL 	13 	MEAN_1M 	"1 000 000 octet/h"
+VAL 	14 	MEAN_2M 	"2 000 000 octet/h"
+VAL 	15 	MEAN_5M 	"5 000 000 octet/h"
+VAL 	16 	MEAN_10M 	"10 000 000 octet/h"
+VAL 	17 	MEAN_20M 	"20 000 000 octet/h"
+VAL 	18 	MEAN_50M 	"50 000 000 octet/h"
+VAL 	31 	MEAN_BEST 	"Best effort"
+
+VALTAB 	VAL_preced
+VAL 	0 	PRECED_SUB 	"Subscribed precedence"
+VAL 	1 	PRIO_HIGH 	"High priority"
+VAL 	2 	PRIO_NORM 	"Normal priority"
+VAL 	3 	PRIO_LOW 	"Low priority"
+
+VALTAB 	VAL_radio_prio
+VAL 	0 	RADIO_PRIO_1 	"Radio Priority Level 1 (highest)"
+VAL 	1 	RADIO_PRIO_2 	"Radio Priority Level 2"
+VAL 	2 	RADIO_PRIO_3 	"Radio Priority Level 3"
+VAL 	3 	RADIO_PRIO_4 	"Radio Priority Level 4 (lowest)"
+
+VALTAB 	VAL_cause
+VAL 	0 	DTACS_DEF 	"any other reason"
+VAL 	1 	DTACS_PAGE_RESPONSE 	"data is sent due to a page response"
+VAL 	2 	DTACS_MOBILITY_MANAGEMENT 	"mobility management data is sent"
+VAL 	3 	DTACS_EMPTY_FRAME 	"data is sent due to a cell update"
+VAL 	4 	DTACS_CELL_NOTIFI_NULL_FRAME 	"data is send due to cell notification using LLC unnumbered NULL command."
+
+VALTAB 	VAL_pkt_flow_id 	%REL99%
+VAL 	0x00 	GRLC_PFI_BEST_EFFORT 	%REL99% 	"best effort"
+VAL 	0x01 	GRLC_PFI_SIGNALING 	%REL99% 	"signalling"
+VAL 	0x02 	GRLC_PFI_SMS 	%REL99% 	"SMS"
+VAL 	0xFF 	GRLC_PKT_FLOW_ID_NOT_PRES 	%REL99% 	"value FF is used to indicate when packet flow identifier is not present"
+
+
+
+
+VAR 	sapi 	"service access point identifier" 	B
+
+VAL 	@p_grlc - VAL_sapi@ 	
+
+VAR 	list_len 	"Length in octets of whole data" 	S
+
+
+VAR 	first 	"Pointer to generic data descriptors" 	L
+
+
+VAR 	delay 	"Delay class" 	B
+
+VAL 	@p_grlc - VAL_delay@ 	
+
+VAR 	relclass 	"Reliablility class" 	B
+
+VAL 	@p_grlc - VAL_relclass@ 	
+
+VAR 	peak 	"Peak throughput" 	B
+
+VAL 	@p_grlc - VAL_peak@ 	
+
+VAR 	preced 	"Precedence class" 	B
+
+VAL 	@p_grlc - VAL_preced@ 	
+
+VAR 	mean 	"Main throughput" 	B
+
+VAL 	@p_grlc - VAL_mean@ 	
+
+VAR 	reserved_1 	"Reserved" 	B
+
+
+VAR 	reserved_2 	"Reserved" 	B
+
+
+VAR 	reserved_3 	"Reserved" 	B
+
+
+VAR 	radio_prio 	"Radio Priority" 	B
+
+VAL 	@p_grlc - VAL_radio_prio@ 	
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"buffer content" 	B
+
+
+VAR 	tlli 	"temporary logical link identifier" 	L
+
+
+VAR 	cause 	"Cause" 	B
+
+VAL 	@p_grlc - VAL_cause@ 	
+
+VAR 	reserved_data_req 	%!REL99% 	"reserved octets for data request" 	B
+
+
+VAR 	reserved_unitdata_req1 	"reserved octet" 	B
+
+
+VAR 	reserved_unitdata_req2 	%!REL99% 	"reserved octets for unitdata request" 	B
+
+
+VAR 	pkt_flow_id 	%REL99% 	"Packet flow identifier. Only first byte of the array is used for the packet flow identifier." 	B
+
+VAL 	@p_grlc - VAL_pkt_flow_id@ 	
+
+
+
+
+COMP 	desc_list 	 "list of generic data descriptors"
+{
+ 	list_len 	 ; Length in octets of whole data
+ 	first 	 ; Pointer to generic data descriptors
+}
+
+
+
+COMP 	grlc_qos 	 "Quality of service"
+{
+ 	delay 	 ; Delay class
+ 	relclass 	 ; Reliablility class
+ 	peak 	 ; Peak throughput
+ 	preced 	 ; Precedence class
+ 	mean 	 ; Main throughput
+ 	reserved_1 	 ; Reserved
+ 	reserved_2 	 ; Reserved
+ 	reserved_3 	 ; Reserved
+}
+
+
+
+COMP 	sdu 	 "service data unit"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[1] 	 ; buffer content
+}
+
+
+
+
+
+
+; GRLC_DATA_REQ 	0x80000097
+; GRLC_DATA_IND 	0x80004097
+; GRLC_DATA_IND_TEST 	0x80014097
+; GRLC_UNITDATA_REQ 	0x80010097
+; GRLC_UNITDATA_IND 	0x80024097
+; GRLC_UNITDATA_IND_TEST 	0x80034097
+; GRLC_READY_IND 	0x80044097
+; GRLC_ACTIVATE_GMM_QUEUE_REQ 	0x80020097
+; GRLC_SUSPEND_READY_IND 	0x80054097
+; GRLC_MAC_DATA_IND 	0x80060097
+; GRLC_MAC_READY_IND 	0x80070097
+; GRLC_MAC_PWR_CTRL_IND 	0x80080097
+; GRLC_FLUSH_DATA_REQ 	0x80030097
+
+
+
+PRIM 	GRLC_DATA_REQ 	0x80000097
+{
+ 	sapi 	 ; Service access point identifier
+ 	tlli 	 ; Temporary logical link identifier
+ 	grlc_qos 	 ; Quality of service
+ 	radio_prio 	 ; Radio priority
+ 	cause 	 ; Cause
+ 	reserved_data_req 	[16] 	 	%!REL99% ; Reserved octets for data request
+ 	pkt_flow_id 	[16] 	 	%REL99% ; Packet flow identifier
+ 	sdu 	 ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	GRLC_DATA_IND 	0x80004097
+{
+ 	tlli 	 ; Temporary logical link identifier
+ 	desc_list 	 ; List of generic data descriptors
+}
+
+
+
+
+
+
+PRIM 	GRLC_DATA_IND_TEST 	0x80014097
+{
+ 	tlli 	 ; Temporary logical link identifier
+ 	sdu 	 ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	GRLC_UNITDATA_REQ 	0x80010097
+{
+ 	sapi 	 ; Service Access Point Identifier
+ 	tlli 	 ; Temporary logical link identifier
+ 	grlc_qos 	 ; Quality of service
+ 	radio_prio 	 ; Radio priority
+ 	reserved_unitdata_req1 	 ; Reserved octet
+ 	reserved_unitdata_req2 	[16] 	 	%!REL99% ; Reserved octets for unitdata request
+ 	pkt_flow_id 	[16] 	 	%REL99% ; Packet flow identifier
+ 	sdu 	 ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	GRLC_UNITDATA_IND 	0x80024097
+{
+ 	tlli 	 ; Temporary logical link identifier
+ 	desc_list 	 ; List of generic data descriptors
+}
+
+
+
+
+
+
+PRIM 	GRLC_UNITDATA_IND_TEST 	0x80034097
+{
+ 	tlli 	 ; Temporary logical link identifier
+ 	sdu 	 ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	GRLC_READY_IND 	0x80044097
+{
+}
+
+
+
+
+
+
+PRIM 	GRLC_ACTIVATE_GMM_QUEUE_REQ 	0x80020097
+{
+}
+
+
+
+
+
+
+PRIM 	GRLC_SUSPEND_READY_IND 	0x80054097
+{
+}
+
+
+
+
+
+
+PRIM 	GRLC_MAC_DATA_IND 	0x80060097
+{
+}
+
+
+
+
+
+
+PRIM 	GRLC_MAC_READY_IND 	0x80070097
+{
+}
+
+
+
+
+
+
+PRIM 	GRLC_MAC_PWR_CTRL_IND 	0x80080097
+{
+}
+
+
+
+
+
+
+PRIM 	GRLC_FLUSH_DATA_REQ 	0x80030097
+{
+}
+
+
+
+
+
+
+
+
+

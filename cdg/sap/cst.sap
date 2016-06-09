@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">cst</DocName>
+        <DocNum Number="060" Project="8415"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages. Additionally the reception of cell broadcast short messages is included.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the radio resource management to the mobility management.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="99"/>
+            <Date Day="15" Month="3" Year="1999"/>
+            <Author>Bernd</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Saborrosch Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="99"/>
+            <Date Day="13" Month="7" Year="1999"/>
+            <Author>Patrick</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Roussel Add ADC values to the CST_EXAMPLE_PRIMITIVE</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="99"/>
+            <Date Day="21" Month="9" Year="1999"/>
+            <Author>Heiner</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Berndt Direction changed</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 2.81, Line Identification Supplementary Services - Stage 1 ETS 300 514, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 2.82, Call Forwarding Supplementary Services - Stage 1 ETS 300 515, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 2.83, Call Waiting and Call Hold Supplementary Services - Stage 1 ETS 300 516, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 2.84, Multi Party Supplementary Services - Stage 1 ETS 300 517, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 2.85, Closed User Group Supplementary Services - Stage 1 ETS 300 518, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 2.86, Advice of Charge Supplementary Services - Stage 1 ETS 300 519, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 2.88, Call Barring Supplementary Services - Stage 1 ETS 300 520, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 3.14, Support of Dual Tone Multi Frequency Signalling via the GSM System ETS 300 532, ETSI, April 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 3.40, Technical Realization of the Short Message Service Point-to-Point ETS 300 536, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 3.41, Technical Realization of Short Message Service Cell Broadcast ETS 300 537, ETSI, June 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>GSM 3.81, Line Identification Supplementary Services - Stage 2 ETS 300 542, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 3.82, Call Forwarding Supplementary Services - Stage 2 ETS 300 543, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>GSM 3.83, Call Waiting and Call Hold Supplementary Services - Stage 2 ETS 300 544, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 3.84, Multi Party Supplementary Services - Stage 2 ETS 300 545, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>GSM 3.85, Closed User Group Supplementary Services - Stage 2 ETS 300 546, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>GSM 3.86, Advice of Charge Supplementary Services - Stage 2 ETS 300 547, ETSI, March 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>GSM 3.88, Call Barring Supplementary Services - Stage 2 ETS 300 548, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>GSM 4.01, MS-BSS Interface General Aspects and Principles ETS 300 550, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18a]</RefId>
+            <RefTitle>GSM 4.03, MS-BSS Interface Channel Structures and Access Capabilities ETS 300 552, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>GSM 4.05, Data Link Layer General Aspects ETS 300 554, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>GSM 4.06, MS-BSS Interface Data Link Layer Specification ETS 300 555, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>GSM 4.07, Mobile Radio Interface Signalling Layer 3 General Aspects ETS 300 556, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>GSM 4.08, Mobile Radio Interface Layer 3 Specification ETS 300 557, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>GSM 4.10, Mobile Radio Interface Layer 3 Supplementary Services Specification  General Aspects ETS 300 558, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>GSM 4.11, Point-to-Point Short Message Service Support on Mobile Radio Interface ETS 300 559, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>GSM 4.12, Short Message Service Cell Broadcast Support on Mobile Radio Interface ETS 300 560, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>GSM 4.80, Mobile Radio Interface Supplementary Services Specification Formats and Coding ETS 300 564, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[27]</RefId>
+            <RefTitle>GSM 4.81, Line Identification Supplementary Services - Stage 3 ETS 300 565, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[28]</RefId>
+            <RefTitle>GSM 4.82, Call Forwarding Supplementary Services - Stage 3 ETS 300 566, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[29]</RefId>
+            <RefTitle>GSM 4.83, Call Waiting and Call Hold Supplementary Services - Stage 3 ETS 300 567, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[30]</RefId>
+            <RefTitle>GSM 4.84, Multi Party Supplementary Services - Stage 3 ETS 300 568, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[31]</RefId>
+            <RefTitle>GSM 4.85, Closed User Group Supplementary Services - Stage 3 ETS 300 569, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[32]</RefId>
+            <RefTitle>GSM 4.86, Advice of Charge Supplementary Services - Stage 3 ETS 300 570, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[33]</RefId>
+            <RefTitle>GSM 4.88, Call Barring Supplementary Services - Stage 3 ETS 300 571, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[34]</RefId>
+            <RefTitle>GSM 5.01, Physical Layer on the Radio Path General Description ETS 300 573, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[35]</RefId>
+            <RefTitle>GSM 5.02, Multiplexing and Multiple Access on the Radio Path ETS 300 574, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[36]</RefId>
+            <RefTitle>GSM 5.08, Radio Sub-system Link Control ETS 300 578, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[37]</RefId>
+            <RefTitle>GSM 5.10, Radio Sub-system Synchronisation ETS 300 579, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[38]</RefId>
+            <RefTitle>Service Access Point MMREG 6147.100.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[39]</RefId>
+            <RefTitle>Service Access Point MNCC 6147.101.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[40]</RefId>
+            <RefTitle>Service Access Point MNSS 6147.102.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[41]</RefId>
+            <RefTitle>Service Access Point MNSMS 6147.103.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[42]</RefId>
+            <RefTitle>Service Access Point MMCC 6147.104.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[43]</RefId>
+            <RefTitle>Service Access Point MMSS 6147.105.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[44]</RefId>
+            <RefTitle>Service Access Point MMSMS 6147.106.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[45]</RefId>
+            <RefTitle>Service Access Point RR 6147.107.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[46]</RefId>
+            <RefTitle>Service Access Point SIM 6147.108.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[47]</RefId>
+            <RefTitle>Service Access Point MPH 6147.109.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[48]</RefId>
+            <RefTitle>Service Access Point DL 6147.110.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[49]</RefId>
+            <RefTitle>Service Access Point MDL 6147.111.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[50]</RefId>
+            <RefTitle>Service Access Point PH 6147.112.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[51]</RefId>
+            <RefTitle>Service Access Point MMI 6147.113.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[52]</RefId>
+            <RefTitle>Message Sequence Charts CC 6147.200.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[53]</RefId>
+            <RefTitle>Message Sequence Charts SS 6147.201.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[54]</RefId>
+            <RefTitle>Message Sequence Charts SMS 6147.202.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[55]</RefId>
+            <RefTitle>Message Sequence Charts MM 6147.203.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[56]</RefId>
+            <RefTitle>Message Sequence Charts RR 6147.204.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[57]</RefId>
+            <RefTitle>Message Sequence Charts DL 6147.205.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[58]</RefId>
+            <RefTitle>Users Guide 6147.300.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[59]</RefId>
+            <RefTitle>Test Specification CC 6147.400.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[60]</RefId>
+            <RefTitle>Test Specification SS 6147.401.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[61]</RefId>
+            <RefTitle>Test Specification SMS 6147.402.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[62]</RefId>
+            <RefTitle>Test Specification MM 6147.403.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[63]</RefId>
+            <RefTitle>Test Specification RR 6147.404.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[64]</RefId>
+            <RefTitle>Test Specification DL 6147.405.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[65]</RefId>
+            <RefTitle>Test Specification CCD 6147.406.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[66]</RefId>
+            <RefTitle>SDL Specification CC 6147.500.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[67]</RefId>
+            <RefTitle>SDL Specification SS 6147.501.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[68]</RefId>
+            <RefTitle>SDL Specification SMS 6147.502.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[69]</RefId>
+            <RefTitle>SDL Specification MM 6147.503.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[70]</RefId>
+            <RefTitle>SDL Specification RR 6147.504.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[71]</RefId>
+            <RefTitle>SDL Specification DL 6147.505.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[72]</RefId>
+            <RefTitle>Message Specification CC 6147.600.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[73]</RefId>
+            <RefTitle>Message Specification SS 6147.601.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[74]</RefId>
+            <RefTitle>Message Specification SMS 6147.602.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[75]</RefId>
+            <RefTitle>Message Specification MM 6147.603.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[76]</RefId>
+            <RefTitle>Message Specification RR 6147.604.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[77]</RefId>
+            <RefTitle>Message Specification DL 6147.605.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[78]</RefId>
+            <RefTitle>Technical Documentation CC 6147.700.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[79]</RefId>
+            <RefTitle>Technical Documentation SS 6147.701.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[80]</RefId>
+            <RefTitle>Technical Documentation SMS 6147.702.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[81]</RefId>
+            <RefTitle>Technical Documentation MM 6147.703.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[82]</RefId>
+            <RefTitle>Technical Documentation RR 6147.704.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[83]</RefId>
+            <RefTitle>Technical Documentation DL 6147.705.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[84]</RefId>
+            <RefTitle>Technical Documentation CCD 6147.706.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="22">
+        <Description>
+            <Section>This section contains all primitives that are defined for the CST SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The CST_ADC_IND primitive is used to indicate the actual values of the analogue to digital conversion process.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CST_ADC_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>CST</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cst</DocName>
+                    <Name>adc_values</Name>
+                </ItemLink>
+                <Control>[9]</Control>
+                <Comment>AD conversion values</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="15" Month="3" Year="1999"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1999"/>
+                <Author>Proussel</Author>
+                <Comment>Add ADC values</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="9" Year="1999"/>
+                <Author>BE</Author>
+                <Comment>Renamed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The CST_VM_STOP_PLAY_IND primitive is used to acknowledge the stop of voice memo playing.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CST_VM_STOP_PLAY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>CST</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cst</DocName>
+                    <Name>stop_address</Name>
+                </ItemLink>
+                <Comment>stop address</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="9" Year="2000"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The CST_VM_STOP_RECORD_IND is used to acknowledge the stop of voice memo playing.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CST_VM_STOP_RECORD_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>CST</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cst</DocName>
+                    <Name>stop_address</Name>
+                </ItemLink>
+                <Comment>stop address</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="9" Year="2000"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>voice recognition indication</Section>
+            </Description>
+            <PrimDef>
+                <Name>CST_SR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>CST</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cst</DocName>
+                    <Name>error_code</Name>
+                </ItemLink>
+                <Comment>Error code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cst</DocName>
+                    <Name>index</Name>
+                </ItemLink>
+                <Comment>Index</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="9" Year="2000"/>
+                <Author>BE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>AD conversion values.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>adc_values</Name>
+                <Type>U16</Type>
+                <Comment>AD conversion values</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="15" Month="3" Year="1999"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1999"/>
+                <Author>Proussel</Author>
+                <Comment>Add ADC values</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the buffer for voice memo.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>stop_address</Name>
+                <Type>U32</Type>
+                <Comment>contains stop address</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="9" Month="8" Year="2000"/>
+                <Author>BE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used in voice recognition indications</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>error_code</Name>
+                <Type>U8</Type>
+                <Comment>Error code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="8" Month="9" Year="2000"/>
+                <Author>BE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used in voice recognition indications</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>index</Name>
+                <Type>U8</Type>
+                <Comment>Index</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="8" Month="9" Year="2000"/>
+                <Author>BE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+</SAP>

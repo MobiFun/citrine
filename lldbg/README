@@ -1,0 +1,30 @@
+The hack implemented in this directory is a poor girl's substitute for JTAG,
+concocted for the purpose of debugging hard crashes in the firmware.  The
+intended usage is that the developer seeking to troubleshoot perplexing
+misbehavior in the firmware inserts a call to lldbg_entry() as a form of
+breakpoint at the earliest place in the main fw where it is seen that something
+has gone astray, and when the thread of code execution hits this lldbg_entry()
+function, the regular Nucleus environment gets completely frozen.  Lldbg entry
+code saves all registers and the return address (LR) on whatever stack it is
+was called on, then disables all interrupts and switches to its own stack which
+is not used by any other part of the fw.
+
+This lldbg code is linked together with the main fw when feature lldbg is
+enabled in build.conf, but it stands as its own separate body.  All functions
+and variables within lldbg are prefixed with lldbg_ to avoid any clashes, and
+once this lldbg code gains control, it does everything on its own without making
+use of *any* part of the regular fw.  The code that forms lldbg is based on
+FreeCalypso target-utils (loadagent) and is fully independent of the regular fw.
+
+Lldbg uses its own UART input and output code as well: the entry code waits for
+any previous output (presumably RVTMUX) to go out, then sends out an STX-wrapped
+message to make the lldbg entry visible in rvtdump/rvinterf, preceded by 3 STX
+characters to terminate any RVTMUX packet in progress.  From this point onward
+all further communication is done in an ASCII terminal fashion: upon seeing the
+lldbg entry message, the user needs to kill rvtdump/rvinterf and switch to
+fc-serterm.  All lldbg code runs with interrupts disabled, thus UART input and
+output are polled.
+
+Once in lldbg mode, the user (developer) can execute various memory dump
+commands to see the frozen state of the fw upon lldbg entry, and hopefully
+figure out what went wrong earlier.

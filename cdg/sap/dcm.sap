@@ -1,0 +1,1120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">dcm</DocName>
+        <DocNum Number="101" Project="8462"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="03"/>
+            <Date Day="3" Month="9" Year="2003"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the DCM SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>CDCM_APN_MAX_LEN</Alias>
+            <Value ValueType="DEC">100</Value>
+            <Comment>Maximum length of an access point name</Comment>
+        </Constant>
+        <Constant>
+            <Alias>CDCM_PHONE_NR_LEN</Alias>
+            <Value ValueType="DEC">84</Value>
+            <Comment>Maximum length of a CSD phone number</Comment>
+        </Constant>
+        <Constant>
+            <Alias>CDCM_PDP_MAX_LEN</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>Maximum length of PDP address</Comment>
+        </Constant>
+        <Constant>
+            <Alias>CDCM_GATE_MAX_LEN</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>Maximum length of gateway address</Comment>
+        </Constant>
+        <Constant>
+            <Alias>CDCM_USER_MAX_LEN</Alias>
+            <Value ValueType="DEC">25</Value>
+            <Comment>Maximum length of user name</Comment>
+        </Constant>
+        <Constant>
+            <Alias>CDCM_PASSWORD_MAX_LEN</Alias>
+            <Value ValueType="DEC">25</Value>
+            <Comment>Maximum length of password</Comment>
+        </Constant>
+        <Constant>
+            <Alias>CDCM_DNS_MAX_LEN</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>Maximum length of DNS addresses</Comment>
+        </Constant>
+        <History>
+            <Date Day="3" Month="9" Year="2003"/>
+            <Author>STW</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="28">
+        <Description>
+            <Section>This section contains all primitives that are defined for the DCM SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The primitive allows the user to open a data connection depending on the selected bearer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DCM_OPEN_CONN_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>APP</Sender>
+                    <Receiver>DCM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>api_instance</Name>
+                </ItemLink>
+                <Comment>Api instance</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>bearer_select</Name>
+                </ItemLink>
+                <Comment>Bearer type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>profile_number</Name>
+                </ItemLink>
+                <Comment>profile number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>dcm_info_conn</Name>
+                </ItemLink>
+                <Comment>Paramater used for bearer connection</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive informs user of result about DCM_OPEN_CONN_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DCM_OPEN_CONN_CNF</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>DCM</Sender>
+                    <Receiver>APP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result of the operation</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>bearer_handle</Name>
+                </ItemLink>
+                <Comment>Bearer handle</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive allows the user to close an opened data connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DCM_CLOSE_CONN_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>APP</Sender>
+                    <Receiver>DCM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>api_instance</Name>
+                </ItemLink>
+                <Comment>Api instance</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>bearer_handle</Name>
+                </ItemLink>
+                <Comment>Beare handle</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive informs user of result about DCM_CLOSE_CONN_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DCM_CLOSE_CONN_CNF</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>DCM</Sender>
+                    <Receiver>APP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result of the operation</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive allows the user to get information upon current active connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DCM_GET_CURRENT_CONN_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>APP</Sender>
+                    <Receiver>DCM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>api_instance</Name>
+                </ItemLink>
+                <Comment>Api instance</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>bearer_handle</Name>
+                </ItemLink>
+                <Comment>Beare handle</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive informs user of result about DCM_GET_CURRENT_CONN_REQ and current active connection information.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DCM_GET_CURRENT_CONN_CNF</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>DCM</Sender>
+                    <Receiver>APP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result of the operation</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>dcm_info_conn</Name>
+                </ItemLink>
+                <Comment>Connection information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive allows the user to receive error and event indications from DCM.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DCM_ERROR_IND</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>DCM</Sender>
+                    <Receiver>APP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>dcm_err</Name>
+                </ItemLink>
+                <Comment>Error value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result of the operation</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the DCM SAP</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>dcm_info_conn</Name>
+                <Comment>Connection information</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>bearer_handle</Name>
+                </ItemLink>
+                <Comment>Systemwide bearer handle</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Comm handle of application</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>bearer_type</Name>
+                </ItemLink>
+                <Comment>Used bearer type</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>apn_valid</Name>
+                </ItemLink>
+                <Comment>Flag for apn validation</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>apn</Name>
+                </ItemLink>
+                <Control>[CDCM_APN_MAX_LEN + 1]</Control>
+                <Comment>Access Point Name</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>phone_number_valid</Name>
+                </ItemLink>
+                <Comment>Flag for phone number validation</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>phone_number</Name>
+                </ItemLink>
+                <Control>[CDCM_PHONE_NR_LEN + 1]</Control>
+                <Comment>CSD dial up phone number</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>user_id_valid</Name>
+                </ItemLink>
+                <Comment>Flag for user ID validation</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>user_id</Name>
+                </ItemLink>
+                <Control>[CDCM_USER_MAX_LEN + 1]</Control>
+                <Comment>User ID</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>password_valid</Name>
+                </ItemLink>
+                <Comment>Flag for password validation</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>password</Name>
+                </ItemLink>
+                <Control>[CDCM_PASSWORD_MAX_LEN + 1]</Control>
+                <Comment>Password</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>cid</Name>
+                </ItemLink>
+                <Comment>GPRS context ID</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>ip_address</Name>
+                </ItemLink>
+                <Comment>Used IP address</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>dns1</Name>
+                </ItemLink>
+                <Comment>First domain name server</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>dns2</Name>
+                </ItemLink>
+                <Comment>Second domain name server</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>gateway</Name>
+                </ItemLink>
+                <Comment>Gateway address</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>auth_type</Name>
+                </ItemLink>
+                <Comment>Type of authentication</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>data_compr</Name>
+                </ItemLink>
+                <Comment>Flag for data compression</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>header_compr</Name>
+                </ItemLink>
+                <Comment>Flag for header compression</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>precedence</Name>
+                </ItemLink>
+                <Comment>GPRS precedence class</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>delay</Name>
+                </ItemLink>
+                <Comment>GPRS delay class</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>reliability</Name>
+                </ItemLink>
+                <Comment>GPRS reliability class</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>peak_throughput</Name>
+                </ItemLink>
+                <Comment>GPRS peak throughput</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>mean_throughput</Name>
+                </ItemLink>
+                <Comment>GPRS mean throughput</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dcm</DocName>
+                    <Name>shareable</Name>
+                </ItemLink>
+                <Comment>Flag for sharing requested bearer conn</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the DCM SAP</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The api_instance value returned by sock_api_initialize()..</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>api_instance</Name>
+                <Type>U32</Type>
+                <Comment>The api_instance value returned by sock_api_initialize().</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The bearer_handle value is returned with the primitive DCM_OPEN_CONN_REQ.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bearer_handle</Name>
+                <Type>U16</Type>
+                <Comment>Bearer handle</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Bearer type used from DCFG or can take values as described below.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bearer_select</Name>
+                <Type>S32</Type>
+                <Comment>Bearer type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dcm</DocName>
+                <Name>VAL_bearer_select</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The authentication type defines the authentication protocol to be used.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>authtype</Name>
+                <Type>U16</Type>
+                <Comment>Authentication type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dcm</DocName>
+                <Name>VAL_authtype</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Number of the selected profile with a bearer selection of SOCK_BEARER_USE_PROFILE. Unused in other cases..</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>profile_number</Name>
+                <Type>U16</Type>
+                <Comment>Profile ID for bearer selection</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="12" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bearer_handle</Name>
+                <Type>U16</Type>
+                <Comment>Systemwide bearer handle</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>app_handle</Name>
+                <Type>U16</Type>
+                <Comment>Comm handle of application</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bearer_type</Name>
+                <Type>U8</Type>
+                <Comment>Used bearer type</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>apn_valid</Name>
+                <Type>U8</Type>
+                <Comment>Flag for apn validation</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>apn</Name>
+                <Type>U8</Type>
+                <Comment>Access Point Name</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>phone_number_valid</Name>
+                <Type>U8</Type>
+                <Comment>Flag for phone number validation</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>phone_number</Name>
+                <Type>U8</Type>
+                <Comment>CSD dial up phone number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>user_id_valid</Name>
+                <Type>U8</Type>
+                <Comment>Flag for user ID validation</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>user_id</Name>
+                <Type>U8</Type>
+                <Comment>User ID</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>password_valid</Name>
+                <Type>U8</Type>
+                <Comment>Flag for password validation</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>password</Name>
+                <Type>U8</Type>
+                <Comment>Password</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cid</Name>
+                <Type>U16</Type>
+                <Comment>GPRS context ID</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ip_address</Name>
+                <Type>U32</Type>
+                <Comment>Used IP address</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dns1</Name>
+                <Type>U32</Type>
+                <Comment>First domain name server</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dns2</Name>
+                <Type>U32</Type>
+                <Comment>Second domain name server</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gateway</Name>
+                <Type>U32</Type>
+                <Comment>Gateway address</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>auth_type</Name>
+                <Type>U16</Type>
+                <Comment>Type of authentication</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data_compr</Name>
+                <Type>U8</Type>
+                <Comment>Flag for data compression</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>header_compr</Name>
+                <Type>U8</Type>
+                <Comment>Flag for header compression</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>precedence</Name>
+                <Type>U16</Type>
+                <Comment>GPRS precedence class</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>delay</Name>
+                <Type>U16</Type>
+                <Comment>GPRS delay class</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reliability</Name>
+                <Type>U16</Type>
+                <Comment>GPRS reliability class</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>peak_throughput</Name>
+                <Type>U16</Type>
+                <Comment>GPRS peak throughput</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mean_throughput</Name>
+                <Type>U16</Type>
+                <Comment>GPRS mean throughput</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains information about the current active connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>shareable</Name>
+                <Type>U8</Type>
+                <Comment>Flag for sharing requested bearer conn</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains the result of an operation requested by an application.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>result</Name>
+                <Type>S32</Type>
+                <Comment>Result of the operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dcm</DocName>
+                <Name>VAL_result</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains errors received from PS (ETSI Spec 07.07) or values described below.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dcm_err</Name>
+                <Type>S32</Type>
+                <Comment>Error value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="9" Year="2003"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the DCM SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_bearer_select</Name>
+                <Comment>values for bearer_select</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DCM_SOCK_BEARER_ANY</Alias>
+                <Comment>DCM will decide which connection type to be used</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DCM_SOCK_BEARER_GPRS</Alias>
+                <Comment>Use a GPRS context as bearer, DCM will decide which GPRS settings to be used</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>DCM_SOCK_BEARER_GSM</Alias>
+                <Comment>Use GSM data connection as bearer DCM will decide which GSM settings to be used</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>DCM_SOCK_BEARER_USE_PROFILE</Alias>
+                <Comment>Use a specific data account for this connection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>DCM_SOCK_BEARER_AS_SPECIFIED</Alias>
+                <Comment>Use the data account information which is which is delivered within this signal</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="6" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_authtype</Name>
+                <Comment>values for authtype</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DCM_SOCK_AUTH_PAP</Alias>
+                <Comment>PAP authentification protocol</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DCM_SOCK_AUTH_CHAP</Alias>
+                <Comment>CHAP authentification protocol !!! NOT SUPPORTED</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>DCM_SOCK_AUTH_NO</Alias>
+                <Comment>No authentication</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="6" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_result</Name>
+                <Comment>values for result</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DCM_RET_OK</Alias>
+                <Comment>The action has been performed successfully.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DCM_RET_NOT_READY</Alias>
+                <Comment>The command can not be processed now.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DCM_RET_ALREADY_ACTIVATED</Alias>
+                <Comment>Connection refused because already actuvated.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>DCM_RET_UNKNOWN_EVENT</Alias>
+                <Comment>Unknown receipt event.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>DCM_RET_INVALID_PARAMETER</Alias>
+                <Comment>A parameter is wrong.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>DCM_RET_CMD_PENDING</Alias>
+                <Comment>There is a pending command yet.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>DCM_RET_PS_CONN_BROKEN</Alias>
+                <Comment>Loose of bearer connection.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="6" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">rrrrlp</DocName>
+        <DocNum Number="000" Project="0000"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the physical layer to the radio resource management.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="00"/>
+            <Date Day="19" Month="6" Year="2002"/>
+            <Author>OT</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="00"/>
+            <Date Day="10" Month="9" Year="2002"/>
+            <Author>VK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Add C/R flag</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AGEntity: Program which executes the functions of a layerMessage: A message is a data unit which is transferred between the entities of the same layer (peer-to-peer) of the mobile and infrastructure side. Message is used as a synonym to protocol data unit (PDU). A message may contain several information elements.Primitive: A primitive is a data unit which is transferred between layers on one component (mobile station or infrastructure). The primitive has an operation code which identifies the primitive.Service Access Point: A Service Access Point is a data interface between two layers within one component (mobile station or infrastructure).</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the RRRRLP SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>MAX_SDU_LEN</Alias>
+            <Value ValueType="DEC">1</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>MAX_NCELL_L1</Alias>
+            <Value ValueType="DEC">12</Value>
+            <Comment>Max no. of NC layer 1 is able to measure</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_NCELL_EOTD</Alias>
+            <Value ValueType="DEC">15</Value>
+            <Comment>Max no. of NC reported in the Measurement Assistance Data Element (3GPP 04.31)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_NCELL_EOTD_SI</Alias>
+            <Value ValueType="DEC">32</Value>
+            <Comment>Max no. of NC reported in the Measurement Assistance Data SI List Element (3GPP 04.31)</Comment>
+        </Constant>
+        <History>
+            <Date Day="19" Month="6" Year="2002"/>
+            <Author>OT</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="65">
+        <Description>
+            <Section>This section contains all primitives that are defined for the RRRRLP SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The RRRRLP_DATA_IND primitive is used to forward the content of the APDU, either Measure Position Request or the Assistance Data message, to the RRLP entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RRRRLP_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>RRLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrrrlp</DocName>
+                    <Name>cr</Name>
+                </ItemLink>
+                <Comment>Command / Response</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrrrlp</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>APDU_IND</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>OT</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>VK</Author>
+                <Comment>add C/R flag</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RRRRLP_DATA_REQ primitive is used to send a response APDU to the network, containing either the Measure Position Response, Assistance Data Acknowledge or the Protocol Error message.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RRRRLP_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>RRLP</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrrrlp</DocName>
+                    <Name>cr</Name>
+                </ItemLink>
+                <Comment>Command / Response</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrrrlp</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>APDU_REQ</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>OT</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>VK</Author>
+                <Comment>add C/R flag</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RRRRLP_DATA_CNF primitive is used to indicate that a new measurement request towards lower layer has been established.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RRRRLP_DATA_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>RRRRLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrrrlp</DocName>
+                    <Name>dummy</Name>
+                </ItemLink>
+                <Comment>Dummy</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>OT</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RRRRLP_ERROR_IND primitive is used to indicate an internal error in the RR entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RRRRLP_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>RRLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrrrlp</DocName>
+                    <Name>dummy</Name>
+                </ItemLink>
+                <Comment>Dummy</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>OT</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the RRRRLP SAP</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>Service Data Unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrrrlp</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrrrlp</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rrrrlp</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[MAX_SDU_LEN]</Control>
+                <Comment>bit buffer</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>OT</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the RRRRLP SAP</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used as primitive dummy.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dummy</Name>
+                <Type>U8</Type>
+                <Comment>Dummy</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>OT</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>OT</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>OT</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>bit buffer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>OT</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter transports the C/R information of the APDU as indicated in 3GPP TS 04.18, section 3.4.21.3.1.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cr</Name>
+                <Type>U8</Type>
+                <Comment>Command or Response</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+</SAP>

@@ -1,0 +1,1665 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+        <DocNum Number="136" Project="8010"/>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The interface is function based only.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Throughout the document the term UICC is used to cover both a GSM SIM that contains one single application, the GSM application, and a multi-application UICC that contains one or more applications, maximum one GSM and one or more  UMTS applications.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Data stores are used to transfer information between  the SIM reader driver and the PS. Pointers to the data stores where the data is written to and read from are handed to the SIM reader driver by the PS. The format of the data stored in these stores are compliant  to the format specified in [3G 11.11], [3G 11.14], [3G 31.102], [3G 31.111] and [ETSI 102 221]. Therefore, the formatting of data  located in these stores are not described throughout this document. The same approach is used in regards to  status words, etc. Only in the case where SIM data is reformatted, will they be described in this document.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Two functions are not defined in this document and are the two only functions called from the SIM driver to the PS. These are the SIM insertion and SIM removal functions. The first call after power-on, the simdrv_register function, gives two function pointers to the SIM driver for these two functions. Else, all function calls are initiated by the PS.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The transmission protocol is handled autonomously by the SIM reader driver. This means that the interface between the PS and SIM reader driver  operates at APDU command level and that the PS has no knowledge of which protocol has been selected for communication between the SIM reader driver and the inserted UICC during the PPS procedure. Thus the PS is not required to perform the GET RESPONSE command, instead this is done, in case of protocol T=0, by the driver .</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <DocLink DocType="IMAGE">
+                    <Name>8010_136_SIMDRV_SAP.vsd</Name>
+                    <SubName>Page-1</SubName>
+                    <EditCmdString>execmd --visio --show --createNew -f %p%n0 -p %n1</EditCmdString>
+                    <ImageCmdString>execmd --visio --extract -f %p%n0 -p %n1 -d %p%n1.emf</ImageCmdString>
+                </DocLink>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">
+                    <b>Figure 1-1: Interface overview.</b>
+                </XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Communication between the PS and the driver will always be initiated by the PS, with two exceptions to that rule.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="LIST_ITEM_UNORDERED_START">When the PS asks the driver to reset the UICC, the driver uses a call back function that is handed during initialisation to inform the PS.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="LIST_ITEM_END">When the inserted UICC is physically removed from the PS, the driver calls another call back function that is handed during initialisation</XHTMLElement>
+            </DocElement>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="03"/>
+            <Date Day="20" Month="1" Year="2003"/>
+            <Author>KKS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="03"/>
+            <Date Day="20" Month="1" Year="2003"/>
+            <Author>KKS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Document based on 7510.126.02.10</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="03"/>
+            <Date Day="20" Month="1" Year="2003"/>
+            <Author>KKS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Group column in function prototype removed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="03"/>
+            <Date Day="26" Month="5" Year="2003"/>
+            <Author>KKS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Links to constants added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="03"/>
+            <Date Day="26" Month="5" Year="2003"/>
+            <Author>KKS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>sim_ in function names changed to sl2_.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="03"/>
+            <Date Day="20" Month="8" Year="2003"/>
+            <Author>KKS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Function names in MSCs in section 6 changed from sim_ to sl2_</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="03"/>
+            <Date Day="20" Month="11" Year="2003"/>
+            <Author>FK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Revised</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="03"/>
+            <Date Day="3" Month="5" Year="2004"/>
+            <Author>FDU</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Alignment according to review report.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="03"/>
+            <Date Day="10" Month="6" Year="2004"/>
+            <Author>FDU</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Alignment with agreements and review comments from meeting in Nice</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Defines maximum value used in parameter definitions</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">SIMDRV</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Adds enumerations in the .val file.</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="20" Month="2" Year="2002"/>
+            <Author>FDU</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="30" Month="10" Year="2003"/>
+            <Author>FK</Author>
+            <Comment>'MAX_RESULT' corrected</Comment>
+        </History>
+        <History>
+            <Date Day="3" Month="5" Year="2004"/>
+            <Author>FDU</Author>
+            <Comment>PREFIX changed to SIMDRV</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Defines maximum value used in parameter definitions</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Constant>
+            <Alias>SIZE_ATR_INFO</Alias>
+            <Value ValueType="HEX">21</Value>
+            <Group>uicc</Group>
+            <Comment>The maximum length of the data returned from the ATR procedure</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MIN_RESULT</Alias>
+            <Value ValueType="HEX">01</Value>
+            <Group>uicc</Group>
+            <Comment>Minimum size of the response of any given command</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_RESULT</Alias>
+            <Value ValueType="HEX">100</Value>
+            <Group>uicc</Group>
+            <Comment>Maximum size of the response of any given command</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MIN_DATA_SIZE</Alias>
+            <Value ValueType="HEX">01</Value>
+            <Group>uicc</Group>
+            <Comment>Minimum length of a data element</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_DATA_SIZE</Alias>
+            <Value ValueType="HEX">FF</Value>
+            <Group>uicc</Group>
+            <Comment>Maximum length of a data element</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_READERS</Alias>
+            <Value ValueType="HEX">02</Value>
+            <Group>uicc</Group>
+            <Comment>Maximum number of card readers supported.</Comment>
+        </Constant>
+        <History>
+            <Date Day="20" Month="2" Year="2002"/>
+            <Author>FDU</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="30" Month="10" Year="2003"/>
+            <Author>FK</Author>
+            <Comment>'MAX_RESULT' corrected</Comment>
+        </History>
+        <History>
+            <Date Day="3" Month="5" Year="2004"/>
+            <Author>FDU</Author>
+            <Comment>PREFIX changed to SIMDRV</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="154">
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all primitives that are defined for the 8010_136_SIMDRV_SAP SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Dummy.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>SIMDRV_DUMMY</Name>
+                <PrimID Direction="UPLINK" Number="255"/>
+                <PrimUsage>
+                    <Sender>SIM</Sender>
+                    <Receiver>DRIVER</Receiver>
+                </PrimUsage>
+                <Group>uicc</Group>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>atr_string_info</Name>
+                </ItemLink>
+                <Control>PTR</Control>
+                <Comment>SIM Card Info</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>reset_return_val</Name>
+                </ItemLink>
+                <Comment>Return Value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>result_info</Name>
+                </ItemLink>
+                <Control>PTR</Control>
+                <Comment>Result Buffer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>len</Name>
+                </ItemLink>
+                <Comment>Length of expected data</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>data_info</Name>
+                </ItemLink>
+                <Control>PTR</Control>
+                <Comment>Update Data Element</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>sw1_2</Name>
+                </ItemLink>
+                <Comment>Status Words</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>cla</Name>
+                </ItemLink>
+                <Comment>Class Byte</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>ins</Name>
+                </ItemLink>
+                <Comment>Instruction Code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>cmd_header</Name>
+                </ItemLink>
+                <Comment>Transparent command header</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>voltage_select</Name>
+                </ItemLink>
+                <Comment>Perform Voltage Selection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>p1</Name>
+                </ItemLink>
+                <Comment>SIM Command Parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>p2</Name>
+                </ItemLink>
+                <Comment>SIM Command Parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>config_requested</Name>
+                </ItemLink>
+                <Comment>Configuration Characteristics requested</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>config_characteristics</Name>
+                </ItemLink>
+                <Control>PTR</Control>
+                <Comment>Configuration Characteristics</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>reader_id</Name>
+                </ItemLink>
+                <Comment>Reader Id</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>uicc_characteristics</Name>
+                </ItemLink>
+                <Comment>UICC Characteristics</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="9" Month="12" Year="2002"/>
+                <Author>BRY</Author>
+                <Comment>Initial version after merge.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="11" Year="2003"/>
+                <Author>FK</Author>
+                <Comment>New prefix; changes in section 5.</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="12" Year="2003"/>
+                <Author>FK</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>Aligned with contents of chapter 4 and chapter 5</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>Aligned with contents of chapter 4 and chapter 5</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <FunctionsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all functions that are defined for the 8010_136_SIMDRV_SAP SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Function>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This function is used to inform the SIM reader driver that it shall deactivate. Nothing is passed to the SIM hardware driver, neither is something returned.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <FuncDef IsLinkTarget="NO">
+                <Name>poweroff</Name>
+                <FuncUsage>
+                    <Caller>SIM</Caller>
+                    <Callee>DRIVER</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>reader_id</Name>
+                </ItemLink>
+                <Comment>Reader Id</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="11" Year="2003"/>
+                <Author>FK</Author>
+                <Comment>Prefix changed; description extended.</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>reader id added</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PS uses this function to make the driver attempt a reset of the inserted UICC and to start card session.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If the driver does not detect the presence of a SIM card, then it shall return the value SIM_NOT_INSERTED.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If the driver is able to successfully initialise the card and start a card session, it calls the call-back function 'insert()' with the appropriate parameters. After regaining control from the call-back function the driver finishes the reset function and returns the value SIM_INSERTED.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The function has a parameter which is used to indicate to the SIM reader driver whether or not the SIM reader driver shall reset the card performing the voltage selection procedure or reset the card using the current voltage class.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <FuncDef IsLinkTarget="NO">
+                <Name>reset</Name>
+                <FuncUsage>
+                    <Caller>SIM</Caller>
+                    <Callee>DRIVER</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>reset_return_val</Name>
+                </ItemLink>
+                <Comment>Function return value</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>reader_id</Name>
+                </ItemLink>
+                <Comment>Reader Id</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>voltage_select</Name>
+                </ItemLink>
+                <Comment>Perform voltage selection</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="12" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Parameters changed to pure struct pointers.</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>reader id added</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Used to transparently exchange APDU commands and result with any application, which may reside on the SIM. If the communication between SIM and ME is run by the protocol T=0, then the functions performs autonomously the GET RESPONSE Command observing the following rule:</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="LIST_ITEM_UNORDERED_START">If the card responds with SW1=9F, then the command shall be coded as described in [GSM 11.11].</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="LIST_ITEM_END">If the card responds with SW1=61, then the command shall be coded as described in [ETSI TS 102 221].</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The function complies with the following rules for the interpretation of its parameters:</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="LIST_ITEM_UNORDERED_START">Access to a NULL pointer, either read or write, must not be performed. If this leads to a contradiction (i.e. a data count is given, but the null pointer prevents access to the data), then the function shall return SIMDRV_ERR_PARAM_WRONG.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="LIST_ITEM">If parameter 'result_info' is set to ZERO or its element 'len' is set to ZERO, then the driver shall not read data from the card. If the card answers with SW1=61/9F, then this result code is passed to the caller, but GET RESPONSE is not performed.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="LIST_ITEM">If the element 'len' of parameter 'result_info' is set to NON-ZERO, then the driver shall try to read up to 'len' bytes from the card. The data is stored in element 'result', the count element receives the number of actually read bytes. In case of protocol T=0 the element 'len' is identical with parameter P3, in case of protocol T=1 it is identical with parameter Le. If the UICC responds with SW1=6C and a requested size larger than indicated in 'len', it shall still  only return the amount of data indicated in 'len', discarding the remain.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="LIST_ITEM">If the count element of parameter 'data_info' is set to NON-ZERO and its element 'data' is not set to ZERO, then the driver shall send the data stored in element 'data' up to the number given by the count element to the card. In case of protocol T=0 the count element is identical with parameter P3, in case of protocol T=1 it is identical with parameter Lc.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="LIST_ITEM_END">If neither send nor receive data is given by the function parameters, then,. in case of protocol T=0, the function shall only send the command header to the card followed by parameter P3 set to ZERO. In case of protocol T=1 only the header is sent.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <FuncDef IsLinkTarget="NO">
+                <Name>xch_apdu</Name>
+                <FuncUsage>
+                    <Caller>SIM</Caller>
+                    <Callee>DRIVER</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>sw1_2</Name>
+                </ItemLink>
+                <Comment>Status word</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>reader_id</Name>
+                </ItemLink>
+                <Comment>Reader Id</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>cmd_header</Name>
+                </ItemLink>
+                <Comment>Transparent command header</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>data_info</Name>
+                </ItemLink>
+                <Comment>Send Data Buffer</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>result_info</Name>
+                </ItemLink>
+                <Control>PTR</Control>
+                <Comment>Result Buffer</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="30" Month="10" Year="2003"/>
+                <Author>FK</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>reader id added</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The function is used to establish communication between the PS and the SIM reader driver. Two call back function pointers are passed to the driver. There is no return value.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The call back to 'insert()' is executed by the driver, when it, being called by the function 'simdrv_reset()', is able to successfully reset the SIM card.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The call back 'remove()' is executed by the driver at any time during a card session, when it detects that the SIM card cannot be accessed any more.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <FuncDef IsLinkTarget="NO">
+                <Name>register</Name>
+                <FuncUsage>
+                    <Caller>SIM</Caller>
+                    <Callee>DRIVER</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>insert</Name>
+                </ItemLink>
+                <Alias>insert</Alias>
+                <Control>PTR</Control>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>remove</Name>
+                </ItemLink>
+                <Alias>remove</Alias>
+                <Control>PTR</Control>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="11" Year="2003"/>
+                <Author>FK</Author>
+                <Comment>Parameters for callbacks added.</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>config_request parameters added.</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="8" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>(void) added to remove pointer.</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <DocElement>
+                    <DocLink DocType="OTHER">
+                        <Name/>
+                    </DocLink>
+                </DocElement>
+            </Description>
+            <FuncDef IsLinkTarget="NO">
+                <Name>insert</Name>
+                <FuncUsage>
+                    <Caller>SIM</Caller>
+                    <Callee>DRIVER</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>atr_string_info</Name>
+                </ItemLink>
+                <Control>PTR</Control>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>config_requested</Name>
+                </ItemLink>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>config_characteristics</Name>
+                </ItemLink>
+                <Control>PTR</Control>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="28" Month="02" Year="2005"/>
+                <Author>JEJ</Author>
+                <Comment>Initial - Used to make function pointer as argument in simdrv_register function </Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <DocElement>
+                    <DocLink DocType="OTHER">
+                        <Name/>
+                    </DocLink>
+                </DocElement>
+            </Description>
+            <FuncDef IsLinkTarget="NO">
+                <Name>remove</Name>
+                <FuncUsage>
+                    <Caller>SIM</Caller>
+                    <Callee>DRIVER</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <History>
+                <Date Day="28" Month="02" Year="2005"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+    </FunctionsSection>
+    <PrimStructElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all structured elements that are defined for the 8010_136_SIMDRV_SAP SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Contains the result of the ATR procedure, which the SIM hardware driver initiates during its start up sequence.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>atr_string_info</Name>
+                <Group>uicc</Group>
+                <Comment>SIM Card Info</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>atr_string</Name>
+                </ItemLink>
+                <Control>[2..SIZE_ATR_INFO]</Control>
+                <Comment>SIM Card Answer to reset string</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="12" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Structure changed for element to a struct including a length byte</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The SIM driver uses this to return the response data retrieved when issuing a command.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>result_info</Name>
+                <Group>uicc</Group>
+                <Comment>Result Buffer</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>len</Name>
+                </ItemLink>
+                <Comment>Length of expected data</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Control>DYN[MIN_RESULT..MAX_RESULT]</Control>
+                <Comment>Result byte</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="12" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Structure changed for element to a struct including a length byte</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The Update data element is used by the PS to transfer the data which it wants to update to the SIM hardware driver.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>data_info</Name>
+                <Group>uicc</Group>
+                <Comment>Data element info</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>data</Name>
+                </ItemLink>
+                <Control>DYN[MIN_DATA_SIZE..MAX_DATA_SIZE]</Control>
+                <Comment>Data element</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="12" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Structure changed for element to a struct including a length byte</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">A struct pointer to create a command header for sending transparent commands to the UICC</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>cmd_header</Name>
+                <Group>uicc</Group>
+                <Comment>Transparent command header</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>cla</Name>
+                </ItemLink>
+                <Comment>Class Byte value</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>ins</Name>
+                </ItemLink>
+                <Comment>Instruction Code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>p1</Name>
+                </ItemLink>
+                <Comment>Parameter P1</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>p2</Name>
+                </ItemLink>
+                <Comment>Parameter P2</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="30" Month="10" Year="2003"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The PS shall deliver the configuration characteristics coded according to [ETSI 102 221, 11.1.1.4.6.1].</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>config_characteristics</Name>
+                <Group>uicc</Group>
+                <Comment>Configuration Characteristics</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                    <Name>uicc_characteristics</Name>
+                </ItemLink>
+                <Comment>UICC Characteristics</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="10" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all basic elements that are defined for the 8010_136_SIMDRV_SAP SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The insert call back function to which the pointer refers shall be executed by the driver after the PS has executed the simdrv_reset() command call, if and only if the activation of the inserted UICC was successful. It has a two parameters. One used to indicate to the PS whether UICC configuration characteristics are required by the driver and one which points to a structure, where the PS can store the retrieved configuration characteristics. (See chapter 6)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>insert_ptr</Name>
+                <Type>U32</Type>
+                <Group>uicc</Group>
+                <Comment>insert pointer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The remove call back function to which the pointer refers, shall be executed by the driver when the driver detects that the inserted UICC has been removed. Either this detection is due to missing reply to command or due to hardware removal detection.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>remove_ptr</Name>
+                <Type>U32</Type>
+                <Group>uicc</Group>
+                <Comment>remove pointer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="12" Month="12" Year="1954"/>
+                <Author>doc2xml</Author>
+                <Comment>no history in source document</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Contains the result of the ATR procedure, which the SIM hardware driver initiates during its start up sequence.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>atr_string</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>SIM Card Answer to reset string</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="12" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Structure changed for element to a struct including a length byte</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The return value is used by the SIM hardware driver to indicate to the PS whether a card is inserted or not and if it is fully functioning.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reset_return_val</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>Reset return value</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                <Name>VAL_reset_return_val</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="7" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Meaning of byte changed</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>Added latter two return values after desk check.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The SIM driver uses this to return the response data retrieved when issuing a command.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>result</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>Result byte</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="12" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Structure changed for element to a struct including a length byte</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Used to indicate maximum length, in bytes, of data which the ME expects the UICC to return, e.g. during a READ_RECORD or a READ_BINARY command. In cases where the size of the return data is undeterminable, the value shall be LENGTH_UNKNOWN (See chapter 6)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>len</Name>
+                <Type>U16</Type>
+                <Group>uicc</Group>
+                <Comment>Maximum length of expected data</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                <Name>VAL_len</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The Update data element is used by the PS to transfer the data which it wants to update to the SIM hardware driver.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>Data element</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="12" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Structure changed for element to a struct including a length byte</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">After each command issued by the ME to the UICC, the SIM hardware driver shall return the two status bytes from the UICC. The PS interprets these value and acts upon them on its own. The possible values of the status word can be found in [GSM 11.11] and [ETSI TS 102 221]. They are returned in a U16, SW1 occupies bits 8..15 and SW2 occupies bits 0..7 of the value.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Additionally there are a couple of driver error codes which are returned in case of unrecoverable communication problems between ME and UICC. Before the driver returns any of these error codes, it shall retry the causing operation at least once.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sw1_2</Name>
+                <Type>U16</Type>
+                <Group>uicc</Group>
+                <Comment>Status Words</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                <Name>VAL_sw1_2</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="2" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="12" Year="2003"/>
+                <Author>FK</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">When communicating with an UMTS Application, the Class Byte shall be set according to [ETSI 102 221, 10.1.2], either code 0x00 (standard ISO 7816-4 Class Byte) or code 0x80 (for additional instructions defined in ETSI 102 221) dependent on the type of the selected command. For a GSM application according to GSM 11.11 / 3GPP 51.011 the code 0xA0 is used for all instructions.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cla</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>Class Byte</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                <Name>VAL_cla</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="4" Month="7" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>FK</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the SIM instruction code for SIM access.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ins</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>instruction code</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                <Name>VAL_ins</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="24" Month="4" Year="2002"/>
+                <Author>JK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>SIM_ prefix removed due to autoprefixing</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="12" Year="2003"/>
+                <Author>FK</Author>
+                <Comment>Incorporated from SAP SIM</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Used to indicate to the SIM reader driver whether or not a voltage selection  shall be performed or not. If set to REQ_VOLTAGE_SEL, the SIM reader driver does a regular reset of the card in which it performs the voltage selection procedure.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If set to OMIT_VOLTAGE_SEL and the card has been activated with a simdrv_reset() call prior to this, thus having a used voltage already, it shall reset the card using only the currently used voltage. This also applies for <i>UICC Characteristics.</i></XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This is a special case, where the SIM application toolkit requests a reset of the card, see [3G 11.14, 6.4.7]</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>voltage_select</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>Perform Voltage Selection</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                <Name>VAL_voltage_select</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameters P1 and P2 are individually coded in relevance to what type of command is to be performed. Coding according to [3G 11.11] and [ETSI 102 221]</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p1</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>Parameter 1 of the SIM APDU</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameters P1 and P2 are individually coded in relevance to what type of command is to be performed. Coding according to [3G 11.11] and [ETSI 102 221]</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p2</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>Parameter 2 of the SIM APDU</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="3" Month="5" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This parameter is used by the driver to indicate that the PS must retrieve UICC characteristics from the MF ('3F00') and deliver them to the driver using the provided pointer reference (see chapter 5.15). This will occur in situations were the inserted cards does not deliver e.g. <i>preferred clock stop level</i> in the ATR. If the value of the parameter is SIMDRV_OMIT_CONFIG_CHARACTERISTICS, the PS must never try to access data using the provided pointer.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>config_requested</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>Configuration Characteristics requested</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                <Name>VAL_config_requested</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="10" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Used to indicate to the driver which reader the currently command is issued towards.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reader_id</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>Reader Id</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_136_simdrv_sap</DocName>
+                <Name>VAL_reader_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="10" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Used to deliver the UICC Characteristics of the MF to the driver</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>uicc_characteristics</Name>
+                <Type>U8</Type>
+                <Group>uicc</Group>
+                <Comment>UICC Characteristics</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="10" Month="6" Year="2004"/>
+                <Author>FDU</Author>
+                <Comment>function renamed, parameters aligned to review report</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all sets of values that are defined for the 8010_136_SIMDRV_SAP SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_reset_return_val</Name>
+                <Group>uicc</Group>
+                <Comment>values for reset_return_val</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SIM_INSERTED</Alias>
+                <Comment>A SIM is inserted and ATR/PPS was successful</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SIM_NOT_INSERTED</Alias>
+                <Comment>No SIM inserted (hardware detected)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>INVALID_CARD</Alias>
+                <Comment>Card is not responding or gives unintelligible answers, communications time out.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>ME_FAILURE</Alias>
+                <Comment>Power management related problems, e.g. voltage selection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>IMPROPER_CALL_BACK</Alias>
+                <Comment>simdrv_register function called with pointer improperly set, e.g. NULL.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>ME_READER_NOT_AVAILABLE</Alias>
+                <Comment>The reader requested is not available</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="2" Year="2005"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_len</Name>
+                <Group>uicc</Group>
+                <Comment>values for len</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FFFF</Value>
+                <Alias>LENGTH_UNKNOWN</Alias>
+                <Comment>Indicating that the length expected is unknown.</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="HEX">
+                <MinValue>00</MinValue>
+                <MaxValue>100</MaxValue>
+                <Comment>Range of Length of Data</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="16" Month="2" Year="2005"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sw1_2</Name>
+                <Group>uicc</Group>
+                <Comment>values for sw1_2</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>ERR_NOCARD</Alias>
+                <Comment>No SIM inserted (hardware detected)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>ERR_NOT_RESET</Alias>
+                <Comment>A reset has not been performed on the driver with the requested Id.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0003</Value>
+                <Alias>ERR_ME_FAIL</Alias>
+                <Comment>Unrecoverable ME failure (for instance interrupt fails to occur)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>ERR_RETRY_FAIL</Alias>
+                <Comment>ME/SIM communication failed after certain retries, SIM reset required</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0005</Value>
+                <Alias>ERR_PARAM_WRONG</Alias>
+                <Comment>A driver function is called with invalid parameters</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="2" Year="2005"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cla</Name>
+                <Group>uicc</Group>
+                <Comment>values for cla</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">A0</Value>
+                <Alias>GSM_CLASS_BYTE</Alias>
+                <Comment>GSM Class byte according to [GSM 11.11 / 3GPP 51.011]</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">80</Value>
+                <Alias>UMTS_CLASS_BYTE</Alias>
+                <Comment>UMTS Class byte according to [ETSI 102 221 10.1.2]</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>UICC_CLASS_BYTE</Alias>
+                <Comment>UICC Class byte according to [ISO 7816-4]</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="2" Year="2005"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ins</Name>
+                <Group>uicc</Group>
+                <Comment>values for ins</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">A4</Value>
+                <Alias>INS_SELECT</Alias>
+                <Comment>Select Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">F2</Value>
+                <Alias>INS_STATUS</Alias>
+                <Comment>Status Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">B0</Value>
+                <Alias>INS_READ_BINARY</Alias>
+                <Comment>Read Binary Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D6</Value>
+                <Alias>INS_UPDATE_BINARY</Alias>
+                <Comment>Update Binary Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">B2</Value>
+                <Alias>INS_READ_RECORD</Alias>
+                <Comment>Read Record Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">DC</Value>
+                <Alias>INS_UPDATE_RECORD</Alias>
+                <Comment>Update Record Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">A2</Value>
+                <Alias>INS_SEEK</Alias>
+                <Comment>Seek Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">32</Value>
+                <Alias>INS_INCREASE</Alias>
+                <Comment>Increase Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">20</Value>
+                <Alias>INS_VERIFY_CHV</Alias>
+                <Comment>Verify Chv Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">24</Value>
+                <Alias>INS_CHANGE_CHV</Alias>
+                <Comment>Change Chv Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">26</Value>
+                <Alias>INS_DISABLE_CHV</Alias>
+                <Comment>Disable Chv Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">28</Value>
+                <Alias>INS_ENABLE_CHV</Alias>
+                <Comment>Ensable Chv Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">2C</Value>
+                <Alias>INS_UNBLOCK_CHV</Alias>
+                <Comment>Unblock Chv Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>INS_INVALIDATE</Alias>
+                <Comment>Invalidate Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">44</Value>
+                <Alias>INS_REHABILITATE</Alias>
+                <Comment>Rehabilitate Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">88</Value>
+                <Alias>INS_AUTHENTICATE</Alias>
+                <Comment>Run GSM Algorithm (2/2.5G) / Authenticate (3G) Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">10</Value>
+                <Alias>INS_TERMINAL_PROFILE</Alias>
+                <Comment>Terminal Profile Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C2</Value>
+                <Alias>INS_ENVELOPE</Alias>
+                <Comment>Envelope Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">12</Value>
+                <Alias>INS_FETCH</Alias>
+                <Comment>Fetch Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">14</Value>
+                <Alias>INS_TERMINAL_RESPONSE</Alias>
+                <Comment>Terminal Response Instruction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C0</Value>
+                <Alias>INS_GET_RESPONSE</Alias>
+                <Comment>Get Response Instruction</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="2" Year="2005"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_voltage_select</Name>
+                <Group>uicc</Group>
+                <Comment>values for voltage_select</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>REQ_VOLTAGE_SEL</Alias>
+                <Comment>The SIM reader driver shall perform voltage selection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>OMIT_VOLTAGE_SEL</Alias>
+                <Comment>The SIM reader driver shall restart with the current voltage</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="2" Year="2005"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_config_requested</Name>
+                <Group>uicc</Group>
+                <Comment>values for config_requested</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>OMIT_CONFIG_CHARACTERISTICS</Alias>
+                <Comment>PS Shall not retrieve Configuration Characteristics</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>REQUEST_CONFIG_CHARACTERISTICS</Alias>
+                <Comment>PS Shall retrieve Configuration Characteristics</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="16" Month="2" Year="2005"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_reader_id</Name>
+                <Group>uicc</Group>
+                <Comment>values for reader_id</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="ALPHA">
+                <MinValue>01</MinValue>
+                <MaxValue>MAX_READERS</MaxValue>
+                <Comment>Range of Id's of readers</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="16" Month="2" Year="2005"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

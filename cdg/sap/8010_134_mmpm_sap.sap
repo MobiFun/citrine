@@ -1,0 +1,862 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+        <DocNum Number="134" Project="8010"/>
+        <Description>
+            <Section>This document is part of the High Level Design (HLD) for the Texas Instruments G23-DualMode protocol stack.</Section>
+            <Section>Each entity in the G23-DualMode protocol stack has one or more Service Access Points (SAP's) over which the entity provides a service for an entity placed above in the protocol stack. The information units passed via the SAP's are called primitives and consist of an operation code and several parameters.</Section>
+            <Section>This document defines the MMPM SAP, which provides PS service in Mobility Management (MM) for the Short Message Services (SMS) entity, Session Management (SM) entity and the User Plane Management (UPM) entity.</Section>
+            <Section>The following chapters contains a definition of constants used at the interface (if any), a specification of the primitives defined for the interface and a specification of the parameters used within the primitives.</Section>
+            <Section>For each primitive a description, a definition and a parameter list is given.</Section>
+            <Section>For each parameter a description, a definition and eventually a value list is given.</Section>
+            <Section>This document is based on the description in the specification [3G 24.007].</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document based on 7510_124_MMPM_SAP.doc</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>HEM</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Status changed to Accepted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="30" Month="1" Year="2003"/>
+            <Author>GSO</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated to 8010</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="7" Month="4" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added pragma section to constants.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="1" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed ps_cause from UNION to STRUCT</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="02"/>
+            <Date Day="29" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Removed double MMPM prefix Removed MMPM_ESTABLISH_REQ and CNF Changed MMPM_RELEASE_IND to MMPM_ERROR_IND Added org_entity Removed radio_prio in MMPM_REG_STATE_CNF</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the 8010_134_MMPM_SAP SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">MMPM</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <Comment>initial</Comment>
+        </History>
+        <History>
+            <Date Day="7" Month="4" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Added pragma section.</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the 8010_134_MMPM_SAP SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>MAX_N_PDU_NUMBER_LIST</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment>Maximum Length of Receive N-PDU Number list</Comment>
+        </Constant>
+        <History>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <Comment>initial</Comment>
+        </History>
+        <History>
+            <Date Day="7" Month="4" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Added pragma section.</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="150">
+        <Description>
+            <Section>This chapter contains a description, a definition and a parameter list for each primitive defined for the MMPM SAP.</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by the MM entity to inform SM that the MS has attached for packet switched services (GPRS attached), and may proceed with SM procedures.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_ATTACH_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>rat</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="04" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by the MM entity to inform SM that the MS has been GPRS detached and therefore the PDP contexts are not valid anymore.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_DETACH_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>Protocol Stack Cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by the SM entity in local deactivation cases to update the PDP context status parameter used to handle unsynchronised PDP context between the network and the UE.</Section>
+                <Section>The status is included in MM peer-to-peer messages; SERVICE REQUEST (UMTS) and ROUTING AREA UPDATE REQUEST (R99) sent to the network.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_PDP_CONTEXT_STATUS_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>PDP Context Status</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used inform UPM that the Inter-RAT change is now completed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_RAT_CHANGE_COMPLETED_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>rat</Name>
+                </ItemLink>
+                <Comment>Radio Access Technology</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used inform UPM that an Inter-RAT change is initiated at AS level.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_RAT_CHANGE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>rat</Name>
+                </ItemLink>
+                <Comment>Radio Access Technology</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by the UPM entity to inform the MM entity, that uplink user data has been received for a NSAPI without an active Radio Access Bearer (RAB). MM shall initiate a service request procedure to re-establish the RAB for the NSAPI's.</Section>
+                <Section>[3G 24.008, Annex L] Mapping of PS NAS procedure to establishment cause.</Section>
+                <Section>Request to re-establish RABs: Either 'Originating Conversational Call' or 'Originating Streaming Call' or 'Originating Interactive Call' or 'Originating Background Call ' - depending on the Traffic Class in QoS of the "most demanding" RAB.</Section>
+                <Section>For classification of  "most demanding" Traffic Class the following ranking order applies: 'Conversational' followed by 'Streaming' followed by 'Interactive' followed by 'Background', where 'Conversational' is the most demanding Traffic class in terms of being delay sensitive.</Section>
+                <Section>In choosing the "most demanding" Traffic Class all already active PDP Context together with the PDP Context to be activated shall be considered.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_REESTABLISH_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                    <Name>establish_cause</Name>
+                </ItemLink>
+                <Comment>Establish Cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by the MM entity to inform the UPM entity, that the network has accepted the reestablishment of RABs by the service request procedure.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_REESTABLISH_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by the MM entity to inform the UPM entity, that the reestablishment of RABs by the service request procedure has failed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_REESTABLISH_REJ</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>Protocol Stack Cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by the SMS entity to make a query on the current GPRS registration state. The query is made to determine whether PS service or CS service is available for the SMS entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_REG_STATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is returned to the SMS entity with the current GPRS registration state.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_REG_STATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                    <Name>reg_state</Name>
+                </ItemLink>
+                <Comment>Registration State</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Removed radio_priority. Not needed due to no LLC interface.</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by the MM to inform SMS that the PS signalling connection has been released or failure of Service Request procedure.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>Protocol Stack Cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed name from RELEASE to ERROR after removal of    ESTABLISH REQ and CNF primitives.</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by MM to indicate to UPM or SM that PS service is resumed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_RESUME_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by MM to fetch the receive NPDU number from UPM.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_SEQUENCE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                    <Name>npdu_list</Name>
+                </ItemLink>
+                <Control>[1..MAX_N_PDU_NUMBER_LIST]</Control>
+                <Comment>list of received N-PDU numbers</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to deliver the received NPDU numbers to MM.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_SEQUENCE_RES</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                    <Name>npdu_list</Name>
+                </ItemLink>
+                <Control>[1..MAX_N_PDU_NUMBER_LIST]</Control>
+                <Comment>list of received N-PDU numbers</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by MM to indicate to UPM or SM that PS service is suspended. The nature of the suspension is indicated using a suspension cause element in the primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_SUSPEND_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>Protocol Stack Cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by MM to forward the received layer 3 messages to the SM or SMS entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_UNITDATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>Service Data Unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The SM and SMS entity uses this primitive to send layer 3 messages to the network.</Section>
+                <Section>The originating entity is the entity that sends the primitive.</Section>
+                <Section>In addition the primitive is used by the SM entity to implicit inform the MM entity, that PS service is required. MM will initiate the GPRS attach procedure if not already GPRS attached.</Section>
+                <Section>As regards the presence of the optional elements SM and SMS should always include establish cause and SM should always include PDP context status.</Section>
+                <Section>[3G 24.008, Annex L] Mapping of PS NAS procedure to establishment cause.</Section>
+                <Section>NAS procedure - Activate PDP Context: Either 'Originating Conversational Call' or 'Originating Streaming Call' or 'Originating Interactive Call' or 'Originating Background Call ' - depending on the Traffic Class in QoS of the "most demanding" RAB. If Traffic Class in QoS is not 'Conversational Class' or 'Streaming Class' or 'Interactive Class' or 'Background Class' but is 'Subscribed Traffic Class', then 'Originating High Priority Signalling' shall be used.</Section>
+                <Section>NAS procedure - Modify PDP Context or Deactivate PDP Context: Originating High Priority Signalling.</Section>
+                <Section>NAS procedure - MO SMS via PS domain: Originating Low Priority Signalling.</Section>
+                <Section>For classification of  "most demanding" Traffic Class the following ranking order applies: 'Conversational' followed by 'Streaming' followed by 'Interactive' followed by 'Background', where 'Conversational' is the most demanding Traffic class in terms of being delay sensitive.</Section>
+                <Section>In choosing the "most demanding" Traffic Class all already active PDP Context together with the PDP Context to be activated shall be considered.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMPM_UNITDATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>org_entity</Name>
+                </ItemLink>
+                <Comment>Originating entity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                    <Name>establish_cause</Name>
+                </ItemLink>
+                <Comment>Establish Cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>PDP Context Status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>Service Data Unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>ID renumbered. Originating entity added.</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters are part of the primitives described above. For each parameter a description, a definition and eventually a value list are given.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains a vector of receive NPDU numbers.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>npdu_list</Name>
+                <Comment>list of received N-PDU numbers</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>NSAPI</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                    <Name>receive_n_pdu_number_val</Name>
+                </ItemLink>
+                <Comment>Receive N-PDU Number value</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters are part of the primitives described above. For each parameter a description, a definition and eventually a value list are given.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the reason for the RRC connection establishment. The RRC establishment cause may be used by the network to prioritise the connection establishment request from the UE at high load situations in the network.</Section>
+                <Section>[3G 24.008, Annex L] Mapping of PS NAS procedure to establishment cause.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>establish_cause</Name>
+                <Type>U8</Type>
+                <Comment>Establish Cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                <Name>VAL_establish_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Added LOW PRIO Signalling.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines an arbitrary set of applicable network layer service access point identifiers. For each SM-PDU the NSAPI is an index to the PDP context of the PDP that is using the service provided by the SNDCP layer. Field mapping (according to [GSM 04.08, 7.1.3]): Two octets are used for encoding: the first octet is used for NSAPIs 15 to 8, the second octet is used for NSAPIs 7 to 0, in decreasingly order. A bit set to 0 means that the correspnding NSAPI is not to be applied, a bit set to 1 means that the correspnding NSAPI is to be applied.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nsapi_set</Name>
+                <Type>U16</Type>
+                <Comment>PDP Context Status</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Reference: [1] section 10.5.5.11.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>receive_n_pdu_number_val</Name>
+                <Type>U8</Type>
+                <Comment>Receive N-PDU Number value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the current GMM state.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reg_state</Name>
+                <Type>U8</Type>
+                <Comment>Registration State</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_134_mmpm_sap</DocName>
+                <Name>VAL_reg_state</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the 8010_134_MMPM_SAP SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_establish_cause</Name>
+                <Comment>values for establish_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CAUSE_ESTABL_ORIG_CONVERSATIONAL</Alias>
+                <Comment>Originating conversational call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CAUSE_ESTABL_ORIG_STREAMING</Alias>
+                <Comment>Originating streaming call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CAUSE_ESTABL_ORIG_INTERACTIVE</Alias>
+                <Comment>Originating interactive call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>CAUSE_ESTABL_ORIG_BACKGROUND</Alias>
+                <Comment>Originating background call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>CAUSE_ESTABL_ORIG_HIGH_PRIO_SIGNALLING</Alias>
+                <Comment>Originating high priority signalling</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>CAUSE_ESTABL_ORIG_LOW_PRIO_SIGNALLING</Alias>
+                <Comment>Originating low priority signalling</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="27" Month="1" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_reg_state</Name>
+                <Comment>values for reg_state</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RS_DEREGISTERED</Alias>
+                <Comment>GMM context for SMS is removed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RS_REGISTERED</Alias>
+                <Comment>GMM context for SMS is built</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="27" Month="1" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

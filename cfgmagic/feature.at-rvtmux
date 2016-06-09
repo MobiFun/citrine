@@ -1,0 +1,3 @@
+CONFIG_AT_RVTMUX=1
+export_to_c	CONFIG_AT_RVTMUX
+export_to_mk	CONFIG_AT_RVTMUX

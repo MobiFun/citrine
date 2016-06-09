@@ -1,0 +1,3265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">8010_137_nas_include</DocName>
+        <DocNum Number="137" Project="8010"/>
+        <Description>
+            <Section>This document is part of the High Level Design (HLD) for the Texas Instruments G23-UMTS/GPRS protocol stack. The document describes the parameters that are used in more than 1 NAS entity. This SAP is only used by NAS entities.</Section>
+            <Section>This SAP serves to eliminate multiple definitions of parameters within NAS.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>KBS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>KBS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document based on 7510.150.02.010</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>HEM</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Status changed to Accepted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="3" Month="2" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Reference document 7010.801 changed to 8010.801 'AS' prefix removed from sync_event</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="12" Month="2" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added pragmas ENABLE_GROUP and COMP....</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="20" Month="3" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>k_iwf_ms  and k_ms_iwf changed to U16</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="02"/>
+            <Date Day="7" Month="4" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Removed nas_-prefix from IP address types. Removed sm_-prefix from qos types. Added min_qos type.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="02"/>
+            <Date Day="29" Month="4" Year="2003"/>
+            <Author>FDU</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Values for parameter ppp_hc corrected</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="02"/>
+            <Date Day="1" Month="5" Year="2003"/>
+            <Author>FDU</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added tft prefix to TFT filter ip address and mask types to work around ccdgen bug</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="02"/>
+            <Date Day="3" Month="6" Year="2003"/>
+            <Author>HHV</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>pdp_address removed. IP added for internal signalling in ACI and PPP.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="02"/>
+            <Date Day="12" Month="6" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Exported R99 and R97 QoS structures.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="012" Year="02"/>
+            <Date Day="21" Month="7" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added "not_present" union controller values to ip_address, qos, min_qos. Removed v_flag from ip structure.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="013" Year="02"/>
+            <Date Day="29" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added org_entity (used by MMPM and MMCM SAP)</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="014" Year="02"/>
+            <Date Day="5" Month="11" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>NAS_ORG_ENTITY_CLT inserted for COMLIB test</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="015" Year="02"/>
+            <Date Day="20" Month="1" Year="2004"/>
+            <Author>ABR</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added dti_conn, reset, octets_uplink, octets_downlink, packets_uplink, packets_downlink</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="016" Year="02"/>
+            <Date Day="21" Month="1" Year="2004"/>
+            <Author>ABR</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added pkt_flow_id parameter.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="017" Year="02"/>
+            <Date Day="9" Month="6" Year="2004"/>
+	    <Author>rpk</Author>
+            <DocStatus State="APPROVED"/>
+	    <Comment>Removing QoS, sgsnr flag and pkt_flow_id. They are now moved to ps_include sap</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>Each of these constant values will be used to control the size of an element in a structure or a primitive. The size parameter will usually denote the number of elements in an array of a specified type. Normally the use of one of these constants will result in a fixed size array declaration, where all elements are used to contain the specified information.</Section>
+            <Section>In case of variable size arrays, a parameter will accompany the declared array, specifying the number of elements actually included/allocated. This parameter is automatically generated when "compiling" this document. This approach is used where it is desirable to allow a dynamic number of elements in a primitive (e.g. when passing lists of information where the worst case number of elements is large or where each element may have considerable size).</Section>
+            <Section>All size constant values will have the prefix SIZE_, which will uniquely link them to this part of the document.</Section>
+            <Section>In general, a size constant determines the number of elements of a given type used to contain data. For strings of digits, this will normally be a number of bytes, with one digit (0-9) contained in each byte. If this encoding is not used, the alternative type of encoding will be explicitly stated at the declaration of the size definition or at the declaration of the parameter using the size definition.</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">NAS</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Disable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="12" Month="2" Year="2002"/>
+            <Author>KBS</Author>
+            <Comment>Added pragmas ENABLE_GROUP and COMP....</Comment>
+        </History>
+        <History>
+            <Date Day="7" Month="4" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Added MAX_NSAPI constant</Comment>
+        </History>
+        <History>
+            <Date Day="1" Month="5" Year="2003"/>
+            <Author>CLA</Author>
+            <Comment>Added FACILITY_LEN from MNSS and MNCC SAP</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>Each of these constant values will be used to control the size of an element in a structure or a primitive. The size parameter will usually denote the number of elements in an array of a specified type. Normally the use of one of these constants will result in a fixed size array declaration, where all elements are used to contain the specified information.</Section>
+            <Section>In case of variable size arrays, a parameter will accompany the declared array, specifying the number of elements actually included/allocated. This parameter is automatically generated when "compiling" this document. This approach is used where it is desirable to allow a dynamic number of elements in a primitive (e.g. when passing lists of information where the worst case number of elements is large or where each element may have considerable size).</Section>
+            <Section>All size constant values will have the prefix SIZE_, which will uniquely link them to this part of the document.</Section>
+            <Section>In general, a size constant determines the number of elements of a given type used to contain data. For strings of digits, this will normally be a number of bytes, with one digit (0-9) contained in each byte. If this encoding is not used, the alternative type of encoding will be explicitly stated at the declaration of the size definition or at the declaration of the parameter using the size definition.</Section>
+        </Description>
+        <Constant>
+            <Alias>SIZE_ENTITY_NAME</Alias>
+            <Value ValueType="DEC">6</Value>
+            <Comment>Maximum length of an entity name</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_TFT_FILTER</Alias>
+            <Value ValueType="DEC">8</Value>
+            <Comment>Maximum number of TFTs in one message</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_IPv4_ADDR</Alias>
+            <Value ValueType="DEC">4</Value>
+            <Comment>Length of an IPv4 address in octets</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_IPv6_ADDR</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment>Length of an IPv6 address in octets</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_NSAPI</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment>Maximum NSAPI id plus 1 (for array declarations)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>FACILITY_LEN</Alias>
+            <Value ValueType="DEC">251</Value>
+            <Comment>Max. length of facility considering L2 constraints</Comment>
+        </Constant>
+        <History>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="12" Month="2" Year="2002"/>
+            <Author>KBS</Author>
+            <Comment>Added pragmas ENABLE_GROUP and COMP....</Comment>
+        </History>
+        <History>
+            <Date Day="7" Month="4" Year="2003"/>
+            <Author>MVJ</Author>
+            <Comment>Added MAX_NSAPI constant</Comment>
+        </History>
+        <History>
+            <Date Day="1" Month="5" Year="2003"/>
+            <Author>CLA</Author>
+            <Comment>Added FACILITY_LEN from MNSS and MNCC SAP</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="0">
+        <Description>
+            <Section>This section contains all primitives that are defined for the 8010_137_NAS_INCLUDE SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>This message is here to keep xGen Happy, in the following 2 respects:</Section>
+                <Section>Primitives section can not be empty,</Section>
+                <Section>All parameters should be used.</Section>
+                <Section>And the developer can use it as a Short Name index</Section>
+            </Description>
+            <PrimDef>
+                <Name>NAS_EXPORT</Name>
+                <PrimID Direction="UPLINK" Number="ffff"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>CC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ack_flg</Name>
+                </ItemLink>
+                <Comment>acknowledge flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>bytes_per_prim</Name>
+                </ItemLink>
+                <Comment>bytes per primitive</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ch_info</Name>
+                </ItemLink>
+                <Comment>Channel using mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>comp_params</Name>
+                </ItemLink>
+                <Comment>Compression parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>direction of DTI connection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_linkid</Name>
+                </ItemLink>
+                <Comment>DTI link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_neighbor</Name>
+                </ItemLink>
+                <Comment>DTI neighbor entity name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>error_rate</Name>
+                </ItemLink>
+                <Comment>error_rate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ip</Name>
+                </ItemLink>
+                <Comment>IP address structure</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ip_address</Name>
+                </ItemLink>
+                <Comment>IP address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>k_iwf_ms</Name>
+                </ItemLink>
+                <Comment>window size iwf -&gt; ms</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>k_ms_iwf</Name>
+                </ItemLink>
+                <Comment>window size ms -&gt; iwf</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>n2</Name>
+                </ItemLink>
+                <Comment>maximum number of retransmission attempts</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ipv4_addr</Name>
+                </ItemLink>
+                <Comment>IPv4 address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ipv6_addr</Name>
+                </ItemLink>
+                <Comment>IPv6 address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>set of network layer service access point identifiers</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>p0</Name>
+                </ItemLink>
+                <Comment>v.42bis data compression direction</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>p1</Name>
+                </ItemLink>
+                <Comment>v.42bis number of possible codewords</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>p2</Name>
+                </ItemLink>
+                <Comment>v.42bis maximum encodable string length</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>pri_nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>pt</Name>
+                </ItemLink>
+                <Comment>type of data compression</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>rlp_config</Name>
+                </ItemLink>
+                <Comment>RLP Configuration</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>rlp_vers</Name>
+                </ItemLink>
+                <Comment>rlp version number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>sync_event</Name>
+                </ItemLink>
+                <Comment>Event, received in the sync indication</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>t1</Name>
+                </ItemLink>
+                <Comment>acknowledge timer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>t2</Name>
+                </ItemLink>
+                <Comment>reply delay</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft</Name>
+                </ItemLink>
+                <Comment>Traffic flow template</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_dest_port_range</Name>
+                </ItemLink>
+                <Comment>IP destination port range</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipsec_spi</Name>
+                </ItemLink>
+                <Comment>IPSec SPI</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipv4_src_addr_mask</Name>
+                </ItemLink>
+                <Comment>IPv4 source address and subnet mask</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipv6_src_addr_mask</Name>
+                </ItemLink>
+                <Comment>IPv6 source address and subnet mask</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf</Name>
+                </ItemLink>
+                <Comment>TFT packet filter</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf_entry</Name>
+                </ItemLink>
+                <Comment>TFT packet filter entry (in array)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf_ipv4</Name>
+                </ItemLink>
+                <Comment>IPv4 packet filter</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf_ipv6</Name>
+                </ItemLink>
+                <Comment>IPv6 packet filter</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_src_port_range</Name>
+                </ItemLink>
+                <Comment>IP source port range</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_tos_and_mask</Name>
+                </ItemLink>
+                <Comment>IP type of service/traffic class</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>Transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>fac_inf</Name>
+                </ItemLink>
+                <Comment>Facility Information</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>org_entity</Name>
+                </ItemLink>
+                <Comment>Originating entity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>reset</Name>
+                </ItemLink>
+                <Comment>reset flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>octets_uplink</Name>
+                </ItemLink>
+                <Comment>octets uplink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>octets_downlink</Name>
+                </ItemLink>
+                <Comment>octets downlink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>packets_uplink</Name>
+                </ItemLink>
+                <Comment>packets uplink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>packets_downlink</Name>
+                </ItemLink>
+                <Comment>packets downlink</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>pkt_flow_id</Name>
+                </ItemLink>
+                <Comment>Packet Flow Identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ra_act_params</Name>
+                </ItemLink>
+                <Comment>RA activation parameters</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>k_iwf_ms  and k_ms_iwf changed to U16</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="4" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed nas_ prefix from IP address types. Removed sm_ prefix from qos type. Added min_qos type</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Added fac_inf.</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="6" Year="2003"/>
+                <Author>BRY</Author>
+                <Comment>Added qos_r97 and qos_r99.</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Added org_entity</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Added parameters for dti_conn, reset, octets_uplink,  octets_downlink, packets_uplink, packets_downlink.</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Added pkt_flow_id parameter.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="2" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Added ra_act_params</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="6" Year="2004"/>
+		<Author>rpk</Author>
+		<Comment>Removed qos, sgsnr_flag and pkt_flow_id</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the 8010_137_NAS_INCLUDE SAP</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter is Texas Instruments-specific. It is used by the DTI library to find an entity by name.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>dti_neighbor</Name>
+                <Comment>DTI neighbor entity name</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>name</Name>
+                </ItemLink>
+                <Control>[SIZE_ENTITY_NAME]</Control>
+                <Comment>DTI entity neighbor name</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter is relevant for GSM only. It specifies if data or header compression is requested by ACI (when used in a REQ prim) or will be used (when used in an IND prim). Values are derived from [3G 04.65, 6.6.2.1.2].</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>comp_params</Name>
+                <Comment>Header compression parameters</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>hcomp</Name>
+                </ItemLink>
+                <Comment>Header compression used/requested; Header compression used/requested</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>dcomp</Name>
+                </ItemLink>
+                <Comment>Data compression used/requested; Data compression used/requested</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ppp_hc</Name>
+                </ItemLink>
+                <Comment>header compression of PPP connection; header compression of PPP connection</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>msid</Name>
+                </ItemLink>
+                <Comment>max slot identifier; max slot identifier</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>values for ppp_hc corrected</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the used channel mode. These parameters are shared by the MNCC and MMCM SAPs.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ch_info</Name>
+                <Comment>Channel using mode</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ch_type</Name>
+                </ItemLink>
+                <Comment>Channel Type</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ch_mode</Name>
+                </ItemLink>
+                <Comment>Channel Mode</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains the complete union, union control, and valid flags. For internal signalling inside ACI and PPP.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ip</Name>
+                <Comment>IP Address structure</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ip_address</Name>
+                </ItemLink>
+                <Comment>IP address</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="6" Year="2003"/>
+                <Author>HHV</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed "Optional" presence flag. Covered in union controller.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter is a union of IPv4 and IPv6 address types.</Section>
+            </Description>
+            <PrimStructElemDef Type="UNION">
+                <Name>ip_address</Name>
+                <Comment>IP Address</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ip_not_present</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_ip_not_present</Name>
+                </UnionTag>
+                <Comment>IP address not present</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ipv4_addr</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_ipv4</Name>
+                </UnionTag>
+                <Comment>IPv4 address</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ipv6_addr</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_ipv6</Name>
+                </UnionTag>
+                <Comment>IPv6 address</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Added "not present" controller value. Removed redundant _nas prefix.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter defines an IPv4 address type.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ipv4_addr</Name>
+                <Comment>IPv4 Address Type</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>a4</Name>
+                </ItemLink>
+                <Control>[SIZE_IPv4_ADDR]</Control>
+                <Comment>IPv4 Address Values</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter defines an IPv6 address type.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ipv6_addr</Name>
+                <Comment>IPv6 Address Type</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>a6</Name>
+                </ItemLink>
+                <Control>[SIZE_IPv6_ADDR]</Control>
+                <Comment>IPv6 Address Values</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The Struct includes a subset of the configuration parameters to RLP. The parameters are stored in ACI, L2R and RLP. The Struct includes the common set of parameters between the three entities.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>rlp_config</Name>
+                <Comment>RLP configuration parameters</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>k_ms_iwf</Name>
+                </ItemLink>
+                <Comment>window size ms-&gt;iwf</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>k_iwf_ms</Name>
+                </ItemLink>
+                <Comment>window size iwf-&gt;ms</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>t1</Name>
+                </ItemLink>
+                <Comment>acknowledge timer</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>t2</Name>
+                </ItemLink>
+                <Comment>reply delay</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>n2</Name>
+                </ItemLink>
+                <Comment>retransmission attempts</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>pt</Name>
+                </ItemLink>
+                <Comment>type of data compression</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>p0</Name>
+                </ItemLink>
+                <Comment>v.42 bis data compression direction</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>p1</Name>
+                </ItemLink>
+                <Comment>v.42 bis number of possible codewords</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>p2</Name>
+                </ItemLink>
+                <Comment>v.42 bis maximum encodable data string length</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter describes a filter for a traffic flow template. It contains an identifier, a precedence field, and a bit-field indicating which fields are present in the tft_filter_entry.</Section>
+                <Section>E.g. if a packet filter contains an IPv4 address/mask and a destination port range, the valid bit field would be set to 0x09 = 0x01 (IPv4 addr/mask) OR 0x08 (dest port range).</Section>
+                <Section>Only those fields indicated as valid can and must be checked/filled in tft_filter_entry.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tft_pf</Name>
+                <Comment>packet filter</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf_id</Name>
+                </ItemLink>
+                <Comment>packet filter identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf_precedence</Name>
+                </ItemLink>
+                <Comment>packet filter precedence</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf_valid_bits</Name>
+                </ItemLink>
+                <Comment>field precence bitfield</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf_entry</Name>
+                </ItemLink>
+                <Comment>packet filter entry</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter describes a traffic flow template (TFT) for use in secondary PDP context activations and modifications. The TFT contains one or more IP traffic filters which the GGSN in a network can use to differentiate traffic destined for the same MS but on different NSAPIs (and with different QoS requirements).</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tft</Name>
+                <Comment>Traffic Flow Template</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf</Name>
+                </ItemLink>
+                <Control>PTR [0..SIZE_TFT_FILTER]</Control>
+                <Comment>traffic filter</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed tft_opcode parameter field and values.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter is a union of the IPv4 packet filter type and the IPv6 packet filter type.</Section>
+            </Description>
+            <PrimStructElemDef Type="UNION">
+                <Name>tft_pf_entry</Name>
+                <Comment>TFT packet filter entry</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf_ipv4</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_tft_pf_ipv4</Name>
+                </UnionTag>
+                <Comment>IPv4 packet filter</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_pf_ipv6</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_tft_pf_ipv6</Name>
+                </UnionTag>
+                <Comment>IPv6 packet filter</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter describes an IPv4 filter entry in a packet filter. It may be one of the filter types described in [3G 23.060, 15.3].</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tft_pf_ipv4</Name>
+                <Comment>packet filter component</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_protocol</Name>
+                </ItemLink>
+                <Comment>IPv4 protocol number</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_tos_and_mask</Name>
+                </ItemLink>
+                <Comment>IPv4 ToS and mask</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_dest_port_range</Name>
+                </ItemLink>
+                <Comment>destination port range</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_src_port_range</Name>
+                </ItemLink>
+                <Comment>source port range</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipsec_spi</Name>
+                </ItemLink>
+                <Comment>IPSec security parameter index</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipv4_src_addr_mask</Name>
+                </ItemLink>
+                <Comment>source address and subnet mask</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter describes an IPv6 filter entry in a packet filter. It may be one of the filter types described in [3G 23.060, 15.3].</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tft_pf_ipv6</Name>
+                <Comment>packet filter component</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_next_hdr</Name>
+                </ItemLink>
+                <Comment>IPv6 next header</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_tos_and_mask</Name>
+                </ItemLink>
+                <Comment>IPv6 traffic class and mask</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_dest_port_range</Name>
+                </ItemLink>
+                <Comment>destination port range</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_src_port_range</Name>
+                </ItemLink>
+                <Comment>source port range</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipsec_spi</Name>
+                </ItemLink>
+                <Comment>IPSec security parameter index</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_flow_label</Name>
+                </ItemLink>
+                <Comment>IPv6 flow label</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipv6_src_addr_mask</Name>
+                </ItemLink>
+                <Comment>source address and subnet mask</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter describes an IPv4 source address/mask filter entry for a traffic filter component.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tft_ipv4_src_addr_mask</Name>
+                <Comment>IPv4 source address and subnet mask</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipv4_addr</Name>
+                </ItemLink>
+                <Control>[SIZE_IPv4_ADDR]</Control>
+                <Comment>source address</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipv4_mask</Name>
+                </ItemLink>
+                <Control>[SIZE_IPv4_ADDR]</Control>
+                <Comment>subnet mask</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>added tft prefix to work around ccdgen bug</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter describes an IPv6 source address/mask filter entry for a traffic filter component.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tft_ipv6_src_addr_mask</Name>
+                <Comment>IPv6 source address and subnet mask</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipv6_addr</Name>
+                </ItemLink>
+                <Control>[SIZE_IPv6_ADDR]</Control>
+                <Comment>source address</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft_ipv6_mask</Name>
+                </ItemLink>
+                <Control>[SIZE_IPv6_ADDR]</Control>
+                <Comment>subnet mask</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>added tft prefix to work around ccdgen bug</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter describes a port range filter entry for a traffic flow template</Section>
+                <Section>This parameter can describe either a single port or a port range:</Section>
+                <Section>Single port: high limit must be either 0 (zero) or equal to low limit. low limit contains the port number.</Section>
+                <Section>Port range: high limit must be higher than low limit. Range is then from low to high.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tft_src_port_range</Name>
+                <Comment>source port range</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tft_dest_port_range</Name>
+                <Comment>destination port range</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>low_limit</Name>
+                </ItemLink>
+                <Comment>low limit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>high_limit</Name>
+                </ItemLink>
+                <Comment>high limit</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Type changed from U8 to U16 (3G 27.007, 10.1.3, range 0-65535)</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter describes a IPv4 type of service (TOS)/IPv6 traffic class entry for a traffic flow template.</Section>
+                <Section>The TOS/TC parameter consists of two octets: One octet containing a value and one octet containing a mask.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tft_tos_and_mask</Name>
+                <Comment>IPv4 type of service (or IPv6 traffic class) and mask</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tos_value</Name>
+                </ItemLink>
+                <Comment>type of service value</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tos_mask</Name>
+                </ItemLink>
+                <Comment>type of service mask</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter contains a facility information element.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>fac_inf</Name>
+                <Comment>facility information</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>l_fac</Name>
+                </ItemLink>
+                <Comment>facility length</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>o_fac</Name>
+                </ItemLink>
+                <Comment>facility offset</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>fac</Name>
+                </ItemLink>
+                <Control>[FACILITY_LEN]</Control>
+                <Comment>facility content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Moved from MNSS and MNCC SAP.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This structure contains parameters used to activate the RA entity.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ra_act_params</Name>
+                <Comment>facility information</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>model</Name>
+                </ItemLink>
+                <Comment>RA transfer model</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tra_rate</Name>
+                </ItemLink>
+                <Comment>Transmission rate</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>user_rate</Name>
+                </ItemLink>
+                <Comment>User rate</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ndb</Name>
+                </ItemLink>
+                <Comment>Number data bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsb</Name>
+                </ItemLink>
+                <Comment>Number stop bits</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="1" Month="2" Year="2004"/>
+                <Author>ALE</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the 8010_137_NAS_INCLUDE SAP</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the affected network layer service access point identifier. For each SDU the NSAPI is an index to the PDP context of the PDP that is using the service provided by the SNDCP or UPM layer.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nsapi</Name>
+                <Type>U8</Type>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_nsapi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the affected network layer service access point identifier. For each SDU the NSAPI is an index to the PDP context of the PDP that is using the service provided by the SNDCP or UPM layer.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pri_nsapi</Name>
+                <Type>U8</Type>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_nsapi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines an arbitrary set of applicable network layer service access point identifiers. Each of the 16 bits in the nsapi_set parameter corresponds to a PDP context with NSAPI value queal to the bit number in nsapi_set. Bits are numbered from 0. A bit set to 0 means that the corresponding NSAPI is not to be applied, a bit set to 1 means that the corresponding NSAPI is to be applied.</Section>
+                <Section>E.g. if bits 6 and 12 were set (nsapi_set = 0x1040), NSAPIs 6 and 12 would apply to the operation using the nsapi_set.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nsapi_set</Name>
+                <Type>U16</Type>
+                <Comment>set of network layer service access point identifiers</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is Texas Instruments-specific. It is a unique identifier used by the DTI library.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_linkid</Name>
+                <Type>U32</Type>
+                <Comment>DTI link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is Texas Instruments-specific. It is used by the DTI library to find an entity by name.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>name</Name>
+                <Type>U8</Type>
+                <Comment>DTI entity neighbor name</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is Texas Instruments-specific. It is used to inform the DTI library of the direction of this DTI connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_direction</Name>
+                <Type>U8</Type>
+                <Comment>direction of DTI connection</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_dti_direction</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines, if a dti channel is to be opened or closed.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_conn</Name>
+                <Type>U8</Type>
+                <Comment>DTI connect</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_dti_conn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is relevant for GSM only. It specifies if data or header compression is requested by ACI (when used in a REQ prim) or will be used (when used in an IND prim). Values are derived from [3G 04.65, 6.6.2.1.2].</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>hcomp</Name>
+                <Type>U8</Type>
+                <Comment>Header compression used/requested; Header compression used/requested</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_hcomp</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>values for ppp_hc corrected</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is relevant for GSM only. It specifies if data or header compression is requested by ACI (when used in a REQ prim) or will be used (when used in an IND prim). Values are derived from [3G 04.65, 6.6.2.1.2].</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dcomp</Name>
+                <Type>U8</Type>
+                <Comment>Data compression used/requested; Data compression used/requested</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_dcomp</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>values for ppp_hc corrected</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is relevant for GSM only. It specifies if data or header compression is requested by ACI (when used in a REQ prim) or will be used (when used in an IND prim). Values are derived from [3G 04.65, 6.6.2.1.2].</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ppp_hc</Name>
+                <Type>U8</Type>
+                <Comment>header compression of PPP connection; header compression of PPP connection</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_ppp_hc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>values for ppp_hc corrected</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is relevant for GSM only. It specifies if data or header compression is requested by ACI (when used in a REQ prim) or will be used (when used in an IND prim). Values are derived from [3G 04.65, 6.6.2.1.2].</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>msid</Name>
+                <Type>U8</Type>
+                <Comment>max slot identifier; max slot identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="4" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>values for ppp_hc corrected</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter used to indicate the cause for a synchronisation indication from AS. This parameter is shared by MNCC and MMCM.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sync_event</Name>
+                <Type>U8</Type>
+                <Comment>event, received in the sync indication</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_sync_event</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="1" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>'AS_' prefix removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies a transaction. This parameter is shared by MNCC and MMCM SAPs.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ti</Name>
+                <Type>U8</Type>
+                <Comment>transaction identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_ti</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the used channel mode. These parameters are shared by the MNCC and MMCM SAPs.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ch_type</Name>
+                <Type>U8</Type>
+                <Comment>Channel Type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_ch_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the used channel mode. These parameters are shared by the MNCC and MMCM SAPs.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ch_mode</Name>
+                <Type>U8</Type>
+                <Comment>Channel Mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_ch_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is a union of IPv4 and IPv6 address types.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ip_not_present</Name>
+                <Type>U32</Type>
+                <Comment>IP address not present</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Added "not present" controller value. Removed redundant _nas prefix.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines an IPv4 address type.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>a4</Name>
+                <Type>U8</Type>
+                <Comment>IPv4 Address Values</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines an IPv6 address type.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>a6</Name>
+                <Type>U8</Type>
+                <Comment>IPv6 Address Values</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the maximum number (k) of sequentially numbered  I frames that may be outstanding (i.e. unacknowledged) at any given time in the uplink direction. This is a system parameter which will be negotiated with the base station, it can never exceed 61.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>k_ms_iwf</Name>
+                <Type>U16</Type>
+                <Comment>window size ms -&gt; iwf</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_k_ms_iwf</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>U8 changed to U16</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the maximum number (k) of sequentially numbered  I frames that may be outstanding (i.e. unacknowledged) at any given time in the downlink direction. This is a system parameter which will be negotiated with the base station, it can never exceed 61.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>k_iwf_ms</Name>
+                <Type>U16</Type>
+                <Comment>window size iwf -&gt; ms</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_k_iwf_ms</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>U8 changed to U16</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the acknowledge timer t1. If this timer is expired after sending a frame without receiving an acknowledge, the retransmission of the frame will be initiated. The period of the timer starts at the beginning of the transmission of the frame. This is a system parameter, which will be negotiated with the base station. The unit of t1 is 10 ms.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t1</Name>
+                <Type>U8</Type>
+                <Comment>acknowledge timer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the maximum reply delay t2. The L2R entity must acknowledge a frame within this time. t2 is a system parameter, which will be negotiated with the base station. It must be less then t1. The unit of t2 is 10 ms.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t2</Name>
+                <Type>U8</Type>
+                <Comment>reply delay</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the maximum number of retransmission attempts n2 after running out of timer t1. This is a system parameter, which will be negotiated with the base station.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n2</Name>
+                <Type>U8</Type>
+                <Comment>maximum number of retransmission attempts</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the type of data compression. Currently only V.42bis is defined. This parameter is not negotiable.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pt</Name>
+                <Type>U8</Type>
+                <Comment>type of data compression</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_pt</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>L2R_ prefix removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies in which direction V.42bis data compression is used.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p0</Name>
+                <Type>U8</Type>
+                <Comment>v.42bis data compression direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_p0</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>L2R_ prefix removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the number of possible codewords in the V.42bis algorithm. It can range from 512 to 65535.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p1</Name>
+                <Type>U16</Type>
+                <Comment>v.42bis number of possible codewords</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_p1</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the maximum encodable data string length in the V.42bis algorithm. It can range from 6 to 250.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p2</Name>
+                <Type>U8</Type>
+                <Comment>v.42bis maximum encodable string length</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_p2</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the number of bytes which can be sent in one primitive. Actually this number is rounded up to the next multiple of the current frame size.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bytes_per_prim</Name>
+                <Type>U16</Type>
+                <Comment>bytes per primitive</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the transmission rate of the traffic chanel. L2R must pass this parameter to RLP, because the frame format and the default values of some negotiable RLP parameters depend on the transmission rate.</Section>
+                <Section>The UMTS only rates are passed on from L2R to RLP for RLP to establish the correct connection to RLC.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rate</Name>
+                <Type>U8</Type>
+                <Comment>transmission rate</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="2" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>L2R_ prefix removed due to PRAGMA PREFIX.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the negotiated version number of the RLP. This is the lower of the version numbers of the two RLP entities. These version numbers are defined:</Section>
+                <Section>RLP version 0: single-link basic version;</Section>
+                <Section>RLP version 1: single-link extended version (V42bis data compression);</Section>
+                <Section>RLP version 2: multi-link version (HSCSD).</Section>
+                <Section>The current implementation is a RLP version 1. Therefore this parameter can be 0 or 1.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rlp_vers</Name>
+                <Type>U8</Type>
+                <Comment>rlp version number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the acknowledge flag in response and confirm primitives.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ack_flg</Name>
+                <Type>U8</Type>
+                <Comment>acknowledge flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_ack_flg</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the error rate of the data link.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>error_rate</Name>
+                <Type>U32</Type>
+                <Comment>error_rate</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes a filter for a traffic flow template. It contains an identifier, a precedence field, and a bit-field indicating which fields are present in the tft_filter_entry.</Section>
+                <Section>E.g. if a packet filter contains an IPv4 address/mask and a destination port range, the valid bit field would be set to 0x09 = 0x01 (IPv4 addr/mask) OR 0x08 (dest port range).</Section>
+                <Section>Only those fields indicated as valid can and must be checked/filled in tft_filter_entry.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_pf_id</Name>
+                <Type>U8</Type>
+                <Comment>packet filter identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes a filter for a traffic flow template. It contains an identifier, a precedence field, and a bit-field indicating which fields are present in the tft_filter_entry.</Section>
+                <Section>E.g. if a packet filter contains an IPv4 address/mask and a destination port range, the valid bit field would be set to 0x09 = 0x01 (IPv4 addr/mask) OR 0x08 (dest port range).</Section>
+                <Section>Only those fields indicated as valid can and must be checked/filled in tft_filter_entry.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_pf_precedence</Name>
+                <Type>U8</Type>
+                <Comment>packet filter precedence</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes a filter for a traffic flow template. It contains an identifier, a precedence field, and a bit-field indicating which fields are present in the tft_filter_entry.</Section>
+                <Section>E.g. if a packet filter contains an IPv4 address/mask and a destination port range, the valid bit field would be set to 0x09 = 0x01 (IPv4 addr/mask) OR 0x08 (dest port range).</Section>
+                <Section>Only those fields indicated as valid can and must be checked/filled in tft_filter_entry.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_pf_valid_bits</Name>
+                <Type>U8</Type>
+                <Comment>field precence bitfield</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_tft_pf_valid_bits</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes an IPv4 filter entry in a packet filter. It may be one of the filter types described in [3G 23.060, 15.3].</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_protocol</Name>
+                <Type>U8</Type>
+                <Comment>IPv4 protocol number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes an IPv6 filter entry in a packet filter. It may be one of the filter types described in [3G 23.060, 15.3].</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_next_hdr</Name>
+                <Type>U8</Type>
+                <Comment>IPv6 next header</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes an IPv6 filter entry in a packet filter. It may be one of the filter types described in [3G 23.060, 15.3].</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_flow_label</Name>
+                <Type>U32</Type>
+                <Comment>IPv6 flow label</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes an IPv4 source address/mask filter entry for a traffic filter component.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_ipv4_addr</Name>
+                <Type>U8</Type>
+                <Comment>source address</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>added tft prefix to work around ccdgen bug</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes an IPv4 source address/mask filter entry for a traffic filter component.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_ipv4_mask</Name>
+                <Type>U8</Type>
+                <Comment>subnet mask</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>added tft prefix to work around ccdgen bug</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes an IPv6 source address/mask filter entry for a traffic filter component.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_ipv6_addr</Name>
+                <Type>U8</Type>
+                <Comment>source address</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>added tft prefix to work around ccdgen bug</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes an IPv6 source address/mask filter entry for a traffic filter component.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_ipv6_mask</Name>
+                <Type>U8</Type>
+                <Comment>subnet mask</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>FDU</Author>
+                <Comment>added tft prefix to work around ccdgen bug</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes a port range filter entry for a traffic flow template</Section>
+                <Section>This parameter can describe either a single port or a port range:</Section>
+                <Section>Single port: high limit must be either 0 (zero) or equal to low limit. low limit contains the port number.</Section>
+                <Section>Port range: high limit must be higher than low limit. Range is then from low to high.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>low_limit</Name>
+                <Type>U16</Type>
+                <Comment>low limit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Type changed from U8 to U16 (3G 27.007, 10.1.3, range 0-65535)</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes a port range filter entry for a traffic flow template</Section>
+                <Section>This parameter can describe either a single port or a port range:</Section>
+                <Section>Single port: high limit must be either 0 (zero) or equal to low limit. low limit contains the port number.</Section>
+                <Section>Port range: high limit must be higher than low limit. Range is then from low to high.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>high_limit</Name>
+                <Type>U16</Type>
+                <Comment>high limit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="2002"/>
+                <Author>FDU</Author>
+                <Comment>Type changed from U8 to U16 (3G 27.007, 10.1.3, range 0-65535)</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes a IPv4 type of service (TOS)/IPv6 traffic class entry for a traffic flow template.</Section>
+                <Section>The TOS/TC parameter consists of two octets: One octet containing a value and one octet containing a mask.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tos_value</Name>
+                <Type>U8</Type>
+                <Comment>type of service value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes a IPv4 type of service (TOS)/IPv6 traffic class entry for a traffic flow template.</Section>
+                <Section>The TOS/TC parameter consists of two octets: One octet containing a value and one octet containing a mask.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tos_mask</Name>
+                <Type>U8</Type>
+                <Comment>type of service mask</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Defined to satisfy xGen.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tft_ipsec_spi</Name>
+                <Type>U32</Type>
+                <Comment>IPSec security parameter index</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains a facility information element.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_fac</Name>
+                <Type>U16</Type>
+                <Comment>facility length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Moved from MNSS and MNCC SAP.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains a facility information element.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_fac</Name>
+                <Type>U16</Type>
+                <Comment>facility offset</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Moved from MNSS and MNCC SAP.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains a facility information element.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>fac</Name>
+                <Type>U8</Type>
+                <Comment>facility content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="5" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Moved from MNSS and MNCC SAP.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the originating entity of a request sent to MM.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>org_entity</Name>
+                <Type>U8</Type>
+                <Comment>Originator of a request to MM</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_org_entity</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="29" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>If parameter 'reset'  is set to NAS_RESET_YES, then the last values of all counters will be sent with the resulting SN_COUNT_CNF and all counters for the affected nsapi will be set to 0. If parameter 'reset' is set to NAS_RESET_NO then the last values of all counters will be sent with the resulting SN_COUNT_CNF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reset</Name>
+                <Type>U8</Type>
+                <Comment>reset flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_reset</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Number of transferred octets uplink.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>octets_uplink</Name>
+                <Type>U32</Type>
+                <Comment>octets uplink</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Number of transferred octets downlink.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>octets_downlink</Name>
+                <Type>U32</Type>
+                <Comment>octets downlink</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Number of transferred packets uplink.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>packets_uplink</Name>
+                <Type>U32</Type>
+                <Comment>packets uplink</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Number of transferred packets downlink.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>packets_downlink</Name>
+                <Type>U32</Type>
+                <Comment>packets downlink</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="9" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This information element indicates the Packet Flow Identifier for a Packet Flow Context.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pkt_flow_id</Name>
+                <Type>U8</Type>
+                <Comment>packet flow identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_137_nas_include</DocName>
+                <Name>VAL_pkt_flow_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="1" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="2" Year="2004"/>
+                <Author>ABR</Author>
+                <Comment>Removed SNSM in front of PFI_.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This structure contains parameters used to activate the RA entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>model</Name>
+                <Type>U8</Type>
+                <Comment>RA transfer model</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="2" Year="2004"/>
+                <Author>ALE</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This structure contains parameters used to activate the RA entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tra_rate</Name>
+                <Type>U8</Type>
+                <Comment>Transmission rate</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="2" Year="2004"/>
+                <Author>ALE</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This structure contains parameters used to activate the RA entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>user_rate</Name>
+                <Type>U8</Type>
+                <Comment>User rate</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="2" Year="2004"/>
+                <Author>ALE</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This structure contains parameters used to activate the RA entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ndb</Name>
+                <Type>U8</Type>
+                <Comment>Number data bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="2" Year="2004"/>
+                <Author>ALE</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This structure contains parameters used to activate the RA entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nsb</Name>
+                <Type>U8</Type>
+                <Comment>Number stop bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="2" Year="2004"/>
+                <Author>ALE</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the 8010_137_NAS_INCLUDE SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_nsapi</Name>
+                <Comment>values for nsapi</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>NSAPI_0</Alias>
+                <Comment>escape mechanism for future extensions</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>NSAPI_1</Alias>
+                <Comment>Point-To-Multipoint Multicast information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>NSAPI_2</Alias>
+                <Comment>reserved for future use</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>NSAPI_3</Alias>
+                <Comment>reserved for future use</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>NSAPI_4</Alias>
+                <Comment>reserved for future use</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>NSAPI_5</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>NSAPI_6</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>NSAPI_7</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>NSAPI_8</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>NSAPI_9</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>NSAPI_10</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>NSAPI_11</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>NSAPI_12</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>NSAPI_13</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>NSAPI_14</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>NSAPI_15</Alias>
+                <Comment>dynamically allocated NSAPI value</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_direction</Name>
+                <Comment>values for dti_direction</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>HOME</Alias>
+                <Comment>mapped to HOME from dti.h</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>NEIGHBOR</Alias>
+                <Comment>mapped to NEIGHBOR from dti.h</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_conn</Name>
+                <Comment>values for dti_conn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CONNECT_DTI</Alias>
+                <Comment>Connect DTI  connection.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DISCONNECT_DTI</Alias>
+                <Comment>Disconnect DTI connection.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dcomp</Name>
+                <Comment>values for dcomp</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">00</Value>
+                <Alias>DCOMP_OFF</Alias>
+                <Comment>compress neither direction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01</Value>
+                <Alias>DCOMP_ON</Alias>
+                <Comment>compress MS to SGSN direction only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">10</Value>
+                <Alias>DCOMP_V_42_BIS</Alias>
+                <Comment>compress SGSN to MS direction only</Comment>
+            </ValuesItem>
+            
+            <History>
+                <Date Day="25" Month="06" Year="2007"/>
+                <Author>x0047685 Shashank</Author>
+                <Comment>Changed according to spec 27.007, dcomp determines data compression algorithm type</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ppp_hc</Name>
+                <Comment>values for ppp_hc</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PPP_HC_NOT_USED</Alias>
+                <Comment>Header compression not used</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PPP_HC_RFC_1144_USED</Alias>
+                <Comment>Van Jacobson is used</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_hcomp</Name>
+                <Comment>values for hcomp</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">00</Value>
+                <Alias>HCOMP_OFF</Alias>
+                <Comment>compress neither direction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01</Value>
+                <Alias>HCOMP_ON</Alias>
+                <Comment>compress MS to SGSN direction only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">10</Value>
+                <Alias>HCOMP_RFC1144</Alias>
+                <Comment>compress SGSN to MS direction only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">11</Value>
+                <Alias>HCOMP_RFC2507</Alias>
+                <Comment>compress both directions</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="25" Month="6" Year="2007"/>
+                <Author>x0047685, Shashank</Author>
+                <Comment>Changed according to specification 27.007, hcomp determines header compression algorithm type</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sync_event</Name>
+                <Comment>values for sync_event</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">20</Value>
+                <Alias>SYNC_RESSOURCE_ASSIGNED</Alias>
+                <Comment>Traffic channel resource assigned</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">30</Value>
+                <Alias>SYNC_CHANNEL_MODE_MODIFIED</Alias>
+                <Comment>Channel mode modified</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ti</Name>
+                <Comment>values for ti</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>TI_RES_1</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>TI_RES_2</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>6</MaxValue>
+                <Comment>ms originated identifier</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>8</MinValue>
+                <MaxValue>14</MaxValue>
+                <Comment>ms terminated transaction</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_mode</Name>
+                <Comment>values for ch_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CHM_SIG_ONLY</Alias>
+                <Comment>signalling only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CHM_SPEECH</Alias>
+                <Comment>speech full rate or half rate version 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">33</Value>
+                <Alias>CHM_SPEECH_V2</Alias>
+                <Comment>speech full rate or half rate version 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">65</Value>
+                <Alias>CHM_SPEECH_V3</Alias>
+                <Comment>speech full rate or half rate version 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CHM_DATA_9_6</Alias>
+                <Comment>data 9.6 kBit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>CHM_DATA_4_8</Alias>
+                <Comment>data 4.8 kBit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">19</Value>
+                <Alias>CHM_DATA_2_4</Alias>
+                <Comment>data 2.4 kBit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>CHM_DATA_14_4</Alias>
+                <Comment>data 14.4 kBit/s</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_type</Name>
+                <Comment>values for ch_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CH_SDCCH</Alias>
+                <Comment>SDCCH channel</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CH_TCH_F</Alias>
+                <Comment>TCH Fullrate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CH_TCH_H</Alias>
+                <Comment>TCH Halfrate</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_k_ms_iwf</Name>
+                <Comment>values for k_ms_iwf</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>61</MaxValue>
+                <Comment>Max window size for RLP Version 1</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_k_iwf_ms</Name>
+                <Comment>values for k_iwf_ms</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>61</MaxValue>
+                <Comment>Max window size for RLP Version 1</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pt</Name>
+                <Comment>values for pt</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>COMPR_TYPE_V42BIS</Alias>
+                <Comment>V.42bis</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_p0</Name>
+                <Comment>values for p0</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>COMP_DIR_NONE</Alias>
+                <Comment>compress in neither direction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>COMP_DIR_TRANSMIT</Alias>
+                <Comment>compress in uplink direction only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>COMP_DIR_RECEIVE</Alias>
+                <Comment>compress in downlink direction only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>COMP_DIR_BOTH</Alias>
+                <Comment>compress in both directions</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_p1</Name>
+                <Comment>values for p1</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>512</MinValue>
+                <MaxValue>65535</MaxValue>
+                <Comment>Range definition for type</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_p2</Name>
+                <Comment>values for p2</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>6</MinValue>
+                <MaxValue>250</MaxValue>
+                <Comment>Range definition for type</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rate</Name>
+                <Comment>values for rate</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>HALFRATE_4800</Alias>
+                <Comment>halfrate 4,8/6 Kb</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>FULLRATE_4800</Alias>
+                <Comment>fullrate 4,8/6 Kb</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>FULLRATE_9600</Alias>
+                <Comment>fullrate 9,6/12 Kb</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>FULLRATE_14400</Alias>
+                <Comment>fullrate 13,4/14,4 Kb</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ack_flg</Name>
+                <Comment>values for ack_flg</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>FLAG_ACK</Alias>
+                <Comment>acknowledged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>FLAG_NAK</Alias>
+                <Comment>not acknowledged</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tft_pf_valid_bits</Name>
+                <Comment>values for tft_pf_valid_bits</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>TFT_ID_RES</Alias>
+                <Comment>Reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>TFT_ID_IPv4_SRC_ADDR_MASK</Alias>
+                <Comment>source address and subnet mask</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>TFT_ID_IPv6_SRC_ADDR_MASK</Alias>
+                <Comment>source address and subnet mask</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>TFT_ID_PROTOCOL_OR_NEXT_HDR</Alias>
+                <Comment>IPv4 protocol number or IPv6 next header</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">08</Value>
+                <Alias>TFT_ID_DEST_PORT_RANGE</Alias>
+                <Comment>destination port range</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">10</Value>
+                <Alias>TFT_ID_SRC_PORT_RANGE</Alias>
+                <Comment>source port range</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">20</Value>
+                <Alias>TFT_ID_IPSEC_SPI</Alias>
+                <Comment>IPSec security parameter index</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">40</Value>
+                <Alias>TFT_ID_TOS_AND_MASK</Alias>
+                <Comment>IPv4 ToS or IPv6 traffic class) and mask</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">80</Value>
+                <Alias>TFT_ID_FLOW_LABEL</Alias>
+                <Comment>IPv6 flow label</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_org_entity</Name>
+                <Comment>values for org_entity</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ORG_ENTITY_CC</Alias>
+                <Comment>Originator is CC</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ORG_ENTITY_SM</Alias>
+                <Comment>Originator is SM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>ORG_ENTITY_SMS</Alias>
+                <Comment>Originator is SMS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>ORG_ENTITY_SS</Alias>
+                <Comment>Originator is SS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>ORG_ENTITY_UPM</Alias>
+                <Comment>Originator is UPM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>ORG_ENTITY_CLT</Alias>
+                <Comment>Originator is CLT (COMLIB test )</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_reset</Name>
+                <Comment>values for reset</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RESET_NO</Alias>
+                <Comment>no reset</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RESET_YES</Alias>
+                <Comment>reset</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pkt_flow_id</Name>
+                <Comment>values for pkt_flow_id</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>PFI_BEST_EFFORT</Alias>
+                <Comment>Best Effort</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>PFI_SIGNALING</Alias>
+                <Comment>Signalling</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>PFI_SMS</Alias>
+                <Comment>SMS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>PKT_FLOW_ID_NOT_PRES</Alias>
+                <Comment>Value FF is used to indicate when Packet Flow Identifier is not present.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="2" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

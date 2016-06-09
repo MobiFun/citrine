@@ -1,0 +1,305 @@
+;********************************************************************************
+;*** File           : 8010_147_l1_include.pdf
+;*** Creation       : Wed Mar 11 09:57:53 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_147_l1_include
+;*** Document No.   : 8010.147.03.002
+;*** Document Date  : 2003-07-28
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: LOE
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:28:46 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-07-28"
+PRAGMA 	ID_AND_VERSION 	"8010.147.03.002"
+PRAGMA 	PREFIX 	NONE 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+PRAGMA 	CAPITALIZE_TYPENAME 	YES 	; Use capital letters for type names
+
+
+
+CONST 	MAX_MA_CARRIER 	64 	; Maximum number of carriers in the mobile allocation list handled by L1.
+CONST 	MAX_L2_FRAME_SIZE 	23 	; Size of a layer 2 frame forwarded from L1 to L3 (in bytes).
+
+
+
+VALTAB 	VAL_rf_chan_cnt
+VAL 	0 - MAX_MA_CARRIER 	"Range of parameter for MA table"
+
+VALTAB 	VAL_radio_freq
+VAL 	1 - 124 	GSM900 	"Layer 1 encoded frequency"
+VAL 	1 - 174 	GSM900E 	"Layer 1 encoded frequency"
+VAL 	512 - 810 	GSM1800_GSM1900 	"Layer 1 encoded frequency"
+VAL 	811 - 885 	GSM1800 	"Layer 1 encoded frequency"
+VAL 	1 - 498 	GSM900_GSM1800 	"Layer 1 encoded frequency"
+VAL 	1 - 548 	GSM900E_GSM1800 	"Layer 1 encoded frequency"
+VAL 	128 - 251 	GSM850 	"Layer 1 encoded frequency"
+VAL 	1 - 424 	GSM850_GSM1900 	"Layer 1 encoded frequency"
+
+VALTAB 	VAL_error_flag
+VAL 	0 	VALID_BLOCK 	"Valid block received"
+VAL 	1 	INVALID_BLOCK 	"Invalid block received"
+
+VALTAB 	VAL_fn
+VAL 	0 - 2715647 	"Valid range"
+
+VALTAB 	VAL_fn_offset
+VAL 	0 - 2715647 	"Range is 0-(max GSM frames-1)"
+
+VALTAB 	VAL_hsn
+VAL 	0 - 63 	"Range of hopping sequence number"
+
+VALTAB 	VAL_maio
+VAL 	0 - 63 	"Range of mobile allocation index offset"
+
+VALTAB 	VAL_l2_channel
+VAL 	1 	L2_CHANNEL_SACCH 	"SACCH block (MPHC)"
+VAL 	2 	L2_CHANNEL_SDCCH 	"SDCCH block (MPHC)"
+VAL 	3 	L2_CHANNEL_FACCH_H 	"FACCH half (MPHC)"
+VAL 	4 	L2_CHANNEL_FACCH_F 	"FACCH full (MPHC)"
+VAL 	5 	L2_CHANNEL_CCCH 	"CCCH block (MPHC)"
+VAL 	6 	L2_CHANNEL_NBCCH 	"Normal BCCH block (MPHC)"
+VAL 	7 	L2_CHANNEL_PCH 	"PCH block (MPHC)"
+VAL 	8 	L2_CHANNEL_EPCH 	"Extended PCH block (MPHC)"
+VAL 	9 	L2_CHANNEL_CBCH 	"CBCH block (MPHC)"
+VAL 	10 	L2_CHANNEL_EBCCH 	"Extended BCCH (MPHC)"
+VAL 	1 	L2_PCHANNEL_PCCCH 	"PCCCH block (MPHP)"
+VAL 	2 	L2_PCHANNEL_PBCCH 	"PBCCH block (MPHP)"
+VAL 	3 	L2_PCHANNEL_PPCH 	"PPCH block (MPHP)"
+VAL 	4 	L2_PCHANNEL_PEPCH 	"PEPCH block (MPHP)"
+VAL 	5 	L2_PCHANNEL_PACCH 	"PACCH block (MPHP)"
+
+VALTAB 	VAL_page_mode
+VAL 	0 	PAGE_NORMAL 	"Normal paging"
+VAL 	1 	PAGE_EXT 	"Extended paging"
+VAL 	2 	PAGE_REORG 	"Paging reorganisation"
+
+VALTAB 	VAL_rxlev
+VAL 	0x80 	RXLEV_NO_INT_MEAS 	"Specific value used for value of interference level when no measurement has been performed."
+
+VALTAB 	VAL_timeslot_no
+VAL 	0 - 7 	TIMESLOT_NO 	"Range of timeslot number"
+VAL 	0 - 3 	CBCH_TIMESLOT 	"Range of timeslot number for CBCH"
+VAL 	255 	TN_NOT_PRESENT 	"Value for not present"
+
+VALTAB 	VAL_tsc
+VAL 	0 - 7 	"Range of parameter"
+
+
+
+
+VAR 	rf_chan_cnt 	"Number of channels in the mobile allocation list" 	S
+
+VAL 	@p_8010_147_l1_include - VAL_rf_chan_cnt@ 	
+
+VAR 	radio_freq 	"Radio frequency channel number" 	S
+
+VAL 	@p_8010_147_l1_include - VAL_radio_freq@ 	
+
+VAR 	radio_freq_no 	"Radio frequency channel number" 	S
+
+VAL 	@p_8010_147_l1_include - VAL_radio_freq@ 	
+
+VAR 	radio_freq_array 	"Radio frequency channel number (used in array)" 	S
+
+VAL 	@p_8010_147_l1_include - VAL_radio_freq@ 	
+
+VAR 	bcch_carrier 	"Radio frequency channel number of BCCH" 	S
+
+VAL 	@p_8010_147_l1_include - VAL_radio_freq@ 	
+
+VAR 	bcch_freq 	"Radio frequency channel number of BCCH" 	S
+
+VAL 	@p_8010_147_l1_include - VAL_radio_freq@ 	
+
+VAR 	rf_chan_num 	"Radio frequency channel number" 	S
+
+VAL 	@p_8010_147_l1_include - VAL_radio_freq@ 	
+
+VAR 	error_flag 	"Error cause" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_error_flag@ 	
+
+VAR 	error_cause 	"Error cause" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_error_flag@ 	
+
+VAR 	fn 	"Frame number" 	L
+
+VAL 	@p_8010_147_l1_include - VAL_fn@ 	
+
+VAR 	absolute_fn 	"Full frame number" 	L
+
+VAL 	@p_8010_147_l1_include - VAL_fn@ 	
+
+VAR 	fn_offset 	"Frame offset" 	L
+
+VAL 	@p_8010_147_l1_include - VAL_fn_offset@ 	
+
+VAR 	maio 	"Mobile allocation index offset" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_maio@ 	
+
+VAR 	hsn 	"Hopping sequence number" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_hsn@ 	
+
+VAR 	l2_channel 	"Layer 2 channel-type" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_l2_channel@ 	
+
+VAR 	l2_channel_type 	"Layer 2 channel-type" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_l2_channel@ 	
+
+VAR 	A4 	"Frame content" 	B
+
+
+VAR 	page_mode 	"Paging mode" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_page_mode@ 	
+
+VAR 	rxlev 	"The (accumulated) result of power measurements." 	C
+
+VAL 	@p_8010_147_l1_include - VAL_rxlev@ 	
+
+VAR 	s_rxlev 	"The serving cell received power level (average of the 4 PCH bursts read during the particular PCH block)." 	C
+
+VAL 	@p_8010_147_l1_include - VAL_rxlev@ 	
+
+VAR 	timeslot_no 	"Timeslot number" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_timeslot_no@ 	
+
+VAR 	timeslot_number 	"Timeslot number" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_timeslot_no@ 	
+
+VAR 	ta_tn 	"Timing advance timeslot number" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_timeslot_no@ 	
+
+VAR 	ctrl_timeslot 	"Downlink control timeslot" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_timeslot_no@ 	
+
+VAR 	tsc 	"Training sequence code" 	B
+
+VAL 	@p_8010_147_l1_include - VAL_tsc@ 	
+
+
+
+
+COMP 	hopping_rf 	 "Channel choice"
+{
+ 	maio 	 ; Mobile allocation index offset
+ 	hsn 	 ; Hopping sequence number
+}
+
+
+
+COMP 	l2_frame 	 AS RADIO_FRAME "Layer 2 frame"
+{
+ 	A4 AS A 	[MAX_L2_FRAME_SIZE] 	 ; Frame content
+}
+
+
+
+COMP 	rf_chan_no 	 AS MA_FIELD "Frequency list"
+{
+ 	radio_freq AS A 	[MAX_MA_CARRIER] 	 ; Radio Frequency List
+}
+
+
+
+COMP 	frequency_list 	 AS MOBILE_ALLOCATION "List of frequencies for MA"
+{
+ 	rf_chan_cnt 	 ; Number of channels
+ 	rf_chan_no 	 ; Radio Frequency List
+}
+TYPEDEF COMP frequency_list 	freq_list 	 AS MOBILE_ALLOCATION "List of frequencies for MA"
+TYPEDEF COMP frequency_list 	cbch_freq_list 	 AS MOBILE_ALLOCATION "CBCH frequency list"
+TYPEDEF COMP frequency_list 	frequency_list_bef_sti 	 AS MOBILE_ALLOCATION "Frequency list before starting time"
+
+
+
+COMP 	single_rf 	 AS SINGLE_RF "Single RF channel number"
+{
+ 	radio_freq 	 ; Radio frequency channel number
+}
+
+
+
+UNION 	rf_channel 	 AS CHN_SEL_CHOICE "Channel choice"
+{
+ 	is_single 	single_rf 	 ; Radio frequency for non-hopping
+ 	is_hopping 	hopping_rf 	 ; Radio frequency specification for hopping
+}
+
+
+
+COMP 	chan_sel 	 AS CHN_SEL "Channel selector"
+{
+ 	rf_channel 	 ; Channel choice
+}
+
+
+
+
+
+
+; L1_EXPORT 	0x0000
+
+
+
+PRIM 	L1_EXPORT 	0x0000
+{
+ 	rf_chan_cnt 	 ; Channel count
+ 	radio_freq 	 ; Channel number
+ 	radio_freq_no 	 ; Channel number
+ 	radio_freq_array 	 ; Channel number
+ 	bcch_carrier 	 ; Channel number
+ 	bcch_freq 	 ; Channel number
+ 	rf_chan_num 	 ; Channel number
+ 	rf_channel 	 ; Channel selection choice
+ 	chan_sel 	 ; Channel selector
+ 	error_flag 	 ; Error cause
+ 	error_cause 	 ; Error cause
+ 	fn 	 ; Frame number
+ 	absolute_fn 	 ; Frame number
+ 	fn_offset 	 ; Frame offset
+ 	hopping_rf 	 ; Hopping radio frequency
+ 	l2_channel 	 ; Layer 2 channel
+ 	l2_channel_type 	 ; Layer 2 channel
+ 	l2_frame 	 ; Layer 2 frame
+ 	frequency_list 	 ; Mobile allocation
+ 	freq_list 	 ; Mobile allocation
+ 	cbch_freq_list 	 ; Mobile allocation
+ 	frequency_list_bef_sti 	 ; Mobile allocation
+ 	page_mode 	 ; Paging mode
+ 	rxlev 	 ; Power strength level
+ 	s_rxlev 	 ; Power strength level
+ 	rf_chan_no 	 ; Radio frequency list
+ 	single_rf 	 ; Single radio frequency
+ 	timeslot_no 	 ; Timeslot number
+ 	timeslot_number 	 ; Timeslot number
+ 	ta_tn 	 ; Timeslot number
+ 	ctrl_timeslot 	 ; Timeslot number
+ 	tsc 	 ; Training sequence code
+}
+
+
+
+
+
+
+
+
+

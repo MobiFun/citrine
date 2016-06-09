@@ -1,0 +1,2516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">mmreg</DocName>
+        <DocNum Number="100" Project="6147"/>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The base of the Protocol Stack rests on the physical layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Figure 1: Mobile-station protocol architecture</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This document describes the services offered by the mobility management to the man machine interface.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="96"/>
+            <Date Day="24" Month="6" Year="1997"/>
+            <Author>LE_et_al</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="96"/>
+            <Date Day="28" Month="5" Year="1998"/>
+            <Author>VK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Add param to avoid empty primitives.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="96"/>
+            <Date Day="27" Month="6" Year="2001"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>CS_SOFT_OFF added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="96"/>
+            <Date Day="14" Month="8" Year="2001"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>3-digit-MNC.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="104" Year="96"/>
+            <Date Day="30" Month="10" Year="2001"/>
+            <Author>MSB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added MMR_CIPHERING_IND.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="105" Year="96"/>
+            <Date Day="29" Month="1" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>added lac and cid in MMR_REG_CNF (feature "cell indication").</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="106" Year="96"/>
+            <Date Day="19" Month="2" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Clarified meaning of MMGMM_INFO_IND.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="107" Year="96"/>
+            <Date Day="19" Month="4" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switch to new template. Switch to 32bit opcodes. Corret UL and DL, i.e. exchange it in comparison with previous version. Made according change in aci|mm_pei.c.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="108" Year="96"/>
+            <Date Day="19" Month="7" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>cause concept changes, cs =&gt; dcs</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="109" Year="96"/>
+            <Date Day="20" Month="11" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Fixed Network name (now identical to definition in MMGMM-SAP).</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="110" Year="96"/>
+            <Date Day="13" Month="6" Year="2003"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Daylight Saving Time added.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all constants that are defined for the MMREG SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Constant>
+            <Alias>MAX_PLMN_ID</Alias>
+            <Value ValueType="DEC">12</Value>
+            <Comment>The maximum number of different PLMN in some pimitives</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MMR_MAX_TEXT_LEN</Alias>
+            <Value ValueType="DEC">40</Value>
+            <Comment>The maximum length of a PLMN's name in MMGMM_INFO_IND</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_MCC</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment>The number of MCC digits</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_MNC</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment>The number of MNC digits</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MM_ORIGINATING_ENTITY</Alias>
+            <ItemLink>
+                <DocName DocType="SAP">gsmcom</DocName>
+                <Name>MM_ORIGINATING_ENTITY</Name>
+            </ItemLink>
+            <Comment>Used in cause values to mark MM as the cause originating entity</Comment>
+        </Constant>
+        <History>
+            <Date Day="17" Month="12" Year="1996"/>
+            <Author>LE</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="3" Month="6" Year="1997"/>
+            <Author>MS</Author>
+            <Comment>Revised</Comment>
+        </History>
+        <History>
+            <Date Day="6" Month="3" Year="2000"/>
+            <Author>HM</Author>
+            <Comment>Added MMR_MAX_TEXT_LEN</Comment>
+        </History>
+        <History>
+            <Date Day="18" Month="5" Year="2000"/>
+            <Author>HM</Author>
+            <Comment>Added SIZE_MCC and SIZE_MNC</Comment>
+        </History>
+        <History>
+            <Date Day="9" Month="10" Year="2000"/>
+            <Author>HM</Author>
+            <Comment>Increased MAX_PLMN_IN from 5 to 12</Comment>
+        </History>
+        <History>
+            <Date Day="14" Month="8" Year="2001"/>
+            <Author>HM</Author>
+            <Comment>3-digit-MNC</Comment>
+        </History>
+        <History>
+            <Date Day="12" Month="2" Year="2002"/>
+            <Author>HM</Author>
+            <Comment>MM_ORIGINATING_ENTITY as defined by cause concept</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="10">
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all primitives that are defined for the MMREG SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_REG_REQ is used to start a registration attempt or a cell search for emergency call support.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_REG_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>service_mode</Name>
+                </ItemLink>
+                <Comment>registration mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>bootup_act</Name>
+                </ItemLink>
+                <Comment>bootup action</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Op-code changed</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>add param</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>param -&gt; service_mode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_REG_CNF is used to indicate a positive end of registration.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_REG_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>network identification</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>lac</Name>
+                </ItemLink>
+                <Comment>Location area code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>cid</Name>
+                </ItemLink>
+                <Comment>Cell id</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>bootup_cause</Name>
+                </ItemLink>
+                <Comment>bootup cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Op-code changed</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="1" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>lac and cid added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_NREG_IND is used to indicate the loss of registration. If the element forb_plmn is present, ACI/MMI should add the PLMN to its internal list of forbidden PLMNs. If there is a known cause that full service cannot be obtained this is also forwarded to the MMI for informational purposes.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_NREG_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>service</Name>
+                </ItemLink>
+                <Comment>Negative registration service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>search_running</Name>
+                </ItemLink>
+                <Comment>Search running</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>new_forb_plmn</Name>
+                </ItemLink>
+                <Comment>PLMN</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>cause for loss of full service</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Op-code changed</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="2" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Element search_running added</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="5" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Element new_forb_plmn added</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="1" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>Elements last_lup_rej_cause, sim_invalid_reason added</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="1" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>Recently added fields joined after discussion</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>nreg_cs =&gt; service, limited_cause =&gt; cause</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_NREG_REQ is used for de-registration of the mobile station (SIM remove or power off).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_NREG_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>detach_cause</Name>
+                </ItemLink>
+                <Comment>cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Op-code changed</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>add param</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>cause added</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>cs =&gt; detach_cause</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_NREG_CNF is used to confirm the de-registration.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_NREG_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>detach_cause</Name>
+                </ItemLink>
+                <Comment>cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Op-code changed</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>cs =&gt; detach_cause</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_NET_REQ is used to start a network search.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_NET_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Op-code changed</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>add param</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>dummy parameter deleted</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_PLMN_IND is used to indicate a PLMN list to the MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_PLMN_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>network search result</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Control>[MAX_PLMN_ID]</Control>
+                <Comment>found plmns</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>lac_list</Name>
+                </ItemLink>
+                <Control>[MAX_PLMN_ID]</Control>
+                <Comment>List of LACs</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>forb_ind</Name>
+                </ItemLink>
+                <Control>[MAX_PLMN_ID]</Control>
+                <Comment>Forbidden PLMN</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>rxlevel</Name>
+                </ItemLink>
+                <Control>[MAX_PLMN_ID]</Control>
+                <Comment>Fieldstrength</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Op-code changed</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>forbidden PLMN Indicator and Fieldstrength added</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>res =&gt; cause</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="12" Year="2002"/>
+                <Author>LOL</Author>
+                <Comment>Adding element lac_list for EONS functionality</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_PLMN_RES is used to select a PLMN after network search.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_PLMN_RES</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>selected plmn</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Op-code changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_PLMN_MODE_REQ is used to switch between automatic and manual mode of registration.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_PLMN_MODE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>mode</Name>
+                </ItemLink>
+                <Comment>selected mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Op-code changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMR_INFO_IND is used to transmit the information provided by the MM INFORMATION message to the MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_INFO_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>Public Land Mobile Network</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>full_name</Name>
+                </ItemLink>
+                <Comment>full network name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>short_name</Name>
+                </ItemLink>
+                <Comment>short network name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>ntz</Name>
+                </ItemLink>
+                <Comment>network time zone</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>time</Name>
+                </ItemLink>
+                <Comment>network time</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>daylight_save_time</Name>
+                </ItemLink>
+                <Comment>network daylight saving time</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="7" Year="2002"/>
+                <Author>KVI</Author>
+                <Comment>Added daylight_save_time</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The MMR_CIPHERING_IND is used to forward the ciphering indicator to MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_CIPHERING_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>ciph</Name>
+                </ItemLink>
+                <Comment>cipher mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>MSE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MM has to send MMR_AHPLMN_IND when there is a valid AHPLMN. It could be either at poweon and if MM gets SIM_FILE_UPDATE_IND for EF_AHPLMN</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMR_AHPLMN_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>ahplmn</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="08" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a PLMN identification. The ahplmn defines a PLMN identification only but it describes Active HPLMN which has Highest Priority</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>plmn</Name>
+                <Comment>plmn identification</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>new_forb_plmn</Name>
+                <Comment>plmn identification</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ahplmn</Name>
+                <Comment>ahplmn identification</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>v_plmn</Name>
+                </ItemLink>
+                <Comment>valid flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>mcc</Name>
+                </ItemLink>
+                <Control>[SIZE_MCC]</Control>
+                <Comment>mobile country code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>mnc</Name>
+                </ItemLink>
+                <Control>[SIZE_MNC]</Control>
+                <Comment>mobile network code</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="8" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>structure changed</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Replaced magic numbers by macros</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a network name.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>full_name</Name>
+                <Comment>Network name, long format</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>short_name</Name>
+                <Comment>Network name, short format</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>v_name</Name>
+                </ItemLink>
+                <Comment>valid flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>dcs</Name>
+                </ItemLink>
+                <Comment>data coding scheme</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>add_ci</Name>
+                </ItemLink>
+                <Comment>add ci indicator</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>num_spare</Name>
+                </ItemLink>
+                <Comment>num spare bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>text</Name>
+                </ItemLink>
+                <Control>[0..MMR_MAX_TEXT_LEN]</Control>
+                <Comment>name</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>coding scheme =&gt; data coding scheme (cs =&gt; dcs)</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="11" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed text definition (now as in MMGMM-SAP)</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network timezone.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>ntz</Name>
+                <Comment>Network time zone</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>v_tz</Name>
+                </ItemLink>
+                <Comment>timezone valid</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>tz</Name>
+                </ItemLink>
+                <Comment>timezone</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network time.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>time</Name>
+                <Comment>Network time</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>v_time</Name>
+                </ItemLink>
+                <Comment>time valid</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>year</Name>
+                </ItemLink>
+                <Comment>year</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>month</Name>
+                </ItemLink>
+                <Comment>month</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>day</Name>
+                </ItemLink>
+                <Comment>day</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>hour</Name>
+                </ItemLink>
+                <Comment>hour</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>minute</Name>
+                </ItemLink>
+                <Comment>minute</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmreg</DocName>
+                    <Name>second</Name>
+                </ItemLink>
+                <Comment>second</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a PLMN identification.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_plmn</Name>
+                <Type>U8</Type>
+                <Comment>valid flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="8" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>structure changed</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Replaced magic numbers by macros</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a PLMN identification.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mcc</Name>
+                <Type>U8</Type>
+                <Comment>mobile country code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="8" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>structure changed</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Replaced magic numbers by macros</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a PLMN identification.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mnc</Name>
+                <Type>U8</Type>
+                <Comment>mobile network code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="8" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>structure changed</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Replaced magic numbers by macros</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the cause for a de-registration attempt.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>detach_cause</Name>
+                <Type>U8</Type>
+                <Comment>cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_detach_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Cause only for de-registration</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>CS_NO_CEL_AVAIL (2) removed, was unused</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="6" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>Inserted CS_SOFT_OFF, clarified meaning</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the registration mode. The default value is automatic mode.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mode</Name>
+                <Type>U8</Type>
+                <Comment>registration mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the service which is still available after having received MMR_NREG_IND.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>service</Name>
+                <Type>U8</Type>
+                <Comment>service (either no or limited service)</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_service</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="10" Year="1997"/>
+                <Author>DL</Author>
+                <Comment>extended to include all  reject causes (cp. MM message spec.)</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="1" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>limited to causes expected by MMI.</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Added cause for MM Restart</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>NREG_PLMN_SEARCH removed, possible values now NREG_NO_SERVICE and NREG_LIMITED_SERVICE</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines whether a PLMN identification is member of the forbidden PLMN list or not.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>forb_ind</Name>
+                <Type>U8</Type>
+                <Comment>Forbidden PLMN indicator</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_forb_ind</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="12" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>Constant changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the maximum fieldstrength of a PLMN.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rxlevel</Name>
+                <Type>U8</Type>
+                <Comment>Fieldstrength</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="12" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines if a network search is still running and the given cause shall be considerd as intermediate only or if the search is not running anymore and the given cause shall be considered as final.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>search_running</Name>
+                <Type>U8</Type>
+                <Comment>Search is still running</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_search_running</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="2" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a network name.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_name</Name>
+                <Type>U8</Type>
+                <Comment>valid flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>coding scheme =&amp;gt; data coding scheme (cs =&amp;gt; dcs)</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="11" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed text definition (now as in MMGMM-SAP)</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a network name.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dcs</Name>
+                <Type>U8</Type>
+                <Comment>data coding scheme</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>coding scheme =&amp;gt; data coding scheme (cs =&amp;gt; dcs)</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="11" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed text definition (now as in MMGMM-SAP)</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a network name.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>add_ci</Name>
+                <Type>U8</Type>
+                <Comment>add ci indicator</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>coding scheme =&amp;gt; data coding scheme (cs =&amp;gt; dcs)</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="11" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed text definition (now as in MMGMM-SAP)</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a network name.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>num_spare</Name>
+                <Type>U8</Type>
+                <Comment>num spare bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>coding scheme =&amp;gt; data coding scheme (cs =&amp;gt; dcs)</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="11" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed text definition (now as in MMGMM-SAP)</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a network name.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>text</Name>
+                <Type>U8</Type>
+                <Comment>name</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>coding scheme =&amp;gt; data coding scheme (cs =&amp;gt; dcs)</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="11" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed text definition (now as in MMGMM-SAP)</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network timezone.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_tz</Name>
+                <Type>U8</Type>
+                <Comment>timezone valid</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network timezone.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tz</Name>
+                <Type>U8</Type>
+                <Comment>timezone</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_tz</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network time.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_time</Name>
+                <Type>U8</Type>
+                <Comment>time valid</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network time.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>year</Name>
+                <Type>U8</Type>
+                <Comment>year</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_year</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network time.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>month</Name>
+                <Type>U8</Type>
+                <Comment>month</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_month</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network time.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>day</Name>
+                <Type>U8</Type>
+                <Comment>day</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_day</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network time.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>hour</Name>
+                <Type>U8</Type>
+                <Comment>hour</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_hour</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network time.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>minute</Name>
+                <Type>U8</Type>
+                <Comment>minute</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_minute</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the network time.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>second</Name>
+                <Type>U8</Type>
+                <Comment>second</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_second</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Added values to clarifiy the interface</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the network daylight saving time.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>daylight_save_time</Name>
+                <Type>U8</Type>
+                <Version>REL99</Version>
+                <Comment>Network daylight saving time</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_daylight_save_time</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="7" Year="2002"/>
+                <Author>KVI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the required service mode.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>service_mode</Name>
+                <Type>U8</Type>
+                <Comment>Required service mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_service_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This parameter defines the limited service cause in the MMR_NREG_IND primitive, the release cause in the MMXX_RELEASE_IND primitives and the error cause in the MMXX_ERROR_IND primitives, if the cause originating entity is MM.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause for loss of full service, release or error</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="12" Month="1" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="1" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>Changed after discussion</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Cause concept implemented</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="7" Year="2002"/>
+                <Author>KVI</Author>
+                <Comment>Added daylight_save_time</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="6" Year="2003"/>
+                <Author>HM</Author>
+                <Comment>Added cause #15</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines if ciphering has been switched on or off.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ciph</Name>
+                <Type>U8</Type>
+                <Comment>cipher mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_ciph</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="9" Year="2001"/>
+                <Author>MSE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the location area code.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>lac</Name>
+                <Type>U16</Type>
+                <Comment>location area code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="29" Month="1" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the cell id.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cid</Name>
+                <Type>U16</Type>
+                <Comment>cell id</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="29" Month="1" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the list of Location Area Codes (LAC) of the PLMNs found during net search.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>lac_list</Name>
+                <Type>U16</Type>
+                <Comment>LACs of found PLMNs</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="12" Year="2002"/>
+                <Author>LOL</Author>
+                <Comment>Adding EONS functionality</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bootup_act</Name>
+                <Type>U8</Type>
+                <Comment>Bootup action</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_bootup_act</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="13" Month="11" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bootup_cause</Name>
+                <Type>U8</Type>
+                <Comment>bootup cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmreg</DocName>
+                <Name>VAL_bootup_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="13" Month="11" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all sets of values that are defined for the MMREG SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_detach_cause</Name>
+                <Comment>values for detach_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CS_SIM_REM</Alias>
+                <Comment>Consider SIM as removed or not valid</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CS_POW_OFF</Alias>
+                <Comment>Power off and delete SIM data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CS_SOFT_OFF</Alias>
+                <Comment>Power off and keep SIM data</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mode</Name>
+                <Comment>values for mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MODE_AUTO</Alias>
+                <Comment>automatic mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MODE_MAN</Alias>
+                <Comment>manual mode</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_service</Name>
+                <Comment>values for service</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>NREG_NO_SERVICE</Alias>
+                <Comment>no service available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>NREG_LIMITED_SERVICE</Alias>
+                <Comment>limited service available</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_forb_ind</Name>
+                <Comment>values for forb_ind</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>FORB_PLMN_NOT_INCLUDED</Alias>
+                <Comment>Not member of the forbidden PLMN list</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>FORB_PLMN_INCLUDED</Alias>
+                <Comment>Member of the forbidden PLMN list</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_search_running</Name>
+                <Comment>values for search_running</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SEARCH_NOT_RUNNING</Alias>
+                <Comment>Network search not running anymore</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SEARCH_RUNNING</Alias>
+                <Comment>Network search still running</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tz</Name>
+                <Comment>values for tz</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TIMEZONE_GMT</Alias>
+                <Comment>GMT</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">40</Value>
+                <Alias>TIMEZONE_GMT_PLS_1HR</Alias>
+                <Comment>GMT + 1 hour</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">80</Value>
+                <Alias>TIMEZONE_GMT_PLS_2HR</Alias>
+                <Comment>GMT + 2 hours</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">48</Value>
+                <Alias>TIMEZONE_GMT_MIN_1HR</Alias>
+                <Comment>GMT - 1 hour</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">88</Value>
+                <Alias>TIMEZONE_GMT_MIN_2HR</Alias>
+                <Comment>GMT - 2 hours</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_month</Name>
+                <Comment>values for month</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>12</MaxValue>
+                <Comment>month</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_second</Name>
+                <Comment>values for second</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>59</MaxValue>
+                <Comment>second</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_minute</Name>
+                <Comment>values for minute</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>59</MaxValue>
+                <Comment>minute</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_hour</Name>
+                <Comment>values for hour</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>23</MaxValue>
+                <Comment>hour</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_day</Name>
+                <Comment>values for day</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>31</MaxValue>
+                <Comment>day</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_year</Name>
+                <Comment>values for year</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>99</MaxValue>
+                <Comment>year</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_daylight_save_time</Name>
+                <Version>REL99</Version>
+                <Comment>values for daylight_save_time</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MMR_ADJ_NO</Alias>
+                <Comment>No adjustment for Daylight Saving Time</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MMR_TIME_ADJ_1</Alias>
+                <Comment>+1 hour adjustment for Daylight Saving Time</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>MMR_TIME_ADJ_2</Alias>
+                <Comment>+2 hours adjustment for Daylight Saving Time</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_service_mode</Name>
+                <Comment>values for service_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SERVICE_MODE_LIMITED</Alias>
+                <Comment>Search for limited service required</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SERVICE_MODE_FULL</Alias>
+                <Comment>Search for full service required</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0402</Value>
+                <Alias>MMCS_IMSI_IN_HLR</Alias>
+                <Comment>IMSI unknown in HLR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0403</Value>
+                <Alias>MMCS_ILLEGAL_MS</Alias>
+                <Comment>Illegal MS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0404</Value>
+                <Alias>MMCS_IMSI_IN_VLR</Alias>
+                <Comment>IMSI unknown in VLR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0405</Value>
+                <Alias>MMCS_IMEI_NOT_ACCEPTED</Alias>
+                <Comment>IMEI not accepted</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0406</Value>
+                <Alias>MMCS_ILLEGAL_ME</Alias>
+                <Comment>Illegal ME</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">040B</Value>
+                <Alias>MMCS_PLMN_NOT_ALLOWED</Alias>
+                <Comment>PLMN not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">040C</Value>
+                <Alias>MMCS_LA_NOT_ALLOWED</Alias>
+                <Comment>Location Area not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">040D</Value>
+                <Alias>MMCS_ROAMING_NOT_ALLOWED</Alias>
+                <Comment>Roaming not allowed in this location area</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">040F</Value>
+                <Alias>MMCS_NO_SUITABLE_CELL_IN_LA</Alias>
+                <Comment>Find another allowed location area in the same PLMN</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0411</Value>
+                <Alias>MMCS_NETWORK_FAILURE</Alias>
+                <Comment>Network failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0416</Value>
+                <Alias>MMCS_CONGESTION</Alias>
+                <Comment>Congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0420</Value>
+                <Alias>MMCS_SERVICE_NOT_SUPPORTED</Alias>
+                <Comment>Service option not supported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0421</Value>
+                <Alias>MMCS_SERVICE_NOT_SUBSCRIBED</Alias>
+                <Comment>Requested service option not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0422</Value>
+                <Alias>MMCS_SERVICE_ORDER</Alias>
+                <Comment>Service option temporarily out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0426</Value>
+                <Alias>MMCS_IDENTIFIY</Alias>
+                <Comment>Call cannot be identified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0430</Value>
+                <Alias>MMCS_RETRY_IN_NEW_CELL</Alias>
+                <Comment>retry upon entry into a new cell (mapped 0x0430..0x043f -&gt; 0x0430)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">045F</Value>
+                <Alias>MMCS_INCORRECT_MESSAGE</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0460</Value>
+                <Alias>MMCS_INVALID_MAND_MESSAGE</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0461</Value>
+                <Alias>MMCS_MESSAGE_TYPE_NOT_IMPLEM</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0462</Value>
+                <Alias>MMCS_MESSAGE_TYPE_INCOMPAT</Alias>
+                <Comment>Message type not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0463</Value>
+                <Alias>MMCS_IE_NOT_IMPLEM</Alias>
+                <Comment>Information element non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0464</Value>
+                <Alias>MMCS_CONDITIONAL_IE</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0465</Value>
+                <Alias>MMCS_MESSAGE_INCOMPAT</Alias>
+                <Comment>Message not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">046F</Value>
+                <Alias>MMCS_UNSPECIFIED</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C400</Value>
+                <Alias>MMCS_SUCCESS</Alias>
+                <Comment>No error, successful operation (MM)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C480</Value>
+                <Alias>MMCS_NO_REGISTRATION</Alias>
+                <Comment>MS is not registered or deregistration started</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C481</Value>
+                <Alias>MMCS_TIMER_RECOVERY</Alias>
+                <Comment>time-out in MM during establishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C482</Value>
+                <Alias>MMCS_NO_REESTABLISH</Alias>
+                <Comment>Cell does not support call reestablishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C483</Value>
+                <Alias>MMCS_INT_PREEM</Alias>
+                <Comment>Preemptive release, e.g. MO-MT clash in MM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C484</Value>
+                <Alias>MMCS_PLMN_NOT_IDLE_MODE</Alias>
+                <Comment>reject, not in idle mode (MMR_PLMN_IND)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C488</Value>
+                <Alias>MMCS_AUTHENTICATION_REJECTED</Alias>
+                <Comment>AUTHENTICATION REJECT received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C489</Value>
+                <Alias>MMCS_SIM_REMOVED</Alias>
+                <Comment>A valid SIM is not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C4FF</Value>
+                <Alias>MMCS_INT_NOT_PRESENT</Alias>
+                <Comment>No error cause (MM)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ciph</Name>
+                <Comment>values for ciph</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CIPH_OFF</Alias>
+                <Comment>ciphering off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CIPH_ON</Alias>
+                <Comment>ciphering on</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_bootup_act</Name>
+                <Comment>Values for bootup action</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>NORMAL_REG</Alias>
+                <Comment>Normal Registration</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>QUICK_REG</Alias>
+                <Comment>Fast Registration</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="13" Month="11" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_bootup_cause</Name>
+                <Comment>Values of bootup cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>REG_END</Alias>
+                <Comment>end of registration</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PWR_SCAN_START</Alias>
+                <Comment>power scanning started</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="13" Month="11" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

@@ -1,0 +1,767 @@
+;********************************************************************************
+;*** File           : PSI.pdf
+;*** Creation       : Wed Mar 11 09:58:36 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : PSI
+;*** Document No.   : ..01.001
+;*** Document Date  : 2004-02-09
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: RM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:51:16 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-02-09"
+PRAGMA 	ID_AND_VERSION 	"..01.001"
+
+
+
+CONST 	PSI_PEER_ENTITY_NAME_LENGTH 	6 	; Length ofentity name for data exchange
+
+
+
+VALTAB 	VAL_cause
+VAL 	0xD300 	PSICS_SUCCESS 	"0b11010011 00000000 no error"
+VAL 	0xD301 	PSICS_INVALID_PARAMS 	"0b11010011 00000001 device number invalid or parameter invalid "
+VAL 	0xD302 	PSICS_INTERNAL_DRV_ERROR 	"0b11010011 00000010 A driver function returned DRV_INTERNAL_ERROR"
+VAL 	0xD303 	PSICS_DISCONNECT 	"0b11010011 00000011 The driver signalled a DRV_SIGTYPE_DISCONNECT"
+
+VALTAB 	VAL_psi_line_states
+VAL 	0x00 	PSI_LINE_STD_NOT_VALID 	"b00000000 no line state request is given"
+
+VALTAB 	VAL_psi_baud_rate
+VAL 	0xffffffff 	DIO4_BAUD_NOT_VALID 	"baudrate is not changed"
+
+VALTAB 	VAL_psi_char_frame
+VAL 	0x00000000 	DIO_CF_NOT_VALID 	"char frame values are not changed"
+
+VALTAB 	VAL_psi_flow_control
+VAL 	0xffffffff 	DIO_FLOW_NOT_VALID 	"flow control value are not changed"
+
+VALTAB 	VAL_psi_mux_mode
+VAL 	0xffffffff 	DIO_MUX_MODE_NOT_VALID 	"mux mode is unchanged"
+
+VALTAB 	VAL_pkt_flag
+VAL 	0x80000000 	DIO_FLAG_PKT_PROTOCOL 	"device can transfer information to identify the packet protocol"
+VAL 	0xffffffff 	DIO_FLAG_PKT_PROT_NOT_VALID 	"packet flag is not changed"
+
+VALTAB 	VAL_psi_sleep_mode
+VAL 	0x00 	DIO_SLEEP_NOT_VALID 	"value is not valid"
+VAL 	0xff 	DIO_SLEEP_NOT_CHAN 	"value is not changed"
+
+VALTAB 	VAL_psi_guard_per
+VAL 	0xff 	DIO_GUARD_PER_NOT_VALID 	"guard period is not changed"
+
+VALTAB 	VAL_psi_dev_mode
+VAL 	0x00000000 	DEV_MODE_NOT_VALID 	"device mode is unchanged"
+
+VALTAB 	VAL_psi_esc_char
+VAL 	0x00 	ESC_CHAR_NOT_VALID 	"escape character is not changed"
+
+VALTAB 	VAL_pkt_type
+VAL 	0x0021 	DIO_PACKET_IPV4 	"IP packet version 4"
+VAL 	0x002D 	DIO_PACKET_VJ_CTCP 	"IPv4 packet with Van Jacobson compressed TCP/IP header"
+VAL 	0x002F 	DIO_PACKET_VJ_UTCP 	"IPv4 packet with Van Jacobson uncompressed TCP/IP header"
+VAL 	0x0057 	DIO_PACKET_IPV6 	"IP packet version 6"
+
+VALTAB 	VAL_psi_xon
+VAL 	0x00 	XON_NOT_VALID 	"xon value is unchanged"
+
+VALTAB 	VAL_psi_xoff
+VAL 	0x00 	XOFF_NOT_VALID 	"xoff value is unchanged"
+
+VALTAB 	VAL_psi_n1
+VAL 	0x00 	PSI_MUX_N1_NOT_VALID 	"mux max frame size is not changed"
+
+VALTAB 	VAL_psi_n2
+VAL 	0x00 	PSI_MUX_N2_NOT_VALID 	"number of retransmission is not changed"
+
+VALTAB 	VAL_psi_t1
+VAL 	0x00 	PSI_MUX_T1_NOT_VALID 	"acknowledgement timer is not changed"
+
+VALTAB 	VAL_psi_t2
+VAL 	0x00 	PSI_MUX_T2_NOT_VALID 	"response timer is not changed"
+
+VALTAB 	VAL_psi_t3
+VAL 	0x00 	PSI_MUX_T3_NOT_VALID 	"wake up response timer is not changed"
+
+VALTAB 	VAL_psi_k
+VAL 	0x00 	PSI_K_NOT_VALID 	"windows size  is not changed"
+
+VALTAB 	VAL_psi_data_mode
+VAL 	0x01 	DRIVER_MODE_AT 	"The driver will transmit AT commands."
+VAL 	0x02 	DRIVER_MODE_DATA 	"The driver  will transmit data."
+VAL 	0x03 	DRIVER_MODE_AT_DATA 	"The driver will transmit AT commands and data"
+
+
+
+
+VAR 	cause 	"cause value" 	S
+
+VAL 	@p_PSI - VAL_cause@ 	
+
+VAR 	devId 	"device identifier" 	L
+
+VAL 	@p_DIO - VAL_device@ 	
+
+VAR 	dti_direction 	"link identifier" 	B
+
+
+VAR 	drv_handle 	"driver handle" 	S
+
+
+VAR 	line_state 	"line state information" 	S
+
+VAL 	@p_PSI - VAL_psi_line_states@ 	
+VAL 	@p_DIO - VAL_line_states@ 	
+
+VAR 	link_id 	"link identifier" 	L
+
+
+VAR 	psi_data_mode 	"TE will use the device to transmit AT commands or data or both" 	B
+
+VAL 	@p_PSI - VAL_psi_data_mode@ 	
+
+VAR 	retValue 	"return value" 	S
+
+
+VAR 	signal_type 	"signal information" 	S
+
+
+VAR 	name 	"entity name" 	B
+
+
+
+
+
+UNION 	DIO_CAP_UN 	 "Structured Element"
+{
+ 	ser_cap 	EXTERN @p_DIO - DIO_CAP_SER@ 	DIO_CAP_SER 	 ; capabilities of serial driver
+ 	pkt_cap 	EXTERN @p_DIO - DIO_CAP_PKT@ 	DIO_CAP_PKT 	 ; capabilities of packet driver
+ 	mux_cap 	EXTERN @p_DIO - DIO_CAP_SER_MUX@ 	DIO_CAP_SER_MUX 	 ; capabilities of mux driver
+}
+
+
+
+UNION 	DIO_DCB_UN 	 "Structured Element"
+{
+ 	ser_dcb 	EXTERN @p_DIO - DIO_DCB_SER@ 	DIO_DCB_SER 	 ; configuration of serial driver
+ 	pkt_dcb 	EXTERN @p_DIO - DIO_DCB_PKT@ 	DIO_DCB_PKT 	 ; configuration of packet driver
+ 	mux_dcb 	EXTERN @p_DIO - DIO_DCB_SER_MUX@ 	DIO_DCB_SER_MUX 	 ; configuration of mux driver
+}
+
+
+
+COMP 	peer 	 "communication entity name"
+{
+ 	name 	[PSI_PEER_ENTITY_NAME_LENGTH] 	 ; communication peer name
+}
+
+
+
+
+
+
+; PSI_CONN_IND 	0x8000401D
+; PSI_CONN_IND_TEST 	0x8009401D
+; PSI_CONN_RES 	0x8000001D
+; PSI_CONN_REJ 	0x8001001D
+; PSI_DISCONN_IND 	0x8001401D
+; PSI_CLOSE_REQ 	0x8002001D
+; PSI_CLOSE_CNF 	0x8008401D
+; PSI_DTI_OPEN_REQ 	0x8003001D
+; PSI_DTI_CLOSE_REQ 	0x8004001D
+; PSI_DTI_OPEN_CNF 	0x8002401D
+; PSI_DTI_CLOSE_CNF 	0x8003401D
+; PSI_DTI_CLOSE_IND 	0x8004401D
+; PSI_SETCONF_CNF 	0x8005401D
+; PSI_SETCONF_REQ 	0x8005001D
+; PSI_SETCONF_REQ_TEST 	0x800D001D
+; PSI_LINE_STATE_REQ 	0x8006001D
+; PSI_LINE_STATE_CNF 	0x8006401D
+; PSI_LINE_STATE_IND 	0x8007401D
+; PSI_SIG_CLEAR_IND 	0x8007001D
+; PSI_SIG_FLUSH_IND 	0x8008001D
+; PSI_SIG_READ_IND 	0x8009001D
+; PSI_SIG_WRITE_IND 	0x800A001D
+; PSI_SIG_CONNECT_IND 	0x800B001D
+; PSI_SIG_DISCONNECT_IND 	0x800C001D
+;  PSI_DIOSIM_INIT_REQ 	0x8020401D
+; PSI_DIOSIM_INIT_CNF  	0x8020001D
+; PSI_DIOSIM_GET_CAP_REQ 	0x8021401D
+; PSI_DIOSIM_GET_CAP_SER_CNF 	0x8021001D
+; PSI_DIOSIM_GET_CAP_PKT_CNF 	0x802C001D
+; PSI_DIOSIM_SET_CONF_SER_REQ 	0x8022401D
+; PSI_DIOSIM_SET_CONF_PKT_REQ 	0x802C401D
+; PSI_DIOSIM_SET_CONF_CNF 	0x8022001D
+; PSI_DIOSIM_GET_CONF_SER_REQ 	0x8023401D
+; PSI_DIOSIM_GET_CONF_CNF 	0x8023001D
+; PSI_DIOSIM_CLOSE_DEV_REQ 	0x8024401D
+; PSI_DIOSIM_CLOSE_DEV_CNF 	0x8024001D
+; PSI_DIOSIM_FLUSH_REQ 	0x8025401D
+; PSI_DIOSIM_FLUSH_CNF 	0x8025001D
+; PSI_DIOSIM_CLEAR_REQ 	0x8026401D
+; PSI_DIOSIM_CLEAR_CNF 	0x8026001D
+; PSI_DIOSIM_GET_TXB_REQ 	0x8027401D
+; PSI_DIOSIM_GET_TXB_CNF 	0x8027001D
+; PSI_DIOSIM_SET_RXB_REQ 	0x8028401D
+; PSI_DIOSIM_SET_RXB_CNF 	0x8028001D
+; PSI_DIOSIM_READ_REQ 	0x8029401D
+; PSI_DIOSIM_READ_SER_CNF 	0x8029001D
+; PSI_DIOSIM_READ_PKT_CNF 	0x802D001D
+; PSI_DIOSIM_WRITE_SER_REQ 	0x802A401D
+; PSI_DIOSIM_WRITE_PKT_REQ 	0x802E401D
+; PSI_DIOSIM_WRITE_CNF 	0x802A001D
+; PSI_DIOSIM_EXIT_REQ 	0x802B401D
+; PSI_DIOSIM_SIGN_IND 	0x802B001D
+
+
+
+PRIM 	PSI_CONN_IND 	0x8000401D
+{
+ 	devId 	 ; Device Identifier
+ 	EXTERN @p_DIO - DIO_CAP@ 	DIO_CAP 	PTR 	 ; Device Capability
+ 	psi_data_mode 	 ; Device data mode
+}
+
+
+
+
+
+
+PRIM 	PSI_CONN_IND_TEST 	0x8009401D
+{
+ 	devId 	 ; Device Identifier
+ 	DIO_CAP_UN 	 ; device capability test structure
+ 	psi_data_mode 	 ; device data mode
+}
+
+
+
+
+
+
+PRIM 	PSI_CONN_RES 	0x8000001D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_CONN_REJ 	0x8001001D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DISCONN_IND 	0x8001401D
+{
+ 	devId 	 ; device identifier
+ 	cause 	 ; cause value
+}
+
+
+
+
+
+
+PRIM 	PSI_CLOSE_REQ 	0x8002001D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_CLOSE_CNF 	0x8008401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DTI_OPEN_REQ 	0x8003001D
+{
+ 	devId 	 ; device identifier
+ 	peer 	 ; peer name
+ 	link_id 	 ; dti link identifier
+ 	dti_direction 	 ; direction of DTI link
+}
+
+
+
+
+
+
+PRIM 	PSI_DTI_CLOSE_REQ 	0x8004001D
+{
+ 	devId 	 ; device identifier
+ 	link_id 	 ; dti link identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DTI_OPEN_CNF 	0x8002401D
+{
+ 	devId 	 ; device identifier
+ 	cause 	 ; cause value
+ 	link_id 	 ; dti link identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DTI_CLOSE_CNF 	0x8003401D
+{
+ 	devId 	 ; device identifier
+ 	link_id 	 ; dti link identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DTI_CLOSE_IND 	0x8004401D
+{
+ 	devId 	 ; device identifier
+ 	link_id 	 ; dti link identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_SETCONF_CNF 	0x8005401D
+{
+ 	devId 	 ; device identifier
+ 	cause 	 ; cause value
+}
+
+
+
+
+
+
+PRIM 	PSI_SETCONF_REQ 	0x8005001D
+{
+ 	devId 	 ; device identifier
+ 	EXTERN @p_DIO - DIO_DCB@ 	DIO_DCB 	PTR 	 ; configuration structure
+}
+
+
+
+
+
+
+PRIM 	PSI_SETCONF_REQ_TEST 	0x800D001D
+{
+ 	devId 	 ; Primitive Item
+ 	DIO_DCB_UN 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	PSI_LINE_STATE_REQ 	0x8006001D
+{
+ 	devId 	 ; device identifier
+ 	line_state 	 ; line state information
+}
+
+
+
+
+
+
+PRIM 	PSI_LINE_STATE_CNF 	0x8006401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_LINE_STATE_IND 	0x8007401D
+{
+ 	devId 	 ; device identifier
+ 	line_state 	 ; line state information
+}
+
+
+
+
+
+
+PRIM 	PSI_SIG_CLEAR_IND 	0x8007001D
+{
+}
+
+
+
+
+
+
+PRIM 	PSI_SIG_FLUSH_IND 	0x8008001D
+{
+}
+
+
+
+
+
+
+PRIM 	PSI_SIG_READ_IND 	0x8009001D
+{
+}
+
+
+
+
+
+
+PRIM 	PSI_SIG_WRITE_IND 	0x800A001D
+{
+}
+
+
+
+
+
+
+PRIM 	PSI_SIG_CONNECT_IND 	0x800B001D
+{
+}
+
+
+
+
+
+
+PRIM 	PSI_SIG_DISCONNECT_IND 	0x800C001D
+{
+}
+
+
+
+
+
+
+PRIM 	 PSI_DIOSIM_INIT_REQ 	0x8020401D
+{
+ 	drv_handle 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_INIT_CNF  	0x8020001D
+{
+ 	retValue 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_GET_CAP_REQ 	0x8021401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_GET_CAP_SER_CNF 	0x8021001D
+{
+ 	retValue 	 ; return value
+ 	EXTERN @p_DIO - DIO_CAP_SER@ 	DIO_CAP_SER 	 ; serial device capability structure
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_GET_CAP_PKT_CNF 	0x802C001D
+{
+ 	retValue 	 ; return value
+ 	EXTERN @p_DIO - DIO_CAP_PKT@ 	DIO_CAP_PKT 	 ; packet device capability structure
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_SET_CONF_SER_REQ 	0x8022401D
+{
+ 	devId 	 ; device Identifier
+ 	EXTERN @p_DIO - DIO_DCB_SER@ 	DIO_DCB_SER 	 ; serial configuration parameter structure
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_SET_CONF_PKT_REQ 	0x802C401D
+{
+ 	devId 	 ; device identifier
+ 	EXTERN @p_DIO - DIO_DCB_PKT@ 	DIO_DCB_PKT 	 ; configuration params
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_SET_CONF_CNF 	0x8022001D
+{
+ 	retValue 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_GET_CONF_SER_REQ 	0x8023401D
+{
+ 	devId 	 ; device identifier
+ 	EXTERN @p_DIO - DIO_DCB_SER@ 	DIO_DCB_SER 	 ; serial device configuration parameter
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_GET_CONF_CNF 	0x8023001D
+{
+ 	retValue 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_CLOSE_DEV_REQ 	0x8024401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_CLOSE_DEV_CNF 	0x8024001D
+{
+ 	retValue 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_FLUSH_REQ 	0x8025401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_FLUSH_CNF 	0x8025001D
+{
+ 	retValue 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_CLEAR_REQ 	0x8026401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_CLEAR_CNF 	0x8026001D
+{
+ 	retValue 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_GET_TXB_REQ 	0x8027401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_GET_TXB_CNF 	0x8027001D
+{
+ 	retValue 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_SET_RXB_REQ 	0x8028401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_SET_RXB_CNF 	0x8028001D
+{
+ 	retValue 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_READ_REQ 	0x8029401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_READ_SER_CNF 	0x8029001D
+{
+ 	retValue 	 ; return value
+ 	EXTERN @p_DIO - control_type@ 	control_type 	 ; control info type
+ 	EXTERN @p_DIO - length@ 	length 	 ; control info len
+ 	EXTERN @p_DIO - state@ 	state 	 ; control info state
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_READ_PKT_CNF 	0x802D001D
+{
+ 	retValue 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_WRITE_SER_REQ 	0x802A401D
+{
+ 	devId 	 ; device identifier
+ 	EXTERN @p_DIO - DIO_CTRL_LINES@ 	DIO_CTRL_LINES 	 ; serial control info strucrture
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_WRITE_PKT_REQ 	0x802E401D
+{
+ 	devId 	 ; device identifier
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_WRITE_CNF 	0x802A001D
+{
+ 	retValue 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_EXIT_REQ 	0x802B401D
+{
+}
+
+
+
+
+
+
+PRIM 	PSI_DIOSIM_SIGN_IND 	0x802B001D
+{
+ 	devId 	 ; device identifier
+ 	signal_type 	 ; signal information
+}
+
+
+
+
+
+
+
+
+

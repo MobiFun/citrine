@@ -1,0 +1,2153 @@
+;********************************************************************************
+;*** File           : mphc.pdf
+;*** Creation       : Wed Mar 11 09:58:30 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mphc
+;*** Document No.   : 10.10.10.011
+;*** Document Date  : 2003-04-03
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: MSB
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:49:44 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-04-03"
+PRAGMA 	ID_AND_VERSION 	"10.10.10.011"
+
+
+
+CONST 	BA_LIST_SIZE 	33 	; 
+CONST 	MAX_NCELL_EOTD_L1 	12 	; 
+CONST 	MAX_NCELL 	6 	; number of neighbour cells in measurement reports
+CONST 	MAX_CARRIERS 	548 	; 
+CONST 	BCCH_LIST_SIZE 	32 	; 
+CONST 	MAX_MEAS_VALUES 	8 	; 
+CONST 	MAX_L2_FRAME_SIZE 	23 	; 
+CONST 	MAX_MA_CARRIER 	64 	; 
+CONST 	MAX_SCHED_SIZE 	10 	; 
+CONST 	ADC_LIST_SIZE 	5 	; 
+CONST 	MAX_KC_STRING_SIZE 	16 	; 
+CONST 	NB_MAX_GSM_BANDS 	12 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	; number of maximum GSM bands
+
+
+
+VALTAB 	VAL_bs_pa_mfrms
+VAL 	2 	 	"2 Multiframe Periods"
+VAL 	3 	 	"3 Multiframe Periods"
+VAL 	4 	 	"4 Multiframe Periods"
+VAL 	5 	 	"5 Multiframe Periods"
+VAL 	6 	 	"6 Multiframe Periods"
+VAL 	7 	 	"7 Multiframe Periods"
+VAL 	8 	 	"8 Multiframe Periods"
+VAL 	9 	 	"9 Multiframe Periods"
+
+VALTAB 	VAL_bcch_combined
+VAL 	0 	COMB_CCCH_NOT_COMB 	"CCCH not combined with SDCCH"
+VAL 	1 	COMB_CCCH_COMB 	"CCCH combined with SDCCH"
+
+VALTAB 	VAL_ccch_group
+VAL 	0 	CCCH_GROUP_TS0 	"equal to timeslot 0"
+VAL 	1 	CCCH_GROUP_TS2 	"equal to timeslot 2"
+VAL 	2 	CCCH_GROUP_TS4 	"equal to timeslot 4"
+VAL 	3 	CCCH_GROUP_TS6 	"equal to timeslot 6"
+
+VALTAB 	VAL_page_block_index
+VAL 	0 - 8 	"for non-combined"
+VAL 	0 - 2 	"for combined"
+
+VALTAB 	VAL_page_mode
+VAL 	0 	PGM_NORMAL 	"Use normal paging"
+VAL 	1 	PGM_EXTENDED 	"Use extended paging"
+VAL 	2 	PGM_REORG 	"use reorganise paging"
+
+VALTAB 	VAL_modulus
+VAL 	1 - 65536 	"valid range for modulus"
+VAL 	0 - 65535 	"valid range for relative position"
+
+VALTAB 	VAL_radio_freq
+VAL 	1 - 124 	"Layer 1 Encoded Frequency"
+VAL 	1 - 174 	"Layer 1 Encoded Frequency"
+VAL 	512 - 810 	"Layer 1 Encoded Frequency"
+VAL 	811 - 885 	"Layer 1 Encoded Frequency"
+VAL 	1 - 498 	"Layer 1 Encoded Frequency"
+VAL 	1 - 548 	"Layer 1 Encoded Frequency"
+VAL 	128 - 251 	"Layer 1 Encoded Frequency"
+VAL 	1 - 424 	"Layer 1 Encoded Frequency"
+
+VALTAB 	VAL_l2_channel 	%!TI_DUAL_MODE%
+VAL 	1 	L2_CHANNEL_SACCH 	"SACCH block"
+VAL 	2 	L2_CHANNEL_SDCCH 	"SDCCH block"
+VAL 	3 	L2_CHANNEL_FACCH_H 	"FACCH halfrate block"
+VAL 	4 	L2_CHANNEL_FACCH_F 	"FACCH fullrate block"
+VAL 	5 	L2_CHANNEL_CCCH 	"CCCH block"
+VAL 	6 	L2_CHANNEL_NBCCH 	"normal BCCH block"
+VAL 	7 	L2_CHANNEL_PCH 	"PCH block"
+VAL 	8 	L2_CHANNEL_EPCH 	"extended PCH block"
+VAL 	9 	L2_CHANNEL_CBCH 	"CBCH block"
+VAL 	10 	L2_CHANNEL_EBCCH 	"extended BCCH"
+
+VALTAB 	VAL_error_flag
+VAL 	0 	VALID_BLOCK 	"valid block received"
+VAL 	1 	INVALID_BLOCK 	"invalid block received"
+
+VALTAB 	VAL_tc
+VAL 	0 - 7 	"valid range"
+
+VALTAB 	VAL_fn_offset
+VAL 	0 - 2715647 	"valid range"
+
+VALTAB 	VAL_time_alignment
+VAL 	0 - 4999 	"valid range"
+
+VALTAB 	VAL_timing_validity
+VAL 	0 	TV_INVALID_TIMING_INFO 	"timing info shall not be used, do full FB and SB detection"
+VAL 	1 	TV_APPROX_TIMING_INFO 	"timing info may be used, do full FB and SB detection"
+VAL 	2 	TV_VALID_TIMING_INFO 	"read SB based based on timing info (only for ncell)"
+VAL 	3 	TV_RTD_TIMING_INFO 	%REL99 AND TI_PS_FF_RTD% 	"Timing information is based on Real Time Difference information provided by the network for synchronized and non synchronized neighbor cell. Layer 1 shall carry out a full FB and SB detect but may delay the opening of the receive window based upon the fn_offset, time_alignment infor-mation supplied and the margin time due to un-known of exact OTD of the neighbor cell."
+
+VALTAB 	VAL_search_mode
+VAL 	0 	SM_WIDE_MODE 	"wideband capture and open-loop afc algorithm"
+VAL 	1 	SM_NARROW_MODE 	"narrowband capture and open-loop afc algorithm"
+
+VALTAB 	VAL_bsic
+VAL 	0 - 63 	"base station identification code"
+
+VALTAB 	VAL_tsc
+VAL 	0 - 7 	"type of sequence code"
+
+VALTAB 	VAL_bcch_blocks_required
+VAL 	1 	SI_NBLOCK_0 	"TC 0 normal"
+VAL 	2 	SI_NBLOCK_1 	"TC 1 normal"
+VAL 	4 	SI_NBLOCK_2 	"TC 2 normal"
+VAL 	8 	SI_NBLOCK_3 	"TC 3 normal"
+VAL 	16 	SI_NBLOCK_4 	"TC 4 normal"
+VAL 	32 	SI_NBLOCK_5 	"TC 5 normal"
+VAL 	64 	SI_NBLOCK_6 	"TC 6 normal"
+VAL 	128 	SI_NBLOCK_7 	"TC 7 normal"
+VAL 	256 	SI_EBLOCK_0 	"TC 0 extended"
+VAL 	512 	SI_EBLOCK_1 	"TC 1 extended"
+VAL 	1024 	SI_EBLOCK_2 	"TC 2 extended"
+VAL 	2048 	SI_EBLOCK_3 	"TC 3 extended"
+VAL 	4096 	SI_EBLOCK_4 	"TC 4 extended"
+VAL 	8192 	SI_EBLOCK_5 	"TC 5 extended"
+VAL 	16384 	SI_EBLOCK_6 	"TC 6 extended"
+VAL 	32768 	SI_EBLOCK_7 	"TC 7 extended"
+VAL 	0x0002 	NCELL_BCCH_SI_2 	"PLMN Search"
+VAL 	0x00CC 	NCELL_BCCH_SI_3_4 	"Ncell BCCH"
+VAL 	0x00CE 	NCELL_BCCH_SI_2_3_4 	"PLMN Search"
+VAL 	0x8844 	NCELL_BCCH_SI_3_7_8 	"Ncell BCCH"
+
+VALTAB 	VAL_channel_type
+VAL 	1 	CH_TCH_F 	"TCH/F"
+VAL 	2 	CH_TCH_H 	"TCH/H"
+VAL 	3 	CH_SDCCH_4 	"SDCCH/4"
+VAL 	4 	CH_SDCCH_8 	"SDCCH/8"
+
+VALTAB 	VAL_timeslot_no
+VAL 	0 - 7 	"timeslot number 0-7"
+
+VALTAB 	VAL_h
+VAL 	0 	NO_HOPPING 	"no hopping"
+VAL 	1 	HOPPING 	"hopping"
+
+VALTAB 	VAL_hsn
+VAL 	0 - 63 	"hopping sequence number"
+
+VALTAB 	VAL_maio
+VAL 	0 - 63 	"mobile allocation index offset"
+
+VALTAB 	VAL_cbch_select
+VAL 	1 	CBCH_READ_EXT 	"read extended CBCH"
+VAL 	0 	CBCH_READ_NORM 	"read normal CBCH"
+
+VALTAB 	VAL_schedule_length
+VAL 	1 - 49 	"length of the schedule period in blocks"
+VAL 	0 	CBCH_NO_SCHED 	"no scheduling provided"
+
+VALTAB 	VAL_tb_bitmap
+VAL 	1 	CBCH_NORM_BLOCK2 	"norm block 2"
+VAL 	2 	CBCH_NORM_BLOCK3 	"norm block 3"
+VAL 	4 	CBCH_NORM_BLOCK4 	"norm block 4"
+VAL 	8 	CBCH_EXT_BLOCK2 	"ext block 2"
+VAL 	16 	CBCH_EXT_BLOCK3 	"ext block 3"
+VAL 	32 	CBCH_EXT_BLOCK4 	"ext block 4"
+VAL 	7 	CBCH_NORM_BLOCK234 	"request all blocks"
+VAL 	56 	CBCH_EXT_BLOCK234 	"all ext blocks"
+
+VALTAB 	VAL_normal_cbch
+VAL 	0 	CBCH_DONT_STOP 	"dont stop cbch"
+VAL 	1 	CBCH_STOP 	"stop cbch"
+
+VALTAB 	VAL_txpwr
+VAL 	0 - 31 	"Coded as the binary representation of the power control level as defined in GSM 05.05 section 4.1 and is in the range 0 - 31."
+
+VALTAB 	VAL_powerclass_gsm
+VAL 	1 	POW_CLASS_1 	"Class 1"
+VAL 	2 	POW_CLASS_2 	"Class 2"
+VAL 	3 	POW_CLASS_3 	"Class 3"
+VAL 	4 	POW_CLASS_4 	"Class 4"
+VAL 	5 	POW_CLASS_5 	"Class 5"
+
+VALTAB 	VAL_dtx_allowed
+VAL 	0 	DTX_NOTALLOWED 	"DTX is not allowed"
+VAL 	1 	DTX_ALLOWED 	"DTX is allowed"
+
+VALTAB 	VAL_pwrc
+VAL 	0 	PWRC_NOT_SET 	"PWRC is not set"
+VAL 	1 	PWRC_SET 	"PWRC is set"
+
+VALTAB 	VAL_channel_mode
+VAL 	0 	CM_SIGNALLING_ONLY 	"signalling only"
+VAL 	1 	CM_TCH_FS 	"TCH full rate speech"
+VAL 	2 	CM_TCH_HS 	"TCH half rate speech"
+VAL 	3 	CM_TCH_96 	"TCH data 9600"
+VAL 	4 	CM_TCH_F_48 	"TCH data full rate 4800"
+VAL 	5 	CM_TCH_H_48 	"TCH data half rate 4800"
+VAL 	6 	CM_TCH_F_24 	"TCH data full rate 2400"
+VAL 	7 	CM_TCH_H_24 	"TCH data half rate 2400"
+VAL 	8 	CM_TCH_EFR 	"TCH"
+VAL 	9 	CM_TCH_144 	"TCH"
+VAL 	10 	CM_TCH_AHS 	"TCH AMR half rate"
+VAL 	11 	CM_TCH_AFS 	"TCH AMR full rate"
+
+VALTAB 	VAL_cipher_mode
+VAL 	0 	CI_NO_CIPHERING 	"ciphering off"
+VAL 	1 	CI_CIPHERING 	"ciphering on"
+
+VALTAB 	VAL_a5_algorithm
+VAL 	0 	A5_1 	"A5/1 algorithm"
+VAL 	1 	A5_2 	"A5/2 algorithm"
+VAL 	2 	A5_3 	"A5/3 algorithm"
+VAL 	3 	A5_4 	"A5/4 algorithm"
+VAL 	4 	A5_5 	"A5/5 algorithm"
+VAL 	5 	A5_6 	"A5/6 algorithm"
+VAL 	6 	A5_7 	"A5/7 algorithm"
+
+VALTAB 	VAL_cause
+VAL 	0 	HO_COMPLETE 	"success"
+VAL 	1 	HO_TIMEOUT 	"timeout"
+VAL 	2 	HO_SYNC_FAIL 	%REL99 AND FF_BHO% 	"BSIC error: Synchronization failure or BSIC mismatch (blind HO)"
+
+VALTAB 	VAL_nci
+VAL 	0 	HO_TA_OUT_IGNORED 	"timing advance out of range is ignored"
+VAL 	1 	HO_TA_OUT_NOT_IGNORED 	"timing advance out of range is not ignored"
+
+VALTAB 	VAL_timing_advance_valid
+VAL 	0 	HO_TA_NOT_VALID 	"timing advance information is not valid"
+VAL 	1 	HO_TA_VALID 	"timing advance information is valid"
+
+VALTAB 	VAL_dtx_used
+VAL 	0 	DTX_NOT_USED 	"DTX was not used"
+VAL 	1 	DTX_USED 	"DTX was used"
+
+VALTAB 	VAL_meas_valid
+VAL 	0 	MEAS_ARE_NOT_VALID 	"measurement values are not valid"
+VAL 	1 	MEAS_ARE_VALID 	"measurement values are valid"
+
+VALTAB 	VAL_bcch_freq
+VAL 	1 - 124 	"Layer 1 Encoded Frequency"
+VAL 	1 - 174 	"Layer 1 Encoded Frequency"
+VAL 	512 - 810 	"Layer 1 Encoded Frequency"
+VAL 	512 - 885 	"Layer 1 Encoded Frequency"
+VAL 	1 - 498 	"Layer 1 Encoded Frequency"
+VAL 	1 - 548 	"Layer 1 Encoded Frequency"
+
+VALTAB 	VAL_sub_channel
+VAL 	0 - 3 	"SDCCH/4"
+VAL 	0 - 7 	"SDCCH/8"
+VAL 	0 - 1 	"TCH/H"
+VAL 	0 	SUB_CH_0 	"sub channel 0"
+VAL 	1 	SUB_CH_1 	"sub channel 1"
+
+VALTAB 	VAL_frame_erasure
+VAL 	0 	TCH_LOOP_A 	"TCH loop A"
+VAL 	1 	TCH_LOOP_B 	"TCH loop B"
+VAL 	2 	TCH_LOOP_C 	"TCH loop C"
+VAL 	3 	TCH_LOOP_D 	"TCH loop D"
+VAL 	4 	TCH_LOOP_E 	"TCH loop E"
+VAL 	5 	TCH_LOOP_F 	"TCH loop F"
+VAL 	6 	TCH_LOOP_I 	"TCH loop I"
+
+VALTAB 	VAL_tested_device
+VAL 	0 	DAI_NO_TEST 	"no test"
+VAL 	1 	DAI_S_DEC 	"speech decoder"
+VAL 	2 	DAI_S_COD 	"speech coder"
+VAL 	4 	DAI_ACOUSTIC 	"acoustic tests"
+
+VALTAB 	VAL_sleep_mode
+VAL 	0 	NO_SLEEP 	"no sleep mode"
+VAL 	1 	SMALL_SLEEP 	"small sleep mode"
+VAL 	2 	BIG_SLEEP 	"big sleep mode"
+VAL 	3 	DEEP_SLEEP 	"deep sleep mode"
+VAL 	4 	ALL_SLEEP 	"all sleep modes"
+
+VALTAB 	VAL_Clocks
+VAL 	1 	CL_ARMIO 	"ARMIO_CLK"
+VAL 	2 	CL_RIFR 	"RIF_CLKR"
+VAL 	4 	CL_RIFX 	"RIF_CLKX"
+VAL 	16 	CL_RIF13 	"RIF_CLK13"
+VAL 	32 	CL_NCLK 	"UWIRE_CLK"
+VAL 	64 	CL_SIM 	"SIM_CLK"
+VAL 	128 	CL_TSP 	"TSP_CLK"
+VAL 	256 	CL_TIMER 	"TIMER_CLK"
+VAL 	512 	CL_TPU 	"TPU_CLK"
+VAL 	1024 	CL_UART 	"UART_CLK"
+VAL 	2048 	CL_SW_CLOCK 	"SWITCH_IRQ_CLK"
+
+VALTAB 	VAL_sb_flag
+VAL 	0 	NO_SB_FOUND 	"synchron burst not found (fn_offset, time_alignment and bsic are not valid)"
+VAL 	1 	SB_FOUND 	"synchron burst found (fn_offset, time_alignment and bsic are valid"
+
+VALTAB 	VAL_gprs_prio
+VAL 	0 	GPRS_PRIO_TOP 	"Higher than serving cell"
+VAL 	1 	GPRS_PRIO_HIGH 	"Higher than normal ncell bcch reading"
+VAL 	2 	GPRS_PRIO_NORM 	"Normal"
+
+VALTAB 	VAL_radio_band_config
+VAL 	1 	STD_900 	"GSM 900"
+VAL 	2 	STD_EGSM 	"extended GSM"
+VAL 	3 	STD_1900 	"PCS 1900"
+VAL 	4 	STD_1800 	"DCS 1800"
+VAL 	5 	STD_DUAL 	"GSM 900 / DCS 1800"
+VAL 	6 	STD_DUAL_EGSM 	"extended GSM / DCS 1800"
+VAL 	7 	STD_850 	"GSM 850"
+VAL 	8 	STD_DUAL_US 	"GSM 850 / PCS 1900"
+
+VALTAB 	VAL_initial_codec_mode
+VAL 	0 	CODEC_MODE_1 	"lowest codec mode"
+VAL 	1 	CODEC_MODE_2 	"second lowest mode"
+VAL 	2 	CODEC_MODE_3 	"third lowest mode"
+VAL 	3 	CODEC_MODE_4 	"highest mode"
+
+VALTAB 	VAL_eodt_data_valid
+VAL 	0 	EOTD_NOT_PRES 	"EOTD data not present"
+VAL 	1 	EOTD_PRES 	"EOTD data present"
+
+VALTAB 	VAL_eotd
+VAL 	0 	NC_MON 	"neighbour cell monitoring"
+VAL 	1 	EOTD_MON 	"EOTD monitoring"
+
+VALTAB 	VAL_mode
+VAL 	0 	MODE_IDLE 	"idle"
+VAL 	1 	MODE_DEDIC 	"dedicated or packet transfer"
+
+VALTAB 	VAL_handover_type 	%REL99 AND FF_BHO%
+VAL 	0 	HOT_REGULAR 	%REL99 AND FF_BHO% 	"regular handover  (time difference information provided)"
+VAL 	1 	HOT_BLIND 	%REL99 AND FF_BHO% 	"blind handover (cell not synchronized)"
+VAL 	255 	HOT_NONE 	%REL99 AND FF_BHO% 	"Invalid handover type"
+
+VALTAB 	VAL_radio_band 	%TI_PS_FF_QUAD_BAND_SUPPORT%
+VAL 	0 	RADIO_BAND_PGSM900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"PGSM 900"
+VAL 	1 	RADIO_BAND_GSM850 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"GSM 850"
+VAL 	2 	RADIO_BAND_PCS1900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"PCS 1900"
+VAL 	3 	RADIO_BAND_DCS1800 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"DCS 1800"
+VAL 	4 	RADIO_BAND_GSM750 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"GSM 750"
+VAL 	5 	RADIO_BAND_GSM480 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"GSM 480"
+VAL 	6 	RADIO_BAND_GSM450 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"GSM 450"
+VAL 	7 	RADIO_BAND_T_GSM380 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"T GSM 380"
+VAL 	8 	RADIO_BAND_T_GSM410 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"T GSM 410"
+VAL 	9 	RADIO_BAND_T_GSM900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"T GSM 900"
+VAL 	10 	RADIO_BAND_EGSM900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"EGSM 900"
+VAL 	11 	RADIO_BAND_RGSM900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"RGSM 900"
+
+
+
+
+VAR 	param 	"dummy parameter" 	B
+
+
+VAR 	bs_pa_mfrms 	"Multiframe Period" 	B
+
+VAL 	@p_mphc - VAL_bs_pa_mfrms@ 	
+
+VAR 	bs_ag_blks_res 	"Blocks reserved for AGCH" 	B
+
+
+VAR 	bcch_combined 	"combined BCCH flag" 	B
+
+VAL 	@p_mphc - VAL_bcch_combined@ 	
+
+VAR 	ccch_group 	"CCCH group" 	B
+
+VAL 	@p_mphc - VAL_ccch_group@ 	
+
+VAR 	page_group 	"paging group" 	B
+
+
+VAR 	page_block_index 	"page block index" 	B
+
+VAL 	@p_mphc - VAL_page_block_index@ 	
+
+VAR 	page_mode 	"paging mode" 	B
+
+VAL 	@p_mphc - VAL_page_mode@ 	
+
+VAR 	schedule_array_size 	"number of channel numbers" 	B
+
+
+VAR 	modulus 	"modulo part" 	S
+
+VAL 	@p_mphc - VAL_modulus@ 	
+
+VAR 	relative_position 	"relative part" 	S
+
+
+VAR 	radio_freq 	"channel number" 	S
+
+VAL 	@p_mphc - VAL_radio_freq@ 	
+
+VAR 	l2_channel 	"layer 2 channel type" 	B
+
+VAL 	@p_mphc - VAL_l2_channel@ 	
+
+VAR 	error_flag 	"error cause" 	B
+
+VAL 	@p_mphc - VAL_error_flag@ 	
+
+VAR 	content 	"frame content" 	B
+
+
+VAR 	tc 	"multiframe number modulo 8" 	B
+
+VAL 	@p_mphc - VAL_tc@ 	
+
+VAR 	fn 	"frame number" 	L
+
+
+VAR 	fn_offset 	"frame offset" 	L
+
+VAL 	@p_mphc - VAL_fn_offset@ 	
+
+VAR 	time_alignment 	"Difference in quarter bits between the first bit in a frame of the serving cell and the first bit in the next frame of the non-serving cell. Validity of time_alignment dependent upon timing_validity indication. (0 - 4999)" 	L
+
+VAL 	@p_mphc - VAL_time_alignment@ 	
+
+VAR 	time_alignmnt 	"Difference in quarter bits between serving and handover destination cell (0 to 5000)" 	L
+
+VAL 	@p_mphc - VAL_time_alignment@ 	
+
+VAR 	timing_validity 	"timing validity" 	B
+
+VAL 	@p_mphc - VAL_timing_validity@ 	
+
+VAR 	search_mode 	"search mode" 	B
+
+VAL 	@p_mphc - VAL_search_mode@ 	
+
+VAR 	bsic 	"base station identification code" 	B
+
+VAL 	@p_mphc - VAL_bsic@ 	
+
+VAR 	radio_freq_array_size 	"Number of entries in the radio_freq_array within a stop request. When 6 (maximum number of requests to be served in parallel) are provided the message is interpreted as a complete process stop request." 	B
+
+
+VAR 	nbr_of_carriers 	"The number of cell carriers measured during the PCH block" 	B
+
+
+VAR 	num_of_chans 	"Number of valid carrier numbers contained in the BA list (chan_number) array (1 to 33)" 	B
+
+
+VAR 	rf_chan_cnt 	"number of channels in the mobile allocation list or  number of bcch in the list" 	S
+
+
+VAR 	radio_freq_array 	"channel list" 	S
+
+
+VAR 	tsc 	"training sequence code" 	B
+
+VAL 	@p_mphc - VAL_tsc@ 	
+
+VAR 	bcch_blocks_required 	"sys info bitmap" 	S
+
+VAL 	@p_mphc - VAL_bcch_blocks_required@ 	
+
+VAR 	rxlev 	"The accumulated result of a power measurements. The signal strength units used are based on those described in GSM 05.08 (ETS 300 911) section 8.1.4. The measurements continue above 63 and below 0" 	B
+
+
+VAR 	s_rxlev 	"The serving cell received power level (average of the 4 PCH bursts read during the particular PCH block)." 	B
+
+
+VAR 	ba_id 	"band allocation identification" 	B
+
+
+VAR 	qual_acc_idle 	"accumulated rxqual meas. on different channels in Idle mode - error bits" 	L
+
+
+VAR 	qual_nbr_meas_idle 	"accumulated rxqual meas. on different channels in Idle mode - total number of bits decoded" 	L
+
+
+VAR 	next_radio_freq_measured 	"channel index" 	B
+
+
+VAR 	channel_type 	"SDCCH channel type" 	B
+
+VAL 	@p_mphc - VAL_channel_type@ 	
+
+VAR 	timeslot_no 	"timeslot number" 	B
+
+VAL 	@p_mphc - VAL_timeslot_no@ 	
+
+VAR 	h 	"hopping" 	B
+
+VAL 	@p_mphc - VAL_h@ 	
+
+VAR 	maio 	"mobile allocation index offset" 	B
+
+VAL 	@p_mphc - VAL_maio@ 	
+
+VAR 	hsn 	"hopping sequence number" 	B
+
+VAL 	@p_mphc - VAL_hsn@ 	
+
+VAR 	cbch_select 	"which cbch channel to read" 	B
+
+VAL 	@p_mphc - VAL_cbch_select@ 	
+
+VAR 	schedule_length 	"length of schedule period" 	B
+
+VAL 	@p_mphc - VAL_schedule_length@ 	
+
+VAR 	first_blocks_0 	"Bitmap defining a set of blocks to be read during the schedule period. The bits represent the blocks as follows: bit MSB=31 -> block=32; bit LSB=0 -> block=1." 	L
+
+
+VAR 	first_blocks_1 	"Bitmap defining a set of blocks to be read during the schedule period. The bits represent the blocks as follows: bit MSB=15 -> block=48; bit LSB=0 -> block=33." 	S
+
+
+VAR 	tb_bitmap 	"blocks to read" 	B
+
+VAL 	@p_mphc - VAL_tb_bitmap@ 	
+
+VAR 	normal_cbch 	"normal cbch" 	B
+
+VAL 	@p_mphc - VAL_normal_cbch@ 	
+
+VAR 	extended_cbch 	"extended cbch" 	B
+
+
+VAR 	txpwr 	"Indicates the power level which the mobile should use for transmission ." 	B
+
+VAL 	@p_mphc - VAL_txpwr@ 	
+
+VAR 	txpwr_used 	"TX power level currently used by L1 (For TEST MOBILE only)." 	B
+
+
+VAR 	rand 	"TDMA frames before sending RACH burst" 	B
+
+
+VAR 	channel_request 	"content of channel request message" 	B
+
+
+VAR 	powerclass_gsm 	"GSM power class of the MS." 	B
+
+VAL 	@p_mphc - VAL_powerclass_gsm@ 	
+
+VAR 	powerclass_dcs 	"DCS power class of the MS." 	B
+
+
+VAR 	timing_advance 	"timing advance" 	B
+
+
+VAR 	t1 	"N32; named n32 in S922.doc" 	B
+
+
+VAR 	t3 	"N51; named n51 in S922.doc" 	B
+
+
+VAR 	t2 	"N26; named n26 in S922.doc" 	B
+
+
+VAR 	start_time_present 	"start time present" 	B
+
+
+VAR 	maio_bef_sti 	"MAIO used before starting time" 	B
+
+
+VAR 	dtx_allowed 	"DTX allowed" 	B
+
+VAL 	@p_mphc - VAL_dtx_allowed@ 	
+
+VAR 	pwrc 	"power control indicator" 	B
+
+VAL 	@p_mphc - VAL_pwrc@ 	
+
+VAR 	channel_mode 	"channel mode" 	B
+
+VAL 	@p_mphc - VAL_channel_mode@ 	
+
+VAR 	channel_mode_1 	"channel mode" 	B
+
+
+VAR 	channel_mode_2 	"channel mode" 	B
+
+
+VAR 	cipher_mode 	"cipher mode" 	B
+
+VAL 	@p_mphc - VAL_cipher_mode@ 	
+
+VAR 	a5_algorithm 	"A5 algorithm" 	B
+
+VAL 	@p_mphc - VAL_a5_algorithm@ 	
+
+VAR 	A 	"Kc values" 	B
+
+
+VAR 	ncc 	"national colour code" 	B
+
+
+VAR 	bcc 	"base station colour code" 	B
+
+
+VAR 	bcch_carrier 	"BCCH carrier" 	S
+
+
+VAR 	ho_acc 	"handover access" 	B
+
+
+VAR 	report_time_diff 	"time difference" 	B
+
+
+VAR 	cause 	"handover success" 	B
+
+VAL 	@p_mphc - VAL_cause@ 	
+
+VAR 	nci 	"normal cell indication" 	B
+
+VAL 	@p_mphc - VAL_nci@ 	
+
+VAR 	timing_advance_valid 	"timing advance information valid flag" 	B
+
+VAL 	@p_mphc - VAL_timing_advance_valid@ 	
+
+VAR 	dtx_used 	"DTX used flag" 	B
+
+VAL 	@p_mphc - VAL_dtx_used@ 	
+
+VAR 	meas_valid 	"measurement valid flag" 	B
+
+VAL 	@p_mphc - VAL_meas_valid@ 	
+
+VAR 	rxlev_full_acc 	"rxlevel full serving cell accumulated" 	S
+
+
+VAR 	rxlev_sub_acc 	"rxlevel sub serving cell accumulated" 	S
+
+
+VAR 	rxlev_full_nbr_meas 	"number of rxlevel full serving cell samples" 	B
+
+
+VAR 	rxlev_sub_nbr_meas 	"number of rxlevel sub serving cell samples" 	B
+
+
+VAR 	rxqual_full_acc_errors 	"rxqual full serving cell bit errors" 	S
+
+
+VAR 	rxqual_sub_acc_errors 	"rxlevel sub serving cell bit errors" 	S
+
+
+VAR 	rxqual_full_nbr_bits 	"number of examined bits for rxqual full serving cell" 	S
+
+
+VAR 	rxqual_sub_nbr_bits 	"number of examined bits for rxqual sub serving cell" 	S
+
+
+VAR 	no_of_ncells_meas 	"number of neighbour cell results" 	B
+
+
+VAR 	bcch_freq 	"channel number" 	S
+
+VAL 	@p_mphc - VAL_bcch_freq@ 	
+
+VAR 	rxlev_acc 	"accumulated rx level" 	S
+
+
+VAR 	rxlev_nbr_meas 	"nbr of rxlevel samples" 	B
+
+
+VAR 	sub_channel 	"sub channel" 	B
+
+VAL 	@p_mphc - VAL_sub_channel@ 	
+
+VAR 	frame_erasure 	"TCH loop type" 	B
+
+VAL 	@p_mphc - VAL_frame_erasure@ 	
+
+VAR 	tested_device 	"DAI test device" 	B
+
+VAL 	@p_mphc - VAL_tested_device@ 	
+
+VAR 	sleep_mode 	"sleep mode" 	B
+
+VAL 	@p_mphc - VAL_sleep_mode@ 	
+
+VAR 	Clocks 	"clock modules" 	S
+
+VAL 	@p_mphc - VAL_Clocks@ 	
+
+VAR 	sb_flag 	"Flag indicating whether synchronisation channel was read correctly or not" 	B
+
+VAL 	@p_mphc - VAL_sb_flag@ 	
+
+VAR 	shared_ptr 	"Pointer" 	L
+
+
+VAR 	adc_results 	"result" 	S
+
+
+VAR 	gprs_prio 	"Gprs priority" 	B
+
+VAL 	@p_mphc - VAL_gprs_prio@ 	
+
+VAR 	ccch_lev 	"Power strength level" 	B
+
+
+VAR 	radio_band_config 	"Bitmap of frequency bands" 	B
+
+VAL 	@p_mphc - VAL_radio_band_config@ 	
+
+VAR 	noise_suppression_control_bit 	"noise suppression control bit" 	B
+
+
+VAR 	initial_codec_mode_indicator 	"initial code mode indicator" 	B
+
+
+VAR 	initial_codec_mode 	"initial code mode" 	B
+
+VAL 	@p_mphc - VAL_initial_codec_mode@ 	
+
+VAR 	active_codec_set 	"active codec set" 	B
+
+
+VAR 	threshold 	"threshold" 	B
+
+
+VAR 	hysteresis 	"hysteresis" 	B
+
+
+VAR 	a_eotd_crosscor 	"Cross correlation" 	T
+
+
+VAR 	d_eotd_first 	"Delay to first correlation" 	T
+
+
+VAR 	d_eotd_max 	"Delay to maximum correlation" 	T
+
+
+VAR 	eodt_data_valid 	"EOTD data present" 	B
+
+VAL 	@p_mphc - VAL_eodt_data_valid@ 	
+
+VAR 	eotd 	"EOTD or neighbour cell monitoring" 	B
+
+VAL 	@p_mphc - VAL_eotd@ 	
+
+VAR 	list_size 	"1 up to 12 neighbour cells" 	B
+
+
+VAR 	mode 	"idle or dedicated mode" 	B
+
+VAL 	@p_mphc - VAL_mode@ 	
+
+VAR 	neigh_id 	"reserved" 	B
+
+
+VAR 	attempt 	"reserved" 	B
+
+
+VAR 	pm 	"reserved" 	L
+
+
+VAR 	toa 	"reserved" 	L
+
+
+VAR 	angle 	"reserved" 	L
+
+
+VAR 	snr 	"reserved" 	L
+
+
+VAR 	fn_sb_neigh 	"reserved" 	L
+
+
+VAR 	fn_in_sb 	"reserved" 	L
+
+
+VAR 	toa_correction 	"reserved" 	L
+
+
+VAR 	delta_fn 	"reserved" 	L
+
+
+VAR 	delta_qbit 	"reserved" 	L
+
+
+VAR 	facch_dl_count 	"reserved" 	B
+
+
+VAR 	facch_ul_count 	"reserved" 	B
+
+
+VAR 	d_eotd_nrj 	"sum of amplitudes" 	L
+
+
+VAR 	time_tag 	"Time tag" 	L
+
+
+VAR 	dsp_code_version 	"Version number of the DSP code" 	S
+
+
+VAR 	dsp_checksum 	"Checksum of DSP code" 	S
+
+
+VAR 	dsp_patch_version 	"Version number of the DSP patch code" 	S
+
+
+VAR 	mcu_alr_version 	"Version  number of the MCU ALR code" 	S
+
+
+VAR 	mcu_gprs_version 	"Version  number of the MCU GPRS code" 	S
+
+
+VAR 	mcu_tm_version 	"Version  number of the Testmode" 	S
+
+
+VAR 	handover_type 	%REL99 AND FF_BHO% 	"handover type" 	B
+
+VAL 	@p_mphc - VAL_handover_type@ 	
+
+VAR 	rxlev_val_acc 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"RXLEV accumuated on SACCH for EMR" 	T
+
+
+VAR 	rxlev_val_nbr_meas 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Number of rxlev_val measurements taken on serving cell" 	B
+
+
+VAR 	mean_bep_block_acc 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Accumulated value of Mean Bit Error Probability of a block taken over a reporting period." 	L
+
+
+VAR 	cv_bep_block_acc 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Accumulated value of coefficient of variation of BEP of a block taken over a reporting period." 	S
+
+
+VAR 	mean_bep_block_num 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Number of block used to accumulate the MEAN_BEPblock" 	S
+
+
+VAR 	cv_bep_block_num 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Number of block used to accumulate the CV_BEPblock" 	S
+
+
+VAR 	nbr_rcvd_blocks 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Number of correctly decoded block during a reporting period." 	B
+
+
+VAR 	radio_band 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"Radio Bands Supported" 	B
+
+
+VAR 	power_class 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"Power Class associated with each radio band" 	B
+
+
+
+
+
+COMP 	schedule_array 	 "positional info"
+{
+ 	modulus 	 ; modulo part
+ 	relative_position 	 ; relative part
+}
+
+
+
+COMP 	l2_frame 	 "layer 2 frame"
+{
+ 	content 	[MAX_L2_FRAME_SIZE] 	 ; frame content
+}
+
+
+
+COMP 	chan_list 	 "channel list"
+{
+ 	radio_freq 	[BA_LIST_SIZE] 	 ; channel number
+}
+
+
+
+COMP 	result 	 "measurement results"
+{
+ 	radio_freq 	 ; channel number
+ 	rxlev 	 ; rx level
+}
+
+
+
+COMP 	rf_channel 	 "channel choice"
+{
+ 	maio 	 ; mobile allocation index offset
+ 	hsn 	 ; hopping sequence number
+}
+
+
+
+COMP 	chan_sel 	 "channel selector"
+{
+ 	h 	 ; hopping
+ 	rf_channel 	 ; channel choice
+}
+
+
+
+COMP 	cbch_desc 	 "CBCH channel description"
+{
+ 	chan_sel 	 ; channel selector
+ 	channel_type 	 ; SDCCH channel type
+ 	sub_channel 	 ; sub channel
+ 	timeslot_no 	 ; timeslot number
+ 	tsc 	 ; training sequence code
+}
+TYPEDEF COMP cbch_desc 	channel_desc 	 "channel description"
+TYPEDEF COMP cbch_desc 	channel_desc_1 	 "channel description"
+TYPEDEF COMP cbch_desc 	channel_desc_2 	 "channel description"
+TYPEDEF COMP cbch_desc 	channel_desc_1_bef_sti 	 "channel description before starting time"
+TYPEDEF COMP cbch_desc 	channel_desc_2_bef_sti 	 "channel description before starting time"
+
+
+
+COMP 	rf_chan_no 	 "channel list"
+{
+ 	radio_freq 	[MAX_MA_CARRIER] 	 ; channel number
+}
+
+
+
+COMP 	cbch_freq_list 	 "CBCH frequency list"
+{
+ 	rf_chan_cnt 	 ; no of hopping channels
+ 	rf_chan_no 	 ; hopping channels
+}
+TYPEDEF COMP cbch_freq_list 	frequency_list 	 "frequency list"
+TYPEDEF COMP cbch_freq_list 	frequency_list_bef_sti 	 "frequency list before starting time"
+
+
+
+COMP 	start_time 	 "starting time"
+{
+ 	t1 	 ; N32; named n32 in S922.doc
+ 	t3 	 ; N51; named n51 in S922.doc
+ 	t2 	 ; N26; named n26 in S922.doc
+}
+
+
+
+COMP 	starting_time 	 "starting time"
+{
+ 	start_time_present 	 ; start time present
+ 	start_time 	 ; starting time
+}
+
+
+
+COMP 	new_ciph_param 	 "Cipher Key Kc"
+{
+ 	A 	[MAX_KC_STRING_SIZE] 	 ; Kc values
+}
+TYPEDEF COMP new_ciph_param 	cipher_key 	 "encryption key"
+
+
+
+COMP 	cell_description 	 "cell description"
+{
+ 	ncc 	 ; national colour code
+ 	bcc 	 ; base station colour code
+ 	bcch_carrier 	 ; BCCH carrier
+}
+
+
+
+COMP 	handover_command 	 "Handover Command"
+{
+ 	cell_description 	 ; cell description
+ 	channel_desc_1 	 ; channel description 1
+ 	channel_mode_1 	 ; channel mode 1
+ 	starting_time 	 ; starting time
+ 	ho_acc 	 ; handover access
+ 	txpwr 	 ; handover power
+ 	report_time_diff 	 ; report time difference
+ 	frequency_list 	 ; frequency list
+ 	channel_desc_2 	 ; channel description 2
+ 	channel_mode_2 	 ; channel mode 2
+ 	frequency_list_bef_sti 	 ; frequency list before starting time
+ 	channel_desc_1_bef_sti 	 ; channel description 1 before starting time
+ 	channel_desc_2_bef_sti 	 ; channel description 2 before starting time
+ 	cipher_mode 	 ; cipher mode
+ 	a5_algorithm 	 ; A5 algorithm
+}
+
+
+
+COMP 	res_list 	 "neighbour cell measurement results"
+{
+ 	bcch_freq 	 ; channel number
+ 	rxlev_acc 	 ; accumulated rx level
+ 	rxlev_nbr_meas 	 ; nbr of rxlevel samples
+}
+
+
+
+COMP 	ncell_meas 	 "neighbour cell measurement results"
+{
+ 	res_list 	[BA_LIST_SIZE] 	 ; neighbour cell results
+}
+
+
+
+COMP 	chan_number 	 "channel list"
+{
+ 	radio_freq 	[BCCH_LIST_SIZE] 	 ; channel number
+}
+
+
+
+COMP 	bcch_allocation 	 "BCCH allocation"
+{
+ 	rf_chan_cnt 	 ; number of channels
+ 	chan_number 	 ; channel list
+}
+
+
+
+COMP 	amr_configuration 	 "Parameters for AMR"
+{
+ 	noise_suppression_control_bit 	 ; noise suppression control bit
+ 	initial_codec_mode_indicator 	 ; initial code mode indicator
+ 	initial_codec_mode 	 ; initial code mode
+ 	active_codec_set 	 ; active codec set
+ 	threshold 	[3] 	 ; threshold
+ 	hysteresis 	[3] 	 ; hysteresis
+}
+
+
+
+COMP 	ncell_list 	 "Parameters of a neighbour cell"
+{
+ 	radio_freq 	 ; channel number
+ 	fn_offset 	 ; frame offset
+ 	time_alignment 	 ; time alignment
+ 	timing_validity 	 ; timing validity
+}
+
+
+
+COMP 	RADIO_FRAME 	 	%!TI_DUAL_MODE% "Layer 2 frame"
+{
+ 	content AS A 	[MAX_L2_FRAME_SIZE] 	 ; Primitive structure element item
+}
+
+
+
+COMP 	multiband_power_class 	 	%TI_PS_FF_QUAD_BAND_SUPPORT% "Power Class information for multiple bands"
+{
+ 	radio_band 	 ; Radio Band
+ 	power_class 	 ; Power Class
+}
+
+
+
+
+
+
+; MPHC_NETWORK_SYNC_REQ 	0x000F
+; MPHC_NETWORK_SYNC_IND 	0x0010
+; MPHC_STOP_NETWORK_SYNC_REQ 	0x0011
+; MPHC_STOP_NETWORK_SYNC_CON 	0x0012
+; MPHC_START_CCCH_REQ 	0x0015
+; MPHC_STOP_CCCH_REQ 	0x0016
+; MPHC_STOP_CCCH_CON 	0x0017
+; MPHC_SCELL_NBCCH_REQ 	0x0018
+; MPHC_SCELL_EBCCH_REQ 	0x0019
+; MPHC_STOP_SCELL_BCCH_REQ 	0x001A
+; MPHC_STOP_SCELL_BCCH_CON 	0x001B
+; MPHC_DATA_IND 	0x0032
+; MPHC_NCELL_SYNC_REQ 	0x0020
+; MPHC_NCELL_LIST_SYNC_REQ 	0x007A
+; MPHC_NCELL_SYNC_IND 	0x0021
+; MPHC_STOP_NCELL_SYNC_REQ 	0x0022
+; MPHC_STOP_NCELL_SYNC_CON 	0x0023
+; MPHC_NCELL_BCCH_REQ 	0x001C
+; MPHC_NCELL_BCCH_IND 	0x001D
+; MPHC_STOP_NCELL_BCCH_REQ 	0x001E
+; MPHC_STOP_NCELL_BCCH_CON 	0x001F
+; MPHC_RXLEV_PERIODIC_REQ 	0x0024
+; MPHC_RXLEV_PERIODIC_IND 	0x0025
+; MPHC_STOP_RXLEV_PERIODIC_REQ 	0x0026
+; MPHC_STOP_RXLEV_PERIODIC_CON 	0x0027
+; MPHC_RXLEV_REQ 	0x000B
+; MPHC_RXLEV_IND 	0x000C
+; MPHC_STOP_RXLEV_REQ 	0x000D
+; MPHC_STOP_RXLEV_CON 	0x000E
+; MPHC_CONFIG_CBCH_REQ 	0x0028
+; MPHC_CBCH_SCHEDULE_REQ 	0x0029
+; MPHC_CBCH_INFO_REQ 	0x002B
+; MPHC_CBCH_UPDATE_REQ 	0x002A
+; MPHC_STOP_CBCH_REQ 	0x002C
+; MPHC_STOP_CBCH_CON 	0x002D
+; MPHC_NEW_SCELL_REQ 	0x0013
+; MPHC_NEW_SCELL_CON 	0x0014
+; MPHC_RA_REQ 	0x002E
+; MPHC_RA_CON 	0x002F
+; MPHC_STOP_RA_REQ 	0x0030
+; MPHC_STOP_RA_CON 	0x0031
+; MPHC_IMMED_ASSIGN_REQ 	0x0033
+; MPHC_IMMED_ASSIGN_CON 	0x003F
+; MPHC_CHANNEL_ASSIGN_REQ 	0x0034
+; MPHC_CHANNEL_ASSIGN_CON 	0x003C
+; MPHC_ASYNC_HO_REQ 	0x0035
+; MPHC_ASYNC_HO_CON 	0x003B
+; MPHC_HANDOVER_FINISHED 	0x0044
+; MPHC_SYNC_HO_REQ 	0x0036
+; MPHC_SYNC_HO_CON 	0x0042
+; MPHC_TA_FAIL_IND 	0x0043
+; MPHC_PRE_SYNC_HO_REQ 	0x0037
+; MPHC_PRE_SYNC_HO_CON 	0x0040
+; MPHC_HANDOVER_FAIL_REQ 	0x0047
+; MPHC_HANDOVER_FAIL_CON 	0x003E
+; MPHC_CHANGE_FREQUENCY 	0x0045
+; MPHC_CHANGE_FREQUENCY_CON 	0x003A
+; MPHC_CHANNEL_MODE_MODIFY_REQ 	0x0046
+; MPHC_CHANNEL_MODE_MODIFY_CON 	0x003D
+; MPHC_SET_CIPHERING_REQ 	0x0048
+; MPHC_SET_CIPHERING_CON 	0x0041
+; MPHC_MEAS_REPORT 	0x0049
+; MPHC_UPDATE_BA_LIST 	0x004A
+; MPHC_STOP_DEDICATED_REQ 	0x0039
+; MPHC_NCELL_FB_SB_READ 	0x004B
+; MPHC_NCELL_SB_READ 	0x004C
+; OML1_CLOSE_TCH_LOOP_REQ 	0x0061
+; OML1_CLOSE_TCH_LOOP_CON 	0x0065
+; OML1_OPEN_TCH_LOOP_REQ 	0x0062
+; OML1_OPEN_TCH_LOOP_CON 	0x0066
+; OML1_START_DAI_TEST_REQ 	0x0063
+; OML1_START_DAI_TEST_CON 	0x0067
+; OML1_STOP_DAI_TEST_REQ 	0x0064
+; OML1_STOP_DAI_TEST_CON 	0x0068
+; TST_SLEEP_REQ 	0x0004
+; MPHC_ADC_IND 	0x0069
+; MPHC_INIT_L1_REQ 	0x0072
+; MPHC_INIT_L1_CON 	0x0073
+; MPHC_DEACTIVATE_REQ 	0x006E
+; TST_TEST_HW_REQ 	0x0001
+; TST_TEST_HW_CON 	0x0002
+; PH_DATA_IND 	0x006D
+; MPHC_STOP_DEDICATED_CON 	0x0080
+
+
+
+PRIM 	MPHC_NETWORK_SYNC_REQ 	0x000F
+{
+ 	radio_freq 	 ; channel number
+ 	fn_offset 	 ; frame offset
+ 	time_alignment 	 ; time alignment
+ 	timing_validity 	 ; timing validity
+ 	search_mode 	 ; search mode
+}
+
+
+
+
+
+
+PRIM 	MPHC_NETWORK_SYNC_IND 	0x0010
+{
+ 	radio_freq 	 ; channel number
+ 	sb_flag 	 ; valid flag
+ 	fn_offset 	 ; frame offset
+ 	time_alignment 	 ; time alignment
+ 	bsic 	 ; base station identity code
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_NETWORK_SYNC_REQ 	0x0011
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_NETWORK_SYNC_CON 	0x0012
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_START_CCCH_REQ 	0x0015
+{
+ 	bs_pa_mfrms 	 ; Multiframe period
+ 	bs_ag_blks_res 	 ; BS AG BLOCKS reserved
+ 	bcch_combined 	 ; BCCH combined
+ 	ccch_group 	 ; CCCH group
+ 	page_group 	 ; paging group
+ 	page_block_index 	 ; page block index
+ 	page_mode 	 ; page mode
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_CCCH_REQ 	0x0016
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_CCCH_CON 	0x0017
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_SCELL_NBCCH_REQ 	0x0018
+{
+ 	schedule_array_size 	 ; number of elements in schedule array
+ 	schedule_array 	[MAX_SCHED_SIZE] 	 ; schedule array
+}
+
+
+
+
+
+
+PRIM 	MPHC_SCELL_EBCCH_REQ 	0x0019
+{
+ 	schedule_array_size 	 ; number of elements in schedule array
+ 	schedule_array 	[MAX_SCHED_SIZE] 	 ; schedule array
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_SCELL_BCCH_REQ 	0x001A
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_SCELL_BCCH_CON 	0x001B
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_DATA_IND 	0x0032
+{
+ 	radio_freq 	 ; channel number
+ 	l2_channel 	 ; layer 2 channel type
+ 	error_flag 	 ; error cause
+ 	l2_frame 	 ; layer 2 frame
+ 	tc 	 ; multiframe number
+ 	ccch_lev 	 ; CCCH Level
+ 	fn 	 ; frame number
+}
+
+
+
+
+
+
+PRIM 	MPHC_NCELL_SYNC_REQ 	0x0020
+{
+ 	radio_freq 	 ; channel number
+ 	fn_offset 	 ; frame offset
+ 	time_alignment 	 ; time alignment
+ 	timing_validity 	 ; timing validity
+}
+
+
+
+
+
+
+PRIM 	MPHC_NCELL_LIST_SYNC_REQ 	0x007A
+{
+ 	eotd 	 ; EOTD monitoring
+ 	list_size 	 ; List Size
+ 	ncell_list 	[MAX_NCELL_EOTD_L1] 	 ; Neighbour Cell List
+}
+
+
+
+
+
+
+PRIM 	MPHC_NCELL_SYNC_IND 	0x0021
+{
+ 	radio_freq 	 ; channel number
+ 	sb_flag 	 ; valid flag
+ 	fn_offset 	 ; frame offset
+ 	time_alignment 	 ; time alignment
+ 	bsic 	 ; base station identity code
+ 	neigh_id 	 ; Reserved
+ 	attempt 	 ; Reserved
+ 	pm 	 ; Reserved
+ 	toa 	 ; Reserved
+ 	angle 	 ; Reserved
+ 	snr 	 ; Reserved
+ 	eodt_data_valid 	 ; EOTD Data valid
+ 	mode 	 ; Mode
+ 	d_eotd_first 	 ; Delay to first correlation
+ 	d_eotd_max 	 ; Delay to maximum correlation
+ 	d_eotd_nrj 	 ; Sum of Amplitudes
+ 	a_eotd_crosscor 	[18] 	 ; Cross correlation
+ 	time_tag 	 ; Time tag
+ 	fn_sb_neigh 	 ; Reserved
+ 	fn_in_sb 	 ; Reserved
+ 	toa_correction 	 ; Reserved
+ 	delta_fn 	 ; Reserved
+ 	delta_qbit 	 ; Reserved
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_NCELL_SYNC_REQ 	0x0022
+{
+ 	radio_freq_array_size 	 ; number of channels
+ 	radio_freq_array 	[MAX_NCELL_EOTD_L1] 	 ; channel list
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_NCELL_SYNC_CON 	0x0023
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_NCELL_BCCH_REQ 	0x001C
+{
+ 	radio_freq 	 ; channel number
+ 	fn_offset 	 ; frame offset
+ 	time_alignment 	 ; time alignment
+ 	tsc 	 ; training sequence code
+ 	bcch_blocks_required 	 ; sys info bitmap
+ 	gprs_prio 	 ; GPRS Priority
+}
+
+
+
+
+
+
+PRIM 	MPHC_NCELL_BCCH_IND 	0x001D
+{
+ 	radio_freq 	 ; channel number
+ 	l2_channel 	 ; layer 2 channel type
+ 	error_flag 	 ; error cause
+ 	l2_frame 	 ; layer 2 frame
+ 	tc 	 ; multiframe number
+ 	fn 	 ; frame number
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_NCELL_BCCH_REQ 	0x001E
+{
+ 	radio_freq_array_size 	 ; number of channels
+ 	radio_freq_array 	[6] 	 ; channel list
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_NCELL_BCCH_CON 	0x001F
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_RXLEV_PERIODIC_REQ 	0x0024
+{
+ 	chan_list 	 ; channel list
+ 	num_of_chans 	 ; number of channels
+ 	ba_id 	 ; band ID
+ 	next_radio_freq_measured 	 ; next channel
+}
+
+
+
+
+
+
+PRIM 	MPHC_RXLEV_PERIODIC_IND 	0x0025
+{
+ 	result 	[MAX_MEAS_VALUES] 	 ; measurement results
+ 	nbr_of_carriers 	 ; number of channels
+ 	s_rxlev 	 ; serving cell rxlev
+ 	ba_id 	 ; band ID
+ 	qual_acc_idle 	 ; Primitive Item
+ 	qual_nbr_meas_idle 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_RXLEV_PERIODIC_REQ 	0x0026
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_RXLEV_PERIODIC_CON 	0x0027
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_RXLEV_REQ 	0x000B
+{
+ 	shared_ptr 	 ; pointer to measurements
+}
+
+
+
+
+
+
+PRIM 	MPHC_RXLEV_IND 	0x000C
+{
+ 	shared_ptr 	 ; pointer to measurements
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_RXLEV_REQ 	0x000D
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_RXLEV_CON 	0x000E
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_CONFIG_CBCH_REQ 	0x0028
+{
+ 	cbch_desc 	 ; CBCH channel description
+ 	cbch_freq_list 	 ; Frequency list
+}
+
+
+
+
+
+
+PRIM 	MPHC_CBCH_SCHEDULE_REQ 	0x0029
+{
+ 	cbch_select 	 ; extended cbch flag
+ 	schedule_length 	 ; length of schedule period
+ 	first_blocks_0 	 ; block bitmap
+ 	first_blocks_1 	 ; block bitmap cont.
+}
+
+
+
+
+
+
+PRIM 	MPHC_CBCH_INFO_REQ 	0x002B
+{
+ 	tb_bitmap 	 ; block bitmap
+}
+
+
+
+
+
+
+PRIM 	MPHC_CBCH_UPDATE_REQ 	0x002A
+{
+ 	cbch_select 	 ; extended cbch flag
+ 	first_blocks_0 	 ; block bitmap
+ 	first_blocks_1 	 ; block bitmap cont.
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_CBCH_REQ 	0x002C
+{
+ 	normal_cbch 	 ; normal cbch
+ 	extended_cbch 	 ; extended cbch
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_CBCH_CON 	0x002D
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_NEW_SCELL_REQ 	0x0013
+{
+ 	radio_freq 	 ; channel number
+ 	fn_offset 	 ; frame offset
+ 	time_alignment 	 ; time alignment
+ 	tsc 	 ; training sequence code
+}
+
+
+
+
+
+
+PRIM 	MPHC_NEW_SCELL_CON 	0x0014
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_RA_REQ 	0x002E
+{
+ 	txpwr 	 ; Power level
+ 	rand 	 ; Delay
+ 	channel_request 	 ; channel request
+ 	powerclass_gsm 	 	%!TI_PS_FF_QUAD_BAND_SUPPORT% ; GSM power class
+ 	powerclass_dcs 	 	%!TI_PS_FF_QUAD_BAND_SUPPORT% ; DCS power class
+}
+
+
+
+
+
+
+PRIM 	MPHC_RA_CON 	0x002F
+{
+ 	fn 	 ; frame number
+ 	channel_request 	 ; channel request
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_RA_REQ 	0x0030
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_RA_CON 	0x0031
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_IMMED_ASSIGN_REQ 	0x0033
+{
+ 	channel_desc 	 ; channel description
+ 	timing_advance 	 ; timing advance
+ 	frequency_list 	 ; frequency list
+ 	starting_time 	 ; starting time
+ 	frequency_list_bef_sti 	 ; frequency list before starting time
+ 	maio_bef_sti 	 ; Maio before starting time
+ 	dtx_allowed 	 ; DTX allowed
+ 	bcch_allocation 	 ; BCCH allocation
+ 	ba_id 	 ; band indicator
+ 	pwrc 	 ; power control indicator
+}
+
+
+
+
+
+
+PRIM 	MPHC_IMMED_ASSIGN_CON 	0x003F
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_CHANNEL_ASSIGN_REQ 	0x0034
+{
+ 	channel_desc_1 	 ; channel description 1
+ 	channel_mode_1 	 ; channel mode 1
+ 	txpwr 	 ; TX power
+ 	frequency_list 	 ; frequency list
+ 	starting_time 	 ; starting time
+ 	channel_desc_2 	 ; channel description 2
+ 	channel_mode_2 	 ; channel mode 2
+ 	frequency_list_bef_sti 	 ; frequency list before starting time
+ 	channel_desc_1_bef_sti 	 ; channel description 1 before starting time
+ 	channel_desc_2_bef_sti 	 ; channel description 2 before starting time
+ 	cipher_mode 	 ; cipher mode
+ 	a5_algorithm 	 ; A5 algorithm
+ 	cipher_key 	 ; encryption key
+ 	dtx_allowed 	 ; DTX allowed flag
+ 	amr_configuration 	 ; AMR configuration
+}
+
+
+
+
+
+
+PRIM 	MPHC_CHANNEL_ASSIGN_CON 	0x003C
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_ASYNC_HO_REQ 	0x0035
+{
+ 	handover_command 	 ; handover parameter
+ 	fn_offset 	 ; frame offset
+ 	time_alignmnt 	 ; time alignment
+ 	cipher_key 	 ; encryption key
+ 	amr_configuration 	 ; AMR configuration
+ 	handover_type 	 	%REL99 AND FF_BHO% ; handover type
+}
+
+
+
+
+
+
+PRIM 	MPHC_ASYNC_HO_CON 	0x003B
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_HANDOVER_FINISHED 	0x0044
+{
+ 	cause 	 ; success indication
+ 	fn_offset 	 	%REL99 AND FF_BHO% ; Valid for BHO only
+ 	time_alignment 	 	%REL99 AND FF_BHO% ; Valid for BHO only
+}
+
+
+
+
+
+
+PRIM 	MPHC_SYNC_HO_REQ 	0x0036
+{
+ 	handover_command 	 ; handover parameter
+ 	fn_offset 	 ; frame offset
+ 	time_alignmnt 	 ; time alignment
+ 	cipher_key 	 ; encryption key
+ 	nci 	 ; normal cell indication
+ 	amr_configuration 	 ; AMR configuration
+ 	handover_type 	 	%REL99 AND FF_BHO% ; Handover type
+}
+
+
+
+
+
+
+PRIM 	MPHC_SYNC_HO_CON 	0x0042
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_TA_FAIL_IND 	0x0043
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_PRE_SYNC_HO_REQ 	0x0037
+{
+ 	handover_command 	 ; handover parameter
+ 	fn_offset 	 ; frame offset
+ 	time_alignmnt 	 ; time alignment
+ 	cipher_key 	 ; encryption key
+ 	nci 	 ; normal cell indication
+ 	timing_advance_valid 	 ; timing advance valid
+ 	timing_advance 	 ; timing advance
+ 	amr_configuration 	 ; AMR configuration
+ 	handover_type 	 	%REL99 AND FF_BHO% ; Handover type
+}
+
+
+
+
+
+
+PRIM 	MPHC_PRE_SYNC_HO_CON 	0x0040
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_HANDOVER_FAIL_REQ 	0x0047
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_HANDOVER_FAIL_CON 	0x003E
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_CHANGE_FREQUENCY 	0x0045
+{
+ 	channel_desc 	 ; channel description
+ 	frequency_list 	 ; frequency list
+ 	starting_time 	 ; starting time
+}
+
+
+
+
+
+
+PRIM 	MPHC_CHANGE_FREQUENCY_CON 	0x003A
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_CHANNEL_MODE_MODIFY_REQ 	0x0046
+{
+ 	sub_channel 	 ; change sub channel; The parameter defines the sub channel for halfrate operation
+ 	channel_mode 	 ; channel mode
+ 	amr_configuration 	 ; AMR configuration
+}
+
+
+
+
+
+
+PRIM 	MPHC_CHANNEL_MODE_MODIFY_CON 	0x003D
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_SET_CIPHERING_REQ 	0x0048
+{
+ 	cipher_mode 	 ; cipher mode
+ 	a5_algorithm 	 ; A5 algorithm
+ 	new_ciph_param 	 ; ciphering key
+}
+
+
+
+
+
+
+PRIM 	MPHC_SET_CIPHERING_CON 	0x0041
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_MEAS_REPORT 	0x0049
+{
+ 	dtx_used 	 ; DTX used
+ 	meas_valid 	 ; measurements valid
+ 	rxlev_full_acc 	 ; rxlev full serving cell
+ 	rxlev_full_nbr_meas 	 ; number of full serving cell samples
+ 	rxlev_sub_acc 	 ; rxlev sub serving cell
+ 	rxlev_sub_nbr_meas 	 ; number of sub serving cell samples
+ 	rxqual_full_acc_errors 	 ; rxqual full serving cell
+ 	rxqual_full_nbr_bits 	 ; number of full serving cell samples
+ 	rxqual_sub_acc_errors 	 ; rxqual sub serving cell
+ 	rxqual_sub_nbr_bits 	 ; number of sub serving cell samples
+ 	no_of_ncells_meas 	 ; number of neighbour cells
+ 	ncell_meas 	 ; neighbour cell measurement values
+ 	ba_id 	 ; band indication
+ 	timing_advance 	 ; timing advance
+ 	txpwr_used 	 ; txpwr used
+ 	rxlev_val_acc 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Accumulated RXLEVEL_VAL measurements
+ 	rxlev_val_nbr_meas 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Number of rxlev_val measurements taken on serving cell
+ 	mean_bep_block_acc 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Accumulated value of Mean BEP of a block
+ 	cv_bep_block_acc 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Accumulated value of coefficient of variation of BEP
+ 	mean_bep_block_num 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Number of block used to accumulate the MEAN_BEP 
+ 	cv_bep_block_num 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Number of block used to accumulate the CV_BEP
+ 	nbr_rcvd_blocks 	 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; Number of correctly decoded block during a reporting period.
+ 	facch_dl_count 	 ; FACCH downlink count
+ 	facch_ul_count 	 ; FACCH uplink count
+}
+
+
+
+
+
+
+PRIM 	MPHC_UPDATE_BA_LIST 	0x004A
+{
+ 	num_of_chans 	 ; number of channels
+ 	chan_list 	 ; channel list
+ 	pwrc 	 ; power control indicator
+ 	dtx_allowed 	 ; DTX allowed
+ 	ba_id 	 ; band indication
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_DEDICATED_REQ 	0x0039
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_NCELL_FB_SB_READ 	0x004B
+{
+ 	radio_freq 	 ; channel number
+}
+
+
+
+
+
+
+PRIM 	MPHC_NCELL_SB_READ 	0x004C
+{
+ 	sb_flag 	 ; SB flag
+ 	radio_freq 	 ; channel number
+ 	bsic 	 ; base station identification code
+ 	fn_offset 	 ; frame offset
+ 	time_alignmnt 	 ; time alignment
+}
+
+
+
+
+
+
+PRIM 	OML1_CLOSE_TCH_LOOP_REQ 	0x0061
+{
+ 	sub_channel 	 ; loop sub channel; The parameter defines the sub channel for halfrate operation
+ 	frame_erasure 	 ; frame erasure
+}
+
+
+
+
+
+
+PRIM 	OML1_CLOSE_TCH_LOOP_CON 	0x0065
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	OML1_OPEN_TCH_LOOP_REQ 	0x0062
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	OML1_OPEN_TCH_LOOP_CON 	0x0066
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	OML1_START_DAI_TEST_REQ 	0x0063
+{
+ 	tested_device 	 ; tested device
+}
+
+
+
+
+
+
+PRIM 	OML1_START_DAI_TEST_CON 	0x0067
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	OML1_STOP_DAI_TEST_REQ 	0x0064
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	OML1_STOP_DAI_TEST_CON 	0x0068
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	TST_SLEEP_REQ 	0x0004
+{
+ 	sleep_mode 	 ; sleep mode
+ 	Clocks 	 ; clocks
+}
+
+
+
+
+
+
+PRIM 	MPHC_ADC_IND 	0x0069
+{
+ 	adc_results 	[9] 	 ; adc results
+}
+
+
+
+
+
+
+PRIM 	MPHC_INIT_L1_REQ 	0x0072
+{
+ 	radio_band_config 	 	%!TI_PS_FF_QUAD_BAND_SUPPORT% ; radio band configuration
+ 	param 	 	%TI_PS_FF_QUAD_BAND_SUPPORT% ; Dummy Parameter
+}
+
+
+
+
+
+
+PRIM 	MPHC_INIT_L1_CON 	0x0073
+{
+ 	param 	 	%!TI_PS_FF_QUAD_BAND_SUPPORT% ; dummy parameter
+ 	multiband_power_class 	[NB_MAX_GSM_BANDS] 	 	%TI_PS_FF_QUAD_BAND_SUPPORT% ; Bands Supported and respective power class
+}
+
+
+
+
+
+
+PRIM 	MPHC_DEACTIVATE_REQ 	0x006E
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	TST_TEST_HW_REQ 	0x0001
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	TST_TEST_HW_CON 	0x0002
+{
+ 	dsp_code_version 	 ; Version number of the DSP code
+ 	dsp_checksum 	 ; Checksum of DSP code
+ 	dsp_patch_version 	 ; Version number of the DSP patch code
+ 	mcu_alr_version 	 ; Version  number of the MCU ALR code
+ 	mcu_gprs_version 	 ; Version  number of the MCU GPRS code
+ 	mcu_tm_version 	 ; Version  number of the Testmode
+}
+
+
+
+
+
+
+PRIM 	PH_DATA_IND 	0x006D
+{
+ 	radio_freq AS rf_chan_num 	 ; Channel (radio_freq) that block was read on
+ 	l2_channel AS l2_channel_type 	 ; Indicates the MF51 block type read (enum type), maps to l1s msg signal code
+ 	error_flag AS error_cause 	 ; Indicates if l2_frame data is invalid
+ 	RADIO_FRAME AS l2_frame 	 ; Layer 2 frame
+ 	bsic 	 ; Base station identification code
+ 	tc 	 ; multiframe number modulo 8
+}
+
+
+
+
+
+
+PRIM 	MPHC_STOP_DEDICATED_CON 	0x0080
+{
+ 	param 	 ; dummy
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,795 @@
+;********************************************************************************
+;*** File           : pkt.pdf
+;*** Creation       : Wed Mar 11 09:58:35 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : pkt
+;*** Document No.   : 8443.105.02.106
+;*** Document Date  : 2002-10-17
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:50:46 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-10-17"
+PRAGMA 	ID_AND_VERSION 	"8443.105.02.106"
+
+
+
+CONST 	DIO_MAX_NAME_LENGTH 	16 	; arbitrary, in simulation only
+CONST 	DIO_MAX_DATA_LENGTH 	100 	; arbitrary, in simulation only
+
+
+
+VALTAB 	VAL_sleep_mode
+VAL 	0x01 	DIO_SLEEP_ENABLE 	"Enter sleep mode if possible."
+VAL 	0x02 	DIO_SLEEP_DISABLE 	"Do not enter sleep mode."
+
+VALTAB 	VAL_parity
+VAL 	0x01 	DIO_PARITY_NO 	"Don't send a parity bit."
+VAL 	0x02 	DIO_PARITY_ODD 	"Send an odd parity bit."
+VAL 	0x04 	DIO_PARITY_EVEN 	"Send an even parity bit."
+VAL 	0x08 	DIO_PARITY_SPACE 	"Send a space for parity bit."
+
+VALTAB 	VAL_flow_control
+VAL 	0x0001 	DIO_FLOW_NO_NO 	"No flow control for both directions."
+VAL 	0x0002 	DIO_FLOW_SW_NO 	"Software flow control for receive direction and no flow control for transmit direction."
+VAL 	0x0004 	DIO_FLOW_HW_NO 	"Hardware flow control for receive direction and no flow control for transmit direction."
+VAL 	0x0008 	DIO_FLOW_NO_SW 	"No flow control for receive direction and software flow control for transmit direction."
+VAL 	0x0010 	DIO_FLOW_SW_SW 	"Software flow control for both directions."
+VAL 	0x0020 	DIO_FLOW_HW_SW 	"Hardware flow control for receive direction and software flow control for transmit direction."
+VAL 	0x0040 	DIO_FLOW_NO_HW 	"No flow control for receive direction and hardware flow control for transmit direction."
+VAL 	0x0080 	DIO_FLOW_SW_HW 	"Software flow control for receive direction and hardware flow control for transmit direction."
+VAL 	0x0100 	DIO_FLOW_HW_HW 	"Hardware flow control for both directions."
+
+VALTAB 	VAL_data_mode
+VAL 	0x01 	DIO_MODE_AT 	"The TE will transmit AT commands."
+VAL 	0x02 	DIO_MODE_DATA 	"The TE will transmit data."
+VAL 	0x04 	DIO_MODE_TRACE 	"The TE expects trace information via this device"
+VAL 	0x03 	DIO_MODE_DEFAULT 	"Default value if the driver can not provide this information"
+
+VALTAB 	VAL_stop_bits
+VAL 	0x01 	DIO_STOP_1 	"Send 1 stop bit."
+VAL 	0x02 	DIO_STOP_15 	"Send 1.5 stop bits."
+VAL 	0x04 	DIO_STOP_2 	"Send 2 stop bits."
+
+VALTAB 	VAL_baud
+VAL 	0x00080000 	DIO_BAUD_812500 	"Transmission rate of 812500 bits/sec."
+VAL 	0x00040000 	DIO_BAUD_406250 	"Transmission rate of 406250 bits/sec."
+VAL 	0x00020000 	DIO_BAUD_203125 	"Transmission rate of 203125 bits/sec."
+VAL 	0x00010000 	DIO_BAUD_115200 	"Transmission rate of 115200 bits/sec."
+VAL 	0x00008000 	DIO_BAUD_57600 	"Transmission rate of 57600 bits/sec."
+VAL 	0x00004000 	DIO_BAUD_38400 	"Transmission rate of 38400 bits/sec."
+VAL 	0x00002000 	DIO_BAUD_33900 	"Transmission rate of 33900 bits/sec."
+VAL 	0x00001000 	DIO_BAUD_28800 	"Transmission rate of 28800 bits/sec."
+VAL 	0x00000800 	DIO_BAUD_19200 	"Transmission rate of 19200 bits/sec."
+VAL 	0x00000400 	DIO_BAUD_14400 	"Transmission rate of 14400 bits/sec."
+VAL 	0x00000200 	DIO_BAUD_9600 	"Transmission rate of 9600 bits/sec."
+VAL 	0x00000100 	DIO_BAUD_7200 	"Transmission rate of 7200 bits/sec."
+VAL 	0x00000080 	DIO_BAUD_4800 	"Transmission rate of 4800 bits/sec."
+VAL 	0x00000040 	DIO_BAUD_2400 	"Transmission rate of 2400 bits/sec."
+VAL 	0x00000020 	DIO_BAUD_1200 	"Transmission rate of 1200 bits/sec."
+VAL 	0x00000010 	DIO_BAUD_600 	"Transmission rate of 600 bits/sec."
+VAL 	0x00000008 	DIO_BAUD_300 	"Transmission rate of 300 bits/sec."
+VAL 	0x00000004 	DIO_BAUD_150 	"Transmission rate of 150 bits/sec."
+VAL 	0x00000002 	DIO_BAUD_75 	"Transmission rate of 75 bits/sec."
+VAL 	0x00000001 	DIO_BAUD_AUTO 	"Automatic detection."
+
+VALTAB 	VAL_mux_configuration
+VAL 	0x01 	DIO_MUX_MODE_BASIC 	"The multiplexer supports Basic option."
+VAL 	0x02 	DIO_MUX_MODE_ADVANCED 	"The multiplexer supports Advanced option."
+VAL 	0x04 	DIO_MUX_SUBSET_UIH 	"The multiplexer supports UIH frames."
+VAL 	0x08 	DIO_MUX_SUBSET_UI 	"The multiplexer supports UI frames."
+VAL 	0x10 	DIO_MUX_SUBSET_I 	"The multiplexer supports I frames."
+
+VALTAB 	VAL_guard_period
+VAL 	0 	DIO_ESC_OFF 	"Turn escape sequence detection off."
+
+VALTAB 	VAL_data_bits
+VAL 	0x10 	DIO_CHAR_5 	"Send 5 bits per character."
+VAL 	0x20 	DIO_CHAR_6 	"Send 6 bits per character."
+VAL 	0x40 	DIO_CHAR_7 	"Send 7 bits per character."
+VAL 	0x80 	DIO_CHAR_8 	"Send 8 bits per character."
+
+VALTAB 	VAL_convergence
+VAL 	0x01 	DIO_CONV_SER 	"The device can contain serial data."
+VAL 	0x02 	DIO_CONV_PACKET 	"The device can contain packet data."
+VAL 	0x04 	DIO_CONV_MUX 	"The device can start a multiplexer."
+
+VALTAB 	VAL_state
+VAL 	0x80000000 	DIO_SA 	"read/write, Device ready"
+VAL 	0x40000000 	DIO_SB 	"read/write, Data valid"
+VAL 	0x20000000 	DIO_X 	"read/write, Flow control"
+VAL 	0x10000000 	DIO_RING 	"write, RING indicator"
+VAL 	0x08000000 	DIO_ESC 	"read, escape sequence detected"
+VAL 	0x04000000 	DIO_DISC 	"read, link disconnected"
+VAL 	0x01000000 	DIO_MUX_STOP 	"read/write, stop the multiplexer"
+VAL 	0x02000000 	DIO_BRK 	"read/write, break received / to be sent"
+VAL 	0x000000FF 	DIO_BRKLEN 	"read/write, length of the break signal in characters"
+VAL 	0x00000000 	DIO_PACKET_UNKNOWN 	"Packet transfer: No packet type available."
+VAL 	0x00000021 	DIO_PACKET_IP 	"Packet transfer: Simple IP packet"
+VAL 	0x0000002D 	DIO_PACKET_CTCP 	"Packet transfer: Van Jacobson compressed TCP/IP header"
+VAL 	0x0000002F 	DIO_PACKET_UTCP 	"Packet transfer: Van Jacobson uncompressed TCP/IP header"
+
+VALTAB 	VAL_cause
+VAL 	0xD200 	PKTCS_SUCCESS 	"0b11010010 00000000 No error, success"
+VAL 	0xD201 	PKTCS_INVALID_PARAMS 	"0b11010010 00000001 Device number invalid"
+VAL 	0xD202 	PKTCS_INVALID_PEER 	"0b11010010 00000010 Peer does not exist"
+VAL 	0xD203 	PKTCS_DISCONNECT 	"0b11010010 00000011 The driver signalled a DRV_SIGTYPE_DISCONNECT"
+VAL 	0xD204 	PKTCS_INTERNAL_DRV_ERROR 	"0b11010010 00000100 A driver function returned DRV_INTERNAL_ERROR"
+
+
+
+
+VAR 	convergence 	"serial data and / or packet data" 	B
+
+VAL 	@p_pkt - VAL_convergence@ 	
+
+VAR 	data_mode 	"TE will use the device to transmit AT commands or data or both" 	B
+
+VAL 	@p_pkt - VAL_data_mode@ 	
+
+VAR 	sleep_mode 	"describes if the device is able to enter sleep mode" 	B
+
+VAL 	@p_pkt - VAL_sleep_mode@ 	
+
+VAR 	mux_configuration 	"describes the supported configurations of the multiplexer" 	L
+
+VAL 	@p_pkt - VAL_mux_configuration@ 	
+
+VAR 	n1 	"maximum frame size of a multiplexer frame" 	S
+
+
+VAR 	n2 	"maximum number of retransmissions" 	B
+
+
+VAR 	t1 	"acknowledgement timer" 	B
+
+
+VAR 	t2 	"response timer for the multiplexer control channel" 	B
+
+
+VAR 	t3 	"wake up response timer" 	B
+
+
+VAR 	k 	"window size for advanced option with error recovery" 	B
+
+
+VAR 	mtu 	"Maximum Transfer Unit" 	S
+
+
+VAR 	baud 	"supported transmission rates" 	L
+
+VAL 	@p_pkt - VAL_baud@ 	
+
+VAR 	data_bits 	"supported numbers of bits per character" 	B
+
+VAL 	@p_pkt - VAL_data_bits@ 	
+
+VAR 	stop_bits 	"supported number of stop bits" 	B
+
+VAL 	@p_pkt - VAL_stop_bits@ 	
+
+VAR 	parity 	"supported types of parity checking" 	B
+
+VAL 	@p_pkt - VAL_parity@ 	
+
+VAR 	flow_control 	"supported types of flow control" 	S
+
+VAL 	@p_pkt - VAL_flow_control@ 	
+
+VAR 	xon 	"XON character" 	B
+
+
+VAR 	xoff 	"XOFF character" 	B
+
+
+VAR 	esc_char 	"ASCII character which could appear three times as an escape sequence" 	B
+
+
+VAR 	guard_period 	"minimal duration before and after escape sequence" 	S
+
+VAL 	@p_pkt - VAL_guard_period@ 	
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"test data" 	B
+
+
+VAR 	signal_type 	"Signal type" 	S
+
+
+VAR 	drv_handle 	"Unique handle for this driver" 	S
+
+
+VAR 	retval 	"Return value" 	S
+
+
+VAR 	device_no 	"Data device number" 	B
+
+
+VAR 	buffer_type 	"Type of buffer to be cleared" 	S
+
+
+VAR 	state 	"Line state bits" 	L
+
+VAL 	@p_pkt - VAL_state@ 	
+
+VAR 	mask 	"Line state mask" 	L
+
+VAL 	@p_pkt - VAL_state@ 	
+
+VAR 	cause 	"Cause value" 	S
+
+VAL 	@p_pkt - VAL_cause@ 	
+
+VAR 	peer 	"Name of peer, to be casted to 'const char *'" 	L
+
+
+VAR 	link_id 	"Link identifier" 	L
+
+
+VAR 	dti_direction 	"DTI direction" 	B
+
+
+
+
+
+COMP 	dio_dcb 	 "Device Control Block data"
+{
+ 	convergence 	 ; serial data and / or packet data
+ 	data_mode 	 ; TE will use the device to transmit AT commands or data or both
+ 	sleep_mode 	 ; describes if the device is able to enter sleep mode
+ 	mux_configuration 	 ; describes the supported configurations of the multiplexer
+ 	n1 	 ; maximum frame size of a multiplexer frame
+ 	n2 	 ; maximum number of retransmissions
+ 	t1 	 ; acknowledgement timer
+ 	t2 	 ; response timer for the multiplexer control channel
+ 	t3 	 ; wake up response timer
+ 	k 	 ; window size for advanced option with error recovery
+ 	mtu 	 ; Maximum Transfer Unit
+ 	baud 	 ; supported transmission rates
+ 	data_bits 	 ; supported numbers of bits per character
+ 	stop_bits 	 ; supported number of stop bits
+ 	parity 	 ; supported types of parity checking
+ 	flow_control 	 ; supported types of flow control
+ 	xon 	 ; XON character
+ 	xoff 	 ; XOFF character
+ 	esc_char 	 ; ASCII character which could appear three times as an escape sequence
+ 	guard_period 	 ; minimal duration before and after escape sequence
+}
+
+
+
+COMP 	sdu 	 "test data"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[1] 	 ; test data
+}
+
+
+
+
+
+
+; PKT_CONNECT_IND 	0x80004045
+; PKT_CONNECT_RES 	0x80000045
+; PKT_CONNECT_REJ 	0x80010045
+; PKT_DISCONNECT_IND 	0x80014045
+; PKT_DTI_OPEN_REQ 	0x80020045
+; PKT_DTI_OPEN_CNF 	0x80024045
+; PKT_MODIFY_REQ 	0x80030045
+; PKT_MODIFY_CNF 	0x80034045
+; PKT_DTI_CLOSE_REQ 	0x80040045
+; PKT_DTI_CLOSE_CNF 	0x80044045
+; PKT_DTI_CLOSE_IND 	0x80054045
+; PKT_SIG_CLEAR_IND 	0x80050045
+; PKT_SIG_FLUSH_IND 	0x80060045
+; PKT_SIG_READ_IND 	0x80070045
+; PKT_SIG_WRITE_IND 	0x80080045
+; PKT_SIG_CONNECT_IND 	0x80090045
+; PKT_SIG_DISCONNECT_IND 	0x800A0045
+; PKT_DIO_SIGNAL_IND 	0x80200045
+; PKT_DIO_INIT_REQ 	0x80204045
+; PKT_DIO_INIT_CNF 	0x80210045
+; PKT_DIO_EXIT_REQ 	0x80214045
+; PKT_DIO_READ_REQ 	0x80224045
+; PKT_DIO_READ_CNF 	0x80220045
+; PKT_DIO_GETDATA_REQ 	0x80234045
+; PKT_DIO_GETDATA_CNF 	0x80230045
+; PKT_DIO_WRITE_REQ 	0x80244045
+; PKT_DIO_WRITE_CNF 	0x80240045
+; PKT_DIO_GETBUFFER_REQ 	0x80254045
+; PKT_DIO_GETBUFFER_CNF 	0x80250045
+; PKT_DIO_CLEAR_REQ 	0x80264045
+; PKT_DIO_CLEAR_CNF 	0x80260045
+; PKT_DIO_FLUSH_REQ 	0x80274045
+; PKT_DIO_FLUSH_CNF 	0x80270045
+; PKT_DIO_SETSIGNAL_REQ 	0x80284045
+; PKT_DIO_SETSIGNAL_CNF 	0x80280045
+; PKT_DIO_RESETSIGNAL_REQ 	0x80294045
+; PKT_DIO_RESETSIGNAL_CNF 	0x80290045
+; PKT_DIO_GETCAP_REQ 	0x802A4045
+; PKT_DIO_GETCAP_CNF 	0x802A0045
+; PKT_DIO_SETCONFIG_REQ 	0x802B4045
+; PKT_DIO_SETCONFIG_CNF 	0x802B0045
+; PKT_DIO_GETCONFIG_REQ 	0x802C4045
+; PKT_DIO_GETCONFIG_CNF 	0x802C0045
+; PKT_DIO_CLOSEDEVICE_REQ 	0x802D4045
+; PKT_DIO_CLOSEDEVICE_CNF 	0x802D0045
+
+
+
+PRIM 	PKT_CONNECT_IND 	0x80004045
+{
+ 	device_no 	 ; Device number
+ 	dio_dcb 	 ; Device Control Block data
+}
+
+
+
+
+
+
+PRIM 	PKT_CONNECT_RES 	0x80000045
+{
+ 	device_no 	 ; Device number
+ 	dio_dcb 	 ; Device Control Block data
+}
+
+
+
+
+
+
+PRIM 	PKT_CONNECT_REJ 	0x80010045
+{
+ 	device_no 	 ; Device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DISCONNECT_IND 	0x80014045
+{
+ 	device_no 	 ; Device number
+ 	cause 	 ; Cause value
+}
+
+
+
+
+
+
+PRIM 	PKT_DTI_OPEN_REQ 	0x80020045
+{
+ 	device_no 	 ; Device number
+ 	peer 	 ; Peer
+ 	link_id 	 ; Link identifier
+ 	dti_direction 	 ; DTI direction
+}
+
+
+
+
+
+
+PRIM 	PKT_DTI_OPEN_CNF 	0x80024045
+{
+ 	device_no 	 ; Device number
+ 	cause 	 ; Cause value
+}
+
+
+
+
+
+
+PRIM 	PKT_MODIFY_REQ 	0x80030045
+{
+ 	device_no 	 ; Device number
+ 	dio_dcb 	 ; Device Control Block data
+}
+
+
+
+
+
+
+PRIM 	PKT_MODIFY_CNF 	0x80034045
+{
+ 	device_no 	 ; Device number
+ 	cause 	 ; Cause value
+}
+
+
+
+
+
+
+PRIM 	PKT_DTI_CLOSE_REQ 	0x80040045
+{
+ 	device_no 	 ; Device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DTI_CLOSE_CNF 	0x80044045
+{
+ 	device_no 	 ; Device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DTI_CLOSE_IND 	0x80054045
+{
+ 	device_no 	 ; Device number
+}
+
+
+
+
+
+
+PRIM 	PKT_SIG_CLEAR_IND 	0x80050045
+{
+}
+
+
+
+
+
+
+PRIM 	PKT_SIG_FLUSH_IND 	0x80060045
+{
+}
+
+
+
+
+
+
+PRIM 	PKT_SIG_READ_IND 	0x80070045
+{
+}
+
+
+
+
+
+
+PRIM 	PKT_SIG_WRITE_IND 	0x80080045
+{
+}
+
+
+
+
+
+
+PRIM 	PKT_SIG_CONNECT_IND 	0x80090045
+{
+}
+
+
+
+
+
+
+PRIM 	PKT_SIG_DISCONNECT_IND 	0x800A0045
+{
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_SIGNAL_IND 	0x80200045
+{
+ 	device_no 	 ; Data device number
+ 	signal_type 	 ; Signal type
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_INIT_REQ 	0x80204045
+{
+ 	drv_handle 	 ; Driver handle
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_INIT_CNF 	0x80210045
+{
+ 	retval 	 ; Return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_EXIT_REQ 	0x80214045
+{
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_READ_REQ 	0x80224045
+{
+ 	device_no 	 ; Data Device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_READ_CNF 	0x80220045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_GETDATA_REQ 	0x80234045
+{
+ 	device_no 	 ; Data Device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_GETDATA_CNF 	0x80230045
+{
+ 	retval 	 ; return value
+ 	state 	 ; Line state
+ 	sdu 	 ; Data descriptor equivalent
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_WRITE_REQ 	0x80244045
+{
+ 	device_no 	 ; Data Device number
+ 	state 	 ; State
+ 	mask 	 ; Mask
+ 	sdu 	 ; Data descriptor equivalent
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_WRITE_CNF 	0x80240045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_GETBUFFER_REQ 	0x80254045
+{
+ 	device_no 	 ; Data Device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_GETBUFFER_CNF 	0x80250045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_CLEAR_REQ 	0x80264045
+{
+ 	device_no 	 ; Data device number
+ 	buffer_type 	 ; Buffer type
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_CLEAR_CNF 	0x80260045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_FLUSH_REQ 	0x80274045
+{
+ 	device_no 	 ; Data device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_FLUSH_CNF 	0x80270045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_SETSIGNAL_REQ 	0x80284045
+{
+ 	signal_type 	 ; Signal type
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_SETSIGNAL_CNF 	0x80280045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_RESETSIGNAL_REQ 	0x80294045
+{
+ 	signal_type 	 ; Signal type
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_RESETSIGNAL_CNF 	0x80290045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_GETCAP_REQ 	0x802A4045
+{
+ 	device_no 	 ; Data device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_GETCAP_CNF 	0x802A0045
+{
+ 	retval 	 ; return value
+ 	dio_dcb 	 ; Device Control Block
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_SETCONFIG_REQ 	0x802B4045
+{
+ 	device_no 	 ; Data device number
+ 	dio_dcb 	 ; Device Control Block
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_SETCONFIG_CNF 	0x802B0045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_GETCONFIG_REQ 	0x802C4045
+{
+ 	device_no 	 ; Data device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_GETCONFIG_CNF 	0x802C0045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_CLOSEDEVICE_REQ 	0x802D4045
+{
+ 	device_no 	 ; Data device number
+}
+
+
+
+
+
+
+PRIM 	PKT_DIO_CLOSEDEVICE_CNF 	0x802D0045
+{
+ 	retval 	 ; return value
+}
+
+
+
+
+
+
+
+
+

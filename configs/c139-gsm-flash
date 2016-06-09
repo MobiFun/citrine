@@ -1,0 +1,13 @@
+# This configuration builds an experimental flashImage that runs on the
+# Mot C139/C140 target and includes the GSM protocol stack.  Control is via
+# AT commands over RVTMUX (no UI).  An aftermarket FFS is placed in the flash
+# region from 0x3C0000 through 0x3EFFFF.
+
+target	c139
+feature	gsm
+feature	at-rvtmux
+
+feature	aftermarket-ffs 60 3
+
+feature	etm
+feature	tmffs2

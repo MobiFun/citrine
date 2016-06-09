@@ -1,0 +1,2772 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">pkt</DocName>
+        <DocNum Number="105" Project="8443"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for GPRS consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity.</Section>
+            <Section>Figure 1-1: Architecture of the GSM/GPRS protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the GPRS protocol stack are:</Section>
+            <Section>1.1 GRR (RLC/MAC) - Radio Link Control/Medium Access Control</Section>
+            <Section>This layer contains two functions: The Radio Link Control function provides a radio-solution-dependent reliable link. The Medium Access Control function controls the access signalling (request and grant) procedures for the radio channel, and the mapping of LLC frames onto the GSM physical channel.</Section>
+            <Section>1.2 LLC - Logical Link Control</Section>
+            <Section>The LLC entity provides multiple highly reliable logical links for asynchronous data transfer between the MS and the network. It supports variable-length information frames, acknowledged and unacknowledged data transfer, flow and sequence control, error detection and recovery, notification of unrecoverable errors, user identity confidentiality, and ciphering of user and signaling data.</Section>
+            <Section>1.3 GMM - GPRS Mobility Management</Section>
+            <Section>The GMM entity provides procedures for the mobility of the MS, such as informing the network of its present location, and user identity confidentiality. It manages the GMM context (attach, detach, routing area updating), supports security functions such as authentication of user and MS, controls ciphering of data, and initiates the response to paging messages.</Section>
+            <Section>1.4 SM - Session Management</Section>
+            <Section>The main function of the session management (SM) is to support PDP context handling of the user terminal. Session Management activates, modifies and deletes the contexts for packet data protocols (PDP). Session Management services are provided at the SMREG-SAP and the SNSM-SAP for anonymous and non-anonymous access. The non-anonymous and anonymous access procedures for PDP context activation and PDP context deactivation are available at the SMREG-SAP. In addition there exists a PDP context modification for non-anonymous PDP contexts.</Section>
+            <Section>1.5 SNDCP - Subnetwork Dependant Convergence Protocol</Section>
+            <Section>SNDCP carries out all functions related to transfer of Network layer Protocol Data Units (N-PDUs) over GPRS in a transparent way. SNDCP helps to improve channel efficiency by means of compression techniques. The set of protocol entities above SNDCP consists of commonly used network protocols. They all use the same SNDCP entity, which then performs multiplexing of data coming from different sources to be sent using the service provided by the LLC layer.</Section>
+            <Section>1.6 GACI - GPRS Application Control Interface</Section>
+            <Section>The GACI is the GPRS extension of the ACI. It is specified in GSM 07.07 and 07.60. It is responsible for processing of the GPRS related AT Commands to setup, activate and deactivate the PDP context parameter. It also provides functionality for the interworking between GMM/SM/SNDCP and a packet oriented protocol like PPP.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the GPRS. The driver has to be able to perform flow control.</Section>
+            <Section>1.8 TOM - Tunnelling of Messages</Section>
+            <Section>The TOM entity is present if and only if HS136 is supported (the feature flag FF_HS136 is enabled).</Section>
+            <Section>The main function of TOM is to tunnel non-GSM signalling messages between the MS and the SGSN. The only non-GSM signalling which is currently supported by TOM is for the EGPRS-136 system (according to TIA/EIA-136-376). Data transfer in both uplink and downlink direction is possible. Two different priorities (high, low) of signalling data transfer are supported. TOM uses the unacknowledged mode of LLC and the acknowledged mode of GRR (RLC/MAC).</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="02"/>
+            <Date Day="30" Month="9" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="02"/>
+            <Date Day="1" Month="10" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Test primitives numbered so that they have an offset of 32, made document compilable.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="02"/>
+            <Date Day="4" Month="10" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added internal signals. Reworked PKT_DTI_OPEN_REQ, PKT_MODIFY_CNF.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="02"/>
+            <Date Day="7" Month="10" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Reworked after some more internal discussion.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="104" Year="02"/>
+            <Date Day="11" Month="10" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Incorporated minor corrections, especially removed double definitions already defined in gdi.h.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="105" Year="02"/>
+            <Date Day="15" Month="10" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Updated T_DRV_SIGNAL equivalent for simulation, data_length and user_data replaced by device_no. Renumbered signals as these are for PKTIO no indications but requests, simplified PKT_DIO_SIGNAL_IND, renamed PKT_DIO_GETCAP_REQ, PKT_DIO_GETCAP_CNF.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="106" Year="02"/>
+            <Date Day="17" Month="10" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>In PKT_DIO_xxx primitives exchanged 80xx0045 &lt;=> 80xx4045, changed buffer to sdu for simplicity.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8415.026.99]</RefId>
+            <RefTitle>Generic Driver Interface - Functional Specification</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the PKT SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>DIO_MAX_NAME_LENGTH</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment>arbitrary, in simulation only</Comment>
+        </Constant>
+        <Constant>
+            <Alias>DIO_MAX_DATA_LENGTH</Alias>
+            <Value ValueType="DEC">100</Value>
+            <Comment>arbitrary, in simulation only</Comment>
+        </Constant>
+        <History>
+            <Date Day="30" Month="9" Year="2002"/>
+            <Author>HM</Author>
+            <Comment>Inital</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="69">
+        <Description>
+            <Section>This section contains all primitives that are defined for the PKT SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>This primitive indicates that the DIO driver wants to establish a connection. The possible connection parameters (e.g. possible baud rates for the channel) are included.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_CONNECT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>dio_dcb</Name>
+                </ItemLink>
+                <Comment>Device Control Block data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by ACI to the PKTIO entity to response to the indicated connection. The actual connection parameters (e.g. selected baud rate for the channel) are included.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_CONNECT_RES</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>dio_dcb</Name>
+                </ItemLink>
+                <Comment>Device Control Block data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>cause removed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI has no resources to accept an additional connection. The answer to PKT_CONNECT_IND is PKT_CONNECT_REJ instead of PKT_CONNECT_RES.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_CONNECT_REJ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Connection disconnected by driver (e.g. got DRV_INVALID_PARAMS from driver).</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DISCONNECT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Cause value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by ACI to PKTIO to request the establishment of a DTI connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DTI_OPEN_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>peer</Name>
+                </ItemLink>
+                <Comment>Peer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>Link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>DTI direction</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Reworked</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by PKTIO to ACI to confirm the establishment of a DTI connection. . On success the cause value is PKTCS_SUCCESS, in case the device number is invalid the cause value is PKTCS_INVALID_PARAMS.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DTI_OPEN_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Cause value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by ACI to PKTIO to modify the communication parameters (e.g. baud rate) of an already established connection. The modification is to be confirmed by the PKTIO entity by sending PKT_MODIFY_CNF to the ACI entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_MODIFY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>dio_dcb</Name>
+                </ItemLink>
+                <Comment>Device Control Block data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by the PKTIO entity to ACI to confirm the modification of the communication channel. . On success the cause value is PKTCS_SUCCESS, in case the device number is invalid or the requested modification could not performed (e.g. unsupported baud rate requested) the cause value is PKTCS_INVALID_PARAMS.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_MODIFY_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Cause value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Removed dio_dcb</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent to the PKTIO entity to request the close of a DTI connection. The request has to be confirmed by using PKT_DTI_CLOSE_CNF.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DTI_CLOSE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by the PKTIO entity to ACI to confirm the DTI close request.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DTI_CLOSE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is sent by the PKTIO entity to ACI to indicate the closing of a DTI connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DTI_CLOSE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is not a primitive, but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal, this is used to transfer the device number. The PKTIO entity sends this signal to itseld after the DIO driver has called the respective callback function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_SIG_CLEAR_IND</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is not a primitive, but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal, this is used to transfer the device number. The PKTIO entity sends this signal to itseld after the DIO driver has called the respective callback function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_SIG_FLUSH_IND</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is not a primitive, but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal, this is used to transfer the device number.  The PKTIO entity sends this signal to itseld after the DIO driver has called the respective callback function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_SIG_READ_IND</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is not a primitive, but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal, this is used to transfer the device number. The PKTIO entity sends this signal to itseld after the DIO driver has called the respective callback function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_SIG_WRITE_IND</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is not a primitive, but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal, this is used to transfer the device number. The PKTIO entity sends this signal to itseld after the DIO driver has called the respective callback function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_SIG_CONNECT_IND</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is not a primitive, but a signal. It is used for internal purposes and must not have any parameters. There is a ULONG associated with this signal, this is used to transfer the device number. The PKTIO entity sends this signal to itseld after the DIO driver has called the respective callback function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_SIG_DISCONNECT_IND</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>In the simulation environment, this primitive is sent from the simulation to the PKTIO entity to simulate the occurance of a signal. In the target environment, this is done by calling the PKTIO callback function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_SIGNAL_IND</Name>
+                <PrimID Direction="UPLINK" Number="32"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>signal_type</Name>
+                </ItemLink>
+                <Comment>Signal type</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PKT_DIO_INIT_REQ primitive is a test primitive, only used in simulation environment. It is sent by the PKTIO entity in simulation environment instead of performing a function call to DIO_Init(). The callback function which is a parameter of DIO_Init() for the target is not needed for a primitive interface.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_INIT_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="32"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>drv_handle</Name>
+                </ItemLink>
+                <Comment>Driver handle</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PKT_DIO_INIT_CNF primitive is a test primitive, only used in simulation environment. It is sent by the simulation environment as confirmation of the DIO_INIT_REQ primitive and provides the return value.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_INIT_CNF</Name>
+                <PrimID Direction="UPLINK" Number="33"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>Return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Removed T_DIO_EXPORT from simulation</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PKT_DIO_EXIT_REQ primitive is a test primitive, only used in simulation environment. It is sent by the PKTIO entity in WIN32 environment instead of performing a function call to DIO_Exit(). As there is no return value for the original function call, a DIO_EXIT_CNF primitive does not exist.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_EXIT_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="33"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PKT_DIO_READ_REQ primitive is used in simulation environment only by the PKTIO entity to provide a buffer to the DIO driver in which it can write the received downlink data. The counterpart of this primitive in target environment is the DIO_Read function. In contradiction to the target, the primitive does not provide a buffer member.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_READ_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="34"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data Device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PKT_DIO_READ_CNF is used in simulation environment only to provide the return value of the DIO_READ_REQ. The counterpart of this primitive in target environment is the DIO_Read function. In case the return value is DRV_BUFFER_FULL, the provided read buffer descriptor is not to be taken over by the DIO simulation even if there is still room in the DIO simulation's internal data structures.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_READ_CNF</Name>
+                <PrimID Direction="UPLINK" Number="34"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PKT_DIO_GETDATA_RES is used in simulation environment only to provide the return value of the DIO_READ_REQ. The counterpart of this primitive in target environment is the DIO_Read function. This primitive is expected to be sent by the PKTIO entity in case the appropriate signal has been received. In contradiction to the functional interface, no buffer is contained in the requesting primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_GETDATA_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="35"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data Device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PKT_DIO_GETDATA_CNF primitive is used by the simulation to provide the return value, the data itself and the line state of the channel.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_GETDATA_CNF</Name>
+                <PrimID Direction="UPLINK" Number="35"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>state</Name>
+                </ItemLink>
+                <Comment>Line state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>Data descriptor equivalent</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_Write function. It is used to send data to the driver.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_WRITE_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="36"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data Device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>state</Name>
+                </ItemLink>
+                <Comment>State</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>mask</Name>
+                </ItemLink>
+                <Comment>Mask</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>Data descriptor equivalent</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitives provides the return value of the DIO_Write function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_WRITE_CNF</Name>
+                <PrimID Direction="UPLINK" Number="36"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive gets the completely written sent buffer provided by the DIO_Write() function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_GETBUFFER_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="37"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data Device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive provides the return value of the DIO_GetBuffer() function. In contradiction to the target, a buffer is not provided by this primitive. This primitive may be obsolete.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_GETBUFFER_CNF</Name>
+                <PrimID Direction="UPLINK" Number="37"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is the counterpart of the DIO_Clear() function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_CLEAR_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="38"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>buffer_type</Name>
+                </ItemLink>
+                <Comment>Buffer type</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is the simulation counterpart of the DIO_Clear() function in the target environment. In contradiction to the target environment, no buffer address is provided here.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_CLEAR_CNF</Name>
+                <PrimID Direction="UPLINK" Number="38"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_Flush() function in the target environment.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_FLUSH_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="39"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_Flush() function in the target environment. It provides the function's return value to the PKTIO entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_FLUSH_CNF</Name>
+                <PrimID Direction="UPLINK" Number="39"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_SetSignal() function in the target environment. It provides the signal set which sets about which driver events the PKTIO entity wants to be informed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_SETSIGNAL_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="40"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>signal_type</Name>
+                </ItemLink>
+                <Comment>Signal type</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_SetSignal() function in the target environment. It provides the function's return value to the PKTIO entity. This primitive may be obsolete.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_SETSIGNAL_CNF</Name>
+                <PrimID Direction="UPLINK" Number="40"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_ResetSignal() function in the target environment. It provides the signal set which sets about which driver events the PKTIO entity does not want to be informed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_RESETSIGNAL_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="41"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>signal_type</Name>
+                </ItemLink>
+                <Comment>Signal type</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_ResetSignal() function in the target environment. It provides the function's return value to the PKTIO entity. This primitive may be obsolete.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_RESETSIGNAL_CNF</Name>
+                <PrimID Direction="UPLINK" Number="41"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_GetCapabilities() function in the target environment. It requests the driver to provide its capabilities.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_GETCAP_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="42"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primive provides in the simulation environment the driver's capabilities to the PKTIO entity. It is the counterpart of the DIO_GetCapabilities() function in the target.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_GETCAP_CNF</Name>
+                <PrimID Direction="UPLINK" Number="42"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>dio_dcb</Name>
+                </ItemLink>
+                <Comment>Device Control Block</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primive is the counterpart of the DIO_SetConfig() function in the target environment. The driver is configured.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_SETCONFIG_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="43"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data device number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>dio_dcb</Name>
+                </ItemLink>
+                <Comment>Device Control Block</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primive is the counterpart of the DIO_SetConfig() function in the target environment. The return value is provided to the PKTIO entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_SETCONFIG_CNF</Name>
+                <PrimID Direction="UPLINK" Number="43"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the simulation counterpart of the DIO_GetConfig() function call in the target. It is used by the PKTIO entity to request the driver to provide its configuration.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_GETCONFIG_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="44"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the simulation counterpart of the DIO_GetConfig() function call in the target. It is used by the simulation environment to provide the driver's configuration.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_GETCONFIG_CNF</Name>
+                <PrimID Direction="UPLINK" Number="44"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Removed dio_dcb from primitve.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_CloseDevice() functional interface in the target. It is used to request the driver to close a logical channel.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_CLOSEDEVICE_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="45"/>
+                <PrimUsage>
+                    <Sender>PKTIO</Sender>
+                    <Receiver>DIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>device_no</Name>
+                </ItemLink>
+                <Comment>Data device number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is the counterpart of the DIO_CloseDevice() functional interface in the target. It is used to provide a return value. Unlike the target, no buffers are provided by this primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PKT_DIO_CLOSEDEVICE_CNF</Name>
+                <PrimID Direction="UPLINK" Number="45"/>
+                <PrimUsage>
+                    <Sender>DIO</Sender>
+                    <Receiver>PKTIO</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>retval</Name>
+                </ItemLink>
+                <Comment>return value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the  values specified here. These values are selected to correspond element values used in the air interface protocol. There are for the simulation environment two data structures not applicable, these are T_DIO_FUNC and T_DRV_CB_FUNC. T_DIO_DESC looks in the simulation environment totally different as in the target to ease writing simulations.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>dio_dcb</Name>
+                <Comment>Device Control Block data</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>convergence</Name>
+                </ItemLink>
+                <Comment>serial data and / or packet data</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>data_mode</Name>
+                </ItemLink>
+                <Comment>TE will use the device to transmit AT commands or data or both</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>sleep_mode</Name>
+                </ItemLink>
+                <Comment>describes if the device is able to enter sleep mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>mux_configuration</Name>
+                </ItemLink>
+                <Comment>describes the supported configurations of the multiplexer</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>n1</Name>
+                </ItemLink>
+                <Comment>maximum frame size of a multiplexer frame</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>n2</Name>
+                </ItemLink>
+                <Comment>maximum number of retransmissions</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>t1</Name>
+                </ItemLink>
+                <Comment>acknowledgement timer</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>t2</Name>
+                </ItemLink>
+                <Comment>response timer for the multiplexer control channel</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>t3</Name>
+                </ItemLink>
+                <Comment>wake up response timer</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>k</Name>
+                </ItemLink>
+                <Comment>window size for advanced option with error recovery</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>mtu</Name>
+                </ItemLink>
+                <Comment>Maximum Transfer Unit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>baud</Name>
+                </ItemLink>
+                <Comment>supported transmission rates</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>data_bits</Name>
+                </ItemLink>
+                <Comment>supported numbers of bits per character</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>stop_bits</Name>
+                </ItemLink>
+                <Comment>supported number of stop bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>parity</Name>
+                </ItemLink>
+                <Comment>supported types of parity checking</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>flow_control</Name>
+                </ItemLink>
+                <Comment>supported types of flow control</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>xon</Name>
+                </ItemLink>
+                <Comment>XON character</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>xoff</Name>
+                </ItemLink>
+                <Comment>XOFF character</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>esc_char</Name>
+                </ItemLink>
+                <Comment>ASCII character which could appear three times as an escape sequence</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>guard_period</Name>
+                </ItemLink>
+                <Comment>minimal duration before and after escape sequence</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the test data. As it is not possible to handle linked lists in the simulation environment, within the scope of the simulation environment no descriptor lists are to be used, instead the PKTIO entity has for the simulation a small piece of code built in that translates the descriptor lists to a simple buffer structure with length, offset and buffer content and vice versa.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>test data</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">pkt</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>test data</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="17" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the  values specified here. These values are selected to correspond element values used in the air interface protocol. There are for the simulation environment two data structures not applicable, these are T_DIO_FUNC and T_DRV_CB_FUNC. T_DIO_DESC looks in the simulation environment totally different as in the target to ease writing simulations.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>convergence</Name>
+                <Type>U8</Type>
+                <Comment>serial data and / or packet data</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_convergence</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data_mode</Name>
+                <Type>U8</Type>
+                <Comment>TE will use the device to transmit AT commands or data or both</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_data_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sleep_mode</Name>
+                <Type>U8</Type>
+                <Comment>describes if the device is able to enter sleep mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_sleep_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mux_configuration</Name>
+                <Type>U32</Type>
+                <Comment>describes the supported configurations of the multiplexer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_mux_configuration</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n1</Name>
+                <Type>U16</Type>
+                <Comment>maximum frame size of a multiplexer frame</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n2</Name>
+                <Type>U8</Type>
+                <Comment>maximum number of retransmissions</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t1</Name>
+                <Type>U8</Type>
+                <Comment>acknowledgement timer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t2</Name>
+                <Type>U8</Type>
+                <Comment>response timer for the multiplexer control channel</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t3</Name>
+                <Type>U8</Type>
+                <Comment>wake up response timer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>k</Name>
+                <Type>U8</Type>
+                <Comment>window size for advanced option with error recovery</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mtu</Name>
+                <Type>U16</Type>
+                <Comment>Maximum Transfer Unit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>baud</Name>
+                <Type>U32</Type>
+                <Comment>supported transmission rates</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_baud</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data_bits</Name>
+                <Type>U8</Type>
+                <Comment>supported numbers of bits per character</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_data_bits</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>stop_bits</Name>
+                <Type>U8</Type>
+                <Comment>supported number of stop bits</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_stop_bits</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>parity</Name>
+                <Type>U8</Type>
+                <Comment>supported types of parity checking</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_parity</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>flow_control</Name>
+                <Type>U16</Type>
+                <Comment>supported types of flow control</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_flow_control</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>xon</Name>
+                <Type>U8</Type>
+                <Comment>XON character</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>xoff</Name>
+                <Type>U8</Type>
+                <Comment>XOFF character</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>esc_char</Name>
+                <Type>U8</Type>
+                <Comment>ASCII character which could appear three times as an escape sequence</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the equivalent primitive structure for T_DIO_DCB. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>guard_period</Name>
+                <Type>U16</Type>
+                <Comment>minimal duration before and after escape sequence</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_guard_period</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>at_device removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the test data. As it is not possible to handle linked lists in the simulation environment, within the scope of the simulation environment no descriptor lists are to be used, instead the PKTIO entity has for the simulation a small piece of code built in that translates the descriptor lists to a simple buffer structure with length, offset and buffer content and vice versa.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the test data. As it is not possible to handle linked lists in the simulation environment, within the scope of the simulation environment no descriptor lists are to be used, instead the PKTIO entity has for the simulation a small piece of code built in that translates the descriptor lists to a simple buffer structure with length, offset and buffer content and vice versa.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the test data. As it is not possible to handle linked lists in the simulation environment, within the scope of the simulation environment no descriptor lists are to be used, instead the PKTIO entity has for the simulation a small piece of code built in that translates the descriptor lists to a simple buffer structure with length, offset and buffer content and vice versa.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>test data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter indicates the type of signal sent from the DIO driver to the PKTIO entity. The possible signal types are DRV_SIGTYPE_CLEAR, DRV_SIGTYPE_FLUSH, DRV_SIGTYPE_READ, DRV_SIGTYPE_WRITE, DRV_SIGTYPE_CONNECT and DRV_SIGTYPE_DISCONNECT. The appropriate values for these signal types are defined in gdi.h.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>signal_type</Name>
+                <Type>U16</Type>
+                <Comment>Signal type</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Values removed, already defined in gdi.h</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the unique handle for this driver. Assigned by the frame.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>drv_handle</Name>
+                <Type>U16</Type>
+                <Comment>Unique handle for this driver</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the return value address of a callback function for the simulation environment. The possible return values are DRV_OK, DRV_BUFFER_FULL, DRV_INITFAILURE, DRV_INITIALIZED, DRV_INTERNAL_ERROR, DRV_INPROCESS, DRV_INVALID_PARAMS and DRV_NOTCONFIGURED. The appropriate values for these constants are defined in gdi.h.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>retval</Name>
+                <Type>U16</Type>
+                <Comment>Return value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Values removed, already defined in gdi.h</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the data device number. This is not only used in simulation, but also in target.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>device_no</Name>
+                <Type>U8</Type>
+                <Comment>Data device number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used to specify which buffer is to be cleared. It can be one or a combination of the constants DRV_BUFTYPE_READ and DRV_BUFTYPE_READ. For a definitions of values for these constants, see gdi.h.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buffer_type</Name>
+                <Type>U16</Type>
+                <Comment>Type of buffer to be cleared</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Values removed, already defined in gdi.h</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Line states of the serial connection or packet type in case of packet connection or multiplexer status in case of multiplexer connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>state</Name>
+                <Type>U32</Type>
+                <Comment>Line state bits</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_state</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Line states of the serial connection or packet type in case of packet connection or multiplexer status in case of multiplexer connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mask</Name>
+                <Type>U32</Type>
+                <Comment>Line state mask</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_state</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Cause values for PKTIO containing the originating SAP / entity. This is used target environment.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>Cause value</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">pkt</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>PKTCS_INVALID_PARAMS</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Peer defines the peer name as a C-String. This is used target environment.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>peer</Name>
+                <Type>U32</Type>
+                <Comment>Name of peer, to be casted to 'const char *'</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The link identifier for DTI. This parameter is used to identify the affected channel in case of multiplexing. This is used in target environment.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>link_id</Name>
+                <Type>U32</Type>
+                <Comment>Link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="9" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter controls if PKTIO uses the DTI in the normal way or if the primitives are inverted. In the normal way data is sent as DTI_DATA_IND and received as DTI_DATA_REQ. In the inverted mode data is send as DTI_DATA_REQ and received as DTI_DATA_IND (relay functionality). The appropriate constants are are already defined in dti.h.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_direction</Name>
+                <Type>U8</Type>
+                <Comment>DTI direction</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="10" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Removed constants, already defined in dti.h</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the PKT SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sleep_mode</Name>
+                <Comment>values for sleep_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DIO_SLEEP_ENABLE</Alias>
+                <Comment>Enter sleep mode if possible.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>DIO_SLEEP_DISABLE</Alias>
+                <Comment>Do not enter sleep mode.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_parity</Name>
+                <Comment>values for parity</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DIO_PARITY_NO</Alias>
+                <Comment>Don't send a parity bit.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>DIO_PARITY_ODD</Alias>
+                <Comment>Send an odd parity bit.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>DIO_PARITY_EVEN</Alias>
+                <Comment>Send an even parity bit.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">08</Value>
+                <Alias>DIO_PARITY_SPACE</Alias>
+                <Comment>Send a space for parity bit.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_flow_control</Name>
+                <Comment>values for flow_control</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>DIO_FLOW_NO_NO</Alias>
+                <Comment>No flow control for both directions.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>DIO_FLOW_SW_NO</Alias>
+                <Comment>Software flow control for receive direction and no flow control for transmit direction.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0004</Value>
+                <Alias>DIO_FLOW_HW_NO</Alias>
+                <Comment>Hardware flow control for receive direction and no flow control for transmit direction.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0008</Value>
+                <Alias>DIO_FLOW_NO_SW</Alias>
+                <Comment>No flow control for receive direction and software flow control for transmit direction.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0010</Value>
+                <Alias>DIO_FLOW_SW_SW</Alias>
+                <Comment>Software flow control for both directions.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0020</Value>
+                <Alias>DIO_FLOW_HW_SW</Alias>
+                <Comment>Hardware flow control for receive direction and software flow control for transmit direction.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0040</Value>
+                <Alias>DIO_FLOW_NO_HW</Alias>
+                <Comment>No flow control for receive direction and hardware flow control for transmit direction.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0080</Value>
+                <Alias>DIO_FLOW_SW_HW</Alias>
+                <Comment>Software flow control for receive direction and hardware flow control for transmit direction.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0100</Value>
+                <Alias>DIO_FLOW_HW_HW</Alias>
+                <Comment>Hardware flow control for both directions.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_data_mode</Name>
+                <Comment>values for data_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DIO_MODE_AT</Alias>
+                <Comment>The TE will transmit AT commands.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>DIO_MODE_DATA</Alias>
+                <Comment>The TE will transmit data.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>DIO_MODE_TRACE</Alias>
+                <Comment>The TE expects trace information via this device</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">03</Value>
+                <Alias>DIO_MODE_DEFAULT</Alias>
+                <Comment>Default value if the driver can not provide this information</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_stop_bits</Name>
+                <Comment>values for stop_bits</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DIO_STOP_1</Alias>
+                <Comment>Send 1 stop bit.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>DIO_STOP_15</Alias>
+                <Comment>Send 1.5 stop bits.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>DIO_STOP_2</Alias>
+                <Comment>Send 2 stop bits.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_baud</Name>
+                <Comment>values for baud</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00080000</Value>
+                <Alias>DIO_BAUD_812500</Alias>
+                <Comment>Transmission rate of 812500 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00040000</Value>
+                <Alias>DIO_BAUD_406250</Alias>
+                <Comment>Transmission rate of 406250 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00020000</Value>
+                <Alias>DIO_BAUD_203125</Alias>
+                <Comment>Transmission rate of 203125 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00010000</Value>
+                <Alias>DIO_BAUD_115200</Alias>
+                <Comment>Transmission rate of 115200 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00008000</Value>
+                <Alias>DIO_BAUD_57600</Alias>
+                <Comment>Transmission rate of 57600 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00004000</Value>
+                <Alias>DIO_BAUD_38400</Alias>
+                <Comment>Transmission rate of 38400 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00002000</Value>
+                <Alias>DIO_BAUD_33900</Alias>
+                <Comment>Transmission rate of 33900 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00001000</Value>
+                <Alias>DIO_BAUD_28800</Alias>
+                <Comment>Transmission rate of 28800 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000800</Value>
+                <Alias>DIO_BAUD_19200</Alias>
+                <Comment>Transmission rate of 19200 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000400</Value>
+                <Alias>DIO_BAUD_14400</Alias>
+                <Comment>Transmission rate of 14400 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000200</Value>
+                <Alias>DIO_BAUD_9600</Alias>
+                <Comment>Transmission rate of 9600 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000100</Value>
+                <Alias>DIO_BAUD_7200</Alias>
+                <Comment>Transmission rate of 7200 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000080</Value>
+                <Alias>DIO_BAUD_4800</Alias>
+                <Comment>Transmission rate of 4800 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000040</Value>
+                <Alias>DIO_BAUD_2400</Alias>
+                <Comment>Transmission rate of 2400 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000020</Value>
+                <Alias>DIO_BAUD_1200</Alias>
+                <Comment>Transmission rate of 1200 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000010</Value>
+                <Alias>DIO_BAUD_600</Alias>
+                <Comment>Transmission rate of 600 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000008</Value>
+                <Alias>DIO_BAUD_300</Alias>
+                <Comment>Transmission rate of 300 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000004</Value>
+                <Alias>DIO_BAUD_150</Alias>
+                <Comment>Transmission rate of 150 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000002</Value>
+                <Alias>DIO_BAUD_75</Alias>
+                <Comment>Transmission rate of 75 bits/sec.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000001</Value>
+                <Alias>DIO_BAUD_AUTO</Alias>
+                <Comment>Automatic detection.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mux_configuration</Name>
+                <Comment>values for mux_configuration</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DIO_MUX_MODE_BASIC</Alias>
+                <Comment>The multiplexer supports Basic option.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>DIO_MUX_MODE_ADVANCED</Alias>
+                <Comment>The multiplexer supports Advanced option.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>DIO_MUX_SUBSET_UIH</Alias>
+                <Comment>The multiplexer supports UIH frames.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">08</Value>
+                <Alias>DIO_MUX_SUBSET_UI</Alias>
+                <Comment>The multiplexer supports UI frames.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">10</Value>
+                <Alias>DIO_MUX_SUBSET_I</Alias>
+                <Comment>The multiplexer supports I frames.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_guard_period</Name>
+                <Comment>values for guard_period</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DIO_ESC_OFF</Alias>
+                <Comment>Turn escape sequence detection off.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_data_bits</Name>
+                <Comment>values for data_bits</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">10</Value>
+                <Alias>DIO_CHAR_5</Alias>
+                <Comment>Send 5 bits per character.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">20</Value>
+                <Alias>DIO_CHAR_6</Alias>
+                <Comment>Send 6 bits per character.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">40</Value>
+                <Alias>DIO_CHAR_7</Alias>
+                <Comment>Send 7 bits per character.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">80</Value>
+                <Alias>DIO_CHAR_8</Alias>
+                <Comment>Send 8 bits per character.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_convergence</Name>
+                <Comment>values for convergence</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DIO_CONV_SER</Alias>
+                <Comment>The device can contain serial data.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>DIO_CONV_PACKET</Alias>
+                <Comment>The device can contain packet data.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>DIO_CONV_MUX</Alias>
+                <Comment>The device can start a multiplexer.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_state</Name>
+                <Comment>values for state</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">80000000</Value>
+                <Alias>DIO_SA</Alias>
+                <Comment>read/write, Device ready</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">40000000</Value>
+                <Alias>DIO_SB</Alias>
+                <Comment>read/write, Data valid</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">20000000</Value>
+                <Alias>DIO_X</Alias>
+                <Comment>read/write, Flow control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">10000000</Value>
+                <Alias>DIO_RING</Alias>
+                <Comment>write, RING indicator</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">08000000</Value>
+                <Alias>DIO_ESC</Alias>
+                <Comment>read, escape sequence detected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04000000</Value>
+                <Alias>DIO_DISC</Alias>
+                <Comment>read, link disconnected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01000000</Value>
+                <Alias>DIO_MUX_STOP</Alias>
+                <Comment>read/write, stop the multiplexer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02000000</Value>
+                <Alias>DIO_BRK</Alias>
+                <Comment>read/write, break received / to be sent</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000000FF</Value>
+                <Alias>DIO_BRKLEN</Alias>
+                <Comment>read/write, length of the break signal in characters</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>DIO_PACKET_UNKNOWN</Alias>
+                <Comment>Packet transfer: No packet type available.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000021</Value>
+                <Alias>DIO_PACKET_IP</Alias>
+                <Comment>Packet transfer: Simple IP packet</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0000002D</Value>
+                <Alias>DIO_PACKET_CTCP</Alias>
+                <Comment>Packet transfer: Van Jacobson compressed TCP/IP header</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0000002F</Value>
+                <Alias>DIO_PACKET_UTCP</Alias>
+                <Comment>Packet transfer: Van Jacobson uncompressed TCP/IP header</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">D200</Value>
+                <Alias>PKTCS_SUCCESS</Alias>
+                <Comment>0b11010010 00000000 No error, success</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D201</Value>
+                <Alias>PKTCS_INVALID_PARAMS</Alias>
+                <Comment>0b11010010 00000001 Device number invalid</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D202</Value>
+                <Alias>PKTCS_INVALID_PEER</Alias>
+                <Comment>0b11010010 00000010 Peer does not exist</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D203</Value>
+                <Alias>PKTCS_DISCONNECT</Alias>
+                <Comment>0b11010010 00000011 The driver signalled a DRV_SIGTYPE_DISCONNECT</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">D204</Value>
+                <Alias>PKTCS_INTERNAL_DRV_ERROR</Alias>
+                <Comment>0b11010010 00000100 A driver function returned DRV_INTERNAL_ERROR</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

@@ -1,0 +1,2358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">mmi</DocName>
+        <DocNum Number="113" Project="6147"/>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The base of the Protocol Stack rests on the physical layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Short Message Services (SMS) is used for sending and receiving point-to-point short messages. Additionally the reception of cell broadcast short messages is included.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Figure 1: Mobile-station protocol architecture</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This document describes the services offered by the physical layer to the man machine interface.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="97"/>
+            <Date Day="28" Month="5" Year="1996"/>
+            <Author>VK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="97"/>
+            <Date Day="14" Month="10" Year="1997"/>
+            <Author>HR</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Complete SAP</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="97"/>
+            <Date Day="8" Month="8" Year="2002"/>
+            <Author>MSB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>use new document template, include Homezone feature</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="97"/>
+            <Date Day="20" Month="8" Year="2004"/>
+            <Author>FMA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Add new primitive MMI_GIL_IND</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all constants that are defined for the MMI SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Constant>
+            <Alias>CBCH_MSG_LEN</Alias>
+            <Value ValueType="DEC">88</Value>
+            <Comment>length of a CBCH message</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_SDU_LEN</Alias>
+            <Value ValueType="DEC">1</Value>
+            <Comment>length of service data unit for the display request</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_IDENTS</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>maximum identifiers</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_IDENTS_SAT</Alias>
+            <Value ValueType="DEC">15</Value>
+            <Comment>maximum identifiers for SIM Application Toolkit</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_RPD_MSG_LEN</Alias>
+            <Value ValueType="DEC">120</Value>
+            <Comment>maximum size of message to ESIM RPD</Comment>
+        </Constant>
+        <History>
+            <Date Day="18" Month="12" Year="1996"/>
+            <Author>LE</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="28" Month="5" Year="1997"/>
+            <Author>MS</Author>
+            <Comment>Revised</Comment>
+        </History>
+        <History>
+            <Date Day="14" Month="10" Year="1997"/>
+            <Author>HR</Author>
+            <Comment>Definition added</Comment>
+        </History>
+        <History>
+            <Date Day="30" Month="10" Year="1997"/>
+            <Author>PZ</Author>
+            <Comment>Name changed from CBCH_MG_LEN to CBCH_MSG_LEN</Comment>
+        </History>
+        <History>
+            <Date Day="5" Month="2" Year="1998"/>
+            <Author>PZ</Author>
+            <Comment>MAX_SDU_LEN added.</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="5" Year="1998"/>
+            <Author>LE</Author>
+            <Comment>MAX_IDENTS added.</Comment>
+        </History>
+        <History>
+            <Date Day="5" Month="9" Year="2000"/>
+            <Author>MPA</Author>
+            <Comment>MAX_IDENTS_SAT added</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="14">
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all primitives that are defined for the MMI SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_KEYPAD_IND is sent after a keypad activity. De-bouncing is located in the PL.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_KEYPAD_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>key_code</Name>
+                </ItemLink>
+                <Comment>key code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>key_stat</Name>
+                </ItemLink>
+                <Comment>key status</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_AUDIO_INPUT_REQ shall be used to define the volume for the incoming audio path.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_AUDIO_INPUT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>volume</Name>
+                </ItemLink>
+                <Comment>input volume</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_AUDIO_OUTPUT_REQ shall be used to define the volume of the output path.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_AUDIO_OUTPUT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>volume</Name>
+                </ItemLink>
+                <Comment>output volume</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_SPEECH_MODE_REQ shall be used to switch on/off the audio path.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_SPEECH_MODE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>speech_stat</Name>
+                </ItemLink>
+                <Comment>speech status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>ids_mode</Name>
+                </ItemLink>
+                <Comment>Ids mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>ids mode included</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_AUDIO_MUTE_REQ shall be used to mute the audio path.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_AUDIO_MUTE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>mute_stat</Name>
+                </ItemLink>
+                <Comment>mute status</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_AUDIO_TONE_REQ defines tones generated by the hardware.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_AUDIO_TONE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>tone_stat</Name>
+                </ItemLink>
+                <Comment>tone status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>volume</Name>
+                </ItemLink>
+                <Comment>volume</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>call_tone</Name>
+                </ItemLink>
+                <Comment>call tone</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_BACKLIGHT_REQ is used to control the backlight.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_BACKLIGHT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>bl_level</Name>
+                </ItemLink>
+                <Comment>backlight level</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_CBCH_REQ starts reading of a CBCH message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">In case the value of 'modus' is set to CBCH_HOMEZONE only msg_id[0] and dcs_id[0] shall be filled by the homezone message identifier respectively data coding scheme. The variable dcs_id[1] shall be contained a time-out period, specified in seconds (O2 applies the message identifier 221 and the data coding scheme 0x00, the time-out period is set to a value of 60 seconds ).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_CBCH_REQ</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>msg_id</Name>
+                </ItemLink>
+                <Control>[MAX_IDENTS]</Control>
+                <Comment>Message Identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>dcs_id</Name>
+                </ItemLink>
+                <Control>[MAX_IDENTS]</Control>
+                <Comment>Data Coding Scheme</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>modus</Name>
+                </ItemLink>
+                <Comment>mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Definition adapted to ACI</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="8" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>dcs_id changed to UBYTE</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="8" Year="2002"/>
+                <Author>MSB</Author>
+                <Comment>Description expanded for Homezone message.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_CBCH_IND sends the result of reading CBCH messages to MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_CBCH_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>cbch_msg</Name>
+                </ItemLink>
+                <Control>[CBCH_MSG_LEN]</Control>
+                <Comment>CBCH message</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>cbch_len</Name>
+                </ItemLink>
+                <Comment>CBCH length</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="10" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>array declaration of cbch_msg corrected.</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="9" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>cbch length added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_RXLEV_REQ is used to request the actual fieldstrength of the serving cell.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_RXLEV_REQ</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>mode</Name>
+                </ItemLink>
+                <Comment>request mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>no_intervalls</Name>
+                </ItemLink>
+                <Comment>no of intervalls</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>period</Name>
+                </ItemLink>
+                <Comment>period</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_RXLEV_IND sends the fieldstrength of the serving cell to MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_RXLEV_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>rxlev</Name>
+                </ItemLink>
+                <Comment>fieldstrength</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_BATTERY_REQ starts a battery test at physical layer.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_BATTERY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>mode</Name>
+                </ItemLink>
+                <Comment>request mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>no_intervalls</Name>
+                </ItemLink>
+                <Comment>no of intervalls</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>period</Name>
+                </ItemLink>
+                <Comment>period</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_BATTERY_IND sends the results of battery check to MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_BATTERY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>temp</Name>
+                </ItemLink>
+                <Comment>temperature</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>volt</Name>
+                </ItemLink>
+                <Comment>voltage</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_DISPLAY_REQ  requests the output of a given string into the display of the MS. The appearance of the Text is controlled by attributes. The Text is stored in the SDU structure to avoid the exchange of fixed size primitives.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_DISPLAY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>attrib</Name>
+                </ItemLink>
+                <Comment>attribute</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>c_y</Name>
+                </ItemLink>
+                <Comment>y-coordinate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>c_x</Name>
+                </ItemLink>
+                <Comment>x-coordinate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="5" Month="2" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_SAT_CBCH_DWNLD_REQ starts reading CBCH message for SIM Application Toolkit.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_SAT_CBCH_DWNLD_REQ</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>count</Name>
+                </ItemLink>
+                <Comment>Size</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>msg_id</Name>
+                </ItemLink>
+                <Control>[MAX_IDENTS_SAT]</Control>
+                <Comment>Message Identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="5" Month="9" Year="2000"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_SAT_CBCH_DWNLD_IND sends the result of reading CBCH messages to MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_SAT_CBCH_DWNLD_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>cbch_msg</Name>
+                </ItemLink>
+                <Control>[CBCH_MSG_LEN]</Control>
+                <Comment>CBCH message</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>cbch_len</Name>
+                </ItemLink>
+                <Comment>CBCH length</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="5" Month="9" Year="2000"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_BT_CB_NOTIFY_IND is sent from Bluetooth Event Handler to notify MFW of Bluetooth Events pending</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_BT_CB_NOTIFY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="22" Month="04" Year="2004"/>
+                <Author>NDH</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="04" Year="2004"/>
+                <Author>NDH</Author>
+                <Comment>Changed Primitive Number</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Message used for sending messages to ESIM RPD. Used to serialize incoming events from drivers to ESIM queue.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_RPD_MSG</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>rpd_msg_id</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>rpd_msg</Name>
+                </ItemLink>
+                <Control>[MAX_RPD_MSG_LEN]</Control>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="24" Month="06" Year="2004"/>
+                <Author>kk</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_GIL_IND is sent by the GIL library generally called from a Riviera return path callback function.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_GIL_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>gil_cb</Name>
+                </ItemLink>
+                <Comment>GIL callback function</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>gil_data</Name>
+                </ItemLink>
+                <Comment>GIL data argument of the callback function</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="08" Year="2004"/>
+                <Author>FMA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_TCH_VOCODER_CFG_REQ</Name>
+                <PrimID Direction="UPLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>L1</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>vocoder_state</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2004"/>
+                <Author>Karthik Gurumurthy</Author>
+                <Comment>Added primitive to request the Layer 1 to enable the vocoder</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_TCH_VOCODER_CFG_CON</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="29" Month="11" Year="2004"/>
+                <Author>Karthik Gurumurthy</Author>
+                <Comment>Primitive to enable Layer 1 to indicate that vocoder was enabled successfully</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_HEADSET_IND sends the headset status indication to MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_HEADSET_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>headset_status</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="06" Year="2005"/>
+                <Author>Shashi Shekar B.S.</Author>
+                <Comment>Adding Headset Indication primitive</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MMI_CARKIT_IND sends the carkit status indication to MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MMI_CARKIT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>carkit_status</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="06" Year="2005"/>
+                <Author>Shashi Shekar B.S.</Author>
+                <Comment>Adding Carkit indication primitive.</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The attribute defines the content and display attributes off the sdu-buffer. In the moment only ASCII Text is a valid content of the SDU. In the future complex graphical commands may be defined for bit oriented displays etc. The parameter control may contain additional attributes like blinking or inverse (not implemented yet).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>attrib</Name>
+                <Comment>Attribute</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>content</Name>
+                </ItemLink>
+                <Comment>content type</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>control</Name>
+                </ItemLink>
+                <Comment>control</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="5" Month="2" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a service data unit.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>Service Data Unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmi</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[MAX_SDU_LEN]</Control>
+                <Comment>buffer content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="5" Month="2" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The attribute defines the content and display attributes off the sdu-buffer. In the moment only ASCII Text is a valid content of the SDU. In the future complex graphical commands may be defined for bit oriented displays etc. The parameter control may contain additional attributes like blinking or inverse (not implemented yet).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>content</Name>
+                <Type>U16</Type>
+                <Comment>content type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_content</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="5" Month="2" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The attribute defines the content and display attributes off the sdu-buffer. In the moment only ASCII Text is a valid content of the SDU. In the future complex graphical commands may be defined for bit oriented displays etc. The parameter control may contain additional attributes like blinking or inverse (not implemented yet).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>control</Name>
+                <Type>U16</Type>
+                <Comment>control</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_control</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="5" Month="2" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the level of the backlight in percent. A value zero means that the backlight is switched off. A value 100 means that the backlight is switch on at the maximum.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bl_level</Name>
+                <Type>U8</Type>
+                <Comment>Backlight Level in percent</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the call tone.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>call_tone</Name>
+                <Type>U8</Type>
+                <Comment>Call tone</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_call_tone</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="12" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>DTMF tones added</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="3" Year="2003"/>
+                <Author>TLU</Author>
+                <Comment>Keybeep and ringing tone added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter contains a CBCH message.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cbch_msg</Name>
+                <Type>U8</Type>
+                <Comment>CBCH message</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the CBCH message identifier.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>msg_id</Name>
+                <Type>U16</Type>
+                <Comment>CBCH message identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>changed to field</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the fieldstrength of the serving cell. The unit is defined according to the number of intervalls.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rxlev</Name>
+                <Type>U8</Type>
+                <Comment>Fieldstrength of the serving cell</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the raw data assigned to a key of the keypad.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>key_code</Name>
+                <Type>U8</Type>
+                <Comment>Keypad Code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the status of a key.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>key_stat</Name>
+                <Type>U8</Type>
+                <Comment>Key Status</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_key_stat</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the status of the audio path (muted or not).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mute_stat</Name>
+                <Type>U8</Type>
+                <Comment>Mute Status</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_mute_stat</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a service data unit.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="5" Month="2" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a service data unit.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="5" Month="2" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a service data unit.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>buffer content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="5" Month="2" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the status of the audio path.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>speech_stat</Name>
+                <Type>U8</Type>
+                <Comment>Speech Status</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_speech_stat</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the temperature of the battery.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>temp</Name>
+                <Type>U8</Type>
+                <Comment>Battery Temperature</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines whether a tone shall be generated or shall be switched off.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tone_stat</Name>
+                <Type>U8</Type>
+                <Comment>Tone Status</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_tone_stat</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="12" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>new stati introduced</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the voltage of the battery. The unit depends on the number of intervalls.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>volt</Name>
+                <Type>U8</Type>
+                <Comment>Battery Voltage</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Definition changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the volume in percent of the maximum value possible by the hardware.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>volume</Name>
+                <Type>U8</Type>
+                <Comment>volume in percent</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the number of intervalls for fieldstrength requests and battery voltage requests. The answer is then calculated to the range 0 to number_of_intervalls - 1.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>no_intervalls</Name>
+                <Type>U8</Type>
+                <Comment>number of intervalls</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the operation mode for fieldstrength requests and battery voltage requests.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mode</Name>
+                <Type>U8</Type>
+                <Comment>operaton mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the time period in seconds between indications for fieldstrength or battery voltage measurements.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>period</Name>
+                <Type>U16</Type>
+                <Comment>time period</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="10" Year="1997"/>
+                <Author>HR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the X coordinate for the display request primitive.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_x</Name>
+                <Type>U16</Type>
+                <Comment>coordinate X</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="5" Month="2" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the Y coordinate for the display request primitive.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_y</Name>
+                <Type>U16</Type>
+                <Comment>coordinate Y</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="5" Month="2" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the CBCH data coding schemes.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dcs_id</Name>
+                <Type>U8</Type>
+                <Comment>CBCH data coding schemes</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="8" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>dcs_id changed to UBYTE</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the use of message identifier and data coding schemes for CBCH. The parameter also stops CBCH reading.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>modus</Name>
+                <Type>U8</Type>
+                <Comment>CBCH use</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_modus</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="1" Year="2000"/>
+                <Author>MPA</Author>
+                <Comment>documented CBCH_STOP</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="8" Year="2002"/>
+                <Author>MSB</Author>
+                <Comment>add CBCH_HOMEZONE</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the used dsp-software for the fax and data variant.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ids_mode</Name>
+                <Type>U8</Type>
+                <Comment>IDS mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_ids_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="6" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the length of the incoming CBCH message.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cbch_len</Name>
+                <Type>U8</Type>
+                <Comment>CBCH length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="29" Month="9" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the number of message identifiers.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>count</Name>
+                <Type>U16</Type>
+                <Comment>no. of msg id's</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="5" Month="9" Year="2000"/>
+                <Author>MPA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Message ID used for sending messages to ESIM RPD. Used to serialize incoming events from drivers to ESIM queue.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rpd_msg_id</Name>
+                <Type>U16</Type>
+                <Comment>Basic Element</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="06" Year="2004"/>
+                <Author>kk</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Message payload used for sending messages to ESIM RPD. Used to serialize incoming events from drivers to ESIM queue.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rpd_msg</Name>
+                <Type>U8</Type>
+                <Comment>Basic Element</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="06" Year="2004"/>
+                <Author>kk</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The callback function that has to called by the Generic Interface Layer (GIL) gil_gpf_dispatch_message().</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gil_cb</Name>
+                <Type>U32</Type>
+                <Comment>Function callback</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="08" Year="2004"/>
+                <Author>FMA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter to the GIL callback function.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gil_data</Name>
+                <Type>U32</Type>
+                <Comment>Message data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="08" Year="2004"/>
+                <Author>FMA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>vocoder_state</Name>
+                <Type>U8</Type>
+                <Comment>Vocoder state</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmi</DocName>
+                <Name>VAL_vocoder_state</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="02" Month="12" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Returns headset status.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>headset_status</Name>
+                <Type>U8</Type>
+                <Comment>Headset status</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="13" Month="06" Year="2005"/>
+                <Author>Shashi Shekar B.S.</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Returns carkit status.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>carkit_status</Name>
+                <Type>U8</Type>
+                <Comment>status</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="13" Month="06" Year="2005"/>
+                <Author>Shashi Shekar B.S.</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all sets of values that are defined for the MMI SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_control</Name>
+                <Comment>values for control</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CTL_NORMAL</Alias>
+                <Comment>normal operation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CTL_HIDDEN</Alias>
+                <Comment>hidden attribut (used for cursor control)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_content</Name>
+                <Comment>values for content</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CON_TEXT</Alias>
+                <Comment>sdu contains text</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CON_CURSOR</Alias>
+                <Comment>positioning the cursor</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_call_tone</Name>
+                <Comment>values for call_tone</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CT_RING</Alias>
+                <Comment>ringing tone</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">16</Value>
+                <Alias>CT_AUTH_NUM_UNOBTAIN</Alias>
+                <Comment>authentication or number unobtainable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">17</Value>
+                <Alias>CT_BUSY</Alias>
+                <Comment>busy tone</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">18</Value>
+                <Alias>CT_CONGESTION</Alias>
+                <Comment>congestion tone</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">19</Value>
+                <Alias>CT_CALL_DROPPED</Alias>
+                <Comment>call dropped</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">20</Value>
+                <Alias>CT_RADIO_ACK</Alias>
+                <Comment>radio acknowledge</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">21</Value>
+                <Alias>CT_CALL_WAIT</Alias>
+                <Comment>call waiting</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">22</Value>
+                <Alias>DTMF_0</Alias>
+                <Comment>digit 0</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">23</Value>
+                <Alias>DTMF_1</Alias>
+                <Comment>digit 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">24</Value>
+                <Alias>DTMF_2</Alias>
+                <Comment>digit 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">25</Value>
+                <Alias>DTMF_3</Alias>
+                <Comment>digit 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">26</Value>
+                <Alias>DTMF_4</Alias>
+                <Comment>digit 4</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">27</Value>
+                <Alias>DTMF_5</Alias>
+                <Comment>digit 5</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">28</Value>
+                <Alias>DTMF_6</Alias>
+                <Comment>digit 6</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">29</Value>
+                <Alias>DTMF_7</Alias>
+                <Comment>digit 7</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">30</Value>
+                <Alias>DTMF_8</Alias>
+                <Comment>digit 8</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">31</Value>
+                <Alias>DTMF_9</Alias>
+                <Comment>digit 9</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">32</Value>
+                <Alias>DTMF_A</Alias>
+                <Comment>character A</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">33</Value>
+                <Alias>DTMF_B</Alias>
+                <Comment>character B</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">34</Value>
+                <Alias>DTMF_C</Alias>
+                <Comment>character C</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">35</Value>
+                <Alias>DTMF_D</Alias>
+                <Comment>character D</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">36</Value>
+                <Alias>DTMF_STAR</Alias>
+                <Comment>character *</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">37</Value>
+                <Alias>DTMF_HASH</Alias>
+                <Comment>character #</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">38</Value>
+                <Alias>CT_KEYBEEP</Alias>
+                <Comment>Keybeep</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">39</Value>
+                <Alias>CT_RINGING</Alias>
+                <Comment>ringing tone</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>15</MaxValue>
+                <Comment>custom specific ringing tones</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_key_stat</Name>
+                <Comment>values for key_stat</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>KEY_STAT_PRS</Alias>
+                <Comment>pressed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>KEY_STAT_REL</Alias>
+                <Comment>released</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mute_stat</Name>
+                <Comment>values for mute_stat</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MUTE_STAT_OFF</Alias>
+                <Comment>audio path is not muted</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MUTE_STAT_ON</Alias>
+                <Comment>audio path is muted</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_speech_stat</Name>
+                <Comment>values for speech_stat</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SPEECH_STAT_OFF</Alias>
+                <Comment>audio path switched off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SPEECH_STAT_ON</Alias>
+                <Comment>audio path switched on</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tone_stat</Name>
+                <Comment>values for tone_stat</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TONE_SWT_OFF</Alias>
+                <Comment>switch off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TONE_SWT_ON_SINGLE</Alias>
+                <Comment>switch on one time</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TONE_SWT_ON_PERIODIC</Alias>
+                <Comment>switch on periodically</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TONE_SWT_ON_SILENT</Alias>
+                <Comment>switch on silent</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mode</Name>
+                <Comment>values for mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>INDICATION_SINGLE</Alias>
+                <Comment>one single request</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>INDICATION_ON_CHANGE</Alias>
+                <Comment>new indication after intervall change</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>INDICATION_PERIODIC</Alias>
+                <Comment>new indication after time period</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>INDICATION_OFF</Alias>
+                <Comment>no further indications</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_modus</Name>
+                <Comment>values for modus</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CBCH_ACCEPT</Alias>
+                <Comment>accept msg_id and dcs_id</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CBCH_IGNORE</Alias>
+                <Comment>ignore msg_id and dcs_id</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CBCH_HOMEZONE</Alias>
+                <Comment>Request homezone message after cell reseletion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>MMI_CBCH_STOP</Alias>
+                <Comment>stop cbch reading</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ids_mode</Name>
+                <Comment>values for ids_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>IDS_SPEECH</Alias>
+                <Comment>Speech mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>IDS_T_DATA</Alias>
+                <Comment>Transparent Data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>IDS_T_FAX</Alias>
+                <Comment>Transparent Fax</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>IDS_NT_DATA</Alias>
+                <Comment>Non-Transparent Data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>IDS_NT_FAX</Alias>
+                <Comment>Non-Transparent Fax</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_vocoder_state</Name>
+                <Comment>Values for the vocoder state</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>VOCODER_DISABLE</Alias>
+                <Comment>Enable the vocoder</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>VOCODER_ENABLE</Alias>
+                <Comment>Disable the vocoder</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="02" Month="12" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

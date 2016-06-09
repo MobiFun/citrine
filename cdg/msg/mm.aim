@@ -1,0 +1,3140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<AIM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aim.xsd">
+    <DocInfoSection>
+        <DocName DocType="AIM">mm</DocName>
+        <DocNum Number="602" Project="6147"/>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The base of the Protocol Stack rests on the physical layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Short Message Services (SMS) is used for sending and receiving point-to-point short messages. Additionally the reception of cell broadcast short messages is included.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Figure 1: Mobile-station protocol architecture</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This document describes the messages processed by the Mobility Management entity.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="97"/>
+            <Date Day="7" Month="5" Year="1997"/>
+            <Author>St</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="97"/>
+            <Date Day="4" Month="2" Year="2000"/>
+            <Author>UB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Condat AG change.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="97"/>
+            <Date Day="11" Month="4" Year="2001"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>CM SERVICE REQUEST fixed for SMS.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="97"/>
+            <Date Day="14" Month="8" Year="2001"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>3-digit-MNC.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="104" Year="97"/>
+            <Date Day="11" Month="2" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Decoding of network time IEs fixed.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="105" Year="02"/>
+            <Date Day="18" Month="4" Year="2002"/>
+            <Author>MSB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>link for classmark 2 to rr_com.doc.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="106" Year="06"/>
+            <Date Day="22" Month="3" Year="2006"/>
+            <Author>VR</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Got Release 99 updates from 4.x</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24.008]</RefId>
+            <RefTitle>3GPP TS 24.008 V3.19.0 Release 1999 (2002-09)3rd Generation Partnership Project;Mobile radio interface layer 3 specification, Core Network Protocols</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[MSG_RR_COM]</RefId>
+            <RefTitle>MM, Air Interface Message Specification, 6147.602.02.105, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all constants that are defined for the MM AIM</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Constant>
+            <Alias>L3MAX</Alias>
+            <Value ValueType="DEC">251</Value>
+            <Comment>maximum size of a L3 buffer</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAXNAME</Alias>
+            <Value ValueType="DEC">40</Value>
+            <Comment>maximum length of network name</Comment>
+        </Constant>
+        <History>
+            <Date Day="1" Month="1" Year="2000"/>
+            <Author>VK</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="7" Month="3" Year="2000"/>
+            <Author>HM</Author>
+            <Comment>Added MAXNAME</Comment>
+        </History>
+    </ConstantsSection>
+    <MessagesSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all messages that are defined for the MM AIM</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to initiate the abortion of all MM connections and to indicate the reason for the abortion.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.8</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_abort</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00101001</MsgID>
+                <Comment>Abort</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>rej_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.3.6</SpecRef>
+                <Comment>Reject cause</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to indicate that authentication has failed (and that the receiving mobile station shall abort all activities).</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.1</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_auth_rej</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00010001</MsgID>
+                <Comment>Authentication reject</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to initiate authentication of the mobile station identity.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.2</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_auth_req</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00010010</MsgID>
+                <Comment>Authentication request</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>ciph_key_num</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>10.5.1.2</SpecRef>
+                <Comment>Ciphering key sequence number</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>10.5.1.8</SpecRef>
+                <Comment>Spare half octet</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>auth_rand</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.3.1</SpecRef>
+                <Comment>Authentication parameter RAND</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the mobile station to the network to deliver a calculated response to the network.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.3</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>u_auth_res</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00010100</MsgID>
+                <Comment>Authentication response</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>auth_sres</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.3.2</SpecRef>
+                <Comment>Authentication parameter SRES</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the mobile station to the network to request re-establishment of a connection if the previous one has failed.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.4</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>u_cm_reestab_req</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00101000</MsgID>
+                <Comment>CM Re-establishment request</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>ciph_key_num</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>10.5.1.2</SpecRef>
+                <Comment>Ciphering key sequence number</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>10.5.1.8</SpecRef>
+                <Comment>Spare half octet</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>mob_class_2</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>10.5.1.6</SpecRef>
+                <Comment>Mobile station classmark</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mob_id</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>10.5.1.4</SpecRef>
+                <Comment>Mobile identity</Comment>
+            </MsgItem>
+            <MsgItem Presentation="CONDITIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>loc_area_ident</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">13</ItemTag>
+                <SpecRef>10.5.1.3</SpecRef>
+                <Comment>Location area identification</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="4" Year="2002"/>
+                <Author>MSB</Author>
+                <Comment>Use link for classmark 2; quite type for links!</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the mobile station to the network to request the abortion of the first MM connection establishment in progress and the release of the RR connection.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.7</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>u_cm_serv_abort</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00100011</MsgID>
+                <Comment>CM service abort</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to indicate that the requested service has been accepted.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.5</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_cm_serv_accept</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00100001</MsgID>
+                <Comment>CM service accept</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to indicate that the requested service has been accepted.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.6</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_cm_serv_rej</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00100010</MsgID>
+                <Comment>CM service reject</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>rej_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.3.6</SpecRef>
+                <Comment>Reject cause</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the mobile station to the network to request a service for the connection management sublayer entities, e.g. circuit switched connection establishment, supplementary services activation, short message transfer.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.9</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>u_cm_serv_req</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00100100</MsgID>
+                <Comment>CM service request</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>cm_serv_type</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>10.5.3.3</SpecRef>
+                <Comment>CM service type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>ciph_key_num</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>10.5.1.2</SpecRef>
+                <Comment>Ciphering key sequence number</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>mob_class_2</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>10.5.1.6</SpecRef>
+                <Comment>Mobile station classmark</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mob_id</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>10.5.1.4</SpecRef>
+                <Comment>Mobile identity</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="4" Year="2002"/>
+                <Author>MSB</Author>
+                <Comment>Use link for classmark 2; quite type for links!</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to request a mobile station to submit the specified identity to the network.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.10</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_ident_req</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00011000</MsgID>
+                <Comment>Identity request</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>ident</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>10.5.3.4</SpecRef>
+                <Comment>Identity type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>10.5.1.8</SpecRef>
+                <Comment>Spare half octet</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the mobile station to the network in response to an IDENTITY REQUEST message providing the requested identity.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.11</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>u_ident_res</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00011001</MsgID>
+                <Comment>Identity response</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mob_id</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>10.5.1.4</SpecRef>
+                <Comment>Mobile identity</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the mobile station to the network to set a deactivation indication in the network.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.12 </XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>u_imsi_detach_ind</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00000001</MsgID>
+                <Comment>IMSI detach indication</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>mob_class_1</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.1.5</SpecRef>
+                <Comment>Mobile station classmark</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mob_id</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>10.5.1.4</SpecRef>
+                <Comment>Mobile identity</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to indicate that updating or IMSI attach in the network has been completed.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Follow on proceed</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The follow on proceed information element appears if the network wishes to indicate that the mobile station may attempt an MM connection establishment using the same RR connection.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Equivalent PLMNs</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The Equivalent PLMNs information element is included if the network wants to inform the mobile station of equivalent PLMNs.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.13.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_loc_upd_accept</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00000010</MsgID>
+                <Comment>Location updating accept</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>loc_area_ident</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.1.3</SpecRef>
+                <Comment>Location area identification</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mob_id</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">17</ItemTag>
+                <SpecRef>10.5.1.4</SpecRef>
+                <Comment>Mobile identity</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>follow_proceed</Name>
+                </ItemLink>
+                <Type>GSM2_T</Type>
+                <ItemTag TagType="HEX">A1</ItemTag>
+                <SpecRef>10.5.3.7</SpecRef>
+                <Comment>Follow on proceed</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>cts_per</Name>
+                </ItemLink>
+                <Type>GSM2_T</Type>
+                <ItemTag TagType="HEX">A2</ItemTag>
+                <SpecRef>10.5.3.10</SpecRef>
+                <Comment>CTS permission</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>eqv_plmn_list</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">4A</ItemTag>
+                <SpecRef>10.5.1.13</SpecRef>
+                <Comment>Equivalent PLMNs</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="3" Year="2006"/>
+                <Author>VR</Author>
+                <Comment>Updated from the 4.x document.</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="03" Year="2006"/>
+                <Author>VR</Author>
+                <Comment>Added new element CTS Permission(even though this is not used in code it is required to decode the message properly)</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to indicate that updating or IMSI attach has failed.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.14</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_loc_upd_rej</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00000100</MsgID>
+                <Comment>Location updating reject</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>rej_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.3.6</SpecRef>
+                <Comment>Reject cause</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the mobile station to the network either to request update of its location file (normal updating or periodic updating) or to request IMSI attach.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>u_loc_upd_req</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00001000</MsgID>
+                <Comment>Location updating request</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>loc_upd_type</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>10.5.3.5</SpecRef>
+                <Comment>Location updating type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>ciph_key_num</Name>
+                </ItemLink>
+                <Type>GSM1_V</Type>
+                <SpecRef>10.5.1.2</SpecRef>
+                <Comment>Ciphering key sequence number</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>loc_area_ident</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.1.3</SpecRef>
+                <Comment>Location area identification</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">rr_com</DocName>
+                    <Name>mob_class_1</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.1.5</SpecRef>
+                <Comment>Mobile station classmark</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mob_id</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>10.5.1.4</SpecRef>
+                <Comment>Mobile identity</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the mobile station or the network at any time to report certain error conditions.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.16</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>b_mm_status</Name>
+                <MsgID Direction="BOTH" IDType="BIN">00110001</MsgID>
+                <Comment>MM Status</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>rej_cause</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.3.6</SpecRef>
+                <Comment>Reject cause</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to reallocate or delete a TMSI.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.17</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_tmsi_realloc_cmd</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00011010</MsgID>
+                <Comment>TMSI reallocation command</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>loc_area_ident</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.5.1.3</SpecRef>
+                <Comment>Location area identification</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mob_id</Name>
+                </ItemLink>
+                <Type>GSM4_LV</Type>
+                <SpecRef>10.5.1.4</SpecRef>
+                <Comment>Mobile identity</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the mobile station to the network to indicate that reallocation or deletion of a TMSI has taken place.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.18</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>u_tmsi_realloc_comp</Name>
+                <MsgID Direction="UPLINK" IDType="BIN">00011011</MsgID>
+                <Comment>TMSI reallocation complete</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to request the mobile to establish a service for the specified CM protocol using the specified SAPI, e.g. circuit switched connection establishment on SAPI 0, supplementary services activation on SAPI 0, or short message transfer on SAPI 3.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.5a</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_cm_service_prompt</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00100101</MsgID>
+                <Comment>CM service prompt</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>pd_and_sapi</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.1.10a</SpecRef>
+                <Comment>PD and SAPI</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="10" Month="2" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+        <Message>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This message is sent by the network to the mobile station to provide the mobile station with subscriber specific information.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Full name for network</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This IE may be sent by the network. If this IE is sent, the contents of this IE indicate the "full length name of the network" that the network wishes the mobile station to associate with the MCC and MNC contained in the Location Area Identification of the cell to which the mobile station sent its Channel Request message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Short name for network</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This IE may be sent by the network. If this IE is sent, the contents of this IE indicate the "abbreviated name of the network" that the network wishes the mobile station to associate with the MCC and MNC contained in the Location Area Identification of the cell to which the mobile station sent its Channel Request message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Local time zone</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This IE may be sent by the network. The mobile station should assume that this time zone applies to the Location Area of the cell to which the Channel Request message was sent.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If the local time zone has been adjusted for Daylight Saving Time, the network shall indicate this by including the IE Network Daylight Saving Time.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Universal time and local time zone</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This IE may be sent by the network. The mobile station should assume that this time zone applies to the Location Area of the cell to which the Channel Request message was sent. The mobile station shall not assume that the time information is accurate.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If the local time zone has been adjusted for Daylight Saving Time, the network shall indicate this by including the IE Network Daylight Saving Time.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Network Daylight Saving Time</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This IE may be sent by the network. If this IE is sent, the contents of this IE indicates the value that has been used to adjust the local time zone.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgDef>
+                <Name>d_mm_information</Name>
+                <MsgID Direction="DOWNLINK" IDType="BIN">00110010</MsgID>
+                <Comment>MM Information</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>full_net_name</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">43</ItemTag>
+                <SpecRef>10.5.3.5a</SpecRef>
+                <Comment>Full name for network</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>short_net_name</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">45</ItemTag>
+                <SpecRef>10.5.3.5a</SpecRef>
+                <Comment>Short name for network</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>net_tz</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">46</ItemTag>
+                <SpecRef>10.5.3.8</SpecRef>
+                <Comment>Network Time Zone</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>net_tz_and_time</Name>
+                </ItemLink>
+                <Type>GSM3_TV</Type>
+                <ItemTag TagType="HEX">47</ItemTag>
+                <SpecRef>10.5.3.9</SpecRef>
+                <Comment>Network Zone and Time</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>lsa_identifier</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">48</ItemTag>
+                <SpecRef>10.5.3.11</SpecRef>
+                <Comment>LSA Identity</Comment>
+            </MsgItem>
+            <MsgItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>daylight_save_time</Name>
+                </ItemLink>
+                <Type>GSM4_TLV</Type>
+                <ItemTag TagType="HEX">49</ItemTag>
+                <SpecRef>10.5.3.12</SpecRef>
+                <Comment>Daylight Saving Time</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="6" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="3" Year="2006"/>
+                <Author>VR</Author>
+                <Comment>Updated from 4.x document.</Comment>
+            </History>
+        </Message>
+    </MessagesSection>
+    <MsgStructElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all structured elements that are defined for the MM AIM</XHTMLElement>
+            </DocElement>
+        </Description>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the Authentication Parameter RAND information element is to provide the mobile station with a non-predictable number to be used to calculate the authentication response signature SRES and the ciphering key Kc.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.1</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>auth_rand</Name>
+                <Comment>Authentication parameter RAND</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>rand</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[0..16]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>RAND value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the Ciphering Key Sequence Number information element is to make it possible for the network to identify the ciphering key Kc which is stored in the mobile station without invoking the authentication procedure. The ciphering key sequence number is allocated by the network and sent with the AUTHENTICATION REQUEST message to the mobile station where it is stored together with the calculated ciphering key Kc.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.2</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>ciph_key_num</Name>
+                <Comment>Ciphering Key Sequence Number</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0</Pattern>
+                    <BitLen>1</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>key_seq</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Key Sequence</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.7</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>follow_proceed</Name>
+                <Comment>Follow on proceed</Comment>
+            </MsgStructElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the Identity Type information element is to specify which identity is requested.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.4</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>ident</Name>
+                <Comment>Identity type</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0</Pattern>
+                    <BitLen>1</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>ident_type</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Type of identity</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the Location Area Identification information element is to provide an unambiguous identification of location areas within the area covered by the GSM system.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.3</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>loc_area_ident</Name>
+                <Comment>Location Area Identification</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mcc</Name>
+                </ItemLink>
+                <Type>BCD_NOFILL</Type>
+                <Control>
+                    <TypeModifier>[3]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Mobile Country Code</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mnc</Name>
+                </ItemLink>
+                <Type>BCD_MNC</Type>
+                <Control>
+                    <TypeModifier>[2..3]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Mobile Network Code</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>lac</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Location Area Code</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="8" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>3-digit-MNC</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the Location Updating Type information element is to indicate whether a normal updating, a periodic updating or an IMSI attach is wanted. It may also indicate that a follow-on request has been received from the mobile station CM layer.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.5</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>loc_upd_type</Name>
+                <Comment>Location updating type</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>follow</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>follow on request</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0</Pattern>
+                    <BitLen>1</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>lut</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>location updating type</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the Mobile Identity information element is to provide either the international mobile subscriber identity, IMSI, the temporary mobile subscriber identity, TMSI, the international mobile equipment identity, IMEI or the international mobile equipment identity together with the software version number, IEMISV.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.4</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>mob_id</Name>
+                <Comment>Mobile Identity</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>ident_type</Name>
+                </ItemLink>
+                <Control>
+                    <CmdSequence>GETPOS,:,4,+,:,1,+,SETPOS</CmdSequence>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Type of identity</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>odd_even</Name>
+                </ItemLink>
+                <Control>
+                    <CmdSequence>SETPOS</CmdSequence>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Odd/ Even indicaction</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>ident_dig</Name>
+                </ItemLink>
+                <Type>BCDODD</Type>
+                <Control>
+                    <TypeModifier>[0..16]</TypeModifier>
+                    <Condition>ident_type # ID_TYPE_NO_IDENT AND ident_type # ID_TYPE_TMSI</Condition>
+                    <CmdSequence>SETPOS</CmdSequence>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Identity digit</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>1111</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <Control>
+                    <Condition>ident_type = ID_TYPE_TMSI</Condition>
+                    <CmdSequence>:,SETPOS,8,+</CmdSequence>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>tmsi</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[.32]</TypeModifier>
+                    <Condition>ident_type = ID_TYPE_TMSI</Condition>
+                    <CmdSequence>SETPOS</CmdSequence>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>TMSI</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>dmy</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[0..16]</TypeModifier>
+                    <Condition>ident_type = ID_TYPE_NO_IDENT</Condition>
+                    <CmdSequence>SETPOS</CmdSequence>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>dummy</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>TMSI added</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="10" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>Definition fixed.</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="9" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Dummy added for ANITE Testsystem.</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the PD and SAPI information element is to provide information concerning Protocol Discriminators and Service Access Point Identifiers.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.10a</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>pd_and_sapi</Name>
+                <Comment>PD and SAPI</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>00</Pattern>
+                    <BitLen>2</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>SAPI</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>pd</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>PD</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="10" Month="2" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the Network name information element is to provide information concerning the long and/or short name of the network operator.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.5a</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>full_net_name</Name>
+                <Comment>Full Network Name</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>short_net_name</Name>
+                <Comment>Short Network Name</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>1</Pattern>
+                    <BitLen>1</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>ext</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>cs</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>coding scheme</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>add_ci</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>add country information</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>num_spare</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>number of spare bits in last octett</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>text</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[0..MAXNAME]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>text string</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of this information element is to encode the local timezone in steps of 15 minutes.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.8</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>net_tz</Name>
+                <Comment>Network Time Zone</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>tz</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Network Time Zone</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of this information element is to encode the local timezone in steps of 15 minutes and to indicate the time at which this information element may have been sent by the network.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.9</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>net_tz_and_time</Name>
+                <Comment>Network Time Zone and Time</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>year</Name>
+                </ItemLink>
+                <Type>BCDEVEN</Type>
+                <Control>
+                    <TypeModifier>[2]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>year</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>month</Name>
+                </ItemLink>
+                <Type>BCDEVEN</Type>
+                <Control>
+                    <TypeModifier>[2]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>month</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>day</Name>
+                </ItemLink>
+                <Type>BCDEVEN</Type>
+                <Control>
+                    <TypeModifier>[2]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>day</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>hour</Name>
+                </ItemLink>
+                <Type>BCDEVEN</Type>
+                <Control>
+                    <TypeModifier>[2]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>hour</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>minute</Name>
+                </ItemLink>
+                <Type>BCDEVEN</Type>
+                <Control>
+                    <TypeModifier>[2]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>minute</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>second</Name>
+                </ItemLink>
+                <Type>BCDEVEN</Type>
+                <Control>
+                    <TypeModifier>[2]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>second</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>tz</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Network Time Zone</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed, decoding is BCD, not binary</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This element is uniquely identifies a location service area.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference: [24.008] section 10.5.3.11</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Not used.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>lsa_identifier</Name>
+                <Version>REL99</Version>
+                <Comment>LSA identifier</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>lsa_id</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[1..3]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>LSA ID</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="28" Month="5" Year="2001"/>
+                <Author>MLP</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="03" Year="2006"/>
+                <Author>VR</Author>
+                <Comment>Updated from 4.x document</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of this information element is to encode the Daylight Saving Time in steps of 1 hour.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference: [24.008] section 9.2.15a.6</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>daylight_save_time</Name>
+                <Version>REL99</Version>
+                <Comment>Daylight Saving Time</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>000000</Pattern>
+                    <BitLen>6</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>save_time_value</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Daylight Saving Time value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="23" Month="10" Year="2000"/>
+                <Author>AMJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="3" Year="2006"/>
+                <Author>VR</Author>
+                <Comment>Updated from 4.x document</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the Equivalent PLMN List information element is that the network operator can provide a list of PLMN codes to the mobile station.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference: [24.008] section 10.5.1.13</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>eqv_plmn_list</Name>
+                <Comment>Equivalent PLMN list</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>eqv_plmn</Name>
+                </ItemLink>
+                <Control>
+                    <TypeModifier>[1..5]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Equivalent PLMN</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="11" Month="3" Year="2003"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.13</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>eqv_plmn</Name>
+                <Comment>PLMN</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mcc</Name>
+                </ItemLink>
+                <Type>BCD_NOFILL</Type>
+                <Control>
+                    <TypeModifier>[3]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Mobile Country Code</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">mm</DocName>
+                    <Name>mnc</Name>
+                </ItemLink>
+                <Type>BCD_MNC</Type>
+                <Control>
+                    <TypeModifier>[2..3]</TypeModifier>
+                </Control>
+                <SpecRef>-</SpecRef>
+                <Comment>Mobile Network Code</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="11" Month="3" Year="2003"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.10 (CTS permission)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This IE is not supported in code but this IE need to be added in AIM file. In LOC update accept message this optional IE is not at the end.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>cts_per</Name>
+                <Comment>Structured Element</Comment>
+            </MsgStructElemDef>
+            <History>
+                <Date Day="29" Month="03" Year="2006"/>
+                <Author>VR</Author>
+                <Comment>This IE is not supported but this need to be added in LOC update accept message as this optional IE is not at the end.</Comment>
+            </History>
+        </MsgStructElem>
+    </MsgStructElementsSection>
+    <MsgBasicElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all basic elements that are defined for the MM AIM</XHTMLElement>
+            </DocElement>
+        </Description>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the authentication parameter SRES information element is to provide the network with the authentication response signature calculated in the mobile station.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.2</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>auth_sres</Name>
+                <BitLen>32</BitLen>
+                <Comment>Authentication parameter SRES</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the CM Service Type information element is to specify which service is requested from the network.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.3</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>cm_serv_type</Name>
+                <BitLen>4</BitLen>
+                <Comment>CM service type</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_cm_serv_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="4" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>ST_SMS is 4 and not 3 according to GSM 04.08 10.5.3.3</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.5 (Location updating type)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>follow</Name>
+                <BitLen>1</BitLen>
+                <Comment>Follow on request</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_follow</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.4 (Mobile Identity)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ident_dig</Name>
+                <BitLen>4</BitLen>
+                <Comment>Identity digit</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.2 (Ciphering Key Sequence Number)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>key_seq</Name>
+                <BitLen>3</BitLen>
+                <Comment>key sequence</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_key_seq</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.3 (Location Area Identification)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>lac</Name>
+                <BitLen>16</BitLen>
+                <Comment>Location Area Code</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.5 (Location updating type)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>lut</Name>
+                <BitLen>2</BitLen>
+                <Comment>Location updating type</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.4</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>msg_type</Name>
+                <BitLen>8</BitLen>
+                <Comment>Message Type</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.3 (Location Area Identification)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>mcc</Name>
+                <BitLen>4</BitLen>
+                <Comment>Mobile Country Code</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.3 (Location Area Identification)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>mnc</Name>
+                <BitLen>4</BitLen>
+                <Comment>Mobile Network Code</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.4 (Mobile Identity)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>odd_even</Name>
+                <BitLen>1</BitLen>
+                <Comment>Odd Even indicaction</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_odd_even</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.1 (Authentication parameter RAND)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>rand</Name>
+                <BitLen>8</BitLen>
+                <Comment>RAND value</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the Reject Cause information element is to indicate the reason why a request from the mobile station is rejected by the network.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.6</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>rej_cause</Name>
+                <BitLen>8</BitLen>
+                <Comment>Reject cause</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_rej_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.4 (Mobile Identity)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>ident_type</Name>
+                <BitLen>3</BitLen>
+                <Comment>Type of identity</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_ident_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the TMSI information element is to provide the Temporary Mobile Subscriber Identity for paging purposes.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.2.42</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tmsi</Name>
+                <BitLen>32</BitLen>
+                <Comment>TMSI</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the dummy element is to satisfy the ANITE testsystem. This element contains the TMSI in case the mobile identity contains a TMSI but the ident_type == NO_IDENTITY.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>dmy</Name>
+                <BitLen>4</BitLen>
+                <Comment>Dummy</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="8" Month="9" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of this information element is to deliver the SAPI for an addressed CM entity.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.10 (PD and SAPI)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>sapi</Name>
+                <BitLen>2</BitLen>
+                <Comment>SAPI</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_sapi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="10" Month="2" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of this information element is to deliver the PD for an addressed CM entity.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.10 (PD and SAPI), GSM 04.07 section 11.2.1</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>pd</Name>
+                <BitLen>4</BitLen>
+                <Comment>PD</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_pd</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="10" Month="2" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of this information element is to indicate in which way the text string is encoded.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.5a (Network Name)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>cs</Name>
+                <BitLen>3</BitLen>
+                <Comment>Coding Scheme</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_cs</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of this information element is to indicate wheter the Country's initials are to be added to the network operator's name (separated by e.g. a space character).</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.5a (Network Name)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>add_ci</Name>
+                <BitLen>1</BitLen>
+                <Comment>Add Country Information</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_add_ci</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of this information element is to indicate the number of spare bits in the last byte of the text string. This may only be an useful information identifier if SMSCB encoding was indicated by the network.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.5a (Network Name)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>num_spare</Name>
+                <BitLen>3</BitLen>
+                <Comment>Number of spare bits</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This information element contains a text string.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.5a (Network Name)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>text</Name>
+                <BitLen>8</BitLen>
+                <Comment>text string</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">These information elements are used to deliver network time information to the mobile station.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.8 (Time Zone)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.9 (Network Time and Time Zone)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>year</Name>
+                <BitLen>4</BitLen>
+                <Comment>year</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">These information elements are used to deliver network time information to the mobile station.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.8 (Time Zone)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.9 (Network Time and Time Zone)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>month</Name>
+                <BitLen>4</BitLen>
+                <Comment>month</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">These information elements are used to deliver network time information to the mobile station.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.8 (Time Zone)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.9 (Network Time and Time Zone)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>day</Name>
+                <BitLen>4</BitLen>
+                <Comment>day</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">These information elements are used to deliver network time information to the mobile station.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.8 (Time Zone)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.9 (Network Time and Time Zone)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>hour</Name>
+                <BitLen>4</BitLen>
+                <Comment>hour</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">These information elements are used to deliver network time information to the mobile station.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.8 (Time Zone)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.9 (Network Time and Time Zone)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>minute</Name>
+                <BitLen>4</BitLen>
+                <Comment>minute</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">These information elements are used to deliver network time information to the mobile station.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 9.2.15a (MM Information)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.8 (Time Zone)</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">[24.008] section 10.5.3.9 (Network Time and Time Zone)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>second</Name>
+                <BitLen>4</BitLen>
+                <Comment>second</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Fixed</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The Time Zone code enables the receiver to calculate the equivalent time in GMT from the other semi-octets in the Service Centre Time Stamp, or indicate the time zone (GMT, GMT+1H etc.), or perform other similar calculations as required by the implementation.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>tz</Name>
+                <BitLen>8</BitLen>
+                <Comment>time zone</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="15" Month="1" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Adapted from SMS message document</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.1.1 (Priority level)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>lsa_id</Name>
+                <BitLen>8</BitLen>
+                <Comment>LSA identifier</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="28" Month="5" Year="2001"/>
+                <Author>MLP</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="03" Year="2006"/>
+                <Author>VR</Author>
+                <Comment>Got Release 99 updates from 4.x</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference : [24.008] section 10.5.3.12 (Daylight Saving Time)</XHTMLElement>
+                </DocElement>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>save_time_value</Name>
+                <BitLen>2</BitLen>
+                <Comment>Daylight Saving Time Value</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">mm</DocName>
+                <Name>VAL_save_time_value</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="24" Month="10" Year="2000"/>
+                <Author>AMJ</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="03" Year="2006"/>
+                <Author>VR</Author>
+                <Comment>Updated from 4.x document.</Comment>
+            </History>
+        </MsgBasicElem>
+    </MsgBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all sets of values that are defined for the MM AIM</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cm_serv_type</Name>
+                <Comment>values for cm_serv_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ST_MOC</Alias>
+                <Comment>Mobile originating call establishment or packet mode connection establishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>ST_EMERGENCY</Alias>
+                <Comment>Emergency call establishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>ST_SMS</Alias>
+                <Comment>Short message service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>ST_SS</Alias>
+                <Comment>Supplementary service activation</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>reserved</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_follow</Name>
+                <Comment>values for follow</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>FOR_PENDING_NO</Alias>
+                <Comment>No follow-on request pending</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>FOR_PENDING_YES</Alias>
+                <Comment>Follow-on request pending</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_key_seq</Name>
+                <Comment>values for key_seq</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias/>
+                <Comment>No key is available (MS to network); Reserved (network to MS)</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>6</MaxValue>
+                <Comment/>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_odd_even</Name>
+                <Comment>values for odd_even</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>EVEN</Alias>
+                <Comment>even</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ODD</Alias>
+                <Comment>odd</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rej_cause</Name>
+                <Comment>values for rej_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">00000010</Value>
+                <Alias>RC_IMSI_IN_HLR</Alias>
+                <Comment>IMSI unknown in HLR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00000011</Value>
+                <Alias>RC_ILLEGAL_MS</Alias>
+                <Comment>Illegal MS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00000100</Value>
+                <Alias>RC_IMSI_IN_VLR</Alias>
+                <Comment>IMSI unknown in VLR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00000101</Value>
+                <Alias>RC_IMEI_NOT_ACCEPTED</Alias>
+                <Comment>IMEI not accepted</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00000110</Value>
+                <Alias>RC_ILLEGAL_ME</Alias>
+                <Comment>Illegal ME</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00001011</Value>
+                <Alias>RC_PLMN_NOT_ALLOWED</Alias>
+                <Comment>PLMN not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00001100</Value>
+                <Alias>RC_LA_NOT_ALLOWED</Alias>
+                <Comment>Location Area not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00001101</Value>
+                <Alias>RC_ROAMING_NOT_ALLOWED</Alias>
+                <Comment>National roaming not allowed in this location area</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00001111</Value>
+                <Alias>RC_NO_SUITABLE_CELL_IN_LA</Alias>
+                <Version>REL99</Version>
+                <Comment>Find another allowed location area in the same PLMN</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00010001</Value>
+                <Alias>RC_NETWORK_FAILURE</Alias>
+                <Comment>Network failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00010110</Value>
+                <Alias>RC_CONGETION</Alias>
+                <Comment>Congestion</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100000</Value>
+                <Alias>RC_SERVICE_NOT_SUPPORTED</Alias>
+                <Comment>Service option not supported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100001</Value>
+                <Alias>RC_SERVICE_NOT_SUBSCRIBED</Alias>
+                <Comment>Requested service option not subscribed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100010</Value>
+                <Alias>RC_SERVICE_ORDER</Alias>
+                <Comment>Service option temporarily out of order</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">00100110</Value>
+                <Alias>RC_IDENTIFIY</Alias>
+                <Comment>Call cannot be identified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01011111</Value>
+                <Alias>RC_INCORRECT_MESSAGE</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100000</Value>
+                <Alias>RC_INVALID_MAND_MESSAGE</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100001</Value>
+                <Alias>RC_MESSAGE_TYPE_NOT_IMPLEM</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100010</Value>
+                <Alias>RC_MESSAGE_TYPE_INCOMPAT</Alias>
+                <Comment>Message type not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100011</Value>
+                <Alias>RC_IE_NOT_IMPLEM</Alias>
+                <Comment>Information element non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100100</Value>
+                <Alias>RC_CONDITIONAL_IE</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01100101</Value>
+                <Alias>RC_MESSAGE_INCOMPAT</Alias>
+                <Comment>Message not compatible with the protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">01101111</Value>
+                <Alias>RC_UNSPECIFIED</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="BIN">
+                <MinValue>00110000</MinValue>
+                <MaxValue>00111111</MaxValue>
+                <Comment>retry upon entry into a new cell</Comment>
+            </ValuesRange>
+            <ValuesDefault>
+                <Comment>DOWNLINK : Service option temporarily out of order UPLINK : Protocol error, unspecified</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ident_type</Name>
+                <Comment>values for ident_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ID_TYPE_NO_IDENT</Alias>
+                <Comment>No Identity</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ID_TYPE_IMSI</Alias>
+                <Comment>IMSI</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>ID_TYPE_IMEI</Alias>
+                <Comment>IMEI</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>ID_TYPE_IMEISV</Alias>
+                <Comment>IMEISV</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>ID_TYPE_TMSI</Alias>
+                <Comment>TMSI</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>reserved</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sapi</Name>
+                <Comment>values for sapi</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SAPI_0</Alias>
+                <Comment>SAPI used for RR, MM, CC and SS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>SAPI_3</Alias>
+                <Comment>SAPI used for SMS</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pd</Name>
+                <Comment>values for pd</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PD_GCC</Alias>
+                <Comment>Group call control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PD_BCC</Alias>
+                <Comment>Broadcast Call Control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PD_PDSS1</Alias>
+                <Comment>PDSS1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>PD_CC</Alias>
+                <Comment>Call Control, call related SS messages</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>PD_PDSS2</Alias>
+                <Comment>PDSS2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>PD_MM</Alias>
+                <Comment>Mobility Management messages</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>PD_RR</Alias>
+                <Comment>Radio Resources management messages</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>PD_GPRS_MM</Alias>
+                <Comment>GPRS Mobility Management messages</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>PD_SMS</Alias>
+                <Comment>SMS messages</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>PD_GPRS_SM</Alias>
+                <Comment>GPRS Session Management messages</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>PD_SS</Alias>
+                <Comment>non call related SS messages</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>PD_LS</Alias>
+                <Comment>Location services</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>PD_TST</Alias>
+                <Comment>Reserved for test procedures described in GSM 11.10</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cs</Name>
+                <Comment>values for cs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CODING_SCHEME_SMSCB</Alias>
+                <Comment>Coding scheme cell broadcast short messages</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CODING_SCHEME_UCS2</Alias>
+                <Comment>Coding scheme UCS2, 16 bit, ISO ISO/IEC10646</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_add_ci</Name>
+                <Comment>values for add_ci</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ADD_CI_NO</Alias>
+                <Comment>Country's Initials are not to be added</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ADD_CI_YES</Alias>
+                <Comment>Country's Initials are to be added</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_save_time_value</Name>
+                <Comment>values for save_time_value</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TIME_ADJ_NO</Alias>
+                <Comment>No adjustment for Daylight Saving Time</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TIME_ADJ_1</Alias>
+                <Comment>+1 hour adjustment for Daylight Saving Time</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TIME_ADJ_2</Alias>
+                <Comment>+2 hours adjustment for Daylight Saving Time</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</AIM>

@@ -1,0 +1,198 @@
+;********************************************************************************
+;*** File           : mac.pdf
+;*** Creation       : Wed Mar 11 09:58:17 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mac
+;*** Document No.   : 8441.111.03.009
+;*** Document Date  : 2003-02-26
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SAB
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:45:32 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-02-26"
+PRAGMA 	ID_AND_VERSION 	"8441.111.03.009"
+
+
+
+CONST 	MAC_MAX_TIMESLOTS 	8 	; defines the maximum number of uplink data blocks
+CONST 	MAC_BURST_PER_BLOCK 	4 	; number of bursts that compose a block
+CONST 	MAC_MAX_DL_DATA_BLCKS 	4 	; maximum number of dowlink data blocks
+
+
+
+VALTAB 	VAL_bcch_level
+VAL 	0 	MAC_RXLEV_MIN 	"minimum receive signal level as defined in GSM 05.08"
+VAL 	63 	MAC_RXLEV_MAX 	"maximum receive signal level as defined in GSM 05.08"
+VAL 	0x80 	MAC_RXLEV_NONE 	"no valid receive signal level present"
+
+VALTAB 	VAL_crc_error
+VAL 	0 	GRLC_CRC_PASS 	"radio block is correctly received"
+VAL 	1 	GRLC_CRC_FAIL 	"radio block is not correctly received"
+
+
+
+
+VAR 	nts 	"Maximum number of Timeslots for uplink TBF" 	B
+
+
+VAR 	fn 	"Framenumber" 	L
+
+
+VAR 	rlc_blocks_sent 	"number of transmitted rlc/mac blocks (except polling)" 	B
+
+
+VAR 	rx_no 	"Number of received Timeslots" 	S
+
+
+VAR 	block_status 	"Block Status" 	S
+
+
+VAR 	tn 	"Timeslot number" 	S
+
+
+VAR 	ul_block 	"Uplink block" 	S
+
+
+VAR 	dl_block 	"Downlink block" 	S
+
+
+VAR 	last_poll_resp 	"Last Poll Response" 	B
+
+
+VAR 	ta_value 	"Timing Advance Value" 	B
+
+
+VAR 	d_macc 	"Accumulated Metric" 	S
+
+
+VAR 	d_nerr 	"Number of estimated erorrs" 	S
+
+
+VAR 	burst_level 	"Signal level of the first valid downlink PDCH; ." 	B
+
+
+VAR 	radio_freq 	"Radio frequency of the TDMA frame; ." 	S
+
+
+VAR 	bcch_level 	"Signal level of BCCH serving Cell; ." 	B
+
+VAL 	@p_mac - VAL_bcch_level@ 	
+
+VAR 	crc_error 	"CRC error; ." 	B
+
+VAL 	@p_mac - VAL_crc_error@ 	
+
+VAR 	assignment_id 	"assignment identifier; ." 	L
+
+
+
+
+
+COMP 	ul_poll_resp 	 "Uplink Poll Response"
+{
+ 	block_status 	 ; Block Status
+ 	tn 	 ; Timeslot number
+ 	ul_block 	[13] 	 ; Uplink block
+}
+
+
+
+COMP 	ul_data 	 "Uplink Data"
+{
+ 	block_status 	 ; Block Status
+ 	ul_block 	[28] 	 ; Uplink block
+}
+
+
+
+COMP 	dl_data 	 "Downlink Data"
+{
+ 	block_status 	 ; Block Status
+ 	tn 	 ; Timeslot number
+ 	d_macc 	 ; Accumulated Metric
+ 	d_nerr 	 ; Number of estimated erorrs
+ 	dl_block 	[27] 	 ; Downlink block
+}
+
+
+
+
+
+
+; MAC_DATA_REQ 	0x3200
+; MAC_DATA_IND 	0x7200
+; MAC_READY_IND 	0x7201
+; MAC_POLL_REQ 	0x3201
+; MAC_PWR_CTRL_IND 	0x7202
+
+
+
+PRIM 	MAC_DATA_REQ 	0x3200
+{
+ 	ul_data 	 ; Uplink Data
+}
+
+
+
+
+
+
+PRIM 	MAC_DATA_IND 	0x7200
+{
+ 	fn 	 ; Framenumber
+ 	rx_no 	 ; Number of received Timeslots
+ 	dl_data 	 ; Downlink Data
+}
+
+
+
+
+
+
+PRIM 	MAC_READY_IND 	0x7201
+{
+ 	nts 	 ; Maximum number of Timeslots for uplink TBF
+ 	fn 	 ; Framenumber
+ 	rlc_blocks_sent 	 ; number of transmitted rlc/mac blocks (except polling)
+ 	last_poll_resp 	 ; Last Poll Response
+ 	ta_value 	 ; Timing Advance Value
+}
+
+
+
+
+
+
+PRIM 	MAC_POLL_REQ 	0x3201
+{
+ 	ul_poll_resp 	 ; Uplink Poll Response
+}
+
+
+
+
+
+
+PRIM 	MAC_PWR_CTRL_IND 	0x7202
+{
+ 	assignment_id 	 ; Assignment identifier
+ 	crc_error 	 ; CRC error
+ 	bcch_level 	 ; Signal level of BCCH serving Cell
+ 	radio_freq 	[MAC_BURST_PER_BLOCK] 	 ; Radio frequency of the TDMA frame
+ 	burst_level 	[MAC_BURST_PER_BLOCK] 	 ; Signal level of the first valid downlink PDCH
+}
+
+
+
+
+
+
+
+
+

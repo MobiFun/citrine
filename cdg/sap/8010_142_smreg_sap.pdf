@@ -1,0 +1,277 @@
+;********************************************************************************
+;*** File           : 8010_142_smreg_sap.pdf
+;*** Creation       : Wed Mar 11 09:57:52 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_142_smreg_sap
+;*** Document No.   : 8010.142.02.011
+;*** Document Date  : 2003-08-22
+;*** Document Status: APPROVED
+;*** Document Author: MVJ
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:28:36 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-08-22"
+PRAGMA 	ID_AND_VERSION 	"8010.142.02.011"
+PRAGMA 	PREFIX 	SMREG 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+
+
+
+VALTAB 	VAL_pdp_type
+VAL 	1 	PDP_PPP 	"PDP type PPP"
+VAL 	15 	PDP_EMPTY 	"Dynamic address assignment in effect"
+VAL 	33 	PDP_IPV4 	"IP version 4"
+VAL 	87 	PDP_IPV6 	"IP version 6"
+
+
+
+
+VAR 	apn_buf 	"Access point name value" 	B
+
+
+VAR 	pdp_type 	"PDP type" 	B
+
+VAL 	@p_8010_142_smreg_sap - VAL_pdp_type@ 	
+
+
+
+
+COMP 	apn 	 "access point name"
+{
+ 	apn_buf 	[3..102] 	 ; Access point name value
+}
+
+
+
+
+
+
+; SMREG_CONFIGURE_REQ 	0x2600
+; SMREG_PDP_ACTIVATE_REQ 	0x2601
+; SMREG_PDP_ACTIVATE_CNF 	0x6600
+; SMREG_PDP_ACTIVATE_IND 	0x6602
+; SMREG_PDP_ACTIVATE_REJ 	0x6601
+; SMREG_PDP_ACTIVATE_REJ_RES 	0x2604
+; SMREG_PDP_ACTIVATE_SEC_REQ 	0x2606
+; SMREG_PDP_ACTIVATE_SEC_CNF 	0x6608
+; SMREG_PDP_ACTIVATE_SEC_REJ 	0x6609
+; SMREG_PDP_DEACTIVATE_REQ 	0x2602
+; SMREG_PDP_DEACTIVATE_CNF 	0x6603
+; SMREG_PDP_DEACTIVATE_IND 	0x6604
+; SMREG_PDP_MODIFY_REQ 	0x2605
+; SMREG_PDP_MODIFY_CNF 	0x6606
+; SMREG_PDP_MODIFY_IND 	0x6605
+; SMREG_PDP_MODIFY_REJ 	0x6607
+
+
+
+PRIM 	SMREG_CONFIGURE_REQ 	0x2600
+{
+ 	EXTERN @p_8010_152_ps_include - rat@ 	rat 	 ; RAT
+ 	EXTERN @p_8010_152_ps_include - sgsn_rel@ 	sgsn_rel 	 ; network release
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_ACTIVATE_REQ 	0x2601
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	EXTERN @p_8010_137_nas_include - ti@ 	ti 	 ; Transaction identifier
+ 	EXTERN @p_8010_137_nas_include - comp_params@ 	comp_params 	 ; Compression parameters
+ 	EXTERN @p_8010_152_ps_include - qos@ 	qos 	 ; Requested quality of service
+ 	EXTERN @p_8010_152_ps_include - min_qos@ 	min_qos 	 ; Minimum requested QoS
+ 	pdp_type 	 ; PDP type
+ 	EXTERN @p_8010_137_nas_include - ip_address@ 	ip_address 	 ; PDP address
+ 	apn 	 ; Access point name
+ 	< () 	EXTERN @p_8010_137_nas_include - tft@ 	tft 	> 	 ; Traffic Flow Template; R99
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 ; PDP config options
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_ACTIVATE_CNF 	0x6600
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	pdp_type 	 ; PDP type
+ 	EXTERN @p_8010_152_ps_include - qos@ 	qos 	 ; Quality of service
+ 	EXTERN @p_8010_137_nas_include - comp_params@ 	comp_params 	 ; Compression parameters
+ 	EXTERN @p_8010_137_nas_include - ip_address@ 	ip_address 	 ; PDP address
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 ; PDP config options
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_ACTIVATE_IND 	0x6602
+{
+ 	EXTERN @p_8010_137_nas_include - ti@ 	ti 	 ; transaction identifier
+ 	pdp_type 	 ; PDP type
+ 	EXTERN @p_8010_137_nas_include - ip_address@ 	ip_address 	 ; PDP address
+ 	apn 	 ; access point name
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_ACTIVATE_REJ 	0x6601
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; Cause of rejection
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_ACTIVATE_REJ_RES 	0x2604
+{
+ 	EXTERN @p_8010_137_nas_include - ti@ 	ti 	 ; transaction identifier
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; cause of rejection
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_ACTIVATE_SEC_REQ 	0x2606
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	EXTERN @p_8010_137_nas_include - pri_nsapi@ 	pri_nsapi 	 ; Primary NSAPI
+ 	EXTERN @p_8010_137_nas_include - ti@ 	ti 	 ; Transaction identifier
+ 	EXTERN @p_8010_137_nas_include - comp_params@ 	comp_params 	 ; Compression parameters
+ 	EXTERN @p_8010_152_ps_include - qos@ 	qos 	 ; Requested quality of service
+ 	EXTERN @p_8010_152_ps_include - min_qos@ 	min_qos 	 ; Minimum requested QoS
+ 	< () 	EXTERN @p_8010_137_nas_include - tft@ 	tft 	> 	 ; Traffic flow template
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_ACTIVATE_SEC_CNF 	0x6608
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - qos@ 	qos 	 ; quality of service
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_ACTIVATE_SEC_REJ 	0x6609
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; cause of rejection
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_DEACTIVATE_REQ 	0x2602
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi_set@ 	nsapi_set 	 ; Set of network layer service access point identifiers
+ 	EXTERN @p_8010_152_ps_include - rel_ind@ 	rel_ind 	 ; Local deactivation flag
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_DEACTIVATE_CNF 	0x6603
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi_set@ 	nsapi_set 	 ; Set of network layer service access point identifiers
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_DEACTIVATE_IND 	0x6604
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi_set@ 	nsapi_set 	 ; Set of network layer service access point identifiers
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; Deactivation cause
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_MODIFY_REQ 	0x2605
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - qos@ 	qos 	 ; requested quality of service
+ 	EXTERN @p_8010_152_ps_include - min_qos@ 	min_qos 	 ; minimum quality of service
+ 	< () 	EXTERN @p_8010_137_nas_include - tft@ 	tft 	> 	 ; traffic flow template
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_MODIFY_CNF 	0x6606
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - qos@ 	qos 	 ; quality of service
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_MODIFY_IND 	0x6605
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	EXTERN @p_8010_152_ps_include - qos@ 	qos 	 ; Quality of service; Optional
+ 	EXTERN @p_8010_137_nas_include - ip_address@ 	ip_address 	 ; PDP address; R99, Optional
+}
+
+
+
+
+
+
+PRIM 	SMREG_PDP_MODIFY_REJ 	0x6607
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; cause of rejection
+}
+
+
+
+
+
+
+
+
+

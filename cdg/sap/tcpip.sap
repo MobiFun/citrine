@@ -1,0 +1,2202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">tcpip</DocName>
+        <DocNum Number="000" Project="8462"/>
+        <Description>
+            <Section>The Service Access Point (SAP) for an entity defines the interface supported by that entity in order to gain access to its services. This document contains a specification of the TCPIP SAP for the TCP/IP entity of the Texas Instruments GSM/GPRS protocol stack.</Section>
+            <Section>The TCPIP SAP is based on the exchange of primitives between the TCP/IP entity and the application entities on one hand, and between the TCP/IP entity and the ACI on the other hand (see Figure 1-1). The method used for exchange of primitives is message passing. The terms "message" and "primitive" are used interchangeably in this document.</Section>
+            <Section>This document has three primary sections. The first (section 2) contains a specification of constants used on the interface, which are not specific to the value of a particular parameter. Such constants are typically size fields, specifying array or element sizes.</Section>
+            <Section>The second primary section (section 3) contains the top-level description of the primitives defined for the interface. For each primitive its function is described, and a parameter list is given.</Section>
+            <Section>For any primitive using complex structures or parameters with identified values, references will be given to subsections of the third primary section (section 0). This section contains specifications of the complex types used in the primitives of the interface. It also contains specifications of parameters with predefined values or value ranges. Cross-references to subtypes may be used within this section for complex type declarations. Types, which are common for more SAP's or are defined as ASN1 types, are specified in common include-files, and references to these files will be given instead.</Section>
+            <Section>As the world of mobile communication evolves, some changes to this interface may be necessary. However, as this document is the basis for the TCPIP SAP it will be fully maintained and all necessary changes will result in updated versions of this document.</Section>
+            <Section>1.1 Interfaces of the TCP/IP Entity</Section>
+            <Section>Figure 1-1: Interface of the TCP/IP entity</Section>
+            <Section>(a) The ACI controls the TCP/IP entity over the TCPIP SAP.</Section>
+            <Section>(b) Most applications do TCP/IP-related signalling and payload data exchange over the TCPIP SAP.</Section>
+            <Section>(c) The SIM entity exchanges payload data with the TCP/IP entity over the DTI SAP; the signalling is done by the ACI in this case..</Section>
+            <Section>(d) The TCP/IP entity exchanges IP packet data with the GSM/GPRS data entities over the DTI SAP.</Section>
+            <Section>1.2 Description of Parameters</Section>
+            <Section>The mapping of the primitives to the Socket API and a more detailed description of the primitive parameters can be found in the document "Socket API for GPF-based TCP/IP" [C_8462.601].</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="03"/>
+            <Date Day="18" Month="8" Year="2003"/>
+            <Author>NI</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="03"/>
+            <Date Day="21" Month="8" Year="2003"/>
+            <Author>NI</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>First compilable version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="03"/>
+            <Date Day="26" Month="8" Year="2003"/>
+            <Author>NI</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Result parameters for a few CNFs.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="03"/>
+            <Date Day="1" Month="9" Year="2003"/>
+            <Author>NI</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Renumbered primitives; introduced data and flow control primitives.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="03"/>
+            <Date Day="5" Month="9" Year="2003"/>
+            <Author>NI</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changed task handle to communication handle.</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the TCPIP SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>TCPIP_HNAMELEN</Alias>
+            <Value ValueType="DEC">256</Value>
+            <Comment>Maximum length of the full-qualified domain name of an Internet host (as defined in [RFC 1034]) plus one byte for the zero termination.</Comment>
+        </Constant>
+        <Constant>
+            <Alias>TCPIP_DEFAULT_MTU_SIZE</Alias>
+            <Value ValueType="DEC">1500</Value>
+            <Comment>Default size of the maximum transfer unit of the network connection. To be used if no other information is available.</Comment>
+        </Constant>
+        <Constant>
+            <Alias>TCPIP_UNSPECIFIED_IPADDR</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>The unspecified IP address (0.0.0.0)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>TCPIP_UNSPECIFIED_PORT</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>The unspecified port number.</Comment>
+        </Constant>
+        <History>
+            <Date Day="21" Month="8" Year="2003"/>
+            <Author>NI</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="72">
+        <Description>
+            <Section>This section contains all primitives that are defined for the TCPIP SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The ACI requests initialization of TCPIP. TCPIP will initialize its internal data structures, including memory allocation.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_INITIALIZE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Response to TCPIP_INITIALIZE_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_INITIALIZE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI requests shutdown of TCPIP. TCPIP will stop its operation and will free all allocated resources.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_SHUTDOWN_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Response to TCPIP_SHUTDOWN_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_SHUTDOWN_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI notifies TCPIP about a network interface (i. e. CSD connection or PDP context) coming up or going down.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_IFCONFIG_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>if_up</Name>
+                </ItemLink>
+                <Comment>Direction of interface transition (coming up or going down)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>mtu_size</Name>
+                </ItemLink>
+                <Comment>MTU size of interface (unused when interface goes down)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipaddr</Name>
+                </ItemLink>
+                <Comment>IP address of interface (unused when interface goes down)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>dnsaddr1</Name>
+                </ItemLink>
+                <Comment>First DNS address (unused when interface goes down)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>dnsaddr2</Name>
+                </ItemLink>
+                <Comment>Second DNS address (unused when interface goes down)</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Response to a TCPIP_IFCONFIG_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_IFCONFIG_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The ACI requests TCPIP to establish a link with the specified neighbor entity. The neighbor entity can be a protocol stack entity or an application entity (SIM).</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_DTI_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>entity_name</Name>
+                </ItemLink>
+                <Comment>Neighbor entity name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>DTI link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>DTI link direction</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The TCPIP confirms establishment of a link with a neighbor entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_DTI_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>DTI link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests a newly created socket from TCPIP.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_CREATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipproto</Name>
+                </ItemLink>
+                <Comment>IP protocol type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>request_id</Name>
+                </ItemLink>
+                <Comment>Request ID (arbitrary value chosen by the application)</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The TCPIP entity returns a newly created socket or an error code to the application.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_CREATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_CREATE_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Descriptor of new socket (if result is TCPIP_RESULT_OK)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>request_id</Name>
+                </ItemLink>
+                <Comment>Request ID as passed in TCPIP_CREATE_REQ</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests TCPIP to close a socket.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_CLOSE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP returns the result of a TCPIP_CLOSE_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_CLOSE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_CLOSE_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests TCPIP to bind a socket to the specified port.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_BIND_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>port</Name>
+                </ItemLink>
+                <Comment>Port number to bind the socket to</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP returns the result of a TCPIP_BIND_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_BIND_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_BIND_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests TCPIP to listen for incoming connections on a socket.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_LISTEN_REQ</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP returns the result of a TCPIP_LISTEN_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_LISTEN_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_LISTEN_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests TCPIP to connect a socket to a remote peer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_CONNECT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipaddr</Name>
+                </ItemLink>
+                <Comment>IP address of remote peer to connect to</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>port</Name>
+                </ItemLink>
+                <Comment>Port number of remote peer to connect to</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP returns the result of a TCPIP_CLOSE_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_CONNECT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_CONNECT_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests TCPIP to send payload data on a socket. Destination IP address and destination port number must be zero for TCP sockets; they must also be zero for connected UDP sockets if the destination address and port number shall be used that the socket has been connected to.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipaddr</Name>
+                </ItemLink>
+                <Comment>Destination IP address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>port</Name>
+                </ItemLink>
+                <Comment>Destination port number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>buflen</Name>
+                </ItemLink>
+                <Comment>Data buffer length</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>data</Name>
+                </ItemLink>
+                <Comment>Payload data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP acknowledges the TCPIP_DATA_REQ and signals to the application how much data the application is allowed to send (window size). The application may now send data on this socket again; it may send as much data as the "window" parameter specifies, but at least one TCPIP_DATA_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_DATA_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_DATA_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>window</Name>
+                </ItemLink>
+                <Comment>Flow control window size</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP sends payload data to the application for the specified socket. Destination IP address and destination port number are zero for connected sockets.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_DATA_IND)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipaddr</Name>
+                </ItemLink>
+                <Comment>Source IP address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>port</Name>
+                </ItemLink>
+                <Comment>Source port number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>buflen</Name>
+                </ItemLink>
+                <Comment>Data buffer length</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>data</Name>
+                </ItemLink>
+                <Comment>Payload data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application acknowledges a TCPIP_DATA_IND and signals to TCPIP how much data TCPIP is allowed to send (window size). TCPIP may now send data on this socket again; it may send as much data as the "window" parameter specifies, but at least one TCPIP_DATA_IND.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_DATA_RES</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>window</Name>
+                </ItemLink>
+                <Comment>Flow control window size</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests TCPIP to retrieve information about the local socket.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_SOCKNAME_REQ</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP returns the result of a TCPIP_SOCKNAME_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_SOCKNAME_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_SOCKNAME_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipaddr</Name>
+                </ItemLink>
+                <Comment>IP address of socket</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>port</Name>
+                </ItemLink>
+                <Comment>Port number of socket</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests TCPIP to retrieve information about the peer of a connected socket.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_PEERNAME_REQ</Name>
+                <PrimID Direction="UPLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP returns the result of a TCPIP_PEERNAME_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_PEERNAME_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_PEERNAME_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipaddr</Name>
+                </ItemLink>
+                <Comment>IP address of  remote peer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>port</Name>
+                </ItemLink>
+                <Comment>Port number of remote peer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests TCPIP to retrieve DNS information a host or IP address. Of IP address and hostname, exactly one must be specified; if the IP address is specified, the DNS is queried for the hostname, and if the hostname is specified, the DNS is queried for the IP address.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_HOSTINFO_REQ</Name>
+                <PrimID Direction="UPLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>appl</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipaddr</Name>
+                </ItemLink>
+                <Comment>IP address of the host</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>hostname</Name>
+                </ItemLink>
+                <Control>[TCPIP_HNAMELEN]</Control>
+                <Comment>Full-qualified domain name of the host</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>request_id</Name>
+                </ItemLink>
+                <Comment>Request ID (arbitrary value chosen by the application)</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP returns the result of a TCPIP_HOSTINFO_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_HOSTINFO_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_SOCKNAME_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor (unused)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>hostname</Name>
+                </ItemLink>
+                <Control>[TCPIP_HNAMELEN]</Control>
+                <Comment>Full-qualified domain name of the host</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipaddr</Name>
+                </ItemLink>
+                <Comment>IP address of the host</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>request_id</Name>
+                </ItemLink>
+                <Comment>Request ID as passed by in TCPIP_HOSTINFO_REQ</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The application requests TCPIP to indicate the MTU size of the network connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_MTU_SIZE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>app_handle</Name>
+                </ItemLink>
+                <Comment>Application communication handle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP returns the result of a TCPIP_MTU_SIZE_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_MTU_SIZE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_MTU_SIZE_CNF)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket descriptor</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>mtu_size</Name>
+                </ItemLink>
+                <Comment>MTU size</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP indicates a connection by a remote peer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_CONNECT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="15"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_CONNECT_IND)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code (TCPIP_RESULT_OK)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket on which the connection has been accepted</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>new_socket</Name>
+                </ItemLink>
+                <Comment>New socket allocated for the connection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>ipaddr</Name>
+                </ItemLink>
+                <Comment>IP address of the remote peer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>port</Name>
+                </ItemLink>
+                <Comment>Port number on the remote side</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP indicates that a connection has been close by the remote peer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_CONN_CLOSED_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="16"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_CONN_CLOSED_IND)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code (TCPIP_RESULT_OK)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket of the connection that has been closed</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP indicates an asychronous error on a socket connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="17"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>appl</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>event_type</Name>
+                </ItemLink>
+                <Comment>Type of the event as passed to the application (TCPIP_ERROR_IND)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>result</Name>
+                </ItemLink>
+                <Comment>Result code (one of TCPIP_RESULT_CONN_RESET, TCPIP_RESULT_CONN_ABORTED, or TCPIP_RESULT_UNREACHABLE)</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>socket</Name>
+                </ItemLink>
+                <Comment>Socket for which the error occured</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TCPIP sends a message to itself..</Section>
+            </Description>
+            <PrimDef>
+                <Name>TCPIP_INTERNAL_IND</Name>
+                <PrimID Direction="UPLINK" Number="15"/>
+                <PrimUsage>
+                    <Sender>TCPIP</Sender>
+                    <Receiver>TCPIP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>msg_p</Name>
+                </ItemLink>
+                <Comment>Message pointer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">tcpip</DocName>
+                    <Name>msg_id</Name>
+                </ItemLink>
+                <Comment>Message ID</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="10" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here..</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The application communication handle is used to identify a task to TCPIP. The value is passed to the task as the argument to pei_init().</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>app_handle</Name>
+                <Type>U32</Type>
+                <Comment>Application communication handle</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Changed task handle to communication handle</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates which IP protocol (TCP or UDP) shall be used on the socket.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ipproto</Name>
+                <Type>U8</Type>
+                <Comment>IP protocol identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tcpip</DocName>
+                <Name>VAL_ipproto</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The request ID identifies associates a response to the corresponding request. The value is chosen by the application and passed through transparently by TCPIP. The application, or rather the Socket API, may choose whatever it sees fit - array indices, values of a counter, or pointers, for example.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>request_id</Name>
+                <Type>U32</Type>
+                <Comment>Request ID</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is the type of the event as passed to the application. It is not identical to the primitive type, as there are some events generated by the Socket API. The Socket API could, in theory, prepend the event type field itself, but that would involve a copy operation and, worse, the allocation of another memory block. In order to save that, the event type field is included in the primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>event_type</Name>
+                <Type>U32</Type>
+                <Comment>Type of the event</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tcpip</DocName>
+                <Name>VAL_event_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The result code indicates if an operation was successful or not, and if not, what kind of error occured.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>result</Name>
+                <Type>U8</Type>
+                <Comment>Result code</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tcpip</DocName>
+                <Name>VAL_result</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The identifier of a socket. The value is chosen by TCPIP when a socket is created. The application SHALL NOT use the value other than for comparison of equality.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>socket</Name>
+                <Type>U32</Type>
+                <Comment>Socket descriptor</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The number of a UDP or TCP port.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>port</Name>
+                <Type>U16</Type>
+                <Comment>Port number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The Internet Protocol address of a host.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ipaddr</Name>
+                <Type>U32</Type>
+                <Comment>IP address</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The full-qualified domain name of an Internet host.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>hostname</Name>
+                <Type>U8</Type>
+                <Comment>Name of the host</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The identifier of a new socket return by a TCPIP_CONNECT_IND primitive. The value is chosen by TCPIP when a socket is returned in a TCPIP_CONNECT_IND. The application SHALL NOT use the value other than for comparison of equality.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>new_socket</Name>
+                <Type>U32</Type>
+                <Comment>Socket descriptor</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The size of the Maximum Transfer Unit of a network connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mtu_size</Name>
+                <Type>U16</Type>
+                <Comment>MTU size</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates which IP protocol (TCP or UDP) shall be used on the socket.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>if_up</Name>
+                <Type>U8</Type>
+                <Comment>Interface Configuration direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tcpip</DocName>
+                <Name>VAL_if_up</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The IP address of the first DNS server.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dnsaddr1</Name>
+                <Type>U32</Type>
+                <Comment>IP address of first DNS server</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The IP address of the second DNS server.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dnsaddr2</Name>
+                <Type>U32</Type>
+                <Comment>IP address of second DNS server</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a unique identifier used for the specific DTI link.. Used by the DTI library.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>link_id</Name>
+                <Type>U32</Type>
+                <Comment>DTI link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The DTI neighbor entity as a string. Used by the DTI library.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>entity_name</Name>
+                <Type>U32</Type>
+                <Comment>DTI neighbor entity name</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Indicates the direction of the DTI link. Used by the DTI library.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_direction</Name>
+                <Type>U8</Type>
+                <Comment>Direction of DTI connection</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tcpip</DocName>
+                <Name>VAL_dti_direction</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Indicates whether the DTI link is to be established or disconnected.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_conn</Name>
+                <Type>U8</Type>
+                <Comment>Indicates to connect or disconnect DTI link</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">tcpip</DocName>
+                <Name>VAL_dti_conn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Address of payload data (actually a pointer).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data</Name>
+                <Type>U32</Type>
+                <Comment>Address of payload data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Amount of data that may be sent over this socket.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>window</Name>
+                <Type>U32</Type>
+                <Comment>Flow control window size</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Amount of data in a payload data buffer.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buflen</Name>
+                <Type>U16</Type>
+                <Comment>Data buffer length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Pointer to message contents.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>msg_p</Name>
+                <Type>U32</Type>
+                <Comment>Message pointer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="10" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identification of message.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>msg_id</Name>
+                <Type>U32</Type>
+                <Comment>Message ID</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="10" Year="2003"/>
+                <Author>NI</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the TCPIP SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ipproto</Name>
+                <Comment>values for ipproto</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>TCPIP_IPPROTO_TCP</Alias>
+                <Comment>Value for TCP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">17</Value>
+                <Alias>TCPIP_IPPROTO_UDP</Alias>
+                <Comment>Value for UDP</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="6" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_event_type</Name>
+                <Comment>values for event_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TCPIP_EVT_CREATE_CNF</Alias>
+                <Comment>Result of TCPIP_CREATE_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TCPIP_EVT_CLOSE_CNF</Alias>
+                <Comment>Result of TCPIP_CLOSE_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TCPIP_EVT_BIND_CNF</Alias>
+                <Comment>Result of TCPIP_BIND_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TCPIP_EVT_LISTEN_CNF</Alias>
+                <Comment>Result of TCPIP_LISTEN_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>TCPIP_EVT_CONNECT_CNF</Alias>
+                <Comment>Result of TCPIP_CONNECT_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>TCPIP_EVT_SOCKNAME_CNF</Alias>
+                <Comment>Result of TCPIP_SOCKNAME_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>TCPIP_EVT_PEERNAME_CNF</Alias>
+                <Comment>Result of TCPIP_PEERNAME_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>TCPIP_EVT_HOSTINFO_CNF</Alias>
+                <Comment>Result of TCPIP_HOSTINFO_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>TCPIP_EVT_MTU_SIZE_CNF</Alias>
+                <Comment>Result of TCPIP_MTU_SIZE_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>TCPIP_EVT_RECV_IND</Alias>
+                <Comment>Indication of incoming data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>TCPIP_EVT_CONNECT_IND</Alias>
+                <Comment>Indication of incoming connection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>TCPIP_EVT_CONN_CLOSED_IND</Alias>
+                <Comment>Indication of remotely closed connection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>TCPIP_EVT_ERROR_IND</Alias>
+                <Comment>Indication of asynchronous error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>TCPIP_EVT_FLOW_READY_IND</Alias>
+                <Comment>Flow Control: application can send again (not used by a TCPIP primitive!)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="6" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_result</Name>
+                <Comment>values for result</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TCPIP_RESULT_OK</Alias>
+                <Comment>Operation was successful.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TCPIP_RESULT_INVALID_PARAMETER</Alias>
+                <Comment>A parameter was invalid.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TCPIP_RESULT_INTERNAL_ERROR</Alias>
+                <Comment>An internal error has happened.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TCPIP_RESULT_ADDR_IN_USE</Alias>
+                <Comment>The address or port is already in use.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TCPIP_RESULT_OUT_OF_MEMORY</Alias>
+                <Comment>There is not enough memory to fulfill the request.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>TCPIP_RESULT_NOT_SUPPORTED</Alias>
+                <Comment>The socket is not of a type that can support this operation.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>TCPIP_RESULT_UNREACHABLE</Alias>
+                <Comment>The specified host cannot be reached.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>TCPIP_RESULT_CONN_REFUSED</Alias>
+                <Comment>The connection to the specified address was refused by the remote host.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>TCPIP_RESULT_TIMEOUT</Alias>
+                <Comment>The connection attempt timed out without establishing a connection.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>TCPIP_RESULT_IS_CONNECTED</Alias>
+                <Comment>The request could not be fulfilled because the socket is already connected.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>TCPIP_RESULT_HOST_NOT_FOUND</Alias>
+                <Comment>The specified host could not be found in the DNS.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>TCPIP_RESULT_DNS_TEMP_ERROR</Alias>
+                <Comment>A temporary DNS error has occurred. Retrying the query may be successful.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>TCPIP_RESULT_DNS_PERM_ERROR</Alias>
+                <Comment>A permanent DNS error has occurred.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>TCPIP_RESULT_NO_IPADDR</Alias>
+                <Comment>The specified name has been found in the DNS, but no IP address is available.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>TCPIP_RESULT_NOT_CONNECTED</Alias>
+                <Comment>The socket has not been connected yet.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>TCPIP_RESULT_MSG_TOO_BIG</Alias>
+                <Comment>The size of the data buffer is too large for a UDP socket.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">16</Value>
+                <Alias>TCPIP_RESULT_CONN_RESET</Alias>
+                <Comment>The connection has been reset by the remote peer.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">17</Value>
+                <Alias>TCPIP_RESULT_CONN_ABORTED</Alias>
+                <Comment>The connection was aborted due to timeout or some other error condition.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">18</Value>
+                <Alias>TCPIP_RESULT_NO_BUFSPACE</Alias>
+                <Comment>Sending failed temporarily because the space to buffer the message was exhausted. The application should wait for a TCPIP_FLOW_READY_IND event to retry the operation.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">19</Value>
+                <Alias>TCPIP_RESULT_NETWORK_LOST</Alias>
+                <Comment>The operation failed because TCP/IP's network connection has been disconnected.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">20</Value>
+                <Alias>TCPIP_RESULT_NOT_READY</Alias>
+                <Comment>The operation failed because the TCP/IP entity was not yet initialised.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="6" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_if_up</Name>
+                <Comment>values for if_up</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TCPIP_IFCONFIG_DOWN</Alias>
+                <Comment>Interface going down</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TCPIP_IFCONFIG_UP</Alias>
+                <Comment>Interface coming up</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="6" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_direction</Name>
+                <Comment>values for dti_direction</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TCPIP_DTI_TO_HIGHER_LAYER</Alias>
+                <Comment>Connect to higher layer, i. e. an application</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TCPIP_DTI_TO_LOWER_LAYER</Alias>
+                <Comment>Connect to lower layer, i. e. to protocol stack</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="6" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_conn</Name>
+                <Comment>values for dti_conn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TCPIP_CONNECT_DTI</Alias>
+                <Comment>Connect the DTI link</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TCPIP_DISCONNECT_DTI</Alias>
+                <Comment>Disconnect the DTI link</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="6" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

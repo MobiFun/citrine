@@ -1,0 +1,321 @@
+;********************************************************************************
+;*** File           : fad.pdf
+;*** Creation       : Wed Mar 11 09:58:02 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : fad
+;*** Document No.   : 8411.103.00.305
+;*** Document Date  : 2002-04-22
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SLO
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:41:22 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-04-22"
+PRAGMA 	ID_AND_VERSION 	"8411.103.00.305"
+
+
+
+CONST 	DUMMY_FAD 	0 	; Dummy
+
+
+
+VALTAB 	VAL_trans_rate
+VAL 	300 	R_BCS 	"rate 300 bit/s"
+VAL 	2400 	R_2400 	"rate 2400 bit/s"
+VAL 	4800 	R_4800 	"rate 4800 bit/s"
+VAL 	7200 	R_7200 	"rate 7200 bit/s"
+VAL 	9600 	R_9600 	"rate 9600 bit/s"
+VAL 	12000 	R_12000 	"rate 12000 bit/s"
+VAL 	14400 	R_14400 	"rate 14400 bit/s"
+
+VALTAB 	VAL_mode
+VAL 	0x00 	MUX_OFF 	"ignore"
+VAL 	0x01 	MUX_BCS 	"BCS data"
+VAL 	0x02 	MUX_MSG 	"MSG  data"
+
+VALTAB 	VAL_cause
+VAL 	0xCC00 	ERR_REM_FAD 	"reserved"
+VAL 	0xCC11 	ERR_REM_PREAMBLE 	"DATA received instead of PREAMBLE - Preamble too short"
+VAL 	0xCC12 	ERR_REM_DATA_BCS 	"DATA received from remote modem during BCS phase"
+VAL 	0xCC13 	ERR_REM_TRAIN_START 	"DATA received from remote modem at start of training"
+VAL 	0xCC14 	ERR_REM_NO_TRAINING 	"DATA received from remote modem prior to training"
+VAL 	0xCC15 	ERR_REM_TRAINING 	"DATA received from remote modem during training"
+VAL 	0xCC16 	ERR_REM_MSG 	"DATA received from remote modem while sending MSG data"
+VAL 	0xCC17 	ERR_REM_PREAMBLE_SHORT 	"PREAMBLE received from remote station too short"
+VAL 	0xCC18 	ERR_REM_PREAMBLE_LONG 	"PREAMBLE received from remote station too long"
+VAL 	0xCC19 	ERR_REM_IDENT 	"Incorrect identification from remote modem"
+VAL 	0xCC20 	ERR_LOCAL_FAD 	"reserved"
+VAL 	0xCC21 	ERR_LOCAL_BCS_RATE 	"BCS rate requested by local modem (MSG phase)"
+VAL 	0xCC22 	ERR_LOCAL_MSG_RATE 	"MSG rate requested by local modem (BCS phase)"
+VAL 	0xCC23 	ERR_LOCAL_DATA_NULL 	"DATA request received from T30 in NULL state"
+VAL 	0xCC24 	ERR_LOCAL_DATA_BCS 	"DATA request received from T30 while receiving BCS data"
+VAL 	0xCC25 	ERR_LOCAL_DATA_TCF_SND 	"DATA request received from T30 while sending TCF  data"
+VAL 	0xCC26 	ERR_LOCAL_DATA_TCF_RCV 	"DATA request received from T30 while receiving TCF  data"
+VAL 	0xCC27 	ERR_LOCAL_DATA_MSG 	"DATA request received from T30 while receiving MSG data"
+VAL 	0xCC28 	ERR_LOCAL_DATA_UNDEF 	"DATA request received from T30 - state unknown"
+VAL 	0xCC29 	ERR_LOCAL_DATA_MSG_UFL 	"DATA request not received from T30 - MSG-REC underflow"
+VAL 	0xCC30 	ERR_LOCAL_IDENT 	"Incorrect identification from local modem"
+VAL 	0xCC40 	ERR_OWN_FAD 	"reserved"
+VAL 	0xCC41 	ERR_FAD_SUB_TRAIN 	"FAD in unknown substate during training"
+VAL 	0xCC42 	ERR_FAD_SUB_TCF 	"FAD in unknown substate (TCF)"
+VAL 	0xCC43 	ERR_FAD_SUB_MSG 	"FAD in unknown substate (MSG)"
+VAL 	0xCC50 	ERR_GENERAL_FAD 	"reserved"
+VAL 	0xCC51 	ERR_INVALID_DATA_RCV 	"invalid data received"
+VAL 	0xCC52 	ERR_EMPTY_BUFFER 	"send/receive buffer is empty"
+VAL 	0xCC52 	ERR_OVERFLOW_BCS_RCV 	"buffer  overflow while receiving BCS data"
+VAL 	0xCCFF 	ERR_NOT_SET 	"error not set"
+
+
+
+
+VAR 	trans_rate 	"transmission rate" 	S
+
+VAL 	@p_fad - VAL_trans_rate@ 	
+
+VAR 	final 	"final flag" 	B
+
+
+VAR 	l_buf 	"length of content in bits" 	S
+
+
+VAR 	o_buf 	"offset of content in bits" 	S
+
+
+VAR 	buf 	"buffer content" 	B
+
+
+VAR 	frames_per_prim 	"no. of frames per primitive" 	S
+
+
+VAR 	mode 	"receive mode" 	B
+
+VAL 	@p_fad - VAL_mode@ 	
+
+VAR 	cause 	"error cause" 	S
+
+VAL 	@p_fad - VAL_cause@ 	
+
+VAR 	ratio 	"percentage of correct TCF received" 	B
+
+
+VAR 	reserved 	"Reserved" 	S
+
+
+VAR 	buf_size_rx 	"buffer size RX" 	S
+
+
+VAR 	buf_size_tx 	"buffer size TX" 	S
+
+
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length of content in bits
+ 	o_buf 	 ; offset of content in bits
+ 	buf 	[1] 	 ; buffer content
+}
+
+
+
+
+
+
+; FAD_ACTIVATE_REQ 	0x80000013
+; FAD_DEACTIVATE_REQ 	0x80010013
+; FAD_MODIFY_REQ 	0x80020013
+; FAD_DATA_REQ 	0x80030013
+; FAD_DATA_IND 	0x80004013
+; FAD_DATA_CNF 	0x80014013
+; FAD_SND_TCF_REQ 	0x80040013
+; FAD_SND_TCF_CNF 	0x80024013
+; FAD_RCV_TCF_REQ 	0x80050013
+; FAD_RCV_TCF_CNF 	0x80034013
+; FAD_READY_REQ 	0x80060013
+; FAD_READY_IND 	0x80044013
+; FAD_IGNORE_REQ 	0x80070013
+; FAD_MUX_IND 	0x80054013
+; FAD_ERROR_IND 	0x80064013
+; FAD_DEACTIVATE_CNF 	0x80074013
+; FAD_ACTIVATE_CNF 	0x80084013
+
+
+
+PRIM 	FAD_ACTIVATE_REQ 	0x80000013
+{
+ 	trans_rate 	 ; transmission rate
+ 	frames_per_prim 	 ; frames per primitive
+}
+
+
+
+
+
+
+PRIM 	FAD_DEACTIVATE_REQ 	0x80010013
+{
+}
+
+
+
+
+
+
+PRIM 	FAD_MODIFY_REQ 	0x80020013
+{
+ 	trans_rate 	 ; transmission rate
+}
+
+
+
+
+
+
+PRIM 	FAD_DATA_REQ 	0x80030013
+{
+ 	final 	 ; final flag
+ 	trans_rate 	 ; transmission rate
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	FAD_DATA_IND 	0x80004013
+{
+ 	final 	 ; final flag
+ 	reserved 	 ; reserved
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	FAD_DATA_CNF 	0x80014013
+{
+}
+
+
+
+
+
+
+PRIM 	FAD_SND_TCF_REQ 	0x80040013
+{
+ 	trans_rate 	 ; transmission rate
+}
+
+
+
+
+
+
+PRIM 	FAD_SND_TCF_CNF 	0x80024013
+{
+}
+
+
+
+
+
+
+PRIM 	FAD_RCV_TCF_REQ 	0x80050013
+{
+ 	trans_rate 	 ; transmission rate
+}
+
+
+
+
+
+
+PRIM 	FAD_RCV_TCF_CNF 	0x80034013
+{
+ 	ratio 	 ; TCF ratio (%)
+}
+
+
+
+
+
+
+PRIM 	FAD_READY_REQ 	0x80060013
+{
+}
+
+
+
+
+
+
+PRIM 	FAD_READY_IND 	0x80044013
+{
+}
+
+
+
+
+
+
+PRIM 	FAD_IGNORE_REQ 	0x80070013
+{
+}
+
+
+
+
+
+
+PRIM 	FAD_MUX_IND 	0x80054013
+{
+ 	mode 	 ; receive mode
+}
+
+
+
+
+
+
+PRIM 	FAD_ERROR_IND 	0x80064013
+{
+ 	cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	FAD_DEACTIVATE_CNF 	0x80074013
+{
+}
+
+
+
+
+
+
+PRIM 	FAD_ACTIVATE_CNF 	0x80084013
+{
+ 	buf_size_rx 	 ; buffer size RX
+ 	buf_size_tx 	 ; buffer size TX
+}
+
+
+
+
+
+
+
+
+

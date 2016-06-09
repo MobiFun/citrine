@@ -1,0 +1,1384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">8010_147_l1_include</DocName>
+        <DocNum Number="147" Project="8010"/>
+        <Description>
+            <Section>This document contains declarations of parameters and constants shared between the Service Access Points defined for L1.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="03"/>
+            <Date Day="2" Month="4" Year="2003"/>
+            <Author>LOE</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="03"/>
+            <Date Day="28" Month="7" Year="2003"/>
+            <Author>LOE</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added error cause, paging mode and timeslot number as common parameters. Changed export ID to 0x0000.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>-</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the 8010_147_L1_INCLUDE SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">NONE</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>CAPITALIZE_TYPENAME</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Use capital letters for type names</Comment>
+        </Pragma>
+        <History>
+            <Date Day="2" Month="4" Year="2003"/>
+            <Author>LOE</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the 8010_147_L1_INCLUDE SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>MAX_MA_CARRIER</Alias>
+            <Value ValueType="DEC">64</Value>
+            <Comment>Maximum number of carriers in the mobile allocation list handled by L1.</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_L2_FRAME_SIZE</Alias>
+            <Value ValueType="DEC">23</Value>
+            <Comment>Size of a layer 2 frame forwarded from L1 to L3 (in bytes).</Comment>
+        </Constant>
+        <History>
+            <Date Day="2" Month="4" Year="2003"/>
+            <Author>LOE</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="0">
+        <Description>
+            <Section>This section contains all primitives that are defined for the 8010_147_L1_INCLUDE SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>Index of exported parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1_EXPORT</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>rf_chan_cnt</Name>
+                </ItemLink>
+                <Comment>Channel count</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>radio_freq</Name>
+                </ItemLink>
+                <Comment>Channel number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>radio_freq_no</Name>
+                </ItemLink>
+                <Comment>Channel number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>radio_freq_array</Name>
+                </ItemLink>
+                <Comment>Channel number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>bcch_carrier</Name>
+                </ItemLink>
+                <Comment>Channel number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>bcch_freq</Name>
+                </ItemLink>
+                <Comment>Channel number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>rf_chan_num</Name>
+                </ItemLink>
+                <Comment>Channel number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>rf_channel</Name>
+                </ItemLink>
+                <Comment>Channel selection choice</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>chan_sel</Name>
+                </ItemLink>
+                <Comment>Channel selector</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>error_flag</Name>
+                </ItemLink>
+                <Comment>Error cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>error_cause</Name>
+                </ItemLink>
+                <Comment>Error cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>absolute_fn</Name>
+                </ItemLink>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>fn_offset</Name>
+                </ItemLink>
+                <Comment>Frame offset</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>hopping_rf</Name>
+                </ItemLink>
+                <Comment>Hopping radio frequency</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Comment>Layer 2 channel</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel_type</Name>
+                </ItemLink>
+                <Comment>Layer 2 channel</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_frame</Name>
+                </ItemLink>
+                <Comment>Layer 2 frame</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>frequency_list</Name>
+                </ItemLink>
+                <Comment>Mobile allocation</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>freq_list</Name>
+                </ItemLink>
+                <Comment>Mobile allocation</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>cbch_freq_list</Name>
+                </ItemLink>
+                <Comment>Mobile allocation</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>frequency_list_bef_sti</Name>
+                </ItemLink>
+                <Comment>Mobile allocation</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>page_mode</Name>
+                </ItemLink>
+                <Comment>Paging mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>rxlev</Name>
+                </ItemLink>
+                <Comment>Power strength level</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>s_rxlev</Name>
+                </ItemLink>
+                <Comment>Power strength level</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>rf_chan_no</Name>
+                </ItemLink>
+                <Comment>Radio frequency list</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>single_rf</Name>
+                </ItemLink>
+                <Comment>Single radio frequency</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>timeslot_no</Name>
+                </ItemLink>
+                <Comment>Timeslot number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>timeslot_number</Name>
+                </ItemLink>
+                <Comment>Timeslot number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>ta_tn</Name>
+                </ItemLink>
+                <Comment>Timeslot number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>ctrl_timeslot</Name>
+                </ItemLink>
+                <Comment>Timeslot number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>tsc</Name>
+                </ItemLink>
+                <Comment>Training sequence code</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial 28-Juli-2003 LOE Additional common parameters, change export ID to 0x0000</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the 8010_147_L1_INCLUDE SAP</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the use and the allocation of a channel.</Section>
+            </Description>
+            <PrimStructElemDef Type="UNION">
+                <Name>rf_channel</Name>
+                <Alias>CHN_SEL_CHOICE</Alias>
+                <Comment>Channel choice</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>single_rf</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_single</Name>
+                </UnionTag>
+                <Comment>Radio frequency for non-hopping</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>hopping_rf</Name>
+                </ItemLink>
+                <UnionTag>
+                    <Name>is_hopping</Name>
+                </UnionTag>
+                <Comment>Radio frequency specification for hopping</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the use and the allocation of a channel. Note that the implementation here reflects the use of a union in a way that is incompatible with the SAP union-syntax. The union controller should be a parameter named h. NOTE THAT THERE IS AN AUTOGENERATED CONTROLLER HERE INSTEAD!!</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>chan_sel</Name>
+                <Alias>CHN_SEL</Alias>
+                <Comment>Channel selector</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>rf_channel</Name>
+                </ItemLink>
+                <Comment>Channel choice</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>Specifies radio frequency information in case of hopping.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>hopping_rf</Name>
+                <Comment>Channel choice</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>maio</Name>
+                </ItemLink>
+                <Comment>Mobile allocation index offset</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>hsn</Name>
+                </ItemLink>
+                <Comment>Hopping sequence number</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>Contains a layer 2 frame.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>l2_frame</Name>
+                <Alias>RADIO_FRAME</Alias>
+                <Comment>Layer 2 frame</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>A4</Name>
+                </ItemLink>
+                <Alias>A</Alias>
+                <Control>[MAX_L2_FRAME_SIZE]</Control>
+                <Comment>Frame content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>Contains the ARFCN list for the mobile allocation (MA) table.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>frequency_list</Name>
+                <Alias>MOBILE_ALLOCATION</Alias>
+                <Comment>List of frequencies for MA</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>freq_list</Name>
+                <Alias>MOBILE_ALLOCATION</Alias>
+                <Comment>List of frequencies for MA</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>cbch_freq_list</Name>
+                <Alias>MOBILE_ALLOCATION</Alias>
+                <Comment>CBCH frequency list</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>frequency_list_bef_sti</Name>
+                <Alias>MOBILE_ALLOCATION</Alias>
+                <Comment>Frequency list before starting time</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>rf_chan_cnt</Name>
+                </ItemLink>
+                <Comment>Number of channels</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>rf_chan_no</Name>
+                </ItemLink>
+                <Comment>Radio Frequency List</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>Contains the list of channels for the MA.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>rf_chan_no</Name>
+                <Alias>MA_FIELD</Alias>
+                <Comment>Frequency list</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>radio_freq</Name>
+                </ItemLink>
+                <Alias>A</Alias>
+                <Control>[MAX_MA_CARRIER]</Control>
+                <Comment>Radio Frequency List</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the use and the allocation of a channel.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>single_rf</Name>
+                <Alias>SINGLE_RF</Alias>
+                <Comment>Single RF channel number</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>radio_freq</Name>
+                </ItemLink>
+                <Comment>Radio frequency channel number</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the 8010_147_L1_INCLUDE SAP</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the number of valid channel numbers.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rf_chan_cnt</Name>
+                <Type>U16</Type>
+                <Comment>Number of channels in the mobile allocation list</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_rf_chan_cnt</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identifies a Radio Frequency Channel Number in one of the GSM bands. The channel number does not uniquely identify a frequency in all cases, since there is an overlap between the channel numbers defined for the various GSM bands. Where such overlaps exist, the interpretation of the channel number is implicitly determined by the operating mode of L1???</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>radio_freq</Name>
+                <Type>U16</Type>
+                <Comment>Radio frequency channel number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_radio_freq</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identifies a Radio Frequency Channel Number in one of the GSM bands. The channel number does not uniquely identify a frequency in all cases, since there is an overlap between the channel numbers defined for the various GSM bands. Where such overlaps exist, the interpretation of the channel number is implicitly determined by the operating mode of L1???</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>radio_freq_no</Name>
+                <Type>U16</Type>
+                <Comment>Radio frequency channel number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_radio_freq</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identifies a Radio Frequency Channel Number in one of the GSM bands. The channel number does not uniquely identify a frequency in all cases, since there is an overlap between the channel numbers defined for the various GSM bands. Where such overlaps exist, the interpretation of the channel number is implicitly determined by the operating mode of L1???</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>radio_freq_array</Name>
+                <Type>U16</Type>
+                <Comment>Radio frequency channel number (used in array)</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_radio_freq</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identifies a Radio Frequency Channel Number in one of the GSM bands. The channel number does not uniquely identify a frequency in all cases, since there is an overlap between the channel numbers defined for the various GSM bands. Where such overlaps exist, the interpretation of the channel number is implicitly determined by the operating mode of L1???</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bcch_carrier</Name>
+                <Type>U16</Type>
+                <Comment>Radio frequency channel number of BCCH</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_radio_freq</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identifies a Radio Frequency Channel Number in one of the GSM bands. The channel number does not uniquely identify a frequency in all cases, since there is an overlap between the channel numbers defined for the various GSM bands. Where such overlaps exist, the interpretation of the channel number is implicitly determined by the operating mode of L1???</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bcch_freq</Name>
+                <Type>U16</Type>
+                <Comment>Radio frequency channel number of BCCH</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_radio_freq</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identifies a Radio Frequency Channel Number in one of the GSM bands. The channel number does not uniquely identify a frequency in all cases, since there is an overlap between the channel numbers defined for the various GSM bands. Where such overlaps exist, the interpretation of the channel number is implicitly determined by the operating mode of L1???</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rf_chan_num</Name>
+                <Type>U16</Type>
+                <Comment>Radio frequency channel number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_radio_freq</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the result of a data block read operation.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>error_flag</Name>
+                <Type>U8</Type>
+                <Comment>Error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_error_flag</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="7" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Made common</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the result of a data block read operation.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>error_cause</Name>
+                <Type>U8</Type>
+                <Comment>Error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_error_flag</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="7" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Made common</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Contains a GSM frame number. The parameter is for debug purpose only. No use of this frame number may be made in order to schedule the activity within the system.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>fn</Name>
+                <Type>U32</Type>
+                <Comment>Frame number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_fn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Contains a GSM frame number. The parameter is for debug purpose only. No use of this frame number may be made in order to schedule the activity within the system.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>absolute_fn</Name>
+                <Type>U32</Type>
+                <Comment>Full frame number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_fn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Timing difference, as an absolute frame number, between the serving cell and the cell for which the frame offset is given.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>fn_offset</Name>
+                <Type>U32</Type>
+                <Comment>Frame offset</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_fn_offset</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Specifies radio frequency information in case of hopping.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>maio</Name>
+                <Type>U8</Type>
+                <Comment>Mobile allocation index offset</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_maio</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Specifies radio frequency information in case of hopping.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>hsn</Name>
+                <Type>U8</Type>
+                <Comment>Hopping sequence number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_hsn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identifies a layer 2 channel-type.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l2_channel</Name>
+                <Type>U8</Type>
+                <Comment>Layer 2 channel-type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_l2_channel</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identifies a layer 2 channel-type.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l2_channel_type</Name>
+                <Type>U8</Type>
+                <Comment>Layer 2 channel-type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_l2_channel</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Contains a layer 2 frame.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>A4</Name>
+                <Type>U8</Type>
+                <Comment>Frame content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Defines the type of paging mode to be used in L1.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>page_mode</Name>
+                <Type>U8</Type>
+                <Comment>Paging mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_page_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="7" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Made common</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the measured power strength level of a cell. The mapping is as defined in [3G 05.08], with 0 corresponding to -112 dBm and 63 to -48 dBm. The values continue below 0 and above 63.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rxlev</Name>
+                <Type>S8</Type>
+                <Comment>The (accumulated) result of power measurements.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_rxlev</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the measured power strength level of a cell. The mapping is as defined in [3G 05.08], with 0 corresponding to -112 dBm and 63 to -48 dBm. The values continue below 0 and above 63.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>s_rxlev</Name>
+                <Type>S8</Type>
+                <Comment>The serving cell received power level (average of the 4 PCH bursts read during the particular PCH block).</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_rxlev</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies a timeslot number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>timeslot_no</Name>
+                <Type>U8</Type>
+                <Comment>Timeslot number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_timeslot_no</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="7" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Made common</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies a timeslot number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>timeslot_number</Name>
+                <Type>U8</Type>
+                <Comment>Timeslot number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_timeslot_no</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="7" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Made common</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies a timeslot number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ta_tn</Name>
+                <Type>U8</Type>
+                <Comment>Timing advance timeslot number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_timeslot_no</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="7" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Made common</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies a timeslot number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ctrl_timeslot</Name>
+                <Type>U8</Type>
+                <Comment>Downlink control timeslot</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_timeslot_no</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="7" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Made common</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is the training sequence code to use, as specified in [3G 05.02 5.2.3].</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tsc</Name>
+                <Type>U8</Type>
+                <Comment>Training sequence code</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_147_l1_include</DocName>
+                <Name>VAL_tsc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the 8010_147_L1_INCLUDE SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rf_chan_cnt</Name>
+                <Comment>values for rf_chan_cnt</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="ALPHA">
+                <MinValue>0</MinValue>
+                <MaxValue>MAX_MA_CARRIER</MaxValue>
+                <Comment>Range of parameter for MA table</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_radio_freq</Name>
+                <Comment>values for radio_freq</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>124</MaxValue>
+                <Alias>GSM900</Alias>
+                <Comment>Layer 1 encoded frequency</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>174</MaxValue>
+                <Alias>GSM900E</Alias>
+                <Comment>Layer 1 encoded frequency</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>512</MinValue>
+                <MaxValue>810</MaxValue>
+                <Alias>GSM1800_GSM1900</Alias>
+                <Comment>Layer 1 encoded frequency</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>811</MinValue>
+                <MaxValue>885</MaxValue>
+                <Alias>GSM1800</Alias>
+                <Comment>Layer 1 encoded frequency</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>498</MaxValue>
+                <Alias>GSM900_GSM1800</Alias>
+                <Comment>Layer 1 encoded frequency</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>548</MaxValue>
+                <Alias>GSM900E_GSM1800</Alias>
+                <Comment>Layer 1 encoded frequency</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>128</MinValue>
+                <MaxValue>251</MaxValue>
+                <Alias>GSM850</Alias>
+                <Comment>Layer 1 encoded frequency</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>424</MaxValue>
+                <Alias>GSM850_GSM1900</Alias>
+                <Comment>Layer 1 encoded frequency</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_error_flag</Name>
+                <Comment>values for error_flag</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>VALID_BLOCK</Alias>
+                <Comment>Valid block received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>INVALID_BLOCK</Alias>
+                <Comment>Invalid block received</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_fn</Name>
+                <Comment>values for fn</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>2715647</MaxValue>
+                <Comment>Valid range</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_fn_offset</Name>
+                <Comment>values for fn_offset</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>2715647</MaxValue>
+                <Comment>Range is 0-(max GSM frames-1)</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_hsn</Name>
+                <Comment>values for hsn</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>63</MaxValue>
+                <Comment>Range of hopping sequence number</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_maio</Name>
+                <Comment>values for maio</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>63</MaxValue>
+                <Comment>Range of mobile allocation index offset</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_l2_channel</Name>
+                <Comment>values for l2_channel</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>L2_CHANNEL_SACCH</Alias>
+                <Comment>SACCH block (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>L2_CHANNEL_SDCCH</Alias>
+                <Comment>SDCCH block (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>L2_CHANNEL_FACCH_H</Alias>
+                <Comment>FACCH half (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>L2_CHANNEL_FACCH_F</Alias>
+                <Comment>FACCH full (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>L2_CHANNEL_CCCH</Alias>
+                <Comment>CCCH block (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>L2_CHANNEL_NBCCH</Alias>
+                <Comment>Normal BCCH block (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>L2_CHANNEL_PCH</Alias>
+                <Comment>PCH block (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>L2_CHANNEL_EPCH</Alias>
+                <Comment>Extended PCH block (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>L2_CHANNEL_CBCH</Alias>
+                <Comment>CBCH block (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>L2_CHANNEL_EBCCH</Alias>
+                <Comment>Extended BCCH (MPHC)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>L2_PCHANNEL_PCCCH</Alias>
+                <Comment>PCCCH block (MPHP)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>L2_PCHANNEL_PBCCH</Alias>
+                <Comment>PBCCH block (MPHP)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>L2_PCHANNEL_PPCH</Alias>
+                <Comment>PPCH block (MPHP)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>L2_PCHANNEL_PEPCH</Alias>
+                <Comment>PEPCH block (MPHP)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>L2_PCHANNEL_PACCH</Alias>
+                <Comment>PACCH block (MPHP)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_page_mode</Name>
+                <Comment>values for page_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PAGE_NORMAL</Alias>
+                <Comment>Normal paging</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PAGE_EXT</Alias>
+                <Comment>Extended paging</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PAGE_REORG</Alias>
+                <Comment>Paging reorganisation</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rxlev</Name>
+                <Comment>values for rxlev</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">80</Value>
+                <Alias>RXLEV_NO_INT_MEAS</Alias>
+                <Comment>Specific value used for value of interference level when no measurement has been performed.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_timeslot_no</Name>
+                <Comment>values for timeslot_no</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>TN_NOT_PRESENT</Alias>
+                <Comment>Value for not present</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>7</MaxValue>
+                <Alias>TIMESLOT_NO</Alias>
+                <Comment>Range of timeslot number</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>3</MaxValue>
+                <Alias>CBCH_TIMESLOT</Alias>
+                <Comment>Range of timeslot number for CBCH</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tsc</Name>
+                <Comment>values for tsc</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>7</MaxValue>
+                <Comment>Range of parameter</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

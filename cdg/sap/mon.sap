@@ -1,0 +1,2079 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">mon</DocName>
+        <DocNum Number="129" Project="8304"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages. Additionally the reception of cell broadcast short messages is included.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the monitoring services offered by radio resource and TI++ for the Condat RT.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="96"/>
+            <Date Day="15" Month="7" Year="1998"/>
+            <Author>Stefan</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Lemke et al Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="96"/>
+            <Date Day="11" Month="8" Year="1998"/>
+            <Author>Volker</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Klann Swap comment for Hopping Flag, introduce v_plmn in T_plmn</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="96"/>
+            <Date Day="13" Month="8" Year="2001"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>3-digit-MNC</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="96"/>
+            <Date Day="4" Month="2" Year="2003"/>
+            <Author>LG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>lengths of MNC and MCC by symbols</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 2.82, Call Forwarding Supplementary Services - Stage 1 ETS 300 515, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 2.83, Call Waiting and Call Hold Supplementary Services - Stage 1 ETS 300 516, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 2.84, Multi Party Supplementary Services - Stage 1 ETS 300 517, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 2.85, Closed User Group Supplementary Services - Stage 1 ETS 300 518, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 2.86, Advice of Charge Supplementary Services - Stage 1 ETS 300 519, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 2.88, Call Barring Supplementary Services - Stage 1 ETS 300 520, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 3.14, Support of Dual Tone Multi Frequency Signalling via the GSM System ETS 300 532, ETSI, April 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 3.40, Technical Realization of the Short Message Service Point-to-Point ETS 300 536, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 3.41, Technical Realization of Short Message Service Cell Broadcast ETS 300 537, ETSI, June 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>GSM 3.81, Line Identification Supplementary Services - Stage 2 ETS 300 542, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 3.82, Call Forwarding Supplementary Services - Stage 2 ETS 300 543, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>GSM 3.83, Call Waiting and Call Hold Supplementary Services - Stage 2 ETS 300 544, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 3.84, Multi Party Supplementary Services - Stage 2 ETS 300 545, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>GSM 3.85, Closed User Group Supplementary Services - Stage 2 ETS 300 546, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>GSM 3.86, Advice of Charge Supplementary Services - Stage 2 ETS 300 547, ETSI, March 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>GSM 3.88, Call Barring Supplementary Services - Stage 2 ETS 300 548, ETSI, November 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>GSM 4.01, MS-BSS Interface General Aspects and Principles ETS 300 550, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18a]</RefId>
+            <RefTitle>GSM 4.03, MS-BSS Interface Channel Structures and Access Capabilities ETS 300 552, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>GSM 4.05, Data Link Layer General Aspects ETS 300 554, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>GSM 4.06, MS-BSS Interface Data Link Layer Specification ETS 300 555, ETSI, September 1994</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>GSM 4.07, Mobile Radio Interface Signalling Layer 3 General Aspects ETS 300 556, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>GSM 4.08, Mobile Radio Interface Layer 3 Specification ETS 300 557, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>GSM 4.10, Mobile Radio Interface Layer 3 Supplementary Services Specification  General Aspects ETS 300 558, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>GSM 4.11, Point-to-Point Short Message Service Support on Mobile Radio Interface ETS 300 559, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>GSM 4.12, Short Message Service Cell Broadcast Support on Mobile Radio Interface ETS 300 560, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>GSM 4.80, Mobile Radio Interface Supplementary Services Specification Formats and Coding ETS 300 564, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[27]</RefId>
+            <RefTitle>GSM 4.81, Line Identification Supplementary Services - Stage 3 ETS 300 565, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[28]</RefId>
+            <RefTitle>GSM 4.82, Call Forwarding Supplementary Services - Stage 3 ETS 300 566, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[29]</RefId>
+            <RefTitle>GSM 4.83, Call Waiting and Call Hold Supplementary Services - Stage 3 ETS 300 567, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[30]</RefId>
+            <RefTitle>GSM 4.84, Multi Party Supplementary Services - Stage 3 ETS 300 568, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[31]</RefId>
+            <RefTitle>GSM 4.85, Closed User Group Supplementary Services - Stage 3 ETS 300 569, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[32]</RefId>
+            <RefTitle>GSM 4.86, Advice of Charge Supplementary Services - Stage 3 ETS 300 570, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[33]</RefId>
+            <RefTitle>GSM 4.88, Call Barring Supplementary Services - Stage 3 ETS 300 571, ETSI, February 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[34]</RefId>
+            <RefTitle>GSM 5.01, Physical Layer on the Radio Path General Description ETS 300 573, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[35]</RefId>
+            <RefTitle>GSM 5.02, Multiplexing and Multiple Access on the Radio Path ETS 300 574, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[36]</RefId>
+            <RefTitle>GSM 5.08, Radio Sub-system Link Control ETS 300 578, ETSI, January 1996</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[37]</RefId>
+            <RefTitle>GSM 5.10, Radio Sub-system Synchronisation ETS 300 579, ETSI, October 1995</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[38]</RefId>
+            <RefTitle>Service Access Point MMREG 6147.100.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[39]</RefId>
+            <RefTitle>Service Access Point MNCC 6147.101.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[40]</RefId>
+            <RefTitle>Service Access Point MNSS 6147.102.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[41]</RefId>
+            <RefTitle>Service Access Point MNSMS 6147.103.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[42]</RefId>
+            <RefTitle>Service Access Point MMCC 6147.104.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[43]</RefId>
+            <RefTitle>Service Access Point MMSS 6147.105.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[44]</RefId>
+            <RefTitle>Service Access Point MMSMS 6147.106.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[45]</RefId>
+            <RefTitle>Service Access Point RR 6147.107.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[46]</RefId>
+            <RefTitle>Service Access Point SIM 6147.108.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[47]</RefId>
+            <RefTitle>Service Access Point MPH 6147.109.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[48]</RefId>
+            <RefTitle>Service Access Point DL 6147.110.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[49]</RefId>
+            <RefTitle>Service Access Point MDL 6147.111.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[50]</RefId>
+            <RefTitle>Service Access Point PH 6147.112.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[51]</RefId>
+            <RefTitle>Service Access Point MMI 6147.113.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[52]</RefId>
+            <RefTitle>Message Sequence Charts CC 6147.200.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[53]</RefId>
+            <RefTitle>Message Sequence Charts SS 6147.201.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[54]</RefId>
+            <RefTitle>Message Sequence Charts SMS 6147.202.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[55]</RefId>
+            <RefTitle>Message Sequence Charts MM 6147.203.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[56]</RefId>
+            <RefTitle>Message Sequence Charts RR 6147.204.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[57]</RefId>
+            <RefTitle>Message Sequence Charts DL 6147.205.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[58]</RefId>
+            <RefTitle>Users Guide 6147.300.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[59]</RefId>
+            <RefTitle>Test Specification CC 6147.400.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[60]</RefId>
+            <RefTitle>Test Specification SS 6147.401.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[61]</RefId>
+            <RefTitle>Test Specification SMS 6147.402.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[62]</RefId>
+            <RefTitle>Test Specification MM 6147.403.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[63]</RefId>
+            <RefTitle>Test Specification RR 6147.404.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[64]</RefId>
+            <RefTitle>Test Specification DL 6147.405.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[65]</RefId>
+            <RefTitle>Test Specification CCD 6147.406.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[66]</RefId>
+            <RefTitle>SDL Specification CC 6147.500.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[67]</RefId>
+            <RefTitle>SDL Specification SS 6147.501.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[68]</RefId>
+            <RefTitle>SDL Specification SMS 6147.502.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[69]</RefId>
+            <RefTitle>SDL Specification MM 6147.503.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[70]</RefId>
+            <RefTitle>SDL Specification RR 6147.504.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[71]</RefId>
+            <RefTitle>SDL Specification DL 6147.505.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[72]</RefId>
+            <RefTitle>Message Specification CC 6147.600.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[73]</RefId>
+            <RefTitle>Message Specification SS 6147.601.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[74]</RefId>
+            <RefTitle>Message Specification SMS 6147.602.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[75]</RefId>
+            <RefTitle>Message Specification MM 6147.603.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[76]</RefId>
+            <RefTitle>Message Specification RR 6147.604.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[77]</RefId>
+            <RefTitle>Message Specification DL 6147.605.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[78]</RefId>
+            <RefTitle>Technical Documentation CC 6147.700.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[79]</RefId>
+            <RefTitle>Technical Documentation SS 6147.701.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[80]</RefId>
+            <RefTitle>Technical Documentation SMS 6147.702.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[81]</RefId>
+            <RefTitle>Technical Documentation MM 6147.703.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[82]</RefId>
+            <RefTitle>Technical Documentation RR 6147.704.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[83]</RefId>
+            <RefTitle>Technical Documentation DL 6147.705.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[84]</RefId>
+            <RefTitle>Technical Documentation CCD 6147.706.97.100; Condat GmbH</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the MON SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>SIZE_MCC</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_MNC</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment/>
+        </Constant>
+        <History>
+            <Date Day="15" Month="7" Year="1998"/>
+            <Author>LE</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="4" Month="2" Year="2003"/>
+            <Author>LG</Author>
+            <Comment>added SIZE_MCC and SIZE_MNC</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="15">
+        <Description>
+            <Section>This section contains all primitives that are defined for the MON SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The MON_CHAN_IDLE_IND is used to send the idle mode channel configuration to Condat RT.</Section>
+                <Section>It is send by Radio Resource. Associated Command is &quot;RR CONFIG MON_CHAN_IDLE=0|1&quot;.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MON_CHAN_IDLE_IND</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>RT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>arfcn</Name>
+                </ItemLink>
+                <Comment>channel number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>att_flag</Name>
+                </ItemLink>
+                <Comment>IMSI attach flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>conf_ccch</Name>
+                </ItemLink>
+                <Comment>CCCH configuration</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>tn</Name>
+                </ItemLink>
+                <Comment>timeslot</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>dlt</Name>
+                </ItemLink>
+                <Comment>downlink timeout</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>pg</Name>
+                </ItemLink>
+                <Comment>paging group</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>bs_ag_blocks_res</Name>
+                </ItemLink>
+                <Comment>AGCH blocks reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>bs_pa_mfrms</Name>
+                </ItemLink>
+                <Comment>Multiframe Period</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>power</Name>
+                </ItemLink>
+                <Comment>MS TXPWR MAX CCCH</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>PLMN Identification</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>lac</Name>
+                </ItemLink>
+                <Comment>Location Area Code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>cell_id</Name>
+                </ItemLink>
+                <Comment>Cell Identity</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MON_MEAS_IDLE_IND is used to send measurement values of the idle mode to Condat RT.</Section>
+                <Section>It is send by Radio Resource. Associated Command is &quot;RR CONFIG MON_MEAS_IDLE=0|1&quot;.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MON_MEAS_IDLE_IND</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>RT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>arfcn</Name>
+                </ItemLink>
+                <Comment>BCCH serving cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>bsic</Name>
+                </ItemLink>
+                <Comment>BSIC serving cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>rx_lev</Name>
+                </ItemLink>
+                <Comment>Rxlev serving cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>c1</Name>
+                </ItemLink>
+                <Comment>C1 serving cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>arfcn_nc</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>BCCH neighbour cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>bsic_nc</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>BSIC neighbour cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>rx_lev_nc</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>Rxlev neigbour cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>tav_nc</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>Timing Advance neighbour cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>c2_nc</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>C2 neigbour cell</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MON_COUNTER_IDLE_IND is used to send the downlink failure counter values to Condat RT.</Section>
+                <Section>It is send by TI++. Associated Command is &quot;PL CONFIG MON_COUNTER_IDLE=0|1&quot;.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MON_COUNTER_IDLE_IND</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>RT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>max_dlt</Name>
+                </ItemLink>
+                <Comment>Maximum Downlink Counter</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>act_dlt</Name>
+                </ItemLink>
+                <Comment>Actual Downlink Counter</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MON_CHAN_DEDICATED_IND is used to send the dedicated mode channel configuration to Condat RT.</Section>
+                <Section>It is send by Radio Resource. Associated Command is &quot;RR CONFIG MON_CHAN_DEDI=0|1&quot;.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MON_CHAN_DEDI_IND</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>RT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>ch_type</Name>
+                </ItemLink>
+                <Comment>channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>arfcn</Name>
+                </ItemLink>
+                <Comment>channel number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>tsc</Name>
+                </ItemLink>
+                <Comment>training sequence code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>tn</Name>
+                </ItemLink>
+                <Comment>timeslot</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>ch_mode</Name>
+                </ItemLink>
+                <Comment>channel mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>hop</Name>
+                </ItemLink>
+                <Comment>frequency hopping flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>hsn</Name>
+                </ItemLink>
+                <Comment>hopping sequence number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>maio</Name>
+                </ItemLink>
+                <Comment>mobile allocation offset</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>power</Name>
+                </ItemLink>
+                <Comment>power level</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MON_MEAS_DEDI_IND is used to send measurement values of the dedicated mode to Condat RT. It is send by Radio Resource. Associated Command is &quot;RR CONFIG MON_MEAS_DEDI=0|1&quot;.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MON_MEAS_DEDI_IND</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>RT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>rx_lev_full</Name>
+                </ItemLink>
+                <Comment>Rxlev full serving cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>rx_lev_sub</Name>
+                </ItemLink>
+                <Comment>Rxlev sub serving cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>rx_qual_full</Name>
+                </ItemLink>
+                <Comment>Rxqual full serving cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>rx_qual_sub</Name>
+                </ItemLink>
+                <Comment>Rxqual sub serving cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>tav</Name>
+                </ItemLink>
+                <Comment>Timing advance serving cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>arfcn_nc</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>BCCH neighbour cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>bsic_nc</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>BSIC neighbour cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>rx_lev_nc</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>Rxlev neigbour cell</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>tav_nc</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>Timing Advance neighbour cell</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MON_COUNTER_DEDI_IND is used to send the radiolink timeout counter values to Condat RT.</Section>
+                <Section>It is send by TI++. Associated Command is &quot;PL CONFIG MON_COUNTER_DEDI=0|1&quot;.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MON_COUNTER_DEDI_IND</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>RT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>max_rlt</Name>
+                </ItemLink>
+                <Comment>Maximum Radiolink Timeout Counter</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>act_rlt</Name>
+                </ItemLink>
+                <Comment>Actual Radiolink Timeout Counter</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MON_COVERAGE_IND is used to send the coverage list of all 124 channels together with BSIC informations to Condat RT.</Section>
+                <Section>It is send by TI++. Associated Command is &quot;PL CONFIG MON_COVERAGE=0|1&quot;.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MON_COVERAGE_IND</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>PL</Sender>
+                    <Receiver>RT</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>rx_lev</Name>
+                </ItemLink>
+                <Control>[124]</Control>
+                <Comment>fieldstrength</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>bsic</Name>
+                </ItemLink>
+                <Control>[124]</Control>
+                <Comment>bsic</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines a PLMN identification. MCC and MNC are defined as BCD digits. The delimiter is 0xF.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>plmn</Name>
+                <Comment>PLMN identification</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>v_plmn</Name>
+                </ItemLink>
+                <Comment>valid flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>mcc</Name>
+                </ItemLink>
+                <Control>[SIZE_MCC]</Control>
+                <Comment>mobile country code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mon</DocName>
+                    <Name>mnc</Name>
+                </ItemLink>
+                <Control>[SIZE_MNC]</Control>
+                <Comment>mobile network code</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="8" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>introduce v_plmn</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="8" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>3-digit-MNC</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>lengths by symbols</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies a channel number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>arfcn</Name>
+                <Type>U16</Type>
+                <Comment>channel number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_arfcn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies a channel number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>arfcn_nc</Name>
+                <Type>U16</Type>
+                <Comment>channel number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines whether IMSI attach is used in the cell or not.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>att_flag</Name>
+                <Type>U8</Type>
+                <Comment>attach flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_att_flag</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the CCCH configuration.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>conf_ccch</Name>
+                <Type>U8</Type>
+                <Comment>CCCH configuration</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_conf_ccch</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the timeslot number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tn</Name>
+                <Type>U8</Type>
+                <Comment>timeslot number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_tn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the initial value for the downlink supervision.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dlt</Name>
+                <Type>U8</Type>
+                <Comment>downlink initial value</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_dlt</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the paging group of the mobile station.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pg</Name>
+                <Type>U8</Type>
+                <Comment>paging group</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_pg</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the blocks reserved for access grant channels on the common control channel.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bs_ag_blocks_res</Name>
+                <Type>U8</Type>
+                <Comment>Blocks reserved for AGCH</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the number of multiframes for transmission of the same paging group.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bs_pa_mfrms</Name>
+                <Type>U8</Type>
+                <Comment>Multiframe Period</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_bs_pa_mfrms</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the power level used by the physical layer according to GSM 5.08.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>power</Name>
+                <Type>U8</Type>
+                <Comment>Power Level</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_power</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the received field strength value.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rx_lev</Name>
+                <Type>U8</Type>
+                <Comment>received field strength</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_rx_lev</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the received field strength value.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rx_lev_full</Name>
+                <Type>U8</Type>
+                <Comment>received field strength</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the received field strength value.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rx_lev_sub</Name>
+                <Type>U8</Type>
+                <Comment>received field strength</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the received field strength value.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rx_lev_nc</Name>
+                <Type>U8</Type>
+                <Comment>received field strength</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the received quality.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rx_qual_full</Name>
+                <Type>U8</Type>
+                <Comment>received quality</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_rx_qual_full</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="2" Year="2000"/>
+                <Author>LE</Author>
+                <Comment>unused rx_qual removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the received quality.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rx_qual_sub</Name>
+                <Type>U8</Type>
+                <Comment>received quality</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="2" Year="2000"/>
+                <Author>LE</Author>
+                <Comment>unused rx_qual removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the base station identification code.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bsic</Name>
+                <Type>U8</Type>
+                <Comment>base station identification code</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_bsic</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the base station identification code.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bsic_nc</Name>
+                <Type>U8</Type>
+                <Comment>base station identification code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the timing advance in quarter bit periods.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tav</Name>
+                <Type>U8</Type>
+                <Comment>timing advance</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the timing advance in quarter bit periods.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tav_nc</Name>
+                <Type>U8</Type>
+                <Comment>timing advance</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a channel type configuration.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ch_type</Name>
+                <Type>U8</Type>
+                <Comment>channel type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_ch_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a channel mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ch_mode</Name>
+                <Type>U8</Type>
+                <Comment>channel mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_ch_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a PLMN identification. MCC and MNC are defined as BCD digits. The delimiter is 0xF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_plmn</Name>
+                <Type>U8</Type>
+                <Comment>valid flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="8" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>introduce v_plmn</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="8" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>3-digit-MNC</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>lengths by symbols</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a PLMN identification. MCC and MNC are defined as BCD digits. The delimiter is 0xF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mcc</Name>
+                <Type>U8</Type>
+                <Comment>mobile country code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="8" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>introduce v_plmn</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="8" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>3-digit-MNC</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>lengths by symbols</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a PLMN identification. MCC and MNC are defined as BCD digits. The delimiter is 0xF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mnc</Name>
+                <Type>U8</Type>
+                <Comment>mobile network code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="8" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>introduce v_plmn</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="8" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>3-digit-MNC</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>lengths by symbols</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the cell identity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cell_id</Name>
+                <Type>U16</Type>
+                <Comment>cell identity</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the location area code.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>lac</Name>
+                <Type>U16</Type>
+                <Comment>location area code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the path loss criterion C1 / C2.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c1</Name>
+                <Type>U8</Type>
+                <Comment>path loss criterion C1</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the path loss criterion C1 / C2.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c2_nc</Name>
+                <Type>U8</Type>
+                <Comment>reselection criterion C2</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the actual or maximum of downlink timeout value.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>max_dlt</Name>
+                <Type>U8</Type>
+                <Comment>maximum downlink timeout counter</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the actual or maximum of downlink timeout value.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>act_dlt</Name>
+                <Type>U8</Type>
+                <Comment>actual downlink timeout counter</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the actual or maximum of radiolink timeout value.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>max_rlt</Name>
+                <Type>U8</Type>
+                <Comment>maximum radiolink timeout counter</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the actual or maximum of radiolink timeout value.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>act_rlt</Name>
+                <Type>U8</Type>
+                <Comment>actual radiolink timeout counter</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a training sequence code.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tsc</Name>
+                <Type>U8</Type>
+                <Comment>training sequence code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the frequency hopping flag.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>hop</Name>
+                <Type>U8</Type>
+                <Comment>frequency hopping flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mon</DocName>
+                <Name>VAL_hop</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="8" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>swap comments on '0' and '1'</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the hopping sequence number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>hsn</Name>
+                <Type>U8</Type>
+                <Comment>hopping sequence number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a mobile allocation offset.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>maio</Name>
+                <Type>U8</Type>
+                <Comment>mobile allocation offset</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="18" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the MON SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_arfcn</Name>
+                <Comment>values for arfcn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FFFF</Value>
+                <Alias/>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>124</MaxValue>
+                <Comment>GSM 900 without extension band</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>124</MaxValue>
+                <Comment>GSM 900 with extension band</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>975</MinValue>
+                <MaxValue>1023</MaxValue>
+                <Comment>GSM 900 with extension band</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>512</MinValue>
+                <MaxValue>1023</MaxValue>
+                <Comment>DCS 1800</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_att_flag</Name>
+                <Comment>values for att_flag</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ATT_NOT_ALLOW</Alias>
+                <Comment>attach / detach not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ATT_ALLOW</Alias>
+                <Comment>attach / detach allowed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_conf_ccch</Name>
+                <Comment>values for conf_ccch</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CCCH_NOT_COMB_1_CHAN</Alias>
+                <Comment>CCCH not combined with SDCCH, 1 channel</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CCCH_COMB_1_CHAN</Alias>
+                <Comment>CCCH combined with SDCCH, 1 channel</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CCCH_NOT_COMB_2_CHAN</Alias>
+                <Comment>CCCH not combined with SDCCH, 2 channels</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>CCCH_NOT_COMB_3_CHAN</Alias>
+                <Comment>CCCH not combined with SDCCH, 3 channels</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>CCCH_NOT_COMB_4_CHAN</Alias>
+                <Comment>CCCH not combined with SDCCH, 4 channels</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tn</Name>
+                <Comment>values for tn</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>7</MaxValue>
+                <Comment>timeslot number 0-7</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dlt</Name>
+                <Comment>values for dlt</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>8</MinValue>
+                <MaxValue>45</MaxValue>
+                <Comment>initial value</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pg</Name>
+                <Comment>values for pg</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>80</MaxValue>
+                <Comment>paging group number</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_bs_pa_mfrms</Name>
+                <Comment>values for bs_pa_mfrms</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias/>
+                <Comment>2 Multiframe Periods</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias/>
+                <Comment>3 Multiframe Periods</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias/>
+                <Comment>4 Multiframe Periods</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias/>
+                <Comment>5 Multiframe Periods</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias/>
+                <Comment>6 Multiframe Periods</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias/>
+                <Comment>7 Multiframe Periods</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias/>
+                <Comment>8 Multiframe Periods</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias/>
+                <Comment>9 Multiframe Periods</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_power</Name>
+                <Comment>values for power</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>31</MaxValue>
+                <Comment>power level</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rx_lev</Name>
+                <Comment>values for rx_lev</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>63</MaxValue>
+                <Comment>received field strength</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rx_qual_full</Name>
+                <Comment>values for rx_qual_full</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>7</MaxValue>
+                <Comment>received quality</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_bsic</Name>
+                <Comment>values for bsic</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias/>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>63</MaxValue>
+                <Comment>base station identification code</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_type</Name>
+                <Comment>values for ch_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CH_TCH_F</Alias>
+                <Comment>TCH/F</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CH_TCH_H_1</Alias>
+                <Comment>TCH/H(1)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CH_TCH_H_2</Alias>
+                <Comment>TCH/H(2)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>CH_SDCCH_4_0</Alias>
+                <Comment>SDCCH/4(0)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>CH_SDCCH_4_1</Alias>
+                <Comment>SDCCH/4(1)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>CH_SDCCH_4_2</Alias>
+                <Comment>SDCCH/4(2)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>CH_SDCCH_4_3</Alias>
+                <Comment>SDCCH/4(3)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>CH_SDCCH_8_0</Alias>
+                <Comment>SDCCH/8(0)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>CH_SDCCH_8_1</Alias>
+                <Comment>SDCCH/8(1)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>CH_SDCCH_8_2</Alias>
+                <Comment>SDCCH/8(2)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>CH_SDCCH_8_3</Alias>
+                <Comment>SDCCH/8(3)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">12</Value>
+                <Alias>CH_SDCCH_8_4</Alias>
+                <Comment>SDCCH/8(4)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">13</Value>
+                <Alias>CH_SDCCH_8_5</Alias>
+                <Comment>SDCCH/8(5)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">14</Value>
+                <Alias>CH_SDCCH_8_6</Alias>
+                <Comment>SDCCH/8(6)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>CH_SDCCH_8_7</Alias>
+                <Comment>SDCCH/8(7)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_mode</Name>
+                <Comment>values for ch_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MODE_SIG_ONLY</Alias>
+                <Comment>signalling only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MODE_SPEECH_FULL</Alias>
+                <Comment>speech full rate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>MODE_SPEECH_HALF</Alias>
+                <Comment>speech half rate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>MODE_DATA_12</Alias>
+                <Comment>data 12 kBits/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>MODE_DATA_6_FULL</Alias>
+                <Comment>data 6 kBits/s fullrate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>MODE_DATA_6_HALF</Alias>
+                <Comment>data 6 kBits/s halfrate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">19</Value>
+                <Alias>MODE_DATA_3_6_FULL</Alias>
+                <Comment>data 3.6 kBits/s fullrate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">23</Value>
+                <Alias>MODE_DATA_3_6_HALF</Alias>
+                <Comment>data 3.6 kBits/s halfrate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">33</Value>
+                <Alias>MODE_ENHANCED_FULL</Alias>
+                <Comment>enhanced full rate</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_hop</Name>
+                <Comment>values for hop</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias/>
+                <Comment>no frequency hopping</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias/>
+                <Comment>with frequency hopping</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

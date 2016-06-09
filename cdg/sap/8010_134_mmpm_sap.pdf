@@ -1,0 +1,266 @@
+;********************************************************************************
+;*** File           : 8010_134_mmpm_sap.pdf
+;*** Creation       : Wed Mar 11 09:57:48 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_134_mmpm_sap
+;*** Document No.   : 8010.134.02.007
+;*** Document Date  : 2003-07-29
+;*** Document Status: APPROVED
+;*** Document Author: CLA
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:27:04 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-07-29"
+PRAGMA 	ID_AND_VERSION 	"8010.134.02.007"
+PRAGMA 	PREFIX 	MMPM 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+CONST 	MAX_N_PDU_NUMBER_LIST 	16 	; Maximum Length of Receive N-PDU Number list
+
+
+
+VALTAB 	VAL_establish_cause
+VAL 	1 	CAUSE_ESTABL_ORIG_CONVERSATIONAL 	"Originating conversational call"
+VAL 	2 	CAUSE_ESTABL_ORIG_STREAMING 	"Originating streaming call"
+VAL 	3 	CAUSE_ESTABL_ORIG_INTERACTIVE 	"Originating interactive call"
+VAL 	4 	CAUSE_ESTABL_ORIG_BACKGROUND 	"Originating background call"
+VAL 	5 	CAUSE_ESTABL_ORIG_HIGH_PRIO_SIGNALLING 	"Originating high priority signalling"
+VAL 	6 	CAUSE_ESTABL_ORIG_LOW_PRIO_SIGNALLING 	"Originating low priority signalling"
+
+VALTAB 	VAL_reg_state
+VAL 	0 	RS_DEREGISTERED 	"GMM context for SMS is removed"
+VAL 	1 	RS_REGISTERED 	"GMM context for SMS is built"
+
+
+
+
+VAR 	establish_cause 	"Establish Cause" 	B
+
+VAL 	@p_8010_134_mmpm_sap - VAL_establish_cause@ 	
+
+VAR 	nsapi_set 	"PDP Context Status" 	S
+
+
+VAR 	receive_n_pdu_number_val 	"Receive N-PDU Number value" 	B
+
+
+VAR 	reg_state 	"Registration State" 	B
+
+VAL 	@p_8010_134_mmpm_sap - VAL_reg_state@ 	
+
+
+
+
+COMP 	npdu_list 	 "list of received N-PDU numbers"
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; NSAPI
+ 	receive_n_pdu_number_val 	 ; Receive N-PDU Number value
+}
+
+
+
+
+
+
+; MMPM_ATTACH_IND 	0x800B4096
+; MMPM_DETACH_IND 	0x80004096
+; MMPM_PDP_CONTEXT_STATUS_REQ 	0x80000096
+; MMPM_RAT_CHANGE_COMPLETED_IND 	0x80014096
+; MMPM_RAT_CHANGE_IND 	0x80024096
+; MMPM_REESTABLISH_REQ 	0x80010096
+; MMPM_REESTABLISH_CNF 	0x80034096
+; MMPM_REESTABLISH_REJ 	0x80044096
+; MMPM_REG_STATE_REQ 	0x80020096
+; MMPM_REG_STATE_CNF 	0x80054096
+; MMPM_ERROR_IND 	0x80064096
+; MMPM_RESUME_IND 	0x80074096
+; MMPM_SEQUENCE_IND 	0x80084096
+; MMPM_SEQUENCE_RES 	0x80030096
+; MMPM_SUSPEND_IND 	0x80094096
+; MMPM_UNITDATA_IND 	0x800A4096
+; MMPM_UNITDATA_REQ 	0x80040096
+
+
+
+PRIM 	MMPM_ATTACH_IND 	0x800B4096
+{
+ 	EXTERN @p_8010_152_ps_include - rat@ 	rat 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MMPM_DETACH_IND 	0x80004096
+{
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; Protocol Stack Cause
+}
+
+
+
+
+
+
+PRIM 	MMPM_PDP_CONTEXT_STATUS_REQ 	0x80000096
+{
+ 	nsapi_set 	 ; PDP Context Status
+}
+
+
+
+
+
+
+PRIM 	MMPM_RAT_CHANGE_COMPLETED_IND 	0x80014096
+{
+ 	EXTERN @p_8010_152_ps_include - rat@ 	rat 	 ; Radio Access Technology
+}
+
+
+
+
+
+
+PRIM 	MMPM_RAT_CHANGE_IND 	0x80024096
+{
+ 	EXTERN @p_8010_152_ps_include - rat@ 	rat 	 ; Radio Access Technology
+}
+
+
+
+
+
+
+PRIM 	MMPM_REESTABLISH_REQ 	0x80010096
+{
+ 	establish_cause 	 ; Establish Cause
+}
+
+
+
+
+
+
+PRIM 	MMPM_REESTABLISH_CNF 	0x80034096
+{
+}
+
+
+
+
+
+
+PRIM 	MMPM_REESTABLISH_REJ 	0x80044096
+{
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; Protocol Stack Cause
+}
+
+
+
+
+
+
+PRIM 	MMPM_REG_STATE_REQ 	0x80020096
+{
+}
+
+
+
+
+
+
+PRIM 	MMPM_REG_STATE_CNF 	0x80054096
+{
+ 	reg_state 	 ; Registration State
+}
+
+
+
+
+
+
+PRIM 	MMPM_ERROR_IND 	0x80064096
+{
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; Protocol Stack Cause
+}
+
+
+
+
+
+
+PRIM 	MMPM_RESUME_IND 	0x80074096
+{
+}
+
+
+
+
+
+
+PRIM 	MMPM_SEQUENCE_IND 	0x80084096
+{
+ 	npdu_list 	[1..MAX_N_PDU_NUMBER_LIST] 	 ; list of received N-PDU numbers
+}
+
+
+
+
+
+
+PRIM 	MMPM_SEQUENCE_RES 	0x80030096
+{
+ 	npdu_list 	[1..MAX_N_PDU_NUMBER_LIST] 	 ; list of received N-PDU numbers
+}
+
+
+
+
+
+
+PRIM 	MMPM_SUSPEND_IND 	0x80094096
+{
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 ; Protocol Stack Cause
+}
+
+
+
+
+
+
+PRIM 	MMPM_UNITDATA_IND 	0x800A4096
+{
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 ; Service Data Unit
+}
+
+
+
+
+
+
+PRIM 	MMPM_UNITDATA_REQ 	0x80040096
+{
+ 	EXTERN @p_8010_137_nas_include - org_entity@ 	org_entity 	 ; Originating entity
+ 	< () 	establish_cause 	> 	 ; Establish Cause
+ 	< () 	nsapi_set 	> 	 ; PDP Context Status
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 ; Service Data Unit
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,4278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">rr</DocName>
+        <DocNum Number="107" Project="6147"/>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The base of the Protocol Stack rests on the physical layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Figure 1: Mobile-station protocol architecture</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This document describes the services offered by the physical layer to the radio resource management.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="97"/>
+            <Date Day="26" Month="5" Year="1997"/>
+            <Author>LE</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="97"/>
+            <Date Day="28" Month="5" Year="1998"/>
+            <Author>VK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Add dummy parameter to avoid empty primitives.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="97"/>
+            <Date Day="14" Month="5" Year="2001"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added SYNCCS_LAI_NOT_ALLOW_FOR_ROAMING.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="97"/>
+            <Date Day="13" Month="8" Year="1991"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>3-digit-MNC support.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="97"/>
+            <Date Day="21" Month="11" Year="2001"/>
+            <Author>VK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>GPRS Extended Measurement.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="104" Year="97"/>
+            <Date Day="19" Month="4" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switch to 32bit opcodes.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="105" Year="97"/>
+            <Date Day="25" Month="4" Year="2002"/>
+            <Author>MSB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>change name of the flag "gprs_indic" to "gprs_indication" to avoid confusion with a structure with the same name.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="106" Year="97"/>
+            <Date Day="16" Month="7" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>New cause concept.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="107" Year="97"/>
+            <Date Day="6" Month="11" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Renamed SYNCCS_ACCC_THPLMN to reflect new meaning, change of SAP members in RR_SYNC_REQ and RR_ACTIVATE_REQ deferred to avoid unnecessary merge efforts.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="108" Year="97"/>
+            <Date Day="4" Month="2" Year="2003"/>
+            <Author>LG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>lengths of mnc and mcc by symbol.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 01.04, Abbreviations and acronyms</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 03.41, Technical Realization of Short Message Service Cell Broadcast</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 04.03, MS-BSS Interface Channel Structures and Access Capabilities</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 04.07, Mobile Radio Interface Signalling Layer 3 General Aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 04.08, Mobile Radio Interface Layer 3 Specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 04.12, Short Message Service Cell Broadcast Support on Mobile Radio Interface</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 04.14, Special conformance testing functions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 05.01, Physical Layer on the Radio Path General Description</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 05.02, Multiplexing and Multiple Access on the Radio Path</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 05.05, Radio Transmission and Reception</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>GSM 05.08, Radio Sub-system Link Control</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 05.10, Radio Sub-system Synchronisation</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all constants that are defined for the RR SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Constant>
+            <Alias>MAX_SDU_LEN</Alias>
+            <Value ValueType="DEC">1</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>MAX_PLMN</Alias>
+            <Value ValueType="DEC">12</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>MAX_DIGITS</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_MCC</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_MNC</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>RR_ORIGINATING_ENTITY</Alias>
+            <ItemLink>
+                <DocName DocType="SAP">gsmcom</DocName>
+                <Name>RR_ORIGINATING_ENTITY</Name>
+            </ItemLink>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_EPLMN</Alias>
+            <Value ValueType="DEC">18</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>BA_BITMAP_SIZE</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>KC_STRING_SIZE</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment/>
+        </Constant>
+        <History>
+            <Date Day="23" Month="5" Year="1997"/>
+            <Author>MS</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="23" Month="7" Year="1997"/>
+            <Author>LE</Author>
+            <Comment>length of IMEI is 15 digits</Comment>
+        </History>
+        <History>
+            <Date Day="5" Month="10" Year="2000"/>
+            <Author>HM</Author>
+            <Comment>Increased MAX_PLMN from 5 to 12</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="2" Year="2002"/>
+            <Author>HM</Author>
+            <Comment>Added constant RR_ORIGINATING_ENTITY</Comment>
+        </History>
+        <History>
+            <Date Day="4" Month="2" Year="2003"/>
+            <Author>LG</Author>
+            <Comment>added SIZE_MCC, SIZE_MNC</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="3" Year="2003"/>
+            <Author>ABR</Author>
+            <Comment>Added MIN_EQ_PLMN_ID, MAX_EQ_PLMN_ID</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="6">
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all primitives that are defined for the RR SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_ABORT_REQ primitive is used to abort an active connection.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_ABORT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>abcs</Name>
+                </ItemLink>
+                <Comment>abort cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>abcs changed from USHORT to UBYTE</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_ABORT_IND is used to signal an abort situation in RR. PLMN available and PLMN list are inserted if the abort cause is set to Cell Selection failed.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_ABORT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>op</Name>
+                </ItemLink>
+                <Comment>operation mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>abort cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>plmn_avail</Name>
+                </ItemLink>
+                <Comment>PLMN available</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Control>[MAX_PLMN]</Control>
+                <Comment>PLMN identification</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>lac_list</Name>
+                </ItemLink>
+                <Control>[MAX_PLMN]</Control>
+                <Comment>List of LACs</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>rxlevel</Name>
+                </ItemLink>
+                <Control>[MAX_PLMN]</Control>
+                <Comment>RX level</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>power</Name>
+                </ItemLink>
+                <Comment>power class</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>Fieldstrength added</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="2" Year="2001"/>
+                <Author>LE</Author>
+                <Comment>power added</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>abcs -&gt; cause</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_ACTIVATE_REQ is used to initiate Cell Selection in RR.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_ACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>PLMN identification</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>op</Name>
+                </ItemLink>
+                <Comment>operation mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>cksn</Name>
+                </ItemLink>
+                <Comment>ciphering key sequence number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>kcv</Name>
+                </ItemLink>
+                <Comment>kc - Value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>accc</Name>
+                </ItemLink>
+                <Comment>access control class</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>imsi_struct</Name>
+                </ItemLink>
+                <Comment>mobile identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>tmsi_struct</Name>
+                </ItemLink>
+                <Comment>mobile identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>thplmn</Name>
+                </ItemLink>
+                <Comment>HPLMN time</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>bcch_info</Name>
+                </ItemLink>
+                <Comment>BCCH information</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>cell_test</Name>
+                </ItemLink>
+                <Comment>Cell test operation</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>gprs_indication</Name>
+                </ItemLink>
+                <Comment>GPRS indicator</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>eq_plmn_list</Name>
+                </ItemLink>
+                <Comment>Equivalent PLMN list</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>check_hplmn</Name>
+                </ItemLink>
+                <Comment>Flag for HPLMN </Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>cell_test added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="7" Year="2000"/>
+                <Author>DG</Author>
+                <Comment>gprs_indic added</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="4" Year="2002"/>
+                <Author>MSB</Author>
+                <Comment>change name to avoid confusion with structure of the same name</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="3" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Added EPLMN list</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="08" Year="2004"/>
+                <Author>khasim</Author>
+                <Comment>added new element for AHPLMN</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_ACTIVATE_CNF is used to signal a successful cell selection to MM.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_ACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>op</Name>
+                </ItemLink>
+                <Comment>Operation mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>mm_info</Name>
+                </ItemLink>
+                <Comment>MM information</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>cid</Name>
+                </ItemLink>
+                <Comment>cell identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>PLMN identification</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>lac</Name>
+                </ItemLink>
+                <Comment>location area code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>power</Name>
+                </ItemLink>
+                <Comment>power class</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>gprs_indication</Name>
+                </ItemLink>
+                <Comment>GPRS indicator</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>power class added</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="2" Year="2001"/>
+                <Author>DG</Author>
+                <Comment>gprs_indic added</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="4" Year="2002"/>
+                <Author>MSB</Author>
+                <Comment>change name to avoid confusion with structure of the same name</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_ACTIVATE_IND is used to signal a successful cell reselection to MM.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_ACTIVATE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>op</Name>
+                </ItemLink>
+                <Comment>operation mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>mm_info</Name>
+                </ItemLink>
+                <Comment>MM information</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>cid</Name>
+                </ItemLink>
+                <Comment>cell identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>PLMN identification</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>lac</Name>
+                </ItemLink>
+                <Comment>location area code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>power</Name>
+                </ItemLink>
+                <Comment>power class</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>gprs_indication</Name>
+                </ItemLink>
+                <Comment>GPRS indicator</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>power class added</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="2" Year="2001"/>
+                <Author>DG</Author>
+                <Comment>gprs_indic added</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="4" Year="2002"/>
+                <Author>MSB</Author>
+                <Comment>change name to avoid confusion with structure of the same name</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_DATA_REQ is used to send layer 3 messages of upper layer via an existing RR connection.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>d1</Name>
+                </ItemLink>
+                <Comment>dummy, not used</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>d2</Name>
+                </ItemLink>
+                <Comment>dummy, not used</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>layer 3 message</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_DATA_IND is used to send layer 3 messages from RR to the upper layer.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>d1</Name>
+                </ItemLink>
+                <Comment>dummy, not used</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>d2</Name>
+                </ItemLink>
+                <Comment>dummy, not used</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>layer 3 message</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Wrong direction in Opcode</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_DEACTIVATE_REQ is used when the mobile station is switched off.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_DEACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>param</Name>
+                </ItemLink>
+                <Comment>dummy parameter</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>add param</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_ESTABLISH_REQ is used to establish a RR connection.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_ESTABLISH_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>estcs</Name>
+                </ItemLink>
+                <Comment>establishment cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>layer 3 message</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_ESTABLISH_CNF signals the successful establishment of a RR connection.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_ESTABLISH_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>param</Name>
+                </ItemLink>
+                <Comment>dummy parameter</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>add param</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_ESTABLISH_IND signals the successful establishment of a RR connection (mobile terminated call).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_ESTABLISH_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>param</Name>
+                </ItemLink>
+                <Comment>dummy parameter</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>add param</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_RELEASE_IND is used to signal the release of a SAPI 0 or SAPI 3 RR connection.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_RELEASE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>RR cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>gprs_resumption</Name>
+                </ItemLink>
+                <Comment>GPRS resumption</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="11" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>GPRS resumption information added</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>relcs =&gt; cause</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_SYNC_REQ is used to synchronize RR and MM.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_SYNC_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>op</Name>
+                </ItemLink>
+                <Comment>operation mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>cksn</Name>
+                </ItemLink>
+                <Comment>ciphering key sequence number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>kcv</Name>
+                </ItemLink>
+                <Comment>kc - Value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>tmsi_struct</Name>
+                </ItemLink>
+                <Comment>mobile identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>PLMN identification</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>lac</Name>
+                </ItemLink>
+                <Comment>location area code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>synccs</Name>
+                </ItemLink>
+                <Comment>sync cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>accc</Name>
+                </ItemLink>
+                <Comment>access control classes</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>thplmn</Name>
+                </ItemLink>
+                <Comment>HPLMN search period</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>eq_plmn_list</Name>
+                </ItemLink>
+                <Comment>Equivalent PLMN list</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Added accc and thplmn</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="3" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Added EPLMN list</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_SYNC_IND is used to synchronize RR and MM.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_SYNC_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>ciph</Name>
+                </ItemLink>
+                <Comment>cipher mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>mm_info</Name>
+                </ItemLink>
+                <Comment>MM information</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>bcch_info</Name>
+                </ItemLink>
+                <Comment>BCCH information</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>synccs</Name>
+                </ItemLink>
+                <Comment>sync cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>chm</Name>
+                </ItemLink>
+                <Comment>channel using mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>chm at the end of primitive</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Switch to 32bit opcode</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_RRLP_START_IND signals the start of a RRLP service.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_RRLP_START_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+                <Version>REL99</Version>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>param</Name>
+                </ItemLink>
+                <Comment>dummy parameter</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>XSHRIVAS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The RR_RRLP_STOP_IND signals the stop of a RRLP service.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_RRLP_STOP_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+                <Version>REL99</Version>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>param</Name>
+                </ItemLink>
+                <Comment>dummy parameter</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>XSHRIVAS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This is for Acting HPLMN feature:This is sent by MM whenever it changes from True HPLMN to AHPLMN </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>RR_SYNC_HPLMN_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="08" Year="2004"/>
+                <Author>khasim</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the authentication key Kc which is used by PL for ciphering. The key is calculated by the authentication procedure.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>kcv</Name>
+                <Comment>kc - Value</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>v_kc</Name>
+                </ItemLink>
+                <Comment>valid flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>kc</Name>
+                </ItemLink>
+                <Control>[KC_STRING_SIZE]</Control>
+                <Comment>Kc value</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a BCCH carrier list in compact form for the channels 1 to 124. It is organized as a bitmap. Byte 1 of the BCCH field contains the channels 121 to 124. Byte 16 contains the channels 1 to 8. A channel is included if the corresponding bit is set.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>bcch_info</Name>
+                <Comment>BCCH information</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>v_bcch</Name>
+                </ItemLink>
+                <Comment>valid flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>bcch</Name>
+                </ItemLink>
+                <Control>[BA_BITMAP_SIZE]</Control>
+                <Comment>BCCH carrier list</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the used channel mode.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>chm</Name>
+                <Comment>Channel using mode</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>ch_type</Name>
+                </ItemLink>
+                <Comment>Channel Type</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>ch_mode</Name>
+                </ItemLink>
+                <Comment>Channel Mode</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>changed to struct with channel type and mode</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="10" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>+CHM_SPEECH_V2, +CHM_SPEECH_V3, -CHM_EFR_SPEECH</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the BCCH parameter belonging mobility management.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>mm_info</Name>
+                <Comment>MM information</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>valid</Name>
+                </ItemLink>
+                <Comment>valid information</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>la</Name>
+                </ItemLink>
+                <Comment>Location area indication</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>att</Name>
+                </ItemLink>
+                <Comment>attach / detach flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>re</Name>
+                </ItemLink>
+                <Comment>re-establishment flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>band</Name>
+                </ItemLink>
+                <Comment>band (dummy)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>ncc</Name>
+                </ItemLink>
+                <Comment>national colour code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>bcc</Name>
+                </ItemLink>
+                <Comment>base station colour code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>t3212</Name>
+                </ItemLink>
+                <Comment>periodic updating timer period</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>valid flag added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>parameter band removed</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>parameter band added for backward compatibility</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>imsi_struct</Name>
+                <Comment>mobile identity</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>tmsi_struct</Name>
+                <Comment>mobile identity</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>v_mid</Name>
+                </ItemLink>
+                <Comment>valid flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>id_type</Name>
+                </ItemLink>
+                <Comment>type of identity</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>id</Name>
+                </ItemLink>
+                <Control>[MAX_DIGITS]</Control>
+                <Comment>IMSI digits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>tmsi_dig</Name>
+                </ItemLink>
+                <Comment>TMSI digits</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the operation mode and some additional parameters of the mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>op</Name>
+                <Comment>operation mode</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>v_op</Name>
+                </ItemLink>
+                <Comment>valid flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>ts</Name>
+                </ItemLink>
+                <Comment>test SIM card</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>m</Name>
+                </ItemLink>
+                <Comment>registration mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>sim_ins</Name>
+                </ItemLink>
+                <Comment>SIM card</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>func</Name>
+                </ItemLink>
+                <Comment>Operation Mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>service</Name>
+                </ItemLink>
+                <Comment>RR Service</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>new function codes</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>FUNC_NET_SRCH_BY_MM (3) removed</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a PLMN identification. MCC and MNC are defined as BCD digits. The delimiter is 0xF.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>plmn</Name>
+                <Comment>PLMN identification</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>v_plmn</Name>
+                </ItemLink>
+                <Comment>valid flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>mcc</Name>
+                </ItemLink>
+                <Control>[SIZE_MCC]</Control>
+                <Comment>mobile country code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>mnc</Name>
+                </ItemLink>
+                <Control>[SIZE_MNC]</Control>
+                <Comment>mobile network code</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="8" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>3-digit-MNC support</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>lengths by symbol</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a message as bitstream.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>Service Data Unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[MAX_SDU_LEN]</Control>
+                <Comment>bit buffer</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename MAX_SDU_LENGTH into MAX_SDU_LEN</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the PLMN List information element is to provide a list of PLMN codes to the mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>eq_plmn_list</Name>
+                <Comment>Equivalent plmn List</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>eq_plmn</Name>
+                </ItemLink>
+                <Control>[SIZE_EPLMN]</Control>
+                <Comment>Equivalent PLMN</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rr</DocName>
+                    <Name>v_eq_plmn</Name>
+                </ItemLink>
+                <Comment>Validity of equivalent plmn list</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="11" Month="3" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines an abort cause for the RR_ABORT_REQ primitive. The abort causes for the RR_ABORT_IND primitive are defined as RR Cause.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>abcs</Name>
+                <Type>U8</Type>
+                <Comment>abort cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_abcs</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Removed dead definition, abcs now only for RR_ABORT_REQ</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the access classes of the mobile station. The value is stored on the SIM card and is used by RR for the Access Control Class Check.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>accc</Name>
+                <Type>U16</Type>
+                <Comment>access control classes</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_accc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the authentication key Kc which is used by PL for ciphering. The key is calculated by the authentication procedure.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_kc</Name>
+                <Type>U8</Type>
+                <Comment>valid flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_v_kc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the authentication key Kc which is used by PL for ciphering. The key is calculated by the authentication procedure.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>kc</Name>
+                <Type>U8</Type>
+                <Comment>Kc value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a BCCH carrier list in compact form for the channels 1 to 124. It is organized as a bitmap. Byte 1 of the BCCH field contains the channels 121 to 124. Byte 16 contains the channels 1 to 8. A channel is included if the corresponding bit is set.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_bcch</Name>
+                <Type>U8</Type>
+                <Comment>valid flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_v_bcch</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a BCCH carrier list in compact form for the channels 1 to 124. It is organized as a bitmap. Byte 1 of the BCCH field contains the channels 121 to 124. Byte 16 contains the channels 1 to 8. A channel is included if the corresponding bit is set.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bcch</Name>
+                <Type>U8</Type>
+                <Comment>BCCH carrier list</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_bcch</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the cell identity.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cid</Name>
+                <Type>U16</Type>
+                <Comment>cell identity</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the used channel mode.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ch_type</Name>
+                <Type>U8</Type>
+                <Comment>Channel Type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_ch_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>changed to struct with channel type and mode</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="10" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>+CHM_SPEECH_V2, +CHM_SPEECH_V3, -CHM_EFR_SPEECH</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the used channel mode.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ch_mode</Name>
+                <Type>U8</Type>
+                <Comment>Channel Mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_ch_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="29" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>changed to struct with channel type and mode</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="10" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>+CHM_SPEECH_V2, +CHM_SPEECH_V3, -CHM_EFR_SPEECH</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter is used for ciphering and is stored on the SIM card.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cksn</Name>
+                <Type>U8</Type>
+                <Comment>ciphering key sequence number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_cksn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the actual cipher mode.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ciph</Name>
+                <Type>U8</Type>
+                <Comment>cipher mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_ciph</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter is used as dummy to avoid unnecessary copying of data.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d1</Name>
+                <Type>U8</Type>
+                <Comment>dummy, not used</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>add param</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter is used as dummy to avoid unnecessary copying of data.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d2</Name>
+                <Type>U8</Type>
+                <Comment>dummy, not used</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>add param</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter is used as dummy to avoid unnecessary copying of data.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>param</Name>
+                <Type>U8</Type>
+                <Comment>dummy parameter</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="5" Year="1998"/>
+                <Author>VK</Author>
+                <Comment>add param</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the establishment cause.  This information is used for the Channel Request Messages of RR.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>estcs</Name>
+                <Type>U16</Type>
+                <Comment>establishment cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_estcs</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>New Establishment Cause</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Halfrate sufficient added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the time between two attempts of searching for the HPLMN if the mobile station roams in a VPLMN of the home country.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>thplmn</Name>
+                <Type>U8</Type>
+                <Comment>HPLN time</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_thplmn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the location area code.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>lac</Name>
+                <Type>U16</Type>
+                <Comment>location area code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the BCCH parameter belonging mobility management.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>valid</Name>
+                <Type>U8</Type>
+                <Comment>valid information</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_valid</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>valid flag added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>parameter band removed</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>parameter band added for backward compatibility</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the BCCH parameter belonging mobility management.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>la</Name>
+                <Type>U8</Type>
+                <Comment>Location area indication</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_la</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>valid flag added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>parameter band removed</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>parameter band added for backward compatibility</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the BCCH parameter belonging mobility management.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>att</Name>
+                <Type>U8</Type>
+                <Comment>attach / detach flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_att</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>valid flag added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>parameter band removed</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>parameter band added for backward compatibility</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the BCCH parameter belonging mobility management.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>re</Name>
+                <Type>U8</Type>
+                <Comment>re-establishment flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_re</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>valid flag added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>parameter band removed</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>parameter band added for backward compatibility</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the BCCH parameter belonging mobility management.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>band</Name>
+                <Type>U8</Type>
+                <Comment>band (dummy)</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_band</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>valid flag added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>parameter band removed</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>parameter band added for backward compatibility</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the BCCH parameter belonging mobility management.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ncc</Name>
+                <Type>U8</Type>
+                <Comment>national colour code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>valid flag added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>parameter band removed</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>parameter band added for backward compatibility</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the BCCH parameter belonging mobility management.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bcc</Name>
+                <Type>U8</Type>
+                <Comment>base station colour code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>valid flag added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>parameter band removed</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>parameter band added for backward compatibility</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the BCCH parameter belonging mobility management.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t3212</Name>
+                <Type>U8</Type>
+                <Comment>periodic updating timer period</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_t3212</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>valid flag added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="11" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>parameter band removed</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>parameter band added for backward compatibility</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_mid</Name>
+                <Type>U8</Type>
+                <Comment>valid flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_v_mid</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>id_type</Name>
+                <Type>U8</Type>
+                <Comment>type of identity</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_id_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>id</Name>
+                <Type>U8</Type>
+                <Comment>IMSI digits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tmsi_dig</Name>
+                <Type>U32</Type>
+                <Comment>TMSI digits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the operation mode and some additional parameters of the mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_op</Name>
+                <Type>U8</Type>
+                <Comment>valid flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_v_op</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>new function codes</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>FUNC_NET_SRCH_BY_MM (3) removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the operation mode and some additional parameters of the mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ts</Name>
+                <Type>U8</Type>
+                <Comment>test SIM card</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_ts</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>new function codes</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>FUNC_NET_SRCH_BY_MM (3) removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the operation mode and some additional parameters of the mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>m</Name>
+                <Type>U8</Type>
+                <Comment>registration mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_m</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>new function codes</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>FUNC_NET_SRCH_BY_MM (3) removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the operation mode and some additional parameters of the mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sim_ins</Name>
+                <Type>U8</Type>
+                <Comment>SIM card</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_sim_ins</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>new function codes</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>FUNC_NET_SRCH_BY_MM (3) removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the operation mode and some additional parameters of the mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>func</Name>
+                <Type>U8</Type>
+                <Comment>Operation Mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_func</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>new function codes</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>FUNC_NET_SRCH_BY_MM (3) removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the operation mode and some additional parameters of the mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>service</Name>
+                <Type>U8</Type>
+                <Comment>RR Service</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_service</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>new function codes</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>FUNC_NET_SRCH_BY_MM (3) removed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the number of PLMN identifications found during net search.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>plmn_avail</Name>
+                <Type>U8</Type>
+                <Comment>PLMN available</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_plmn_avail</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a PLMN identification. MCC and MNC are defined as BCD digits. The delimiter is 0xF.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_plmn</Name>
+                <Type>U8</Type>
+                <Comment>valid flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_v_plmn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="8" Year="2001"/>
+                <Author>HM</Author>
+                <Comment>3-digit-MNC support</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="2003"/>
+                <Author>LG</Author>
+                <Comment>lengths by symbol</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the RR cause, either for RR_ABORT_IND or RR_RELEASE_IND.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>RR cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter contains the service access point identifier.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sapi</Name>
+                <Type>U8</Type>
+                <Comment>service access point identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_sapi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a message as bitstream.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename MAX_SDU_LENGTH into MAX_SDU_LEN</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a message as bitstream.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename MAX_SDU_LENGTH into MAX_SDU_LEN</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a message as bitstream.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>bit buffer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename MAX_SDU_LENGTH into MAX_SDU_LEN</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the synchronisation cause.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Note: These "causes" are no causes according to cause concept, these are just unique numbers.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>synccs</Name>
+                <Type>U16</Type>
+                <Comment>synchronisation cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_synccs</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>lup retry cause added</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="3" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>sync cause for SAT added</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="5" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>SYNCCS_LIMITED_SERVICE, SYNCCS_IDLE_SELECTION</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="5" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>SYNCCS_LAI_NOT_ALLOW_FOR_ROAMING added</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="8" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>SYNCCS_ACCC_THPLMN =&gt; SYNCCS_ACCC</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="3" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Added SYNCCS_EPLMN_LIST.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the fieldstrength of PLMNs.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rxlevel</Name>
+                <Type>U8</Type>
+                <Comment>Fieldstrength</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the power class of the selected cell.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>power</Name>
+                <Type>U8</Type>
+                <Comment>Power class</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="1" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines whether cell test operation is desired.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cell_test</Name>
+                <Type>U8</Type>
+                <Comment>cell test operation</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_cell_test</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines whether cell test operation is desired.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gprs_indication</Name>
+                <Type>U8</Type>
+                <Comment>GPRS indicator</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_gprs_indication</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="25" Month="7" Year="2000"/>
+                <Author>DG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="4" Year="2002"/>
+                <Author>MSB</Author>
+                <Comment>change name to avoid confusion with structure of the same name</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines whether GPRS resumption was successfull. This information is received by the CHANNEL RELEASE message.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gprs_resumption</Name>
+                <Type>U8</Type>
+                <Comment>GPRS resumption information</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_gprs_resumption</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="11" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the list of Location Area Codes (LAC) of the PLMNs found during net search.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>lac_list</Name>
+                <Type>U16</Type>
+                <Comment>LACs of found PLMNs</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="12" Year="2002"/>
+                <Author>LOL</Author>
+                <Comment>Adding EONS functionality</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The purpose of the PLMN List information element is to provide a list of PLMN codes to the mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_eq_plmn</Name>
+                <Type>U8</Type>
+                <Comment>Validity of equivalent plmn list</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="3" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mcc</Name>
+                <Type>U8</Type>
+                <Comment>Mobile country code.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="10" Month="3" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mnc</Name>
+                <Type>U8</Type>
+                <Comment>Mobile network code.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="10" Month="3" Year="2003"/>
+                <Author>ABR</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>eq_plmn</Name>
+                <Type>U8</Type>
+                <Comment>Basic Element</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="04" Year="2004"/>
+                <Author>ZMM</Author>
+                <Comment>Make eq_plmn into an array and not a structure</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <DocLink DocType="OTHER">
+                        <Name/>
+                    </DocLink>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>check_hplmn</Name>
+                <Type>U8</Type>
+                <Comment>Flag for HPLMN </Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rr</DocName>
+                <Name>VAL_check_hplmn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="09" Month="07" Year="2007"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all sets of values that are defined for the RR SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_abcs</Name>
+                <Comment>values for abcs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ABCS_NORM</Alias>
+                <Comment>normal abort, MM-&gt;RR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ABCS_SIM_REM</Alias>
+                <Comment>SIM remove, MM-&gt;RR</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_accc</Name>
+                <Comment>values for accc</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="HEX">
+                <MinValue>0</MinValue>
+                <MaxValue>FFFF</MaxValue>
+                <Comment>access control classes value</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_v_kc</Name>
+                <Comment>values for v_kc</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>V_KC_NOT_PRES</Alias>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>V_KC_PRES</Alias>
+                <Comment>present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_v_bcch</Name>
+                <Comment>values for v_bcch</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>V_BCCH_NOT_PRES</Alias>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>V_BCCH_PRES</Alias>
+                <Comment>present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_bcch</Name>
+                <Comment>values for bcch</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>BCCH_CH_NOT_INCL</Alias>
+                <Comment>channel is not included</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>BCCH_CH_INCL</Alias>
+                <Comment>channel is included</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_mode</Name>
+                <Comment>values for ch_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CHM_SIG_ONLY</Alias>
+                <Comment>signalling only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CHM_SPEECH</Alias>
+                <Comment>speech full rate or half rate version 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">33</Value>
+                <Alias>CHM_SPEECH_V2</Alias>
+                <Comment>speech full rate or half rate version 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">65</Value>
+                <Alias>CHM_SPEECH_V3</Alias>
+                <Comment>speech full rate or half rate version 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CHM_DATA_9_6</Alias>
+                <Comment>data 9.6 kBit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>CHM_DATA_4_8</Alias>
+                <Comment>data 4.8 kBit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">19</Value>
+                <Alias>CHM_DATA_2_4</Alias>
+                <Comment>data 2.4 kBit/s</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>CHM_DATA_14_4</Alias>
+                <Comment>data 2.4 kBit/s</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ch_type</Name>
+                <Comment>values for ch_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CH_SDCCH</Alias>
+                <Comment>SDCCH channel</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CH_TCH_F</Alias>
+                <Comment>TCH Fullrate</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CH_TCH_H</Alias>
+                <Comment>TCH Halfrate</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cksn</Name>
+                <Comment>values for cksn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>CKSN_RES</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>CKSN_NOT_PRES</Alias>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>6</MaxValue>
+                <Comment>valid values</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ciph</Name>
+                <Comment>values for ciph</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CIPH_OFF</Alias>
+                <Comment>ciphering off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CIPH_ON</Alias>
+                <Comment>ciphering on</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>CIPH_NOT_PRES</Alias>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_estcs</Name>
+                <Comment>values for estcs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0400</Value>
+                <Alias>ESTCS_SERV_REQ_BY_MM</Alias>
+                <Comment>service requested by MM (Location updating or detach)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04A0</Value>
+                <Alias>ESTCS_EMRG_CAL</Alias>
+                <Comment>emergency call</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04C0</Value>
+                <Alias>ESTCS_CAL_REEST</Alias>
+                <Comment>call reestablishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04E0</Value>
+                <Alias>ESTCS_MOB_ORIG_SPCH_CAL_BY_CC</Alias>
+                <Comment>mobile originated speech call by CC</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04E1</Value>
+                <Alias>ESTCS_MOB_ORIG_DATA_CAL_BY_CC</Alias>
+                <Comment>mobile originated data call by CC</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04E2</Value>
+                <Alias>ESTCS_MOB_ORIG_DATA_CAL_BY_CC_HR_SUFF</Alias>
+                <Comment>mobile originated data call by CC, halfrate sufficient</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04F0</Value>
+                <Alias>ESTCS_MOB_ORIG_CAL_BY_SS_SMS</Alias>
+                <Comment>mobile originated call by SS or SMS</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_thplmn</Name>
+                <Comment>values for thplmn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>THPLMN_NO_HPLMN_SRCH</Alias>
+                <Comment>no HPLMN search</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>80</MaxValue>
+                <Comment>(6*value) minutes</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>81</MinValue>
+                <MaxValue>255</MaxValue>
+                <Comment>30 minutes</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_att</Name>
+                <Comment>values for att</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ATT_NOT_ALLOW</Alias>
+                <Comment>attach / detach not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ATT_ALLOW</Alias>
+                <Comment>attach / detach allowed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_band</Name>
+                <Comment>values for band</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>BND_DMY_VAL</Alias>
+                <Comment>dummy value needed by TAP</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_valid</Name>
+                <Comment>values for valid</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MM_INFO_NOT_PRES</Alias>
+                <Comment>information is not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MM_INFO_PRES</Alias>
+                <Comment>information is present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_re</Name>
+                <Comment>values for re</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RE_ALLOW</Alias>
+                <Comment>re-establishment is allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RE_NOT_ALLOW</Alias>
+                <Comment>re-establishment is not allowed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_t3212</Name>
+                <Comment>values for t3212</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>T3212_NO_PRD_UPDAT</Alias>
+                <Comment>no periodic updating</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>1</MinValue>
+                <MaxValue>255</MaxValue>
+                <Comment>(6 * value) minutes</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_la</Name>
+                <Comment>values for la</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>LA_NOT_IN_FRBD_LST_INCL</Alias>
+                <Comment>not in forbidden list included</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LA_IN_FRBD_LST_INCL</Alias>
+                <Comment>in forbidden list included</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_v_mid</Name>
+                <Comment>values for v_mid</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>V_MID_NOT_PRES</Alias>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>V_MID_PRES</Alias>
+                <Comment>present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_id_type</Name>
+                <Comment>values for id_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TYPE_NO_ID</Alias>
+                <Comment>no identity</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TYPE_IMSI</Alias>
+                <Comment>IMSI</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TYPE_TMSI</Alias>
+                <Comment>TMSI</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_m</Name>
+                <Comment>values for m</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>M_AUTO</Alias>
+                <Comment>automatic mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>M_MAN</Alias>
+                <Comment>manual mode</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_service</Name>
+                <Comment>values for service</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>NO_SERVICE</Alias>
+                <Comment>no service available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LIMITED_SERVICE</Alias>
+                <Comment>Limited service available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>FULL_SERVICE</Alias>
+                <Comment>Full service available</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_v_op</Name>
+                <Comment>values for v_op</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>V_OP_NOT_PRES</Alias>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>V_OP_PRES</Alias>
+                <Comment>present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_func</Name>
+                <Comment>values for func</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>FUNC_LIM_SERV_ST_SRCH</Alias>
+                <Comment>limited service state search</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>FUNC_PLMN_SRCH</Alias>
+                <Comment>PLMN search</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>FUNC_NET_SRCH_BY_MMI</Alias>
+                <Comment>Net search by MMI</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>FUNC_ST_PWR_SCAN</Alias>
+                <Comment>Initiate power scan</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ts</Name>
+                <Comment>values for ts</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TS_NO_AVAIL</Alias>
+                <Comment>no test SIM card available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TS_AVAIL</Alias>
+                <Comment>test SIM card available</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sim_ins</Name>
+                <Comment>values for sim_ins</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SIM_NO_INSRT</Alias>
+                <Comment>no SIM inserted</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SIM_INSRT</Alias>
+                <Comment>SIM inserted</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_plmn_avail</Name>
+                <Comment>values for plmn_avail</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="ALPHA">
+                <MinValue>0</MinValue>
+                <MaxValue>MAX_PLMN</MaxValue>
+                <Comment>number of PLMN identifications</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_v_plmn</Name>
+                <Comment>values for v_plmn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>V_PLMN_NOT_PRES</Alias>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>V_PLMN_PRES</Alias>
+                <Comment>present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0300</Value>
+                <Alias>RRCS_NORM</Alias>
+                <Comment>Normal event</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0301</Value>
+                <Alias>RRCS_ABNORM_UNSPEC</Alias>
+                <Comment>Abnormal release, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0302</Value>
+                <Alias>RRCS_ABNORM_CH_UNACC</Alias>
+                <Comment>Abnormal release, channel unacceptable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0303</Value>
+                <Alias>RRCS_ABNORM_TIM_EXP</Alias>
+                <Comment>Abnormal release, timer expired</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0304</Value>
+                <Alias>RRCS_ABNORM_NO_ACTIVE</Alias>
+                <Comment>Abnormal release, no activity on the radio path</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0305</Value>
+                <Alias>RRCS_PREEM</Alias>
+                <Comment>Preemptive release</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0308</Value>
+                <Alias>RRCS_TIME_ADVANCE</Alias>
+                <Comment>Handover impossible, timing advance out of range</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0309</Value>
+                <Alias>RRCS_CHANNEL_MODE</Alias>
+                <Comment>Channel mode unacceptable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">030A</Value>
+                <Alias>RRCS_FREQ_NOT_IMPL</Alias>
+                <Comment>Frequency not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0341</Value>
+                <Alias>RRCS_CAL_ALRED_CLR</Alias>
+                <Comment>Call already cleared</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">035F</Value>
+                <Alias>RRCS_INCORRECT_MSG</Alias>
+                <Comment>Semantically incorrect message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0360</Value>
+                <Alias>RRCS_INVALID_MANDATORY</Alias>
+                <Comment>Invalid mandatory information</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0361</Value>
+                <Alias>RRCS_MSG_TYPE_NOT_IMPLEM</Alias>
+                <Comment>Message type non-existent or not implemented</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0362</Value>
+                <Alias>RRCS_MES_INCOMPAT</Alias>
+                <Comment>Message type not compatible with protocol state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0364</Value>
+                <Alias>RRCS_INVALID_IE</Alias>
+                <Comment>Conditional IE error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0365</Value>
+                <Alias>RRCS_NO_CELL_ALLOCATION</Alias>
+                <Comment>No cell allocation available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">036F</Value>
+                <Alias>RRCS_PROT_ERR_UNSPEC</Alias>
+                <Comment>Protocol error, unspecified</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C310</Value>
+                <Alias>RRCS_ABORT_CEL_SEL_FAIL</Alias>
+                <Comment>Cell selection failed (RR_ABORT_IND)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C311</Value>
+                <Alias>RRCS_ABORT_RAD_LNK_FAIL</Alias>
+                <Comment>Radio link failure (RR_ABORT_IND)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C312</Value>
+                <Alias>RRCS_DATA_LINK_FAIL</Alias>
+                <Comment>Data link failure (RR_ABORT_IND / RR_RELEASE_IND)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8320</Value>
+                <Alias>RRCS_ACCESS_BARRED</Alias>
+                <Comment>Access barred because of access class control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8321</Value>
+                <Alias>RRCS_RND_ACC_DELAY</Alias>
+                <Comment>Random access is delayed (immediate assignment reject)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C322</Value>
+                <Alias>RRCS_RND_ACC_FAIL</Alias>
+                <Comment>Random access failed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C323</Value>
+                <Alias>RRCS_DL_EST_FAIL</Alias>
+                <Comment>DL establishment failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C324</Value>
+                <Alias>RRCS_MO_MT_COLL</Alias>
+                <Comment>Collision MO with MT; MT has higher priority than MO</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C325</Value>
+                <Alias>RRCS_MM_ABORTED</Alias>
+                <Comment>MM aborted the connection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C326</Value>
+                <Alias>RRCS_QUEUE_FULL</Alias>
+                <Comment>Internal RR primitive queue full</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C327</Value>
+                <Alias>RRCS_T3122_RUNNING</Alias>
+                <Comment>T3122 is still running, emergency calls only until expiry</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C328</Value>
+                <Alias>RRCS_INVALID_HOP_FREQ</Alias>
+                <Comment>Frequency hopping in more than one frequency band</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C3FF</Value>
+                <Alias>RRCS_INT_NOT_PRESENT</Alias>
+                <Comment>Internal release, release cause not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">c400</Value>
+                <Alias>RRCS_ABORT_PTM</Alias>
+                <Comment>RR is in GPRS_PTM_BCCH, GPRS_PTM_PBCCH, GPRS_PAM_BCCH, GPRS_PAM_PBCCH states cannot handle RR_ACTIVATE__REQ</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sapi</Name>
+                <Comment>values for sapi</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SAPI_0</Alias>
+                <Comment>SAPI 0</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>SAPI_3</Alias>
+                <Comment>SAPI 3</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_synccs</Name>
+                <Comment>values for synccs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">8300</Value>
+                <Alias>SYNCCS_ACC_CLS_CHA</Alias>
+                <Comment>access class changed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8301</Value>
+                <Alias>SYNCCS_T3122_TIM_OUT</Alias>
+                <Comment>T3122 time-out</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8411</Value>
+                <Alias>SYNCCS_TMSI_CKSN_KC_INVAL</Alias>
+                <Comment>TMSI, CKSN, Kc invalid</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8412</Value>
+                <Alias>SYNCCS_TMSI_INVAL</Alias>
+                <Comment>TMSI invalid</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8413</Value>
+                <Alias>SYNCCS_TMSI_CKSN_KC_INVAL_NO_PAG</Alias>
+                <Comment>TMSI, CKSN, Kc invalid, no paging</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8414</Value>
+                <Alias>SYNCCS_LAI_NOT_ALLOW</Alias>
+                <Comment>LAI not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8415</Value>
+                <Alias>SYNCCS_LAI_ALLOW</Alias>
+                <Comment>LAI allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8416</Value>
+                <Alias>SYNCCS_LUP_RETRY</Alias>
+                <Comment>Lup retry permission</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8417</Value>
+                <Alias>SYNCCS_LIMITED_SERVICE</Alias>
+                <Comment>RR is informed about limited service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8418</Value>
+                <Alias>SYNCCS_BACK_FROM_DEDICATED</Alias>
+                <Comment>RR has selected old cell after conn</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">8419</Value>
+                <Alias>SYNCCS_SYS_INFO_CHANGE</Alias>
+                <Comment>RR has detected a sysinfo change</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">841A</Value>
+                <Alias>SYNCCS_ACCC</Alias>
+                <Comment>access class changed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">841B</Value>
+                <Alias>SYNCCS_IDLE_SELECTION</Alias>
+                <Comment>RR has selected the old cell</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">841C</Value>
+                <Alias>SYNCCS_LAI_NOT_ALLOW_FOR_ROAMING</Alias>
+                <Comment>LAI not allowed for roaming</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">841D</Value>
+                <Alias>SYNCCS_EPLMN_LIST</Alias>
+                <Comment>Changed EPLMN list available</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cell_test</Name>
+                <Comment>values for cell_test</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>CELL_TEST_DISABLE</Alias>
+                <Comment>cell test operation disable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>CELL_TEST_ENABLE</Alias>
+                <Comment>cell test operation enable</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_gprs_indication</Name>
+                <Comment>values for gprs_indication</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>GPRS_NO</Alias>
+                <Comment>no GPRS mode</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>GPRS_YES</Alias>
+                <Comment>GPRS mode</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_gprs_resumption</Name>
+                <Comment>values for gprs_resumption</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>GPRS_RESUMPTION_NOT_ACK</Alias>
+                <Comment>GPRS resumption not successfull</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>GPRS_RESUMPTION_ACK</Alias>
+                <Comment>GPRS resumption successfull</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <DocLink DocType="OTHER">
+                        <Name/>
+                    </DocLink>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_check_hplmn</Name>
+                <Comment>values for check_hplmn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CHECK_PLMN_NOT_PRES</Alias>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CHECK_PLMN_PRES</Alias>
+                <Comment>present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="09" Month="08" Year="2007"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

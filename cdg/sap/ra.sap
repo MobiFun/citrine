@@ -1,0 +1,1670 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">ra</DocName>
+        <DocNum Number="102" Project="8411"/>
+        <Description>
+            <Section>This section contains general information on RA SAP</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="98"/>
+            <Date Day="25" Month="3" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="98"/>
+            <Date Day="21" Month="4" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Formatting changed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="98"/>
+            <Date Day="19" Month="5" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Formatting changed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="98"/>
+            <Date Day="10" Month="6" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document template: without absolute path</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="104" Year="98"/>
+            <Date Day="18" Month="6" Year="1998"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Frame type parameter added to data request/indication primitives. Activate/deactivate confirm primitives added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="105" Year="98"/>
+            <Date Day="28" Month="7" Year="1998"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>req_bits changed to req_frames. Sdu aligned.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="200" Year="98"/>
+            <Date Day="30" Month="7" Year="1998"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Adapted to the L1 implementation interface requirements.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="201" Year="98"/>
+            <Date Day="31" Month="7" Year="1998"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Parameter ndb and nsb added to RA_ACTIVATE_REQ.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="202" Year="98"/>
+            <Date Day="11" Month="11" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Parameter ack_flg added to RA_ACTIVATE_CNF.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="203" Year="98"/>
+            <Date Day="26" Month="11" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Traffic Channel 14.4 kbit/s added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="204" Year="98"/>
+            <Date Day="26" Month="4" Year="2002"/>
+            <Author>SLO</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Primitive opcodes expanded</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the RA SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>DUMMY_RA</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>Dummy</Comment>
+        </Constant>
+        <History>
+            <Date Day="2" Month="3" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="16">
+        <Description>
+            <Section>This section contains all primitives that are defined for the RA SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The RA_ACTIVATE_REQ is used to initialise the RA entity.</Section>
+                <Section>This is the first primitive, which should be passed to RA after starting the entity.</Section>
+                <Section>It contains all parameters necessary for initialisation.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_ACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>model</Name>
+                </ItemLink>
+                <Comment>transfer protocol model</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>tra_rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>user_rate</Name>
+                </ItemLink>
+                <Comment>user rate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>ndb</Name>
+                </ItemLink>
+                <Comment>number data bits</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>nsb</Name>
+                </ItemLink>
+                <Comment>number stop bits</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="7" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>synch_tch added</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="7" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>synch_tch removed replaced by modify_req</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_DEACTIVATE_REQ is used to deactivate the RA entity. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_DEACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_READY_IND indicates, that a frame may be sent.</Section>
+                <Section>The parameter req_frames indicates the amount of data frames</Section>
+                <Section>which can be processed by RA in this cycle.</Section>
+                <Section>The size of the frame depends on the communication model.</Section>
+                <Section>The entity, to which the primitive is sent, depends on the transfer protocol model too,</Section>
+                <Section>which is selected by the RA_ACTIVATE_REQ.</Section>
+                <Section>Protocol model</Section>
+                <Section>receiving entity</Section>
+                <Section>RA_MODEL_TRANS</Section>
+                <Section>ACI</Section>
+                <Section>RA_MODEL_RLP</Section>
+                <Section>RLP</Section>
+                <Section>RA_MODEL_FAX</Section>
+                <Section>FAD</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_READY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>RA</Sender>
+                    <Receiver>any</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>req_frames</Name>
+                </ItemLink>
+                <Comment>requested frames</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="9" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Primitive added</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="6" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Parameter requested bits added</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Parameter requested bits changed to requested frames</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_DATA_REQ is used to send data to the base station.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>any</Sender>
+                    <Receiver>layer</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>fr_type</Name>
+                </ItemLink>
+                <Comment>frame type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>dtx_flg</Name>
+                </ItemLink>
+                <Comment>discontinuous transmission flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>status</Name>
+                </ItemLink>
+                <Comment>V.24 Status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>reserved</Name>
+                </ItemLink>
+                <Comment>reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>DTX added</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="6" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Parameter frame type added</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Parameter status added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_BREAK_REQ is used to send transmit a break signal in the transparent data mode</Section>
+                <Section>and while FAX transmission.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_BREAK_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>break_len</Name>
+                </ItemLink>
+                <Comment>Break length</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_DATA_IND is used to forward received data.</Section>
+                <Section>The entity, to which the primitive is sent, depends on the transfer protocol model,</Section>
+                <Section>which is selected by the RA_ACTIVATE_REQ.</Section>
+                <Section>Protocol model</Section>
+                <Section>receiving entity</Section>
+                <Section>RA_MODEL_TRANS</Section>
+                <Section>ACI</Section>
+                <Section>RA_MODEL_RLP</Section>
+                <Section>L2R</Section>
+                <Section>RA_MODEL_FAX</Section>
+                <Section>FAD</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>RA</Sender>
+                    <Receiver>any</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>fr_type</Name>
+                </ItemLink>
+                <Comment>frame type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>status</Name>
+                </ItemLink>
+                <Comment>V.24 Status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>reserved</Name>
+                </ItemLink>
+                <Comment>reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Receiving entity added</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="6" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Parameter frame type added.</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Parameter status added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_ACTIVATE_CNF is sent from RA to ACI as a response to the RA_ACTIVATE_REQ.</Section>
+                <Section>In the non-transparent data mode (RLP) RA sends this primitive immediately</Section>
+                <Section>after it receives the RA_ACTIVATE_REQ.</Section>
+                <Section>In the transparent FAX and Data mode the RA performs a synchronisation procedure on the TCH</Section>
+                <Section>and sends the confirmation at the end of this procedure.</Section>
+                <Section>The acknowledgement can be positive (RA_ACK) and negative (RA_NAK).</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_ACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>RA</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>ack_flg</Name>
+                </ItemLink>
+                <Comment>acknowledge flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="6" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_DEACTIVATE_CNF is used by RA as a response to the RA_DEACTIVATE_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_DEACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>RA</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="18" Month="6" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_BREAK_IND is sent to ACI if the RA function detects a break in the V.110 frames.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_BREAK_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>RA</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>break_len</Name>
+                </ItemLink>
+                <Comment>Break length</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="30" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_DETECT_REQ is sent from FAD to RA to enable or disable the status frame detectection.</Section>
+                <Section>This is used in FAX Phase C if FAD is receiving MSG data from the network.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_DETECT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>FAD</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>detect</Name>
+                </ItemLink>
+                <Comment>Detect mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_MODIFY_REQ is sent from ACI to RA to change the user/transmission rate of the fax</Section>
+                <Section>in case of a channel mode modify initiated in fax mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_MODIFY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>tra_rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>user_rate</Name>
+                </ItemLink>
+                <Comment>user rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="7" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_MODIFY_CNF is sent from RA to ACI after reception of a RA_MODIFY_REQ primitive</Section>
+                <Section>and after the sequencer is resynchronized.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_MODIFY_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>RA</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="7" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RA_DATATRANS_REQ is sent from the upper layer to RA</Section>
+                <Section>signalling it is ready to provide frame descriptors for downlink data transfer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RA_DATATRANS_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>UL</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="21" Month="3" Year="2003"/>
+                <Author>KJF</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The SHM_TICK_REQ is sent to RA to call a GTI tick function.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SHM_TICK_REQ</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>tick_dir</Name>
+                </ItemLink>
+                <Comment>tick direction</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The SHM_DATA_REQ is used to write formatted data into shared memory.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SHM_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>fr_type</Name>
+                </ItemLink>
+                <Comment>frame type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>dtx_flg</Name>
+                </ItemLink>
+                <Comment>discontinuous transmission flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>status</Name>
+                </ItemLink>
+                <Comment>V.24 Status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>reserved</Name>
+                </ItemLink>
+                <Comment>Reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The SHM_READ_REQ is used to launch a SHM_DATA_IND primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SHM_READ_REQ</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>model</Name>
+                </ItemLink>
+                <Comment>transfer protocol model</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The SHM_DATA_IND is used to read formatted data from the shared memory.</Section>
+                <Section>Protocol model</Section>
+                <Section>Receiving entity</Section>
+                <Section>RA_MODEL_TRANS</Section>
+                <Section>TAP</Section>
+                <Section>RA_MODEL_RLP</Section>
+                <Section>TAP</Section>
+                <Section>RA_MODEL_FAX</Section>
+                <Section>TAP</Section>
+            </Description>
+            <PrimDef>
+                <Name>SHM_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>RA</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>fr_type</Name>
+                </ItemLink>
+                <Comment>frame type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>status</Name>
+                </ItemLink>
+                <Comment>V.24 Status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>reserved</Name>
+                </ItemLink>
+                <Comment>reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The SHM_BITSET_REQ is used to set or clear bits in the shared memory.</Section>
+                <Section>Protocol model</Section>
+                <Section>Receiving entity</Section>
+                <Section>RA_MODEL_TRANS</Section>
+                <Section>RA</Section>
+                <Section>RA_MODEL_RLP</Section>
+                <Section>RA</Section>
+                <Section>RA_MODEL_FAX</Section>
+                <Section>RA</Section>
+            </Description>
+            <PrimDef>
+                <Name>SHM_BITSET_REQ</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>id</Name>
+                </ItemLink>
+                <Comment>Bit identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>value</Name>
+                </ItemLink>
+                <Comment>Bits Value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The BITTEST_REQ is used to test bits in the shared memory.</Section>
+                <Section>Protocol model</Section>
+                <Section>Receiving entity</Section>
+                <Section>RA_MODEL_TRANS</Section>
+                <Section>RA</Section>
+                <Section>RA_MODEL_RLP</Section>
+                <Section>RA</Section>
+                <Section>RA_MODEL_FAX</Section>
+                <Section>RA</Section>
+            </Description>
+            <PrimDef>
+                <Name>SHM_BITTEST_REQ</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>TAP</Sender>
+                    <Receiver>RA</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>offset</Name>
+                </ItemLink>
+                <Comment>Address offset</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>mask</Name>
+                </ItemLink>
+                <Comment>Bit mask</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The SHM_BITTEST_IND is used to get bit values from the shared memory.</Section>
+                <Section>Protocol model</Section>
+                <Section>Receiving entity</Section>
+                <Section>RA_MODEL_TRANS</Section>
+                <Section>TAP</Section>
+                <Section>RA_MODEL_RLP</Section>
+                <Section>TAP</Section>
+                <Section>RA_MODEL_FAX</Section>
+                <Section>TAP</Section>
+            </Description>
+            <PrimDef>
+                <Name>SHM_BITTEST_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>RA</Sender>
+                    <Receiver>TAP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>value</Name>
+                </ItemLink>
+                <Comment>Bits Value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>Service Data Unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ra</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>buffer content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>ra_sdu changed to sdu</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameters selects one of the information transfer protocol models of GSM 03.10 to be used for the connection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>model</Name>
+                <Type>U8</Type>
+                <Comment>transfer protocol model</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_model</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the transmission rate of the traffic chanel.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tra_rate</Name>
+                <Type>U8</Type>
+                <Comment>transmission rate</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_tra_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>2,4/3,6 rates added</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>14,4 rate added, values remapped</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the user rate of the TE.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>user_rate</Name>
+                <Type>U8</Type>
+                <Comment>user rate</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_user_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>ra_sdu changed to sdu</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>ra_sdu changed to sdu</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>buffer content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>ra_sdu changed to sdu</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the flag for discontinuous transmission (DTX flag).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dtx_flg</Name>
+                <Type>U8</Type>
+                <Comment>discontinuous transmission flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_dtx_flg</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="10" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the number of frames which can be processed by RA in this RA_READY_IND cycle. The size of the frame depends on the chosen data model.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>req_frames</Name>
+                <Type>U8</Type>
+                <Comment>requested frames</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="6" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Changed from req_bits to req_frames.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the type of frame in the RA_DATA_REQ and RA_DATA_IND primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>fr_type</Name>
+                <Type>U8</Type>
+                <Comment>frame type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_fr_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="6" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to insert reserved fields into the data structure of the DATA_REQ and DATA_IND primitives to align the position of the sdu to avoid copy operations..</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reserved</Name>
+                <Type>U8</Type>
+                <Comment>Reserved</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to exchange the values of the V.24 status lines CT108, CT107, CT105, CT109, CT106 which are mapped to the V.110 state bits SA,SB and X. Additionally this parameter contains a flag that signals in uplink direction the request for overspeed handling. This status parameter is only used in transparent data services and FAX transmission.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>status</Name>
+                <Type>U8</Type>
+                <Comment>V24 Status</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_status</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="30" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the length of a break signal in units of characters.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>break_len</Name>
+                <Type>U16</Type>
+                <Comment>Break Length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the number of data bits per character for the transparent data mode. It is passed to RA via the RA_ACTIVATE_REQ primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ndb</Name>
+                <Type>U8</Type>
+                <Comment>number data bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="31" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the number of stop bits of each character for the transparent data mode. It is passed to RA via the RA_ACTIVATE_REQ primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nsb</Name>
+                <Type>U8</Type>
+                <Comment>number stop bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="31" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the acknowledge flag in response and confirm primitives.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ack_flg</Name>
+                <Type>U8</Type>
+                <Comment>acknowledge flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_ack_flg</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter request the mode of FAX frame detection in RA.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>detect</Name>
+                <Type>U8</Type>
+                <Comment>Detect mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_detect</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="3" Month="6" Year="1999"/>
+                <Author>PZ</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter determines the GTI tick direction.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tick_dir</Name>
+                <Type>U8</Type>
+                <Comment>tick direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_tick_dir</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter determines the address offset in the shared memory.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>id</Name>
+                <Type>U8</Type>
+                <Comment>Bit Identity</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter determines the address offset in the shared memory.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>offset</Name>
+                <Type>U8</Type>
+                <Comment>Address offset</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ra</DocName>
+                <Name>VAL_offset</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter determines the bit mask in the shared memory.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mask</Name>
+                <Type>U16</Type>
+                <Comment>Bit mask</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter determines bits value in the shared memory.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>value</Name>
+                <Type>U16</Type>
+                <Comment>Bits value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="12" Year="2001"/>
+                <Author>KJF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the RA SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_model</Name>
+                <Comment>values for model</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RA_MODEL_SPEECH</Alias>
+                <Comment>model speech</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RA_MODEL_TRANS</Alias>
+                <Comment>model 1b async transparent</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>RA_MODEL_RLP</Alias>
+                <Comment>model 3b async nontransparent</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>RA_MODEL_FAX</Alias>
+                <Comment>model 5b fax 3.45</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tra_rate</Name>
+                <Comment>values for tra_rate</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TRA_FULLRATE_2400</Alias>
+                <Comment>fullrate 2,4/3,6 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TRA_HALFRATE_2400</Alias>
+                <Comment>halfrate 2,4/3,6 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TRA_FULLRATE_4800</Alias>
+                <Comment>fullrate 4,8/6 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TRA_HALFRATE_4800</Alias>
+                <Comment>halfrate 4,8/6 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TRA_FULLRATE_9600</Alias>
+                <Comment>fullrate 9,6/12 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>TRA_FULLRATE_14400</Alias>
+                <Comment>fullrate 13,4/14,4 kBit</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_user_rate</Name>
+                <Comment>values for user_rate</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>URA_300</Alias>
+                <Comment>user rate 300bps</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>URA_1200</Alias>
+                <Comment>user rate 1200bps</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>URA_2400</Alias>
+                <Comment>user rate 2400bps</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>URA_4800</Alias>
+                <Comment>user rate 4800bps</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>URA_9600</Alias>
+                <Comment>user rate 9600bps</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>URA_1200_75</Alias>
+                <Comment>user rate 1200/75bps</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>URA_14400</Alias>
+                <Comment>user rate 14400bps</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dtx_flg</Name>
+                <Comment>values for dtx_flg</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTX_DIS</Alias>
+                <Comment>Disable DTX</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTX_EN</Alias>
+                <Comment>Enable DTX</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_fr_type</Name>
+                <Comment>values for fr_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>FR_T4DATA</Alias>
+                <Comment>GSM 3.45 Data frame</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>FR_STATUS</Alias>
+                <Comment>GSM 3.45 Status (BCS) frame</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>FR_SYNC</Alias>
+                <Comment>GSM 3.45 Sync frame</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">03</Value>
+                <Alias>FR_TRAIN</Alias>
+                <Comment>GSM 3.45 Status (TRAIN) frame</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>FR_TRANS</Alias>
+                <Comment>Transparent Data frame</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">05</Value>
+                <Alias>FR_RLP</Alias>
+                <Comment>Valid RLP frame</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0F</Value>
+                <Alias>FR_INVALID</Alias>
+                <Comment>Invalid frame or FCS error detected in RLP mode</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_status</Name>
+                <Comment>values for status</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ST_SA</Alias>
+                <Comment>Status SA</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>ST_SB</Alias>
+                <Comment>Status SB</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>ST_X</Alias>
+                <Comment>Status X</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>ST_OVER</Alias>
+                <Comment>Overspeed flag</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ack_flg</Name>
+                <Comment>values for ack_flg</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RA_ACK</Alias>
+                <Comment>acknowledged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RA_NAK</Alias>
+                <Comment>not acknowledged</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_detect</Name>
+                <Comment>values for detect</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DET_NO_STATUS</Alias>
+                <Comment>do not detect status frames</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DET_STATUS</Alias>
+                <Comment>detect status frames</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tick_dir</Name>
+                <Comment>values for tick_dir</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TICK_UL</Alias>
+                <Comment>tick uplink</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TICK_DL</Alias>
+                <Comment>tick downlink</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TICK_UL_DL</Alias>
+                <Comment>tick uplink &amp; downlink</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_offset</Name>
+                <Comment>values for offset</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ra_conf</Alias>
+                <Comment>Configurations</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ra_act</Alias>
+                <Comment>Activities</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>ra_test</Alias>
+                <Comment>Test</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>ra_statu</Alias>
+                <Comment>Uplink status</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>ra_statd</Alias>
+                <Comment>Downlink status</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>fax_status_det</Alias>
+                <Comment>Fax status detection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>rau</Alias>
+                <Comment>Buffer for uplink characters</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>rad</Alias>
+                <Comment>Buffer for downlink characters</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>ntu</Alias>
+                <Comment>Buffer for uplink RLP frames</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>ntd</Alias>
+                <Comment>Buffer for downlink RLP frames</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>faxu</Alias>
+                <Comment>Buffer for uplink fax data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">11</Value>
+                <Alias>faxd</Alias>
+                <Comment>Buffer for downlink fax data</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

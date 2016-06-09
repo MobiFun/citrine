@@ -1,0 +1,11 @@
+# This configuration will eventually become a firmware image for the gtamodem
+# target that provides actual GSM functionality.
+
+target	gtamodem
+feature	gsm
+feature	at-modem
+feature	at-rvtmux
+feature	mokoffs copy
+
+feature	etm
+feature	tmffs2

@@ -1,0 +1,279 @@
+;********************************************************************************
+;*** File           : dti.pdf
+;*** Creation       : Wed Mar 11 09:57:58 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : dti
+;*** Document No.   : 8411.110.00.007
+;*** Document Date  : 2000-06-29
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: MG
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:40:22 2007"
+PRAGMA 	LAST_MODIFIED 	"2000-06-29"
+PRAGMA 	ID_AND_VERSION 	"8411.110.00.007"
+
+
+
+
+
+
+VALTAB 	VAL_c_id
+VAL 	0 	DTI_NSAPI_0 	"escape mechanism for future extensions"
+VAL 	1 	DTI_NSAPI_1 	"Point-To-Multipoint Multicast information"
+VAL 	2 	DTI_NSAPI_2 	"reserved for future use"
+VAL 	3 	DTI_NSAPI_3 	"reserved for future use"
+VAL 	4 	DTI_NSAPI_4 	"reserved for future use"
+VAL 	5 	DTI_NSAPI_5 	"dynamically allocated NSAPI value"
+VAL 	6 	DTI_NSAPI_6 	"dynamically allocated NSAPI value"
+VAL 	7 	DTI_NSAPI_7 	"dynamically allocated NSAPI value"
+VAL 	8 	DTI_NSAPI_8 	"dynamically allocated NSAPI value"
+VAL 	9 	DTI_NSAPI_9 	"dynamically allocated NSAPI value"
+VAL 	10 	DTI_NSAPI_10 	"dynamically allocated NSAPI value"
+VAL 	11 	DTI_NSAPI_11 	"dynamically allocated NSAPI value"
+VAL 	12 	DTI_NSAPI_12 	"dynamically allocated NSAPI value"
+VAL 	13 	DTI_NSAPI_13 	"dynamically allocated NSAPI value"
+VAL 	14 	DTI_NSAPI_14 	"dynamically allocated NSAPI value"
+VAL 	15 	DTI_NSAPI_15 	"dynamically allocated NSAPI value"
+VAL 	5 	DTI_C_ID_DEFAULT 	"Default value for c_id"
+
+VALTAB 	VAL_p_id
+VAL 	0x21 	DTI_PID_IP 	"simple ip packet"
+VAL 	0x2D 	DTI_PID_CTCP 	"Van Jacobson compressed TCP/IP header"
+VAL 	0x2F 	DTI_PID_UTCP 	"Van Jacobson uncompressed TCP/IP header"
+VAL 	0x00 	DTI_PID_FRAME 	"PPP frame"
+
+VALTAB 	VAL_op_ack
+VAL 	0x01 	OP_ACK 	"acknowledged operation mode"
+VAL 	0x00 	OP_UNACK 	"unacknowledged operation mode"
+
+VALTAB 	VAL_st_flow
+VAL 	0 	DTI_FLOW_ON 	"flow control is inactive"
+VAL 	1 	DTI_FLOW_OFF 	"flow control is active"
+
+VALTAB 	VAL_st_line_sa
+VAL 	0 	DTI_SA_ON 	"SA is inactive"
+VAL 	1 	DTI_SA_OFF 	"SA is active"
+
+VALTAB 	VAL_st_line_sb
+VAL 	0 	DTI_SB_ON 	"SB is inactive"
+VAL 	1 	DTI_SB_OFF 	"SB is active"
+
+VALTAB 	VAL_st_escape
+VAL 	0 	DTI_ESC_OFF 	"No escape detected"
+VAL 	1 	DTI_ESC_ON 	"Escape detected"
+
+
+
+
+VAR 	list_len 	"length in octets of whole data" 	S
+
+
+VAR 	first 	"pointer to first generic data descriptor" 	L
+
+
+VAR 	next 	"next generic data descriptor" 	L
+
+
+VAR 	len 	"length of content in octets" 	S
+
+
+VAR 	buffer 	"buffer content" 	B
+
+
+VAR 	tui 	"transmission unit identifier" 	S
+
+
+VAR 	c_id 	"channel identifier" 	B
+
+VAL 	@p_dti - VAL_c_id@ 	
+
+VAR 	p_id 	"protocol identifier" 	B
+
+VAL 	@p_dti - VAL_p_id@ 	
+
+VAR 	op_ack 	"operation mode" 	B
+
+VAL 	@p_dti - VAL_op_ack@ 	
+
+VAR 	st_flow 	"flow control state" 	B
+
+VAL 	@p_dti - VAL_st_flow@ 	
+
+VAR 	st_line_sa 	"line state sa" 	B
+
+VAL 	@p_dti - VAL_st_line_sa@ 	
+
+VAR 	st_line_sb 	"line state sb" 	B
+
+VAL 	@p_dti - VAL_st_line_sb@ 	
+
+VAR 	st_escape 	"escape state" 	B
+
+VAL 	@p_dti - VAL_st_escape@ 	
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"test data" 	B
+
+
+
+
+
+COMP 	desc_list 	 "list of generic data descriptors"
+{
+ 	list_len 	 ; length in octets of whole data
+ 	first 	 ; pointer to first generic data descriptor
+}
+
+
+
+COMP 	desc 	 "generic data descriptor"
+{
+ 	next 	 ; next generic data descriptor
+ 	len 	 ; length of content in octets
+ 	buffer 	[1] 	 ; buffer content
+}
+
+
+
+COMP 	sdu 	 "test data"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[1] 	 ; test data
+}
+
+
+
+
+
+
+; DTI_READY_IND 	0x7700
+; DTI_GETDATA_REQ 	0x3700
+; DTI_DATA_REQ 	0x3701
+; DTI_DATA_IND 	0x7701
+; DTI_DATA_TEST_REQ 	0x3702
+; DTI_DATA_TEST_IND 	0x7702
+; DTI_DUMMY_REQ 	0x3703
+
+
+
+PRIM 	DTI_READY_IND 	0x7700
+{
+ 	tui 	 ; transmission unit identifier
+ 	c_id 	 ; channel identifier
+ 	op_ack 	 ; operation mode (acknowledged or not)
+}
+
+
+
+
+
+
+PRIM 	DTI_GETDATA_REQ 	0x3700
+{
+ 	tui 	 ; transmission unit identifier
+ 	c_id 	 ; channel identifier
+ 	op_ack 	 ; operation mode (acknowledged or not)
+}
+
+
+
+
+
+
+PRIM 	DTI_DATA_REQ 	0x3701
+{
+ 	tui 	 ; transmission unit identifier
+ 	c_id 	 ; channel identifier
+ 	p_id 	 ; protocol identifier
+ 	op_ack 	 ; operation mode (acknowledged or not)
+ 	st_flow 	 ; flow control state
+ 	st_line_sa 	 ; line state sa
+ 	st_line_sb 	 ; line state sb
+ 	st_escape 	 ; escape state
+ 	desc_list 	 ; list of generic data descriptors
+}
+
+
+
+
+
+
+PRIM 	DTI_DATA_IND 	0x7701
+{
+ 	tui 	 ; transmission unit identifier
+ 	c_id 	 ; channel identifier
+ 	p_id 	 ; protocol identifier
+ 	op_ack 	 ; operation mode (acknowledged or not)
+ 	st_flow 	 ; flow control state
+ 	st_line_sa 	 ; line state sa
+ 	st_line_sb 	 ; line state sb
+ 	st_escape 	 ; escape state
+ 	desc_list 	 ; list of generic data descriptors
+}
+
+
+
+
+
+
+PRIM 	DTI_DATA_TEST_REQ 	0x3702
+{
+ 	tui 	 ; transmission unit identifier
+ 	c_id 	 ; channel identifier
+ 	p_id 	 ; protocol identifier
+ 	op_ack 	 ; operation mode (acknowledged or not)
+ 	st_flow 	 ; flow control state
+ 	st_line_sa 	 ; line state sa
+ 	st_line_sb 	 ; line state sb
+ 	st_escape 	 ; escape state
+ 	sdu 	 ; test data
+}
+
+
+
+
+
+
+PRIM 	DTI_DATA_TEST_IND 	0x7702
+{
+ 	tui 	 ; transmission unit identifier
+ 	c_id 	 ; channel identifier
+ 	p_id 	 ; protocol identifier
+ 	op_ack 	 ; operation mode (acknowledged or not)
+ 	st_flow 	 ; flow control state
+ 	st_line_sa 	 ; line state sa
+ 	st_line_sb 	 ; line state sb
+ 	st_escape 	 ; escape state
+ 	sdu 	 ; test data
+}
+
+
+
+
+
+
+PRIM 	DTI_DUMMY_REQ 	0x3703
+{
+ 	desc 	 ; generic data descriptor
+}
+
+
+
+
+
+
+
+
+

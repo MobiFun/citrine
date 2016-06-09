@@ -1,0 +1,26 @@
+# This configuration is intended for users of the TCH rerouting special feature
+# (see ../../doc/TCH-special-feature) who are using Openmoko GTA02 as their
+# platform.  This is the so-called "internal" configuration in that the binary
+# RVTMUX packet interface is routed to the internal serial port connected to
+# the application processor, DISPLACING the classic ASCII AT command interface,
+# meaning that:
+#
+# (a) standard GSM modem-interfacing software as found in QtMoko/SHR/etc CANNOT
+#     be used, instead you have to write your own modem-interfacing software
+#     that wraps all AT commands in RVTMUX packets and reads the output from
+#     the modem in RVTMUX format;
+#
+# (b) the TCH rerouting special feature CAN be exercised from within the GTA02
+#     itself, i.e., from the application processor, without needing an external
+#     system connected to the headset jack serial port.
+
+target	gtamodem
+feature	gsm
+feature	at-rvtmux
+feature	mokoffs copy
+
+feature	etm
+feature	tmffs2
+feature	tch-reroute
+
+RVTMUX_UART_port=MODEM

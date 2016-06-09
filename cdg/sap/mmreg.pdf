@@ -1,0 +1,452 @@
+;********************************************************************************
+;*** File           : mmreg.pdf
+;*** Creation       : Wed Mar 11 09:58:21 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mmreg
+;*** Document No.   : 6147.100.96.110
+;*** Document Date  : 2003-06-13
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:46:52 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-06-13"
+PRAGMA 	ID_AND_VERSION 	"6147.100.96.110"
+
+
+
+CONST 	MAX_PLMN_ID 	12 	; The maximum number of different PLMN in some pimitives
+CONST 	MMR_MAX_TEXT_LEN 	40 	; The maximum length of a PLMN's name in MMGMM_INFO_IND
+CONST 	SIZE_MCC 	3 	; The number of MCC digits
+CONST 	SIZE_MNC 	3 	; The number of MNC digits
+EXTERN CONST 	@p_gsmcom - MM_ORIGINATING_ENTITY@ 	MM_ORIGINATING_ENTITY 	; Used in cause values to mark MM as the cause originating entity
+
+
+
+VALTAB 	VAL_detach_cause
+VAL 	0 	CS_SIM_REM 	"Consider SIM as removed or not valid"
+VAL 	1 	CS_POW_OFF 	"Power off and delete SIM data"
+VAL 	2 	CS_SOFT_OFF 	"Power off and keep SIM data"
+
+VALTAB 	VAL_mode
+VAL 	0 	MODE_AUTO 	"automatic mode"
+VAL 	1 	MODE_MAN 	"manual mode"
+
+VALTAB 	VAL_service
+VAL 	0 	NREG_NO_SERVICE 	"no service available"
+VAL 	1 	NREG_LIMITED_SERVICE 	"limited service available"
+
+VALTAB 	VAL_forb_ind
+VAL 	0 	FORB_PLMN_NOT_INCLUDED 	"Not member of the forbidden PLMN list"
+VAL 	1 	FORB_PLMN_INCLUDED 	"Member of the forbidden PLMN list"
+
+VALTAB 	VAL_search_running
+VAL 	0 	SEARCH_NOT_RUNNING 	"Network search not running anymore"
+VAL 	1 	SEARCH_RUNNING 	"Network search still running"
+
+VALTAB 	VAL_tz
+VAL 	0 	TIMEZONE_GMT 	"GMT"
+VAL 	0x40 	TIMEZONE_GMT_PLS_1HR 	"GMT + 1 hour"
+VAL 	0x80 	TIMEZONE_GMT_PLS_2HR 	"GMT + 2 hours"
+VAL 	0x48 	TIMEZONE_GMT_MIN_1HR 	"GMT - 1 hour"
+VAL 	0x88 	TIMEZONE_GMT_MIN_2HR 	"GMT - 2 hours"
+
+VALTAB 	VAL_month
+VAL 	1 - 12 	"month"
+
+VALTAB 	VAL_second
+VAL 	0 - 59 	"second"
+
+VALTAB 	VAL_minute
+VAL 	0 - 59 	"minute"
+
+VALTAB 	VAL_hour
+VAL 	0 - 23 	"hour"
+
+VALTAB 	VAL_day
+VAL 	1 - 31 	"day"
+
+VALTAB 	VAL_year
+VAL 	0 - 99 	"year"
+
+VALTAB 	VAL_daylight_save_time 	%REL99%
+VAL 	0 	MMR_ADJ_NO 	"No adjustment for Daylight Saving Time"
+VAL 	1 	MMR_TIME_ADJ_1 	"+1 hour adjustment for Daylight Saving Time"
+VAL 	2 	MMR_TIME_ADJ_2 	"+2 hours adjustment for Daylight Saving Time"
+
+VALTAB 	VAL_service_mode
+VAL 	0 	SERVICE_MODE_LIMITED 	"Search for limited service required"
+VAL 	1 	SERVICE_MODE_FULL 	"Search for full service required"
+
+VALTAB 	VAL_cause
+VAL 	0x0402 	MMCS_IMSI_IN_HLR 	"IMSI unknown in HLR"
+VAL 	0x0403 	MMCS_ILLEGAL_MS 	"Illegal MS"
+VAL 	0x0404 	MMCS_IMSI_IN_VLR 	"IMSI unknown in VLR"
+VAL 	0x0405 	MMCS_IMEI_NOT_ACCEPTED 	"IMEI not accepted"
+VAL 	0x0406 	MMCS_ILLEGAL_ME 	"Illegal ME"
+VAL 	0x040B 	MMCS_PLMN_NOT_ALLOWED 	"PLMN not allowed"
+VAL 	0x040C 	MMCS_LA_NOT_ALLOWED 	"Location Area not allowed"
+VAL 	0x040D 	MMCS_ROAMING_NOT_ALLOWED 	"Roaming not allowed in this location area"
+VAL 	0x040F 	MMCS_NO_SUITABLE_CELL_IN_LA 	"Find another allowed location area in the same PLMN"
+VAL 	0x0411 	MMCS_NETWORK_FAILURE 	"Network failure"
+VAL 	0x0416 	MMCS_CONGESTION 	"Congestion"
+VAL 	0x0420 	MMCS_SERVICE_NOT_SUPPORTED 	"Service option not supported"
+VAL 	0x0421 	MMCS_SERVICE_NOT_SUBSCRIBED 	"Requested service option not subscribed"
+VAL 	0x0422 	MMCS_SERVICE_ORDER 	"Service option temporarily out of order"
+VAL 	0x0426 	MMCS_IDENTIFIY 	"Call cannot be identified"
+VAL 	0x0430 	MMCS_RETRY_IN_NEW_CELL 	"retry upon entry into a new cell (mapped 0x0430..0x043f -> 0x0430)"
+VAL 	0x045F 	MMCS_INCORRECT_MESSAGE 	"Semantically incorrect message"
+VAL 	0x0460 	MMCS_INVALID_MAND_MESSAGE 	"Invalid mandatory information"
+VAL 	0x0461 	MMCS_MESSAGE_TYPE_NOT_IMPLEM 	"Message type non-existent or not implemented"
+VAL 	0x0462 	MMCS_MESSAGE_TYPE_INCOMPAT 	"Message type not compatible with the protocol state"
+VAL 	0x0463 	MMCS_IE_NOT_IMPLEM 	"Information element non-existent or not implemented"
+VAL 	0x0464 	MMCS_CONDITIONAL_IE 	"Conditional IE error"
+VAL 	0x0465 	MMCS_MESSAGE_INCOMPAT 	"Message not compatible with the protocol state"
+VAL 	0x046F 	MMCS_UNSPECIFIED 	"Protocol error, unspecified"
+VAL 	0xC400 	MMCS_SUCCESS 	"No error, successful operation (MM)"
+VAL 	0xC480 	MMCS_NO_REGISTRATION 	"MS is not registered or deregistration started"
+VAL 	0xC481 	MMCS_TIMER_RECOVERY 	"time-out in MM during establishment"
+VAL 	0xC482 	MMCS_NO_REESTABLISH 	"Cell does not support call reestablishment"
+VAL 	0xC483 	MMCS_INT_PREEM 	"Preemptive release, e.g. MO-MT clash in MM"
+VAL 	0xC484 	MMCS_PLMN_NOT_IDLE_MODE 	"reject, not in idle mode (MMR_PLMN_IND)"
+VAL 	0xC488 	MMCS_AUTHENTICATION_REJECTED 	"AUTHENTICATION REJECT received"
+VAL 	0xC489 	MMCS_SIM_REMOVED 	"A valid SIM is not present"
+VAL 	0xC4FF 	MMCS_INT_NOT_PRESENT 	"No error cause (MM)"
+
+VALTAB 	VAL_ciph
+VAL 	0 	CIPH_OFF 	"ciphering off"
+VAL 	1 	CIPH_ON 	"ciphering on"
+
+VALTAB 	VAL_bootup_act
+VAL 	0 	NORMAL_REG 	"Normal Registration"
+VAL 	1 	QUICK_REG 	"Fast Registration"
+
+VALTAB 	VAL_bootup_cause
+VAL 	0 	REG_END 	"end of registration"
+VAL 	1 	PWR_SCAN_START 	"power scanning started"
+
+
+
+
+VAR 	v_plmn 	"valid flag" 	B
+
+
+VAR 	mcc 	"mobile country code" 	B
+
+
+VAR 	mnc 	"mobile network code" 	B
+
+
+VAR 	detach_cause 	"cause" 	B
+
+VAL 	@p_mmreg - VAL_detach_cause@ 	
+
+VAR 	mode 	"registration mode" 	B
+
+VAL 	@p_mmreg - VAL_mode@ 	
+
+VAR 	service 	"service (either no or limited service)" 	B
+
+VAL 	@p_mmreg - VAL_service@ 	
+
+VAR 	forb_ind 	"Forbidden PLMN indicator" 	B
+
+VAL 	@p_mmreg - VAL_forb_ind@ 	
+
+VAR 	rxlevel 	"Fieldstrength" 	B
+
+
+VAR 	search_running 	"Search is still running" 	B
+
+VAL 	@p_mmreg - VAL_search_running@ 	
+
+VAR 	v_name 	"valid flag" 	B
+
+
+VAR 	dcs 	"data coding scheme" 	B
+
+
+VAR 	add_ci 	"add ci indicator" 	B
+
+
+VAR 	num_spare 	"num spare bits" 	B
+
+
+VAR 	text 	"name" 	B
+
+
+VAR 	v_tz 	"timezone valid" 	B
+
+
+VAR 	tz 	"timezone" 	B
+
+VAL 	@p_mmreg - VAL_tz@ 	
+
+VAR 	v_time 	"time valid" 	B
+
+
+VAR 	year 	"year" 	B
+
+VAL 	@p_mmreg - VAL_year@ 	
+
+VAR 	month 	"month" 	B
+
+VAL 	@p_mmreg - VAL_month@ 	
+
+VAR 	day 	"day" 	B
+
+VAL 	@p_mmreg - VAL_day@ 	
+
+VAR 	hour 	"hour" 	B
+
+VAL 	@p_mmreg - VAL_hour@ 	
+
+VAR 	minute 	"minute" 	B
+
+VAL 	@p_mmreg - VAL_minute@ 	
+
+VAR 	second 	"second" 	B
+
+VAL 	@p_mmreg - VAL_second@ 	
+
+VAR 	daylight_save_time 	%REL99% 	"Network daylight saving time" 	B
+
+VAL 	@p_mmreg - VAL_daylight_save_time@ 	
+
+VAR 	service_mode 	"Required service mode" 	B
+
+VAL 	@p_mmreg - VAL_service_mode@ 	
+
+VAR 	cause 	"Cause for loss of full service, release or error" 	S
+
+VAL 	@p_mmreg - VAL_cause@ 	
+
+VAR 	ciph 	"cipher mode" 	B
+
+VAL 	@p_mmreg - VAL_ciph@ 	
+
+VAR 	lac 	"location area code" 	S
+
+
+VAR 	cid 	"cell id" 	S
+
+
+VAR 	lac_list 	"LACs of found PLMNs" 	S
+
+
+VAR 	bootup_act 	"Bootup action" 	B
+
+VAL 	@p_mmreg - VAL_bootup_act@ 	
+
+VAR 	bootup_cause 	"bootup cause" 	B
+
+VAL 	@p_mmreg - VAL_bootup_cause@ 	
+
+
+
+
+COMP 	plmn 	 "plmn identification"
+{
+ 	v_plmn 	 ; valid flag
+ 	mcc 	[SIZE_MCC] 	 ; mobile country code
+ 	mnc 	[SIZE_MNC] 	 ; mobile network code
+}
+TYPEDEF COMP plmn 	new_forb_plmn 	 "plmn identification"
+TYPEDEF COMP plmn 	ahplmn 	 "ahplmn identification"
+
+
+
+COMP 	full_name 	 "Network name, long format"
+{
+ 	v_name 	 ; valid flag
+ 	dcs 	 ; data coding scheme
+ 	add_ci 	 ; add ci indicator
+ 	num_spare 	 ; num spare bits
+ 	text 	[0..MMR_MAX_TEXT_LEN] 	 ; name
+}
+TYPEDEF COMP full_name 	short_name 	 "Network name, short format"
+
+
+
+COMP 	ntz 	 "Network time zone"
+{
+ 	v_tz 	 ; timezone valid
+ 	tz 	 ; timezone
+}
+
+
+
+COMP 	time 	 "Network time"
+{
+ 	v_time 	 ; time valid
+ 	year 	 ; year
+ 	month 	 ; month
+ 	day 	 ; day
+ 	hour 	 ; hour
+ 	minute 	 ; minute
+ 	second 	 ; second
+}
+
+
+
+
+
+
+; MMR_REG_REQ 	0x8000000A
+; MMR_REG_CNF 	0x8000400A
+; MMR_NREG_IND 	0x8001400A
+; MMR_NREG_REQ 	0x8001000A
+; MMR_NREG_CNF 	0x8002400A
+; MMR_NET_REQ 	0x8002000A
+; MMR_PLMN_IND 	0x8003400A
+; MMR_PLMN_RES 	0x8003000A
+; MMR_PLMN_MODE_REQ 	0x8004000A
+; MMR_INFO_IND 	0x8004400A
+; MMR_CIPHERING_IND 	0x8005400A
+; MMR_AHPLMN_IND 	0x8006400A
+
+
+
+PRIM 	MMR_REG_REQ 	0x8000000A
+{
+ 	service_mode 	 ; registration mode
+ 	bootup_act 	 ; bootup action
+}
+
+
+
+
+
+
+PRIM 	MMR_REG_CNF 	0x8000400A
+{
+ 	plmn 	 ; network identification
+ 	lac 	 ; Location area code
+ 	cid 	 ; Cell id
+ 	bootup_cause 	 ; bootup cause
+}
+
+
+
+
+
+
+PRIM 	MMR_NREG_IND 	0x8001400A
+{
+ 	service 	 ; Negative registration service
+ 	search_running 	 ; Search running
+ 	new_forb_plmn 	 ; PLMN
+ 	cause 	 ; cause for loss of full service
+}
+
+
+
+
+
+
+PRIM 	MMR_NREG_REQ 	0x8001000A
+{
+ 	detach_cause 	 ; cause
+}
+
+
+
+
+
+
+PRIM 	MMR_NREG_CNF 	0x8002400A
+{
+ 	detach_cause 	 ; cause
+}
+
+
+
+
+
+
+PRIM 	MMR_NET_REQ 	0x8002000A
+{
+}
+
+
+
+
+
+
+PRIM 	MMR_PLMN_IND 	0x8003400A
+{
+ 	cause 	 ; network search result
+ 	plmn 	[MAX_PLMN_ID] 	 ; found plmns
+ 	lac_list 	[MAX_PLMN_ID] 	 ; List of LACs
+ 	forb_ind 	[MAX_PLMN_ID] 	 ; Forbidden PLMN
+ 	rxlevel 	[MAX_PLMN_ID] 	 ; Fieldstrength
+}
+
+
+
+
+
+
+PRIM 	MMR_PLMN_RES 	0x8003000A
+{
+ 	plmn 	 ; selected plmn
+}
+
+
+
+
+
+
+PRIM 	MMR_PLMN_MODE_REQ 	0x8004000A
+{
+ 	mode 	 ; selected mode
+}
+
+
+
+
+
+
+PRIM 	MMR_INFO_IND 	0x8004400A
+{
+ 	plmn 	 ; Public Land Mobile Network
+ 	full_name 	 ; full network name
+ 	short_name 	 ; short network name
+ 	ntz 	 ; network time zone
+ 	time 	 ; network time
+ 	daylight_save_time 	 ; network daylight saving time
+}
+
+
+
+
+
+
+PRIM 	MMR_CIPHERING_IND 	0x8005400A
+{
+ 	ciph 	 ; cipher mode
+}
+
+
+
+
+
+
+PRIM 	MMR_AHPLMN_IND 	0x8006400A
+{
+ 	ahplmn 	 ; Primitive Item
+}
+
+
+
+
+
+
+
+
+

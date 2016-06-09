@@ -1,0 +1,107 @@
+;********************************************************************************
+;*** File           : mdl.pdf
+;*** Creation       : Wed Mar 11 09:58:17 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mdl
+;*** Document No.   : 6147.111.97.101
+;*** Document Date  : 2002-04-19
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SBK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:45:46 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-04-19"
+PRAGMA 	ID_AND_VERSION 	"6147.111.97.101"
+
+
+
+
+
+
+VALTAB 	VAL_ch_type
+VAL 	0 	CH_TYPE_SACCH 	"SACCH"
+VAL 	1 	CH_TYPE_SDCCH 	"SDCCH"
+VAL 	2 	CH_TYPE_FACCH 	"FACCH"
+VAL 	3 	CH_TYPE_BCCH 	"BCCH"
+VAL 	4 	CH_TYPE_CCCH 	"CCCH"
+VAL 	5 	CH_TYPE_RACH 	"RACH"
+VAL 	6 	CH_TYPE_NBR_CEL_BCCH 	"Neighbour Cell BCCH"
+
+VALTAB 	VAL_sapi
+VAL 	0 	SAPI_0 	"SAPI 0"
+VAL 	3 	SAPI_3 	"SAPI 3"
+
+VALTAB 	VAL_cs
+VAL 	0 	CS_T200_EXP 	"T200 expired (N200 + 1 times)"
+VAL 	1 	CS_REEST_REQ 	"re-establishment request"
+VAL 	2 	CS_UNSOL_UA_RESP 	"unsolicited UA response"
+VAL 	3 	CS_UNSOL_DM_RESP 	"unsolicited DM response"
+VAL 	4 	CS_UNSOL_DM_RESP_MULT_FRM 	"unsolicited DM response, multiple frame established state"
+VAL 	5 	CS_UNSOL_SUP_RESP 	"unsolicited supervisory response"
+VAL 	6 	CS_SEQ_ERR 	"sequence error"
+VAL 	7 	CS_UFRM_W_INC_PARA 	"U frame with incorrect parameters"
+VAL 	8 	CS_SFRM_W_INC_PARA 	"S frame with incorrect parameters"
+VAL 	9 	CS_IFRM_W_INC_MBIT 	"I frame with incorrect use of M bit"
+VAL 	10 	CS_IFRM_W_INC_LEN 	"I frame with incorrect length"
+VAL 	11 	CS_FRM_NOT_IMPL 	"frame not implemented"
+VAL 	12 	CS_SABM_MULT_FRM 	"SABM command, multiple frame established state"
+VAL 	13 	CS_SABM_NO_INFO 	"SABM command with information field not allowed in this state"
+VAL 	14 	CS_NR_SEQ_ERR 	"sequence error, perform abnormal release"
+
+
+
+
+VAR 	ch_type 	"channel type" 	B
+
+VAL 	@p_mdl - VAL_ch_type@ 	
+
+VAR 	sapi 	"service access point identifier" 	B
+
+VAL 	@p_mdl - VAL_sapi@ 	
+
+VAR 	cs 	"error cause" 	B
+
+VAL 	@p_mdl - VAL_cs@ 	
+
+
+
+
+
+
+
+; MDL_ERROR_IND 	0x80000004
+; MDL_RELEASE_REQ 	0x80004004
+
+
+
+PRIM 	MDL_ERROR_IND 	0x80000004
+{
+ 	ch_type 	 ; channel type
+ 	sapi 	 ; service access point identifier
+ 	cs 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	MDL_RELEASE_REQ 	0x80004004
+{
+ 	ch_type 	 ; channel type
+ 	sapi 	 ; service access point identifier
+}
+
+
+
+
+
+
+
+
+

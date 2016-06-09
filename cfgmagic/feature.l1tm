@@ -1,0 +1,3 @@
+TESTMODE=1
+export_to_c	TESTMODE
+export_to_mk	TESTMODE

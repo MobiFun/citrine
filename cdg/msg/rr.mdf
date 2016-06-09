@@ -1,0 +1,3954 @@
+;********************************************************************************
+;*** File           : rr.mdf
+;*** Creation       : Thu Jun 19 15:32:11 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : rr
+;*** Document No.   : 6147.604.97.114
+;*** Document Date  : 2002-12-19
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: VK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:19:34 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-12-19"
+PRAGMA 	ID_AND_VERSION 	"6147.604.97.114"
+
+
+
+CONST 	L3MAX_ACK 	251 	; GSM 4.06, section 5.8.5
+CONST 	L3MAX 	251 	; 
+CONST 	MAX_APDU_DATA 	248 	; (L3MAX - (4*1/2 +1)) 3GPP 04.18 9.1.53
+CONST 	MAX_ARFCN 	20 	; (L3MAX_ACK-3-3) * 8 / (10 + 1) =178
+CONST 	MAX_ARFCNI 	5 	; 
+CONST 	MAX_GR_C_INFO 	5 	; 
+CONST 	MAX_ITP 	5 	; 
+CONST 	MAX_LSA_ID 	2 	; 
+CONST 	MAX_POS 	5 	; 
+CONST 	MAX_RANGE 	10 	; (L3MAX_ACK-3-3) * 8 / (2 * 10 + 1)=93
+CONST 	MAX_RFL 	5 	; 
+CONST 	N_MAX_RANGE 	30 	; (L3MAX_ACK-3-3) * 8 / (2 * 10) = 98
+CONST 	N_CELL_MRES 	6 	; 
+CONST 	N_FREQ_SHORT_LIST 	9 	; sizeof(IE) - sizeof(IEI)
+CONST 	N_FREQ_SKIP 	16 	; 
+CONST 	N_MAX_FREQ_LIST 	250 	; L3MAX - sizeof(IEI)
+CONST 	N_MOB_ALLOC 	8 	; 
+CONST 	NCELL_DESC_BIT_LEN 	128 	; 16 bytes BA list
+CONST 	MAX_ACCESS_TT 	4 	; Assumed max number of access type technologies
+CONST 	MAX_FDD 	131 	; (L3MAX_ACK-3-1-1)*8/(14+1) = 131,2
+CONST 	MAX_TDD 	131 	; (L3MAX_ACK-3-1-1)*8/(14+1) = 131,2
+
+
+
+VALTAB 	VAL_ab_type
+VAL 	0 	AB_8_BIT 	"8 bit access burst shall be used"
+VAL 	1 	AB_11_BIT 	"11 bit access burst shall be used"
+
+VALTAB 	VAL_acc_tt 	%REL99%
+VAL 	0 	ACC_TT_GSM_P 	"GSM P"
+VAL 	1 	ACC_TT_GSM_E 	"GSM E  --note that GSM E covers GSM P"
+VAL 	2 	ACC_TT_GSM_R 	"GSM E  --note that GSM R covers GSM E and GSM P"
+VAL 	3 	ACC_TT_GSM_1800 	"GSM 1800"
+VAL 	4 	ACC_TT_GSM_1900 	"GSM 1900"
+VAL 	5 	ACC_TT_GSM_450 	"GSM 450"
+VAL 	6 	ACC_TT_GSM_480 	"GSM 480"
+VAL 	7 	ACC_TT_GSM_850 	"GSM 850"
+VAL 	15 	ACC_TT_GSM_ADD 	"Additional Access Technologies"
+
+VALTAB 	VAL_atc
+VAL 	0 	ATC_HANDOV_MAN 	"Sending of Handover access is mandatory"
+VAL 	1 	ATC_HANDOV_OPT 	"Sending of Handover access is optional"
+
+VALTAB 	VAL_af
+VAL 	0 	AF_NO 	"acknowledgement is not required"
+VAL 	1 	AF_YES 	"acknowledgement is required"
+
+VALTAB 	VAL_acs
+VAL 	0 	ACS_USE_SI4 	"The SI 4 rest octets, if present, shall be used to derive the value of PI and possibly C2 parameters and/or other parameters"
+VAL 	1 	ACS_USE_SI7 	"The value of PI and possibly C2 parameters and/or other parameters in a System information type 7 or type 8 message shall be used"
+
+VALTAB 	VAL_algo_ident
+VAL 	DEF 	 	"reserved"
+VAL 	0 	ALGO_A5_1 	"cipher with algorithm A5/1"
+VAL 	1 	ALGO_A5_2 	"cipher with algorithm A5/2"
+VAL 	2 	ALGO_A5_3 	"cipher with algorithm A5/3"
+VAL 	3 	ALGO_A5_4 	"cipher with algorithm A5/4"
+VAL 	4 	ALGO_A5_5 	"cipher with algorithm A5/5"
+VAL 	5 	ALGO_A5_6 	"cipher with algorithm A5/6"
+VAL 	6 	ALGO_A5_7 	"cipher with algorithm A5/7"
+
+VALTAB 	VAL_alpha
+RANGE 	0 .. 10 	"binary representation of tenth of alpha (measured in dB)"
+VAL 	DEF 	 	"Reserved"
+
+VALTAB 	VAL_att
+VAL 	0 	CCD_ATT_NO 	"MSs are not allowed to apply IMSI attach and detach procedure."
+VAL 	1 	CCD_ATT_YES 	"MSs in the cell shall apply IMSI attach and detach procedure."
+
+VALTAB 	VAL_bcch_type
+VAL 	0 	BCCH_NORM 	"on BCCH Norm"
+VAL 	1 	BCCH_EXT 	"on BCCH Ext."
+
+VALTAB 	VAL_blp
+VAL 	0 	BLP_BLK 	"The allocation bitmap is to be interpreted as blocks."
+VAL 	1 	BLP_PER 	"The allocation bitmap is to be interpreted as block periods."
+
+VALTAB 	VAL_pwr_ctrl_mode
+VAL 	0 	PWR_CTR_A 	"mode A"
+VAL 	1 	PWR_CTR_B 	"mode B"
+
+VALTAB 	VAL_call_prio
+VAL 	0 	CALL_PRIO_NO 	"no priority applied"
+VAL 	1 	CALL_PRIO_LEV_4 	"call priority level 4"
+VAL 	2 	CALL_PRIO_LEV_3 	"call priority level 3"
+VAL 	3 	CALL_PRIO_LEV_2 	"call priority level 2"
+VAL 	4 	CALL_PRIO_LEV_1 	"call priority level 1"
+VAL 	5 	CALL_PRIO_LEV_0 	"call priority level 0"
+VAL 	6 	CALL_PRIO_LEV_A 	"call priority level A"
+VAL 	7 	CALL_PRIO_LEV_B 	"call priority level B"
+
+VALTAB 	VAL_re
+VAL 	0 	REESTAB_YES 	"Call Reestablishment allowed in the cell"
+VAL 	1 	REESTAB_NO 	"Call Reestablishment not allowed in the cell"
+
+VALTAB 	VAL_cell_bar_qual
+VAL 	0 	CBQ_NO 	"cell selection and reselection depending on cell bar access"
+VAL 	1 	CBQ_YES 	"cell selection priority always low, reselection always normal"
+
+VALTAB 	VAL_cell_bar_access
+VAL 	0 	BARRED_NO 	"The cell is not barred"
+VAL 	1 	BARRED_YES 	"The cell is barred"
+
+VALTAB 	VAL_cell_resel_hyst
+VAL 	0 	CELL_HYST_0_DB 	"0 dB RXLEV hysteresis for LA re-selection"
+VAL 	1 	CELL_HYST_2_DB 	"2 dB RXLEV hysteresis for LA re-selection"
+VAL 	2 	CELL_HYST_4_DB 	"4 dB RXLEV hysteresis for LA re-selection"
+VAL 	3 	CELL_HYST_6_DB 	"6 dB RXLEV hysteresis for LA re-selection"
+VAL 	4 	CELL_HYST_8_DB 	"8 dB RXLEV hysteresis for LA re-selection"
+VAL 	5 	CELL_HYST_10_DB 	"10 dB RXLEV hysteresis for LA re-selection"
+VAL 	6 	CELL_HYST_12_DB 	"12 dB RXLEV hysteresis for LA re-selection"
+VAL 	7 	CELL_HYST_14_DB 	"14 dB RXLEV hysteresis for LA re-selection"
+
+VALTAB 	VAL_chan_type
+VAL 	DEF 	 	"channel not defined"
+VAL 	1 	TCH_F 	"TCH/F + ACCHs"
+VAL 	2 	TCH_H_S0 	"TCH/H + ACCHs, subchannel 0"
+VAL 	3 	TCH_H_S1 	"TCH/H + ACCHs, subchannel 1"
+VAL 	4 	SDCCH_4_S0 	"SDCCH/4 + SDCCH/C4, subchannel 0"
+VAL 	5 	SDCCH_4_S1 	"SDCCH/4 + SDCCH/C4, subchannel 1"
+VAL 	6 	SDCCH_4_S2 	"SDCCH/4 + SDCCH/C4, subchannel 2 or CBCH (SDCCH/4)"
+VAL 	7 	SDCCH_4_S3 	"SDCCH/4 + SDCCH/C4, subchannel 3"
+VAL 	8 	SDCCH_8_S0 	"SDCCH/8 + SDCCH/C8, subchannel 0"
+VAL 	9 	SDCCH_8_S1 	"SDCCH/8 + SDCCH/C8, subchannel 1"
+VAL 	10 	SDCCH_8_S2 	"SDCCH/8 + SDCCH/C8, subchannel 2 or CBCH (SDCCH/8)"
+VAL 	11 	SDCCH_8_S3 	"SDCCH/8 + SDCCH/C8, subchannel 3"
+VAL 	12 	SDCCH_8_S4 	"SDCCH/8 + SDCCH/C8, subchannel 4"
+VAL 	13 	SDCCH_8_S5 	"SDCCH/8 + SDCCH/C8, subchannel 5"
+VAL 	14 	SDCCH_8_S6 	"SDCCH/8 + SDCCH/C8, subchannel 6"
+VAL 	15 	SDCCH_8_S7 	"SDCCH/8 + SDCCH/C8, subchannel 7"
+VAL 	16 	TCH_F_NO_ADD 	"TCH/F + FACCH/F + SACCH/M, no additional timeslots"
+VAL 	17 	TCH_F_ADD_BI1 	"TCH/F+ACCHs, additional bidirectional TCH/F/SACCH/M on timeslot n-1"
+VAL 	18 	TCH_F_ADD_BI2 	"TCH/F+ACCHs, additional bidirectional TCH/F/SACCH/M on timeslot n+1, n-1"
+VAL 	19 	TCH_F_ADD_BI3 	"TCH/F+ACCHs, additional bidirectional TCH/F/SACCH/M on timeslot n+1, n-1, n-2"
+VAL 	20 	TCH_F_ADD_BI4 	"TCH/F+ACCHs, additional bidirectional TCH/F/SACCH/M on timeslot n+1, n-1 until n-3"
+VAL 	21 	TCH_F_ADD_BI5 	"TCH/F+ACCHs, additional bidirectional TCH/F/SACCH/M on timeslot n+1, n-1 until n-4"
+VAL 	22 	TCH_F_ADD_BI6 	"TCH/F+ACCHs, additional bidirectional TCH/F/SACCH/M on timeslot n+1, n-1 until n-5"
+VAL 	23 	TCH_F_ADD_BI7 	"TCH/F+ACCHs, additional bidirectional TCH/F/SACCH/M on timeslot n+1, n-1 until n-6"
+VAL 	24 	TCH_F_ADD_UNI1 	"TCH/F+ACCHs, additional unidirectional TCH/FD/SACCH/MD on timeslot n-1"
+VAL 	25 	TCH_F_ADD_UNI2 	"TCH/F+ACCHs, additional unidirectional TCH/FD/SACCH/MD on timeslot n+1, n-1"
+VAL 	26 	TCH_F_ADD_UNI3 	"TCH/F+ACCHs, additional unidirectional TCH/FD/SACCH/MD on timeslot n+1, n-1 , n-2"
+VAL 	30 	TCH_F_ADD_BI_UNI 	"TCH/F+ACCHs, additional bidirectional TCH/F/SACCH/M and unidirectional TCH/FD/SACCH/MD on timeslot n+1, n-1"
+
+VALTAB 	VAL_cn1
+VAL 	0 	CN_ANY_CHAN 	"Any channel."
+VAL 	1 	CN_SDCCH 	"SDCCH."
+VAL 	2 	CN_TCH_F 	"TCH/F (Full rate)."
+VAL 	3 	CN_TCH 	"TCH/H or TCH/F (Dual rate)."
+
+VALTAB 	VAL_chan_mode
+VAL 	DEF 	 	"reserved mode"
+VAL 	0 	CM_SIG_ONLY 	"signaling only"
+VAL 	1 	CM_SPEECH 	"speech (full rate or half rate), version 1"
+VAL 	0b00000001 	CM_SPEECH_VER1 	"speech (full rate or half rate), version 1"
+VAL 	0b00100001 	CM_SPEECH_VER2 	"speech (full rate or half rate), version 2"
+VAL 	0b01000001 	CM_SPEECH_VER3 	"speech (full rate or half rate), version 3"
+VAL 	0b00001111 	CM_DATA_14_5 	"data, 14.5 kbit/s radio interface rate"
+VAL 	0b00000011 	CM_DATA_12_0 	"data, 12.0 kbit/s radio interface rate"
+VAL 	0b00001011 	CM_DATA_6_0 	"data, 6.0 kbit/s radio interface rate"
+VAL 	0b00010011 	CM_DATA_3_6 	"data, 3.6 kbit/s radio interface rate"
+
+VALTAB 	VAL_chan_mode_2
+VAL 	DEF 	 	"reserved mode"
+VAL 	0 	CM2_SIG_ONLY 	"signaling only"
+VAL 	5 	CM2_SPEECH_HALF 	"speech half rate"
+VAL 	0b00000101 	CM2_SPEECH_VER1 	"speech (full rate or half rate), version 1"
+VAL 	0b00100101 	CM2_SPEECH_VER2 	"speech (full rate or half rate), version 2"
+VAL 	0b01000101 	CM2_SPEECH_VER3 	"speech (full rate or half rate), version 3"
+VAL 	0b00001111 	CM2_DATA_6_0 	"data, 6.0 kbit/s radio interface rate"
+VAL 	0b00010111 	CM2_DATA_3_6 	"data, 3.6 kbit/s radio interface rate"
+
+VALTAB 	VAL_crd_prio
+VAL 	0 	CRD_PRIO_1 	"priority level 1 (highest priority)"
+VAL 	1 	CRD_PRIO_2 	"priority level 2"
+VAL 	2 	CRD_PRIO_3 	"priority level 3"
+VAL 	3 	CRD_PRIO_4 	"priority level 4 (lowest priority)"
+
+VALTAB 	VAL_cr
+VAL 	0 	INC_IMEISV_NO 	"IMEISV shall not be included"
+VAL 	1 	INC_IMEISV_YES 	"IMEISV shall be included"
+
+VALTAB 	VAL_cod_scheme
+VAL 	0 	COD_S_1 	""
+VAL 	1 	COD_S_2 	""
+VAL 	2 	COD_S_3 	""
+VAL 	3 	COD_S_4 	""
+
+VALTAB 	VAL_c_r
+VAL 	0 	CMD_FRESP 	"Command or Final Response"
+VAL 	1 	NCMD_FRESP 	"Not Command or Final Response"
+
+VALTAB 	VAL_ccch_conf
+VAL 	DEF 	 	"reserved"
+VAL 	0 	CCD_CCCH_1_NOT_COMB 	"1 basic channel used for CCCH, not combined with SDCCHs"
+VAL 	1 	CCD_CCCH_1_COMB 	"1 basic channel used for CCCH, combined with SDCCHs"
+VAL 	2 	CCD_CCCH_2_NOT_COMB 	"2 basic channel used for CCCH, not combined with SDCCHs"
+VAL 	4 	CCD_CCCH_3_NOT_COMB 	"3 basic channel used for CCCH, not combined with SDCCHs"
+VAL 	6 	CCD_CCCH_4_NOT_COMB 	"4 basic channel used for CCCH, not combined with SDCCHs"
+
+VALTAB 	VAL_ctrl_ack_type
+VAL 	0 	 	"default format is four access bursts"
+VAL 	1 	 	"default format is RLC/MAC control block."
+
+VALTAB 	VAL_d_t
+VAL 	0 	D_T_DED 	"the message assigns a resource in dedicated mode"
+VAL 	1 	D_T_TBF 	"the message assigns a TBF"
+
+VALTAB 	VAL_dtx_b
+VAL 	DEF 	 	"invalid DTX indicator"
+VAL 	0 	B_DTX_MAY_USE 	"The MSs may use uplink DTX"
+VAL 	1 	B_DTX_SHALL_USE 	"The MSs shall use uplink DTX"
+VAL 	2 	B_DTX_DONT_USE 	"The MS shall not use uplink DTX"
+
+VALTAB 	VAL_dtx_s
+VAL 	0 	S_DTX_F_MAYUSE_H_DONTUSE 	"May use DTX on TCH-F. Don't use DTX on TCH-H."
+VAL 	1 	S_DTX_F_USE_H_DONTUSE 	"Do use DTX on TCH-F. Don't use DTX on TCH-H."
+VAL 	2 	S_DTX_F_DONTUSE_H_DONTUSE 	"Don't use DTX on TCH-F. Don't use DTX on TCH-H."
+VAL 	3 	S_DTX_F_USE_H_MAYUSE 	"Do use DTX on TCH-F. May use DTX on TCH-H."
+VAL 	4 	S_DTX_F_MAYUSE_H_MAYUSE 	"May use DTX on TCH-F. May use DTX on TCH-H."
+VAL 	5 	S_DTX_F_USE_H_USE 	"Do use DTX on TCH-F.    Do use DTX on TCH-H."
+VAL 	6 	S_DTX_F_DONTUSE_H_USE 	"Don't use DTX on TCH-F. Do use DTX on TCH-H."
+VAL 	7 	S_DTX_F_MAYUSE_H_USE 	"May use DTX on TCH-F. Do use DTX on TCH-H."
+
+VALTAB 	VAL_dtx_used
+VAL 	0 	DTX_USED_NO 	"DTX was not used"
+VAL 	1 	DTX_USED_YES 	"DTX was used"
+
+VALTAB 	VAL_dl
+VAL 	0 	DL_0 	"no meaning"
+VAL 	1 	DL_1 	"the message assigns a resource to the MS identified by the IA rest octets"
+
+VALTAB 	VAL_e_window 	%REL99%
+VAL 	0 	E_WIN_64 	"EGPRS Window Size 64"
+VAL 	1 	E_WIN_96 	"EGPRS Window Size 96"
+VAL 	2 	E_WIN_128 	"EGPRS Window Size 128"
+VAL 	3 	E_WIN_160 	"EGPRS Window Size 160"
+VAL 	4 	E_WIN_192 	"EGPRS Window Size 192 (maximum window size for a 1 timeslot TBF)"
+VAL 	5 	E_WIN_224 	"EGPRS Window Size 224"
+VAL 	6 	E_WIN_256 	"EGPRS Window Size 256 (maximum window size for a 2 timeslot TBF)"
+VAL 	7 	E_WIN_288 	"EGPRS Window Size 288"
+VAL 	8 	E_WIN_320 	"EGPRS Window Size 320"
+VAL 	9 	E_WIN_352 	"EGPRS Window Size 352"
+VAL 	10 	E_WIN_384 	"EGPRS Window Size 384 (maximum window size for a 3 timeslot TBF)"
+VAL 	11 	E_WIN_416 	"EGPRS Window Size 416"
+VAL 	12 	E_WIN_448 	"EGPRS Window Size 448"
+VAL 	13 	E_WIN_480 	"EGPRS Window Size 480"
+VAL 	14 	E_WIN_512 	"EGPRS Window Size 512 (maximum window size for a 4 timeslot TBF)"
+VAL 	15 	E_WIN_544 	"EGPRS Window Size 544"
+VAL 	16 	E_WIN_576 	"EGPRS Window Size 576"
+VAL 	17 	E_WIN_608 	"EGPRS Window Size 608"
+VAL 	18 	E_WIN_640 	"EGPRS Window Size 640 (maximum window size for a 5 timeslot TBF)"
+VAL 	19 	E_WIN_672 	"EGPRS Window Size 672"
+VAL 	20 	E_WIN_704 	"EGPRS Window Size 704"
+VAL 	21 	E_WIN_736 	"EGPRS Window Size 736"
+VAL 	22 	E_WIN_768 	"EGPRS Window Size 768 (maximum window size for a 6 timeslot TBF)"
+VAL 	23 	E_WIN_800 	"EGPRS Window Size 800"
+VAL 	24 	E_WIN_832 	"EGPRS Window Size 832"
+VAL 	25 	E_WIN_864 	"EGPRS Window Size 864"
+VAL 	26 	E_WIN_896 	"EGPRS Window Size 896 (maximum window size for a 7 timeslot TBF)"
+VAL 	27 	E_WIN_928 	"EGPRS Window Size 928"
+VAL 	28 	E_WIN_960 	"EGPRS Window Size 960"
+VAL 	29 	E_WIN_992 	"EGPRS Window Size 992"
+VAL 	30 	E_WIN_1024 	"EGPRS Window Size 1024  (maximum window size for a 8 timeslot TBF)"
+VAL 	31 	 	"reserved"
+
+VALTAB 	VAL_ext_dyn_all
+VAL 	0 	EXT_DYN_NO 	"Dynamic Allocation"
+VAL 	1 	EXT_DYN_YES 	"Extended Dynamic Allocation"
+
+VALTAB 	VAL_final
+VAL 	0 	FINAL_NO 	"allocation is not the last Allocation of TBF"
+VAL 	1 	FINAL_YES 	"allocation is the last Allocation of TBF"
+
+VALTAB 	VAL_f_seg
+VAL 	0 	F_SEG 	"First or only segment"
+VAL 	1 	NF_SEG 	"Not first or only segment"
+
+VALTAB 	VAL_flag
+VAL 	0 	PRES_NO 	"information is not present"
+VAL 	1 	PRES_YES 	"information is present"
+
+VALTAB 	VAL_hdm
+VAL 	0 	HDM_NO 	"The mobile station shall not  operate in half duplex mode."
+VAL 	1 	HDM_YES 	"The mobile station shall operate in half duplex mode."
+
+VALTAB 	VAL_hop
+VAL 	0 	HOP_NO 	"frequency hopping is off"
+VAL 	1 	HOP_YES 	"frequency hopping is on"
+
+VALTAB 	VAL_inband_not
+VAL 	0 	IN_BAND_NOT_NCH 	"notifications are sent on NCH only"
+VAL 	1 	IN_BAND_NOT_FACCH 	"notifications are sent on FACCH too"
+
+VALTAB 	VAL_inband_pag
+VAL 	0 	IN_BAND_PAG_PCH 	"pagings are sent on PCH only"
+VAL 	1 	IN_BAND_PAG_FACCH 	"pagings are sent on FACCH too"
+
+VALTAB 	VAL_indir
+VAL 	0 	INDIR_NO 	"non hopping configuration"
+VAL 	1 	INDIR_YES 	"indirect encoding of hopping RF channel configuration"
+
+VALTAB 	VAL_it5
+VAL 	0 	IT5_1 	"System Information Type 1"
+VAL 	1 	IT5_2 	"System Information Type 2"
+VAL 	2 	IT5_2BIS 	"System Information Type 2bis"
+VAL 	3 	IT5_2TER 	"System Information Type 2ter"
+VAL 	4 	IT5_3 	"System Information Type 3"
+VAL 	5 	IT5_4 	"System Information Type 4"
+VAL 	6 	IT5_7 	"System Information Type 7"
+VAL 	7 	IT5_8 	"System Information Type 8"
+VAL 	8 	IT5_9 	"System Information Type 9"
+VAL 	9 	IT5_13 	"System Information Type 13"
+VAL 	10 	IT5_14 	"System Information Type 14"
+
+VALTAB 	VAL_icmi
+VAL 	0 	ICMI_IMPL 	"initial codec mode defined by implicit rule provided in GSM 05.09"
+VAL 	1 	ICMI_START_MODE 	"initial codec mode defined by start mode field"
+
+VALTAB 	VAL_key_seq
+RANGE 	0 .. 6 	""
+VAL 	7 	 	"No key is available (MS to network); Reserved (network to MS)"
+
+VALTAB 	VAL_l_seg
+VAL 	0 	L_SEG 	"Last or only segment"
+VAL 	1 	NL_SEG 	"Not last or only segment"
+
+VALTAB 	VAL_lqm_mode 	%REL99%
+VAL 	0 	LQM_NOTHING 	"The MS shall not report either interference measurements or per slot BEP measurements"
+VAL 	1 	LQM_GAMMA 	"The MS shall report available interference measurements"
+VAL 	2 	LQM_BEP 	"The MS shall report mean BEP on each allocated time slot"
+VAL 	3 	LQM_ALTERNATE 	"The MS shall report mean BEP on each allocated time slot alternating slots 1-3 and 4-7"
+
+VALTAB 	VAL_llc_fr_type
+VAL 	0 	LLC_IS_ACK 	"LLC frame is SACK or NACK"
+VAL 	1 	LLC_NOT_ACK 	"LLC frame is not SACK or NACK"
+
+VALTAB 	VAL_low_arfcn
+RANGE 	1 .. 124 	""
+VAL 	DEF 	 	"reserved"
+
+VALTAB 	VAL_mac_mode
+VAL 	0 	MAC_DYN_ALLOC 	"dynamic allocation"
+VAL 	1 	MAC_EXT_DYN_ALLOC 	"extended dynamic allocation"
+VAL 	2 	MAC_FIX_ALLOC_NOT_HALF 	"fixed allocation, not half duplex mode"
+VAL 	3 	MAC_FIX_ALLOC 	"fixed allocation, half duplex mode"
+
+VALTAB 	VAL_ma_num
+VAL 	0 	MA_NUM_14 	"MA_NUMBER = 14"
+VAL 	1 	MA_NUM_15 	"MA_NUMBER = 15"
+
+VALTAB 	VAL_max_retrans
+VAL 	0 	MAX_RETRANS_1 	"Maximum 1 retransmission"
+VAL 	1 	MAX_RETRANS_2 	"Maximum 2 retransmissions"
+VAL 	2 	MAX_RETRANS_4 	"Maximum 4 retransmissions"
+VAL 	3 	MAX_RETRANS_7 	"Maximum 7 retransmissions"
+
+VALTAB 	VAL_meas_valid
+VAL 	0 	MEAS_VALID_YES 	"The measurement results are valid"
+VAL 	1 	MEAS_VALID_NO 	"the measurement results are not valid"
+
+VALTAB 	VAL_mcs 	%REL99%
+VAL 	0 	MCS1 	"MCS-1"
+VAL 	1 	MCS2 	"MCS-2"
+VAL 	2 	MCS3 	"MCS-3"
+VAL 	3 	MCS4 	"MCS-4"
+VAL 	4 	MCS5 	"MCS-5"
+VAL 	5 	MCS6 	"MCS-6"
+VAL 	6 	MCS7 	"MCS-7"
+VAL 	7 	MCS8 	"MCS-8"
+VAL 	8 	MCS9 	"MCS-9"
+VAL 	9 	MCS5_7 	"MCS-5-7"
+VAL 	10 	MCS6_9 	"MCS-6-9"
+
+VALTAB 	VAL_mscr
+VAL 	0 	MSCR_98 	"MSC is Release '98 or older"
+VAL 	1 	MSCR_99 	"MSC is Release '99 onwards"
+
+VALTAB 	VAL_or_ty
+VAL 	0 	OR_TY_MT 	"Mobile terminated"
+VAL 	1 	OR_TY_MO 	"Mobile originated"
+
+VALTAB 	VAL_mr_vers
+VAL 	DEF 	 	"reserved"
+VAL 	1 	MR_VERS_1 	"Adaptive Multirate speech version 1"
+
+VALTAB 	VAL_ncm
+VAL 	0 	NC_0 	""
+VAL 	1 	NC_1 	""
+VAL 	2 	NC_2 	""
+VAL 	3 	NC_TARGET 	"information on NC mode to be gathered from the target cell"
+
+VALTAB 	VAL_nc_non_drx 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	NC_NO_DRX 	"No non-DRX mode after a measurement report has been sent."
+VAL 	1 	NC_0_24S 	"NC 0.24 s"
+VAL 	2 	NC_0_48S 	"NC 0.48 s (default value)"
+VAL 	3 	NC_0_72S 	"NC 0.72 s"
+VAL 	4 	NC_0_96S 	"NC 0.96 s"
+VAL 	5 	NC_1_20S 	"NC 1.20 s"
+VAL 	6 	NC_1_44S 	"NC 1.44 s"
+VAL 	7 	NC_1_92S 	"NC 1.92 s"
+
+VALTAB 	VAL_nc_rep_i 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	NC_I_0_48S 	"NC 0.48 S"
+VAL 	1 	NC_I_0_96S 	"NC 0.96 s"
+VAL 	2 	NC_I_1_92S 	"NC 1.92 s"
+VAL 	3 	NC_I_3_84S 	"NC 3.84 s (default value for NC_REPORTING_PERIOD_T)"
+VAL 	4 	NC_I_7_68S 	"NC 7.68 s"
+VAL 	5 	NC_I_15_36S 	"NC 15.36 s"
+VAL 	6 	NC_I_30_72S 	"NC 30.72 s"
+VAL 	7 	NC_I_61_44S 	"NC 61.44 s (default value for NC_REPORTING_PERIOD_I)"
+
+VALTAB 	VAL_nch_position
+VAL 	DEF 	 	"reserved"
+VAL 	0 	NCH_1BLK_NR0 	"1 block / first is block 0"
+VAL 	1 	NCH_1BLK_NR1 	"1 block / first is block 1"
+VAL 	2 	NCH_1BLK_NR2 	"1 block / first is block 2"
+VAL 	3 	NCH_1BLK_NR3 	"1 block / first is block 3"
+VAL 	4 	NCH_1BLK_NR4 	"1 block / first is block 4"
+VAL 	5 	NCH_1BLK_NR5 	"1 block / first is block 5"
+VAL 	6 	NCH_1BLK_NR6 	"1 block / first is block 6"
+VAL 	7 	NCH_2BLK_NR0 	"2 blocks / first is block 0"
+VAL 	8 	NCH_2BLK_NR1 	"2 blocks / first is block 1"
+VAL 	9 	NCH_2BLK_NR2 	"2 blocks / first is block 2"
+VAL 	10 	NCH_2BLK_NR3 	"2 blocks / first is block 3"
+VAL 	11 	NCH_2BLK_NR4 	"2 blocks / first is block 4"
+VAL 	12 	NCH_2BLK_NR5 	"2 blocks / first is block 5"
+VAL 	13 	NCH_3BLK_NR0 	"3 blocks / first is block 0"
+VAL 	14 	NCH_3BLK_NR1 	"3 blocks / first is block 1"
+VAL 	15 	NCH_3BLK_NR2 	"3 blocks / first is block 2"
+VAL 	16 	NCH_3BLK_NR3 	"3 blocks / first is block 3"
+VAL 	17 	NCH_3BLK_NR4 	"3 blocks / first is block 4"
+VAL 	18 	NCH_4BLK_NR0 	"4 blocks / first is block 0"
+VAL 	19 	NCH_4BLK_NR1 	"4 blocks / first is block 1"
+VAL 	20 	NCH_4BLK_NR2 	"4 blocks / first is block 2"
+VAL 	21 	NCH_4BLK_NR3 	"4 blocks / first is block 3"
+VAL 	22 	NCH_5BLK_NR0 	"5 blocks / first is block 0"
+VAL 	23 	NCH_5BLK_NR1 	"5 blocks / first is block 1"
+VAL 	24 	NCH_5BLK_NR2 	"5 blocks / first is block 2"
+VAL 	25 	NCH_6BLK_NR0 	"6 blocks / first is block 0"
+VAL 	26 	NCH_6BLK_NR1 	"6 blocks / first is block 1"
+VAL 	27 	NCH_7BLK_NR0 	"7 blocks / first is block 0"
+
+VALTAB 	VAL_neci
+VAL 	0 	NECI_NO 	"New establishment causes are not supported"
+VAL 	1 	NECI_YES 	"New establishment causes are supported"
+
+VALTAB 	VAL_nco
+VAL 	DEF 	 	"reserved"
+VAL 	0 	NCO_NO_REP 	"MS controlled cell reselection, no measurement reporting"
+VAL 	1 	NCO_MS_RESEL 	"MS controlled cell reselection, MA sends measurement reports"
+VAL 	2 	NCO_NET_RESEL 	"Network controlled cell reselection, MA sends measurement reports"
+
+VALTAB 	VAL_nmo
+VAL 	0b00 	 	"Network Mode 1"
+VAL 	0b01 	 	"Network Mode 2"
+VAL 	0b10 	 	"Network Mode 3"
+VAL 	0b11 	 	"reserved"
+
+VALTAB 	VAL_nscb
+VAL 	0 	NSCB_ON 	"NSCB can be used (default)"
+VAL 	1 	NSCB_OFF 	"NSCB shall be turned off"
+
+VALTAB 	VAL_nci
+VAL 	0 	NCI_IGNORE 	"Out of range timing advance is ignored"
+VAL 	1 	NCI_TRIGGER 	"Out of range timing advance shall trigger a handover failure"
+
+VALTAB 	VAL_num_range
+RANGE 	1 .. N_MAX_RANGE 	"number of frequency ranges"
+VAL 	DEF 	 	"reserved"
+
+VALTAB 	VAL_nr_rb 	%REL99%
+VAL 	0 	NR_RB_1 	"1 radio block reserved for uplink transmission"
+VAL 	1 	NR_RB_2 	"2 radio blocks reserved for uplink transmission"
+
+VALTAB 	VAL_odd_even
+VAL 	0 	EVEN 	"even"
+VAL 	1 	ODD 	"odd"
+
+VALTAB 	VAL_pck_chan_type
+VAL 	DEF 	 	"reserved"
+VAL 	1 	PCK_CH_1 	"for backward compatibility"
+
+VALTAB 	VAL_pch_restruct
+VAL 	0 	PCH_RESTRUCT_NO 	"paging channel is restructured"
+VAL 	1 	PCH_RESTRUCT_YES 	"paging channel is not restructured"
+
+VALTAB 	VAL_pm
+VAL 	0 	PAGING_NORM 	"Normal paging."
+VAL 	1 	PAGING_EXT 	"Extended paging."
+VAL 	2 	PAGING_REORG 	"Paging reorganization."
+VAL 	3 	PAGING_SAME 	"Same as before."
+
+VALTAB 	VAL_pc_meas_chan
+VAL 	0 	PC_MEAS_BCCH 	"BCCH shall be used for downlink measurements for power control"
+VAL 	1 	PC_MEAS_PDCH 	"PDCH shall be used for downlink measurements for power control"
+
+VALTAB 	VAL_poll
+VAL 	0 	POLL_NO_ACTION 	"no action required from MS"
+VAL 	1 	POLL_SEND_ACK 	"MS shall send a PACKET CONTROL ACKNOWLEDGEMENT"
+
+VALTAB 	VAL_pow_ctrl
+VAL 	0 	POW_CTRL_NO 	"PWRC is not set"
+VAL 	1 	POW_CTRL_YES 	"PWRC is set"
+
+VALTAB 	VAL_pow_offs
+VAL 	0 	POW_OFFS_0_DB 	"offset 0 dB"
+VAL 	1 	POW_OFFS_2_DB 	"offset 2 dB"
+VAL 	2 	POW_OFFS_4_DB 	"offset 4 dB"
+VAL 	3 	POW_OFFS_6_DB 	"offset 6 dB"
+
+VALTAB 	VAL_prio_acc_thr
+VAL 	0 	PAT_NO 	"Packet access not allowed in the cell"
+VAL 	1 	PAT_SPARE1 	"Spare, shall be interpreted as 0"
+VAL 	2 	PAT_SPARE2 	"Spare, shall be interpreted as 0"
+VAL 	3 	PAT_ACC1 	"packet access allowed for priority level 1"
+VAL 	4 	PAT_ACC2 	"packet access allowed for priority level 1 to 2"
+VAL 	5 	PAT_ACC3 	"packet access allowed for priority level 1 to 3"
+VAL 	6 	PAT_ACC4 	"packet access allowed for priority level 1 to 4"
+VAL 	7 	PAT_SPARE6 	"Spare, shall be interpreted as 6"
+
+VALTAB 	VAL_protoc_ident
+VAL 	DEF 	 	"reserved"
+VAL 	0 	RRLP_LCS 	"Radio Resource Location Service Protocol"
+
+VALTAB 	VAL_reporting_rate 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	NORMAL_RATE 	"Normal reporting rate"
+VAL 	1 	REDUCED_RATE 	"Reduced reporting rate"
+
+VALTAB 	VAL_rot
+VAL 	0 	TIME_DIFF_NO 	"Mobile Time Difference IE shall not be included in the HANDOVER COMPLETE message"
+VAL 	1 	TIME_DIFF_YES 	"Mobile Time Difference IE shall be included in the HANDOVER COMPLETE message"
+
+VALTAB 	VAL_report_type 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	ENHANCED_MEAS 	"The MS shall use the Enhanced Measurement Report message for reporting if at least one BSIC is allocated to each BA (list) frequency. Otherwise, the Measurement Report message shall be used."
+VAL 	1 	NORMAL_MEAS 	"The MS shall use the Measurement Report message for reporting."
+
+VALTAB 	VAL_resegm 	%REL99%
+VAL 	0 	RESEGM_NO 	"Retransmitted RLC data blocks shall not be re-segmented"
+VAL 	1 	RESEGM_YES 	"Retransmitted RLC data blocks shall be re-segmented according to commanded MCS"
+
+VALTAB 	VAL_res_ack
+VAL 	0 	RES_ACK_NO 	"resumption of GPRS services not successfully acknowledged"
+VAL 	1 	RES_ACK_YES 	"resumption of GPRS services successfully acknowledged"
+
+VALTAB 	VAL_rlc_mode
+VAL 	0 	RLC_ACK_MODE 	"RLC acknowledged mode"
+VAL 	1 	RLC_UNACK_MODE 	"RLC unacknowledged mode"
+
+VALTAB 	VAL_rr_cause
+VAL 	0b00000000 	RRC_NORMAL_EVENT 	"Normal event"
+VAL 	0b00000001 	RRC_UNSPECIFIED 	"Abnormal release, unspecified"
+VAL 	0b00000010 	RRC_CHAN_UNACCEPT 	"Abnormal release, channel unacceptable"
+VAL 	0b00000011 	RRC_TIMER_EXPIRED 	"Abnormal release, timer expired"
+VAL 	0b00000100 	RRC_NO_ACTIVITY 	"Abnormal release, no activity on the radio path"
+VAL 	0b00000101 	RRC_PREEMEPT 	"Preemptive release"
+VAL 	0b00001000 	RRC_TIME_ADVANCE 	"Handover impossible, timing advance out of range"
+VAL 	0b00001001 	RRC_CHANNEL_MODE 	"Channel mode unacceptable"
+VAL 	0b00001010 	RRC_FREQ_NOT_IMPL 	"Frequency not implemented"
+VAL 	0b00001100 	RRC_LOWER_LAYER_FAIL 	%REL99 AND FF_BHO% 	"Lower layer failure"
+VAL 	0b01000001 	RRC_CALL_CLEARED 	"Call already cleared"
+VAL 	0b01011111 	RRC_INCORRECT_MSG 	"Semantically incorrect message"
+VAL 	0b01100000 	RRC_INVALID_MAN_INFO 	"Invalid mandatory information"
+VAL 	0b01100001 	RRC_MSG_NOT_IMPL 	"Message type non-existent or not implemented"
+VAL 	0b01100010 	RRC_MSG_NOT_COMPAT 	"Message type not compatible with protocol state"
+VAL 	0b01100100 	RRC_COND_IE_ERROR 	"Conditional IE error"
+VAL 	0b01100101 	RRC_NO_CELL_ALLOC 	"No cell allocation available"
+VAL 	0b01101111 	RRC_PROT_UNSPECIFIED 	"Protocol error unspecified"
+
+VALTAB 	VAL_scale_ord 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	SC_ORD_ZERO_DB 	"0 dB offset, which shall be used for the reported RXLEV values"
+VAL 	1 	SC_ORD_TEN_DB 	"+10 dB offset, which shall be used for the reported RXLEV values"
+VAL 	2 	SC_ORD_AUTOMATIC 	"automatic offset, which shall be used for the reported RXLEV values"
+
+VALTAB 	VAL_sf
+VAL 	0 	SF_VBS 	"broadcast call reference"
+VAL 	1 	SF_VGCS 	"group call reference"
+
+VALTAB 	VAL_set_amr
+VAL 	0x80 	SET_AMR_12_2 	"codec 12.2 kbit/s is part of subset"
+VAL 	0x40 	SET_AMR_10_2 	"codec 10.2 kbit/s is part of subset"
+VAL 	0x20 	SET_AMR_7_95 	"codec 7.95 kbit/s is part of subset"
+VAL 	0x10 	SET_AMR_7_4 	"codec 7.4 kbit/s is part of subset"
+VAL 	0x08 	SET_AMR_6_7 	"codec 6.7 kbit/s is part of subset"
+VAL 	0x04 	SET_AMR_5_9 	"codec 5.9 kbit/s is part of subset"
+VAL 	0x02 	SET_AMR_5_15 	"codec 5.15 kbit/s is part of subset"
+VAL 	0x01 	SET_AMR_4_75 	"codec 4 .75 kbit/s is part of subset"
+
+VALTAB 	VAL_sgsnr 	%REL99%
+VAL 	0 	SGSNR_98 	"SGSN is Release '98 or older"
+VAL 	1 	SGSNR_99 	"SGSN is Release '99 onwards"
+
+VALTAB 	VAL_si13_pos
+VAL 	0 	SI13_ON_BCCH_NORM 	"on BCCH Norm"
+VAL 	1 	SI13_ON_BCCH_EXT 	"on BCCH Ext."
+
+VALTAB 	VAL_si_cf
+VAL 	DEF 	 	"Update of unknown SI message type"
+VAL 	0 	SI_CF_UNSPEC 	"Update of unspecified SI message(s)"
+VAL 	1 	SI_CF_1 	"Update of SI1 message"
+VAL 	2 	SI_CF_2X 	"Update of SI2, SI2bis or SI2ter message"
+VAL 	3 	SI_CF_3UNTIL8 	"Update of SI3, SI4, SI7 or SI8 message"
+VAL 	4 	SI_CF_9 	"Update of SI9 message"
+
+VALTAB 	VAL_solsa_exc_acc
+VAL 	0 	SOLSA_EXCLUSIVE_NO 	""
+VAL 	1 	SOLSA_EXCLUSIVE_YES 	""
+
+VALTAB 	VAL_spgc
+VAL 	0 	SPGC_NO 	"SPLIT_PG_CYCLE is not supported on CCCH in this cell"
+VAL 	1 	SPGC_YES 	"SPLIT_PG_CYCLE is supported on CCCH in this cell"
+
+VALTAB 	VAL_sc
+VAL 	0 	START_CIPH_NO 	"No ciphering"
+VAL 	1 	START_CIPH_YES 	"Start ciphering"
+
+VALTAB 	VAL_st_mode
+VAL 	0 	CODEC_MODE_1 	"lowest bit rate"
+VAL 	1 	CODEC_MODE_2 	"second lowest rate if codec includes more then 1 mode"
+VAL 	2 	CODEC_MODE_3 	"third lowest rate if codec includes more then 2 modes"
+VAL 	3 	CODEC_MODE_4 	"highest mode if codec includes 4 modes"
+
+VALTAB 	VAL_susp_cause
+VAL 	DEF 	 	"shall be treated as 0"
+VAL 	0 	SUSP_C_CALL 	"Mobile originated or mobile terminated call"
+VAL 	1 	SUSP_C_LU 	"Location Update"
+VAL 	2 	SUSP_C_SMS 	"Short message service"
+VAL 	3 	SUSP_C_SS 	"Supplementary service activation"
+VAL 	4 	SUSP_C_VBS 	"Voice broadcast or group call"
+VAL 	5 	SUSP_C_MT_CALL 	"Mobile terminated call"
+VAL 	6 	SUSP_C_DTM 	"DTM not supported"
+
+VALTAB 	VAL_si
+VAL 	0 	SYI_NON_SYNCH 	"Non-synchronized"
+VAL 	1 	SYI_NORM_SYNCH 	"Synchronized"
+VAL 	2 	SYI_PRE_SYNCH 	"Pre-synchronised"
+VAL 	3 	SYI_PSEUDO_SYNCH 	"Pseudo-synchronised"
+
+VALTAB 	VAL_tm
+VAL 	DEF 	 	"reserved"
+VAL 	0 	TM_DED 	"dedicated mode"
+VAL 	1 	TM_GROUP 	"group transmit mode"
+
+VALTAB 	VAL_threeg_prio 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)%
+VAL 	0 	NO_SEACH 	"Seach not allowed"
+VAL 	1 	YES_SEACH 	"Seach allowed"
+
+VALTAB 	VAL_ta_valid
+VAL 	0 	TA_VALID_NO 	"the value is not valid"
+VAL 	1 	TA_VALID_YES 	"the value is valid"
+
+VALTAB 	VAL_tlli_bcc
+VAL 	0 	TLLI_BCC1 	"mobile station shall use CS-1"
+VAL 	1 	TLLI_BCC_CODED 	"mobile station shall use CS specified by Channel Coding"
+
+VALTAB 	VAL_tma
+VAL 	0 	TMA_0 	"no meaning"
+VAL 	1 	TMA_1 	"the message is the first of two in a two message assignment"
+
+VALTAB 	VAL_tx_integer
+VAL 	0 	SPREAD_TRANS_3 	"3 slots used to spread transmission"
+VAL 	1 	SPREAD_TRANS_4 	"4 slots used to spread transmission"
+VAL 	2 	SPREAD_TRANS_5 	"5 slots used to spread transmission"
+VAL 	3 	SPREAD_TRANS_6 	"6 slots used to spread transmission"
+VAL 	4 	SPREAD_TRANS_7 	"7 slots used to spread transmission"
+VAL 	5 	SPREAD_TRANS_8 	"8 slots used to spread transmission"
+VAL 	6 	SPREAD_TRANS_9 	"9 slots used to spread transmission"
+VAL 	7 	SPREAD_TRANS_10 	"10 slots used to spread transmission"
+VAL 	8 	SPREAD_TRANS_11 	"11 slots used to spread transmission"
+VAL 	9 	SPREAD_TRANS_12 	"12 slots used to spread transmission"
+VAL 	10 	SPREAD_TRANS_14 	"14slots used to spread transmission"
+VAL 	11 	SPREAD_TRANS_16 	"16 slots used to spread transmission"
+VAL 	12 	SPREAD_TRANS_20 	"20 slots used to spread transmission"
+VAL 	13 	SPREAD_TRANS_25 	"25 slots used to spread transmission"
+VAL 	14 	SPREAD_TRANS_32 	"32 slots used to spread transmission"
+VAL 	15 	SPREAD_TRANS_50 	"50 slots used to spread transmission"
+
+VALTAB 	VAL_ident_type
+VAL 	DEF 	 	"reserved"
+VAL 	0 	ID_TYPE_NO_IDENT 	"No Identity"
+VAL 	1 	ID_TYPE_IMSI 	"IMSI"
+VAL 	2 	ID_TYPE_IMEI 	"IMEI"
+VAL 	3 	ID_TYPE_IMEISV 	"IMEISV"
+VAL 	4 	ID_TYPE_TMSI 	"TMSI"
+
+VALTAB 	VAL_usf_gran
+VAL 	0 	USF_GRAN1 	"the mobile shall send one RLC/MAC block"
+VAL 	1 	USF_GRAN4 	"the mobile shall send four consecutive RLC/MAC blocks"
+
+VALTAB 	VAL_break_ind
+VAL 	0 	BREAK_IND_NO 	"Additional parameters are not sent in SYSTEM INFORMATION TYPE 7 and 8"
+VAL 	1 	BREAK_IND_YES 	"Additional parameters SI4 Rest Octets_S are sent in SYSTEM INFORMATION TYPE 7 and 8"
+
+VALTAB 	VAL_class_req 	%REL99%
+VAL 	0 	CLASS_CHANGE_REQ 	"the mobile shall send CLASSMARK CHANGE message"
+VAL 	1 	CLASS_CHANGE_NOTREQ 	"the mobile shall not send CLASSMARK CHANGE message"
+
+VALTAB 	VAL_utran_class_req 	%REL99%
+VAL 	0 	UTRAN_CLASS_CHANGE_REQ 	"the mobile shall send CDMA2000 CLASSMARK CHANGE message"
+VAL 	7 	UTRAN_CLASS_CHANGE_NOTREQ 	"the mobile shall not send CDMA2000 CLASSMARK CHANGE message"
+
+VALTAB 	VAL_cdma_class_req 	%REL99%
+VAL 	0 	CDMA_CLASS_CHANGE_REQ 	"the mobile shall send CDMA2000 CLASSMARK CHANGE message"
+VAL 	1 	CDMA_CLASS_CHANGE_NOTREQ 	"the mobile shall not send CDMA2000 CLASSMARK CHANGE message"
+
+VALTAB 	VAL_band_indicator 	%TI_PS_FF_QUAD_BAND_SUPPORT%
+VAL 	0 	BAND_IND_1800 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"ARFCN indicates 1800 band"
+VAL 	1 	BAND_IND_1900 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"ARFCN indicates 1900 band"
+
+VALTAB 	VAL_max_lapdm 	%TI_PS_FF_QUAD_BAND_SUPPORT%
+VAL 	0 	LAPDM_FRAMES_5 	"Upto 5 LAPDM FRAMES"
+VAL 	1 	LAPDM_FRAMES_6 	"Upto 6 LAPDM FRAMES"
+VAL 	2 	LAPDM_FRAMES_7 	"Upto 7 LAPDM FRAMES"
+VAL 	3 	LAPDM_FRAMES_8 	"Upto 8 LAPDM FRAMES"
+VAL 	4 	LAPDM_FRAMES_9 	"Upto 9 LAPDM FRAMES"
+VAL 	5 	LAPDM_FRAMES_10 	"Upto 10 LAPDM FRAMES"
+VAL 	6 	LAPDM_FRAMES_11 	"Upto 11 LAPDM FRAMES"
+VAL 	7 	LAPDM_FRAMES_12 	"Upto 12 LAPDM FRAMES"
+
+
+
+
+VAR 	arfcn 	"Absolute RF Channel Number" 	
+ 	10
+
+
+VAR 	ab_type 	"Access Burst Type" 	
+ 	1
+
+VAL 	@m_rr - VAL_ab_type@ 	
+
+VAR 	ac 	"Access Control Class" 	
+ 	16
+
+
+VAR 	acc_tt 	%REL99% 	"Access Technology Type" 	
+ 	4
+
+VAL 	@m_rr - VAL_acc_tt@ 	
+
+VAR 	atc 	"Access Type Control" 	
+ 	1
+
+VAL 	@m_rr - VAL_atc@ 	
+
+VAR 	af 	"Acknowledge Flag" 	
+ 	1
+
+VAL 	@m_rr - VAL_af@ 	
+
+VAR 	acs 	"Additional reselect parameter indication" 	
+ 	1
+
+VAL 	@m_rr - VAL_acs@ 	
+
+VAR 	algo_ident 	"algorithm identifier" 	
+ 	3
+
+VAL 	@m_rr - VAL_algo_ident@ 	
+
+VAR 	alpha 	"Alpha" 	
+ 	4
+
+VAL 	@m_rr - VAL_alpha@ 	
+
+VAR 	allo_bmp5 	"Allocation Bitmap" 	
+ 	1
+
+
+VAR 	allo_bmp6 	"Allocation Bitmap" 	
+ 	1
+
+
+VAR 	allo_bmp7 	"Allocation Bitmap" 	
+ 	1
+
+
+VAR 	allo_len5 	"Allocation Bitmap Length" 	
+ 	5
+
+
+VAR 	allo_len6 	"Allocation Bitmap Length" 	
+ 	6
+
+
+VAR 	allo_len7 	"Allocation Bitmap Length" 	
+ 	7
+
+
+VAR 	allo_var 	"Allocation Bitmap Var" 	
+ 	1
+
+
+VAR 	arfcn_idx 	"ARFCN Index" 	
+ 	6
+
+
+VAR 	att 	"Attach / detach allowed" 	
+ 	1
+
+VAL 	@m_rr - VAL_att@ 	
+
+VAR 	apdu_info 	"APDU Information" 	
+ 	8
+
+
+VAR 	ba_ind 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"BA_ind" 	
+ 	1
+
+
+VAR 	ba_used 	"BA-USED" 	
+ 	1
+
+
+VAR 	bcch_arfcn_hi 	"BCCH ARFCN" 	
+ 	2
+
+
+VAR 	bcch_arfcn_lo 	"BCCH ARFCN" 	
+ 	8
+
+
+VAR 	bcch_cm 	"BCCH Change Mark" 	
+ 	3
+
+
+VAR 	bcch_ncell 	"BCCH Frequency Ncell" 	
+ 	5
+
+
+VAR 	bcch_type 	"BCCH Type" 	
+ 	1
+
+VAL 	@m_rr - VAL_bcch_type@ 	
+
+VAR 	bep_period 	%REL99% 	"BEP Period 2" 	
+ 	4
+
+
+VAR 	blp 	"Blocks Or Block Periods" 	
+ 	1
+
+VAL 	@m_rr - VAL_blp@ 	
+
+VAR 	bs_ag_blks_res 	"BS Access Grant Blocks reserved" 	
+ 	3
+
+
+VAR 	bcc 	"BS Colour Code" 	
+ 	3
+
+
+VAR 	bs_cv_max 	"BS_CV_MAX" 	
+ 	4
+
+
+VAR 	bsic 	"BSIC" 	
+ 	6
+
+
+VAR 	bs_pa_mfrms 	"BS Paging Multiframes" 	
+ 	3
+
+
+VAR 	pwr_ctrl_mode 	"BTS Power Control Mode" 	
+ 	1
+
+VAL 	@m_rr - VAL_pwr_ctrl_mode@ 	
+
+VAR 	c_val 	"C Value" 	
+ 	6
+
+
+VAR 	call_prio 	"Call Priority" 	
+ 	3
+
+VAL 	@m_rr - VAL_call_prio@ 	
+
+VAR 	re 	"Call Reestablishment allowed" 	
+ 	1
+
+VAL 	@m_rr - VAL_re@ 	
+
+VAR 	cell_bar_qual 	"Cell Bar Qualify" 	
+ 	1
+
+VAL 	@m_rr - VAL_cell_bar_qual@ 	
+
+VAR 	cell_bar_access 	"Cell Barred for Access" 	
+ 	1
+
+VAL 	@m_rr - VAL_cell_bar_access@ 	
+
+VAR 	cell_chan_desc 	"Cell Channel Description" 	
+ 	128
+
+
+VAR 	cell_ident 	"Cell identity" 	
+ 	16
+
+
+VAR 	cell_resel_hyst 	"CELL-RESELECT HYSTERESIS" 	
+ 	3
+
+VAL 	@m_rr - VAL_cell_resel_hyst@ 	
+
+VAR 	cell_resel_offs 	"Cell Reselect Offset" 	
+ 	6
+
+
+VAR 	ch_mark1 	"Change Mark 1" 	
+ 	2
+
+
+VAR 	chan_type 	"Channel type and TDMA offset" 	
+ 	5
+
+VAL 	@m_rr - VAL_chan_type@ 	
+
+VAR 	cn1 	"Channel Needed for Mobile ID 1" 	
+ 	2
+
+VAL 	@m_rr - VAL_cn1@ 	
+
+VAR 	cn2 	"Channel Needed for Mobile ID 2" 	
+ 	2
+
+VAL 	@m_rr - VAL_cn1@ 	
+
+VAR 	cn3 	"Channel Needed for Mobile ID 3" 	
+ 	2
+
+VAL 	@m_rr - VAL_cn1@ 	
+
+VAR 	cn4 	"Channel Needed for Mobile ID 4" 	
+ 	2
+
+VAL 	@m_rr - VAL_cn1@ 	
+
+VAR 	chan_mode 	"Channel Mode" 	
+ 	8
+
+VAL 	@m_rr - VAL_chan_mode@ 	
+
+VAR 	chan_mode2 	"Mode Of  2nd Channel Set" 	
+ 	8
+
+VAL 	@m_rr - VAL_chan_mode@ 	
+
+VAR 	chan_mode3 	"Mode Of  3rd Channel Set" 	
+ 	8
+
+VAL 	@m_rr - VAL_chan_mode@ 	
+
+VAR 	chan_mode4 	"Mode Of  4th Channel Set" 	
+ 	8
+
+VAL 	@m_rr - VAL_chan_mode@ 	
+
+VAR 	chan_mode5 	"Mode Of  5th Channel Set" 	
+ 	8
+
+VAL 	@m_rr - VAL_chan_mode@ 	
+
+VAR 	chan_mode6 	"Mode Of  6th Channel Set" 	
+ 	8
+
+VAL 	@m_rr - VAL_chan_mode@ 	
+
+VAR 	chan_mode7 	"Mode Of  7th Channel Set" 	
+ 	8
+
+VAL 	@m_rr - VAL_chan_mode@ 	
+
+VAR 	chan_mode8 	"Mode Of  8th Channel Set" 	
+ 	8
+
+VAL 	@m_rr - VAL_chan_mode@ 	
+
+VAR 	chan_mode_2 	"Channel Mode 2" 	
+ 	8
+
+VAL 	@m_rr - VAL_chan_mode_2@ 	
+
+VAR 	crd_prio 	"Channel Request Description Priority" 	
+ 	2
+
+VAL 	@m_rr - VAL_crd_prio@ 	
+
+VAR 	chan_set 	"Channel Set Bitmap" 	
+ 	8
+
+
+VAR 	cr 	"Cipher Response Info" 	
+ 	1
+
+VAL 	@m_rr - VAL_cr@ 	
+
+VAR 	codec_hyst 	"Codec Hysteresis" 	
+ 	4
+
+
+VAR 	codec_thr 	"Codec Threshold" 	
+ 	6
+
+
+VAR 	cod_scheme 	"Coding Scheme" 	
+ 	2
+
+VAL 	@m_rr - VAL_cod_scheme@ 	
+
+VAR 	ccm 	"Channel Coding Command" 	
+ 	2
+
+VAL 	@m_rr - VAL_cod_scheme@ 	
+
+VAR 	c_r 	"Command/Final Response" 	
+ 	1
+
+VAL 	@m_rr - VAL_c_r@ 	
+
+VAR 	ccch_conf 	"Common Control Channel Configuration" 	
+ 	3
+
+VAL 	@m_rr - VAL_ccch_conf@ 	
+
+VAR 	ctrl_ack_type 	"CONTROL_ACK_TYPE" 	
+ 	1
+
+VAL 	@m_rr - VAL_ctrl_ack_type@ 	
+
+VAR 	d_t 	"Dedicated Mode or TBF" 	
+ 	1
+
+VAL 	@m_rr - VAL_d_t@ 	
+
+VAR 	dtx_b 	"Discontinuous Transmission (BCCH)" 	
+ 	2
+
+VAL 	@m_rr - VAL_dtx_b@ 	
+
+VAR 	dtx2_s 	"Discontinuous Transmission (SACCH) MSB" 	
+ 	1
+
+
+VAR 	dtx_s 	"Discontinuous Transmission (SACCH) MSB" 	
+ 	2
+
+VAL 	@m_rr - VAL_dtx_s@ 	
+
+VAR 	dtx_used 	"DTX USED" 	
+ 	1
+
+VAL 	@m_rr - VAL_dtx_used@ 	
+
+VAR 	dl 	"Downlink Assignment" 	
+ 	1
+
+VAL 	@m_rr - VAL_dl@ 	
+
+VAR 	dab 	"Downlink Assignment Bitmap" 	
+ 	7
+
+
+VAR 	uab 	"Uplink Assignment Bitmap" 	
+ 	7
+
+
+VAR 	drx_t_max 	"DRX_TIMER_MAX" 	
+ 	3
+
+
+VAR 	e_window 	%REL99% 	"EGPRS Window Size" 	
+ 	5
+
+VAL 	@m_rr - VAL_e_window@ 	
+
+VAR 	ext_dyn_all 	"Extended Dynamic Allocation" 	
+ 	1
+
+VAL 	@m_rr - VAL_ext_dyn_all@ 	
+
+VAR 	ext_meas_freq 	"Extended Measurement Frequency List" 	
+ 	128
+
+
+VAR 	ext_ra 	"Extended RA" 	
+ 	5
+
+
+VAR 	ext_length 	"Extension Length2" 	
+ 	8
+
+
+VAR 	final 	"Final Allocation" 	
+ 	1
+
+VAL 	@m_rr - VAL_final@ 	
+
+VAR 	f_seg 	"First segment" 	
+ 	1
+
+VAL 	@m_rr - VAL_f_seg@ 	
+
+VAR 	flag 	"Flag" 	
+ 	1
+
+VAL 	@m_rr - VAL_flag@ 	
+
+VAR 	flag1 	"Flag1" 	
+ 	1
+
+VAL 	@m_rr - VAL_flag@ 	
+
+VAR 	flag2 	"Flag2" 	
+ 	1
+
+VAL 	@m_rr - VAL_flag@ 	
+
+VAR 	allo_flag 	"Allocation Flag" 	
+ 	1
+
+VAL 	@m_rr - VAL_flag@ 	
+
+VAR 	flag_pp 	"Flag Parameters Present" 	
+ 	1
+
+VAL 	@m_rr - VAL_flag@ 	
+
+VAR 	flag_2bit 	"Flag twobit" 	
+ 	2
+
+
+VAR 	flist 	"Frequency List Contents" 	
+ 	8
+
+
+VAR 	freq_lower 	"Frequency Range Lower" 	
+ 	10
+
+
+VAR 	freq_higher 	"Frequency Range Higher" 	
+ 	10
+
+
+VAR 	freq_short_list_before 	"Frequency Short List" 	
+ 	72
+
+
+VAR 	freq_short_list_after 	"Frequency Short List" 	
+ 	72
+
+
+VAR 	freq_short_list2 	"Frequency Short List 2" 	
+ 	56
+
+
+VAR 	gamma 	"Gamma" 	
+ 	5
+
+
+VAR 	gcr 	"Group Call Reference" 	
+ 	27
+
+
+VAR 	group_ckn 	"Group Cipher Key Number" 	
+ 	4
+
+
+VAR 	hdm 	"Half Duplex Mode" 	
+ 	1
+
+VAL 	@m_rr - VAL_hdm@ 	
+
+VAR 	handov_ref 	"Handover Reference" 	
+ 	8
+
+
+VAR 	hop 	"Hopping" 	
+ 	1
+
+VAL 	@m_rr - VAL_hop@ 	
+
+VAR 	hsn 	"Hopping Sequence Number" 	
+ 	6
+
+
+VAR 	ident_dig 	"Identity digit" 	
+ 	4
+
+
+VAR 	if_and_where 	"If And Where" 	
+ 	3
+
+
+VAR 	inband_not 	"Inband Notification" 	
+ 	1
+
+VAL 	@m_rr - VAL_inband_not@ 	
+
+VAR 	inband_pag 	"Inband pagings" 	
+ 	1
+
+VAL 	@m_rr - VAL_inband_pag@ 	
+
+VAR 	inc_skip 	"inc skip of ARFCNn" 	
+ 	4
+
+
+VAR 	indir 	"Indirect" 	
+ 	1
+
+VAL 	@m_rr - VAL_indir@ 	
+
+VAR 	it4 	"Info Type 4" 	
+ 	4
+
+
+VAR 	it6 	"Info Type 6" 	
+ 	6
+
+
+VAR 	it5 	"Info Type 5" 	
+ 	5
+
+VAL 	@m_rr - VAL_it5@ 	
+
+VAR 	icmi 	"Initial Codec Mode Indicator" 	
+ 	1
+
+VAL 	@m_rr - VAL_icmi@ 	
+
+VAR 	inv_bsic_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Invalid BSIC reporting" 	
+ 	1
+
+
+VAR 	key_seq 	"key sequence" 	
+ 	3
+
+VAL 	@m_rr - VAL_key_seq@ 	
+
+VAR 	l_seg 	"Last segment" 	
+ 	1
+
+VAL 	@m_rr - VAL_l_seg@ 	
+
+VAR 	length 	%REL99% 	"UTRAN frequency list length" 	
+ 	8
+
+
+VAR 	fp_len 	"Length Of Frequency Parameters" 	
+ 	6
+
+
+VAR 	lqm_mode 	%REL99% 	"Link Quality Measurement Mode" 	
+ 	2
+
+VAL 	@m_rr - VAL_lqm_mode@ 	
+
+VAR 	llc_fr_type 	"LLC Frame Type" 	
+ 	1
+
+VAL 	@m_rr - VAL_llc_fr_type@ 	
+
+VAR 	lac 	"Location Area Code" 	
+ 	16
+
+
+VAR 	low_arfcn 	"Lowest ARFCN" 	
+ 	7
+
+VAL 	@m_rr - VAL_low_arfcn@ 	
+
+VAR 	lsa_id 	"LSA ID" 	
+ 	24
+
+
+VAR 	lsa_id_add 	"Additional LSA IDs" 	
+ 	24
+
+
+VAR 	lsa_offs 	"LSA Offset" 	
+ 	3
+
+
+VAR 	mac_mode 	"MAC Mode" 	
+ 	2
+
+VAL 	@m_rr - VAL_mac_mode@ 	
+
+VAR 	ma_num 	"MA Number Indication" 	
+ 	1
+
+VAL 	@m_rr - VAL_ma_num@ 	
+
+VAR 	max_retrans 	"Maximum Number of Retransmissions" 	
+ 	2
+
+VAL 	@m_rr - VAL_max_retrans@ 	
+
+VAR 	meas_bmp 	"Measurement Bitmap" 	
+ 	8
+
+
+VAR 	meas_int 	"Measurement Interval" 	
+ 	5
+
+
+VAR 	meas_valid 	"Measurement valid" 	
+ 	1
+
+VAL 	@m_rr - VAL_meas_valid@ 	
+
+VAR 	msg_type 	"Message Type" 	
+ 	8
+
+
+VAR 	mac 	"Mobile Allocation Contents" 	
+ 	8
+
+
+VAR 	maio 	"Mobile Allocation Index Offset" 	
+ 	6
+
+
+VAR 	ma_len 	"Mobile Allocation Length" 	
+ 	8
+
+
+VAR 	mcc 	"Mobile Country Code" 	
+ 	4
+
+
+VAR 	mcs 	%REL99% 	"EGPRS Modulation and coding Scheme" 	
+ 	4
+
+VAL 	@m_rr - VAL_mcs@ 	
+
+VAR 	mnc 	"Mobile Network Code" 	
+ 	4
+
+
+VAR 	mod 	"Modulus" 	
+ 	4
+
+
+VAR 	mp_change_mark 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"MP change mark" 	
+ 	1
+
+
+VAR 	mscr 	"MSC Release" 	
+ 	1
+
+VAL 	@m_rr - VAL_mscr@ 	
+
+VAR 	ms_txpwr_max_cch 	"MS-TXPWR-MAX-CCH" 	
+ 	5
+
+
+VAR 	or_ty 	"MT/MO Origination type" 	
+ 	1
+
+VAL 	@m_rr - VAL_or_ty@ 	
+
+VAR 	mr 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Multiband Reporting" 	
+ 	2
+
+
+VAR 	mr_vers 	"Multi Rate Speech Version" 	
+ 	3
+
+VAL 	@m_rr - VAL_mr_vers@ 	
+
+VAR 	n_avg_i 	"N_AVG_I Value" 	
+ 	4
+
+
+VAR 	ncm 	"NC Mode" 	
+ 	2
+
+VAL 	@m_rr - VAL_ncm@ 	
+
+VAR 	nc_non_drx 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"NC Non DRX period" 	
+ 	3
+
+VAL 	@m_rr - VAL_nc_non_drx@ 	
+
+VAR 	nc_rep_t 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"NC reporting period T" 	
+ 	3
+
+VAL 	@m_rr - VAL_nc_rep_i@ 	
+
+VAR 	nc_rep_i 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"NC reporting period I" 	
+ 	3
+
+VAL 	@m_rr - VAL_nc_rep_i@ 	
+
+VAR 	ncc_permit 	"NCC Permitted" 	
+ 	8
+
+
+VAR 	nch_position 	"NCH Position" 	
+ 	5
+
+VAL 	@m_rr - VAL_nch_position@ 	
+
+VAR 	neigh_cell_desc 	"Neighbour Cells Description" 	
+ 	NCELL_DESC_BIT_LEN
+
+
+VAR 	neci 	"Half rate support" 	
+ 	1
+
+VAL 	@m_rr - VAL_neci@ 	
+
+VAR 	nco 	"Network Control Order" 	
+ 	2
+
+VAL 	@m_rr - VAL_nco@ 	
+
+VAR 	nmo 	"NMO" 	
+ 	2
+
+VAL 	@m_rr - VAL_nmo@ 	
+
+VAR 	nscb 	"Noise Suppression Control Bit" 	
+ 	1
+
+VAL 	@m_rr - VAL_nscb@ 	
+
+VAR 	nln_pch 	"Notification List Number PCH" 	
+ 	2
+
+
+VAR 	nln_nch 	"Notification List Number NCH" 	
+ 	2
+
+
+VAR 	nln_sacch 	"Notification List Number SACCH" 	
+ 	2
+
+
+VAR 	nln_status 	"Notification List Number Status" 	
+ 	1
+
+
+VAR 	nci 	"Normal cell indication" 	
+ 	1
+
+VAL 	@m_rr - VAL_nci@ 	
+
+VAR 	num_range 	"Number of Ranges" 	
+ 	8
+
+VAL 	@m_rr - VAL_num_range@ 	
+
+VAR 	num_ncell 	"Number of Cells" 	
+ 	3
+
+
+VAR 	nr_rb 	%REL99% 	"Number of Radio Blocks" 	
+ 	2
+
+VAL 	@m_rr - VAL_nr_rb@ 	
+
+VAR 	odd_even 	"Odd/ Even indication" 	
+ 	1
+
+VAL 	@m_rr - VAL_odd_even@ 	
+
+VAR 	p0 	"P0" 	
+ 	4
+
+
+VAR 	pck_chan_type 	"Packet Channel type" 	
+ 	5
+
+VAL 	@m_rr - VAL_pck_chan_type@ 	
+
+VAR 	pch_restruct 	"Paging Channel Restructuring" 	
+ 	1
+
+VAL 	@m_rr - VAL_pch_restruct@ 	
+
+VAR 	pm 	"Page Mode" 	
+ 	2
+
+VAL 	@m_rr - VAL_pm@ 	
+
+VAR 	dec 	"PAN_DEC" 	
+ 	3
+
+
+VAR 	inc 	"PAN_INC" 	
+ 	3
+
+
+VAR 	pmax 	"PAN_MAX" 	
+ 	3
+
+
+VAR 	pb 	"Pb" 	
+ 	4
+
+
+VAR 	pc_meas_chan 	"PC_MEAS_CHAN" 	
+ 	1
+
+VAL 	@m_rr - VAL_pc_meas_chan@ 	
+
+VAR 	penalty_time 	"Penalty Time" 	
+ 	5
+
+
+VAR 	ncc 	"PLMN Colour Code" 	
+ 	3
+
+
+VAR 	poll 	"Polling" 	
+ 	1
+
+VAL 	@m_rr - VAL_poll@ 	
+
+VAR 	pow_ctrl 	"Power Control" 	
+ 	1
+
+VAL 	@m_rr - VAL_pow_ctrl@ 	
+
+VAR 	pow 	"Power Level" 	
+ 	5
+
+
+VAR 	pow_offs 	"Power Offset" 	
+ 	2
+
+VAL 	@m_rr - VAL_pow_offs@ 	
+
+VAR 	pr_mode 	"PR Mode" 	
+ 	1
+
+
+VAR 	prio_acc_thr 	"Priority Access Threshold" 	
+ 	3
+
+VAL 	@m_rr - VAL_prio_acc_thr@ 	
+
+VAR 	prio_thr 	"Priority Threshold" 	
+ 	3
+
+
+VAR 	protoc_ident 	"Protocol Identifier" 	
+ 	4
+
+VAL 	@m_rr - VAL_protoc_ident@ 	
+
+VAR 	psi1_period 	"PSI1 Repeat Period" 	
+ 	4
+
+
+VAR 	ra_color 	"RA color" 	
+ 	3
+
+
+VAR 	rlt 	"Radio Link Timeout" 	
+ 	4
+
+
+VAR 	ra 	"Random Access Information" 	
+ 	8
+
+
+VAR 	rel_pos 	"Relative Position" 	
+ 	16
+
+
+VAR 	reporting_rate 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Reporting rate" 	
+ 	1
+
+
+VAR 	rot 	"Report Observed Time Difference" 	
+ 	1
+
+VAL 	@m_rr - VAL_rot@ 	
+
+VAR 	report_type 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Report type" 	
+ 	1
+
+VAL 	@m_rr - VAL_report_type@ 	
+
+VAR 	rbw 	"Requested Bandwidth" 	
+ 	16
+
+
+VAR 	resegm 	%REL99% 	"Resegment Bit" 	
+ 	1
+
+VAL 	@m_rr - VAL_resegm@ 	
+
+VAR 	res_ack 	"Resumption ACK" 	
+ 	1
+
+VAL 	@m_rr - VAL_res_ack@ 	
+
+VAR 	rfln 	"RFL Number" 	
+ 	4
+
+
+VAR 	rlc_blks 	"RLC Data Blocks Granted" 	
+ 	8
+
+
+VAR 	rlc_mode 	"RLC Mode" 	
+ 	1
+
+VAL 	@m_rr - VAL_rlc_mode@ 	
+
+VAR 	rlc_c_oct 	"RLC Octet Count" 	
+ 	16
+
+
+VAR 	rac 	"Routing Area Code" 	
+ 	8
+
+
+VAR 	rr_cause 	"RR Cause" 	
+ 	8
+
+VAL 	@m_rr - VAL_rr_cause@ 	
+
+VAR 	rxlev_access_min 	"RX Level Access Minimum" 	
+ 	6
+
+
+VAR 	rxlev_full 	"RX Level Full Serving Cell" 	
+ 	6
+
+
+VAR 	rxlev_sub 	"RX Level Sub Serving Cell" 	
+ 	6
+
+
+VAR 	rx_lev_ncell 	"RX Level Ncell" 	
+ 	6
+
+
+VAR 	rxqual_full 	"RX Quality Full Serving Cell" 	
+ 	3
+
+
+VAR 	rxqual 	"RX Quality" 	
+ 	3
+
+
+VAR 	rxqual_sub 	"RX Quality Sub Serving Cell" 	
+ 	3
+
+
+VAR 	scale_ord 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Scale ord" 	
+ 	2
+
+VAL 	@m_rr - VAL_scale_ord@ 	
+
+VAR 	sc_used 	"Sequence Code Used" 	
+ 	1
+
+
+VAR 	serv_band_rep 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Serving band reporting" 	
+ 	2
+
+
+VAR 	sf 	"Service Flag" 	
+ 	1
+
+VAL 	@m_rr - VAL_sf@ 	
+
+VAR 	set_amr 	"Set of AMR Codec Modes" 	
+ 	8
+
+VAL 	@m_rr - VAL_set_amr@ 	
+
+VAR 	si2qua_count 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"SI2quater_count" 	
+ 	4
+
+
+VAR 	si2qua_index 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"SI2quater_index" 	
+ 	4
+
+
+VAR 	sgsnr 	%REL99% 	"SGSNR Bit" 	
+ 	1
+
+VAL 	@m_rr - VAL_sgsnr@ 	
+
+VAR 	si13_pos 	"SI13 Position" 	
+ 	1
+
+VAL 	@m_rr - VAL_si13_pos@ 	
+
+VAR 	si13_cm 	"SI 13 Change Mark" 	
+ 	2
+
+
+VAR 	si_cf 	"SI Change Field" 	
+ 	4
+
+VAL 	@m_rr - VAL_si_cf@ 	
+
+VAR 	sign_var 	"Signal Variance" 	
+ 	6
+
+
+VAR 	solsa_exc_acc 	"SoLSA Exclusive Access" 	
+ 	1
+
+VAL 	@m_rr - VAL_solsa_exc_acc@ 	
+
+VAR 	spgc 	"Split PG Cycle Support" 	
+ 	1
+
+VAL 	@m_rr - VAL_spgc@ 	
+
+VAR 	sc 	"Start Ciphering" 	
+ 	1
+
+VAL 	@m_rr - VAL_sc@ 	
+
+VAR 	st_mode 	"Start Mode" 	
+ 	2
+
+VAL 	@m_rr - VAL_st_mode@ 	
+
+VAR 	susp_cause 	"Suspension Cause" 	
+ 	8
+
+VAL 	@m_rr - VAL_susp_cause@ 	
+
+VAR 	si 	"Synchronisation indication" 	
+ 	2
+
+VAL 	@m_rr - VAL_si@ 	
+
+VAR 	t1 	"T1'" 	
+ 	5
+
+
+VAR 	t2 	"T2" 	
+ 	5
+
+
+VAR 	t3 	"T3" 	
+ 	6
+
+
+VAR 	t3122 	"T 3122 Wait Indication" 	
+ 	8
+
+
+VAR 	t3122_2 	"T 3122 Wait Indication" 	
+ 	8
+
+
+VAR 	t3122_3 	"T 3122 Wait Indication" 	
+ 	8
+
+
+VAR 	t3122_4 	"T 3122 Wait Indication" 	
+ 	8
+
+
+VAR 	t3168 	"T3168" 	
+ 	3
+
+
+VAR 	t3192 	"T3192" 	
+ 	3
+
+
+VAR 	t3212 	"T 3212 time-out value" 	
+ 	8
+
+
+VAR 	t_avg_t 	"T_AVG_T Value" 	
+ 	5
+
+
+VAR 	t_avg_w 	"T_AVG_W Value" 	
+ 	5
+
+
+VAR 	tm 	"Target mode" 	
+ 	2
+
+VAL 	@m_rr - VAL_tm@ 	
+
+VAR 	ded_tlli 	"Temporary Logical Link Identifier" 	
+ 	32
+
+
+VAR 	temp_offs 	"Temporary Offset" 	
+ 	3
+
+
+VAR 	tfi 	"TFI" 	
+ 	5
+
+
+VAR 	threeg_ba_ind 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"ThreeG BA ind" 	
+ 	1
+
+
+VAR 	diff 	"Time difference" 	
+ 	21
+
+
+VAR 	time_diff 	"Time Difference" 	
+ 	8
+
+
+VAR 	tn 	"Time Slot" 	
+ 	3
+
+
+VAR 	dl_ctrl_tn 	"Downlink Control Timeslot" 	
+ 	3
+
+
+VAR 	ts_all 	"Timeslot Allocation" 	
+ 	8
+
+
+VAR 	ta_idx 	"Timing Advance Index" 	
+ 	4
+
+
+VAR 	ta_nm 	"Timing Advance Timeslot Number" 	
+ 	3
+
+
+VAR 	ta_valid 	"Timing Advance Valid" 	
+ 	1
+
+VAL 	@m_rr - VAL_ta_valid@ 	
+
+VAR 	ta 	"Timing advance value" 	
+ 	6
+
+
+VAR 	tlli_bcc 	"TLLI Block Channel Coding" 	
+ 	1
+
+VAL 	@m_rr - VAL_tlli_bcc@ 	
+
+VAR 	tlv_len 	"TLV length information" 	
+ 	16
+
+
+VAR 	tmsi_1 	"TMSI" 	
+ 	32
+
+
+VAR 	tmsi_2 	"TMSI" 	
+ 	32
+
+
+VAR 	tmsi_3 	"TMSI" 	
+ 	32
+
+
+VAR 	tmsi_4 	"TMSI" 	
+ 	32
+
+
+VAR 	ptmsi 	%REL99% 	"P_TMSI" 	
+ 	32
+
+
+VAR 	tsc 	"Training Sequence Code" 	
+ 	3
+
+
+VAR 	tma 	"Two-message Assignment" 	
+ 	1
+
+VAL 	@m_rr - VAL_tma@ 	
+
+VAR 	tx_integer 	"Tx-integer" 	
+ 	4
+
+VAL 	@m_rr - VAL_tx_integer@ 	
+
+VAR 	ident_type 	"Type of identity" 	
+ 	3
+
+VAL 	@m_rr - VAL_ident_type@ 	
+
+VAR 	usf 	"Uplink State Flag" 	
+ 	3
+
+
+VAR 	usf_gran 	"USF Granularity" 	
+ 	1
+
+VAL 	@m_rr - VAL_usf_gran@ 	
+
+VAR 	break_ind 	"Break Indicator" 	
+ 	1
+
+VAL 	@m_rr - VAL_break_ind@ 	
+
+VAR 	class_req 	%REL99% 	"Classmark change request" 	
+ 	1
+
+VAL 	@m_rr - VAL_class_req@ 	
+
+VAR 	utran_class_req 	%REL99% 	"Utran Classmark change request" 	
+ 	3
+
+VAL 	@m_rr - VAL_utran_class_req@ 	
+
+VAR 	cdma_class_req 	%REL99% 	"CDMA2000 Classmark change request" 	
+ 	1
+
+VAL 	@m_rr - VAL_cdma_class_req@ 	
+
+VAR 	si2quater_pos 	%REL99% 	"SI2quater_POSITION " 	
+ 	1
+
+
+VAR 	band_indicator 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"BAND_INDICATOR" 	
+ 	1
+
+VAL 	@m_rr - VAL_band_indicator@ 	
+
+VAR 	max_lapdm 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"Max LAPDm frames on which a layer 3 can be segmented" 	
+ 	3
+
+VAL 	@m_rr - VAL_max_lapdm@ 	
+
+
+
+
+COMP 	alpha_gamma 	"Alpha Gamma"
+{
+ 	 	alpha 	 ; Alpha
+ 	 	gamma 	 ; Gamma
+}
+
+
+
+COMP 	apdu_data 	"APDU Data"
+{
+ 	 	apdu_info 	[2..MAX_APDU_DATA] 	 ; APDU Information
+}
+
+
+
+COMP 	apdu_flags 	"APDU Flags"
+{
+ 	.0  ; spare bit
+ 	 	c_r 	 ; Command/Final Response
+ 	 	f_seg 	 ; First Segment
+ 	 	l_seg 	 ; Last Segment
+}
+
+
+
+COMP 	apdu_id 	"APDU ID"
+{
+ 	 	protoc_ident 	 ; Protocol Identifier
+}
+
+
+
+COMP 	cell_desc 	"Cell Description"
+{
+ 	 	bcch_arfcn_hi 	 ; BCCH ARFCN (hi part)
+ 	 	ncc 	 ; PLMN Colour Code
+ 	 	bcc 	 ; BS Colour Code
+ 	 	bcch_arfcn_lo 	 ; BCCH ARFCN (lo part)
+}
+
+
+
+COMP 	cell_opt_bcch 	"Cell Options (BCCH)"
+{
+ 	.0  ; spare
+ 	 	pow_ctrl 	 ; Power Control
+ 	 	dtx_b 	 ; Discontinuous Transmission (BCCH)
+ 	 	rlt 	 ; Radio Link Timeout
+}
+
+
+
+COMP 	cell_opt_sacch 	"Cell Options (SACCH)"
+{
+ 	 	dtx2_s 	 ; Discontinuous Transmission (SACCH) high
+ 	 	pow_ctrl 	 ; Power Control
+ 	 	dtx_s 	 ; Discontinuous Transmission (SACCH) low
+ 	 	rlt 	 ; Radio Link Timeout
+}
+
+
+
+COMP 	cell_select 	"Cell Selection Parameters"
+{
+ 	 	cell_resel_hyst 	 ; Cell Reselect Hysteresis
+ 	 	ms_txpwr_max_cch 	 ; MS-TXPWR-MAX-CCH
+ 	 	acs 	 ; ACS
+ 	 	neci 	 ; NECI
+ 	 	rxlev_access_min 	 ; RX Level Access Minimum
+}
+
+
+
+COMP 	chan_desc 	"Channel Description"
+{
+ 	 	chan_type 	 ; Channel type and TDMA offset
+ 	 	tn 	 ; Time Slot
+ 	 	tsc 	 ; Training Sequence Code
+ 	 	hop 	 ; Hopping
+ 	< (hop=0) 	.00 > 	 ; spare
+ 	< (hop=0) 	 	arfcn 	> 	 ; Absolute RF Channel Number
+ 	< (hop=1) 	 	maio 	> 	 ; Mobile Allocation Index Offset
+ 	< (hop=1) 	 	hsn 	> 	 ; Hopping Sequence Number
+}
+TYPEDEF COMP chan_desc 	chan_desc_2 	"Channel Description"
+TYPEDEF COMP chan_desc 	chan_desc_before 	"Channel Description"
+TYPEDEF COMP chan_desc 	chan_desc_before_2 	"Channel Description"
+TYPEDEF COMP chan_desc 	chan_desc_after 	"Channel Description"
+TYPEDEF COMP chan_desc 	chan_desc_after_2 	"Channel Description"
+
+
+
+COMP 	chan_needed 	"Channel Needed"
+{
+ 	 	cn2 	 ; CHANNEL
+ 	 	cn1 	 ; CHANNEL
+}
+
+
+
+COMP 	chan_needed3_4 	"Channel Needed for Mobile ID 3 and 4"
+{
+ 	 	cn3 	 ; CHANNEL
+ 	 	cn4 	 ; CHANNEL
+}
+
+
+
+COMP 	chan_req_desc 	"Channel Request Description"
+{
+ 	 	or_ty 	 ; MT/MO Origination type
+ 	.000  ; Spare
+ 	< (or_ty=0) 	.0000 > 	 ; Spare
+ 	< (or_ty=0) 	.00000000 [3] 	> 	 ; Spare
+ 	< (or_ty=1) 	 	crd_prio 	> 	 ; Channel Request Description Priority
+ 	< (or_ty=1) 	 	rlc_mode 	> 	 ; RLC Mode
+ 	< (or_ty=1) 	 	llc_fr_type 	> 	 ; LLC Frame Type
+ 	< (or_ty=1) 	 	rbw 	> 	 ; Requested Bandwidth
+ 	< (or_ty=1) 	 	rlc_c_oct 	> 	 ; RLC Octet Count
+}
+
+
+
+COMP 	ciph_key_num 	"Ciphering Key Sequence Number"
+{
+ 	.0  ; spare
+ 	 	key_seq 	 ; Key Sequence
+}
+
+
+
+COMP 	ciph_mode_set 	"Cipher Mode Setting"
+{
+ 	 	algo_ident 	 ; Algorithm Identifier
+ 	 	sc 	 ; Start Ciphering
+}
+
+
+
+COMP 	ciph_res 	"Cipher Response"
+{
+ 	.000  ; spare
+ 	 	cr 	 ; Cipher Response
+}
+
+
+
+COMP 	cod_prop 	"Codec Properties"
+{
+ 	 	codec_thr 	 ; Codec Threshold
+ 	 	codec_hyst 	 ; Codec Hysteresis
+}
+
+
+
+COMP 	ctrl_chan_desc 	"Control Channel Description"
+{
+ 	 	mscr 	 ; MSC Release
+ 	 	att 	 ; Attach / detach allowed
+ 	 	bs_ag_blks_res 	 ; BS Access Grant Blocks reserved
+ 	 	ccch_conf 	 ; Common Control Channel Configuration
+ 	.00000  ; spare
+ 	 	bs_pa_mfrms 	 ; BS Paging Multiframes
+ 	 	t3212 	 ; T 3212 time-out value
+}
+
+
+
+COMP 	dgcr 	"Descriptive Group Call Reference"
+{
+ 	 	gcr 	 ; Group Call Reference
+ 	 	sf 	 ; Service Flag
+ 	 	af 	 ; Acknowledge Flag
+ 	 	call_prio 	 ; Call Priority
+ 	 	group_ckn 	 ; Ciphering information
+}
+
+
+
+COMP 	es_ind_tag 	"Early Classmark Sending Tag"
+{
+}
+
+
+
+COMP 	ext_meas_res 	"Extended Measurement Results"
+{
+ 	 	sc_used 	 ; Sequence Code Used
+ 	 	dtx_used 	 ; DTX Used
+ 	 	rx_lev_ncell 	[21] 	 ; RX Level Ncell
+}
+
+
+
+COMP 	freq_chan_seq 	"Frequency Channel Sequence"
+{
+ 	.0  ; spare
+ 	 	low_arfcn 	 ; Lowest ARFCN
+ 	 	inc_skip 	[N_FREQ_SKIP] 	 ; inc skip of ARFCNn
+}
+TYPEDEF COMP freq_chan_seq 	freq_chan_seq_before 	"Frequency Channel Sequence"
+TYPEDEF COMP freq_chan_seq 	freq_chan_seq_after 	"Frequency Channel Sequence"
+
+
+
+COMP 	freq_list 	"Frequency List"
+{
+ 	 	flist 	[1..32] 	 ; Frequency List Contents
+}
+TYPEDEF COMP freq_list 	freq_list_after 	"Frequency List"
+TYPEDEF COMP freq_list 	freq_list_before 	"Frequency List"
+
+
+
+COMP 	freq_range 	"Frequency Range"
+{
+ 	 	freq_lower 	 ; Frequency RANGE LOWER
+ 	 	freq_higher 	 ; Frequency RANGE HIGHER
+}
+
+
+
+COMP 	ba_list_pref 	"BA List Pref"
+{
+ 	CSN1_S1  	freq_range 	[0..MAX_RANGE] 	 ; Range Limits
+ 	CSN1_S1  	arfcn 	[0..MAX_ARFCN] 	 ; BA Frequency
+ 	S_PADDING .00101011 (0) ; Spare Padding
+}
+
+
+
+COMP 	ba_range 	"BA Range"
+{
+ 	 	num_range 	 ; Number of Ranges
+ 	 	freq_range 	[2..N_MAX_RANGE] 	 ; Frequency Range
+}
+
+
+
+COMP 	gprs_indic 	"GPRS Indicator"
+{
+ 	 	ra_color 	 ; RA Color
+ 	 	si13_pos 	 ; SI13 Position
+}
+
+
+
+COMP 	gprs_meas_res 	"GPRS Measurement Results"
+{
+ 	 	c_val 	 ; C Value
+ 	 	rxqual 	 ; RX Quality
+ 	.0  ; Spare
+ 	 	sign_var 	 ; Signal Variance
+}
+
+
+
+COMP 	gprs_ma 	"GPRS Mobile Allocation"
+{
+ 	 	hsn 	 ; Hopping Sequence Number
+ 	CSN1_S1  	rfln 	[0..MAX_RFL] 	 ; RFL Number
+ 	 	hop 	 ; Flag
+ 	< (hop=0) 	 	allo_len6 	> 	 ; Allocation Bitmap Length
+ 	< (hop=0) 	 	allo_bmp6 	[allo_len6+1..64] 	> 	 ; Allocation Bitmap
+ 	< (hop=1) 	CSN1_S1  	arfcn_idx 	[0..MAX_ARFCNI] 	> 	 ; ARFCN Index
+}
+
+
+
+COMP 	gprs_resum 	"GPRS Resumption"
+{
+ 	.000  ; Spare
+ 	 	res_ack 	 ; Resumption ACK
+}
+
+
+
+COMP 	group_chan_desc 	"Group Channel Description"
+{
+ 	 	chan_type 	 ; Channel type and TDMA offset
+ 	 	tn 	 ; Time Slot
+ 	 	tsc 	 ; Training Sequence Code
+ 	 	hop 	 ; Hopping
+ 	< (hop=0) 	.00 > 	 ; spare
+ 	< (hop=0) 	 	arfcn 	> 	 ; Absolute RF Channel Number
+ 	< (hop=1) 	 	maio 	> 	 ; Mobile Allocation Index Offset
+ 	< (hop=1) 	 	hsn 	> 	 ; Hopping Sequence Number
+ 	< (hop=1) 	 	mac 	[1..N_MOB_ALLOC] 	> 	 ; Mobile Allocation RF Channels
+}
+
+
+
+COMP 	hop_freq 	"Hopping Frequencies"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag = 0) 	 	ma_len 	> 	 ; Mobile Allocation Length
+ 	< (flag = 0) 	 	mac 	[ma_len..N_MOB_ALLOC] 	> 	 ; Mobile Allocation Content
+ 	< (flag = 1) 	 	freq_short_list2 	> 	 ; Frequency Short List 2
+}
+
+
+
+COMP 	gr_ch_desc 	"Group Channel Description 2"
+{
+ 	 	chan_type 	 ; Channel type and TDMA offset
+ 	 	tn 	 ; Time Slot
+ 	 	tsc 	 ; Training Sequence Code
+ 	 	hop 	 ; Hopping
+ 	< (hop=0) 	.00 > 	 ; spare
+ 	< (hop=0) 	 	arfcn 	> 	 ; Absolute RF Channel Number
+ 	< (hop=1) 	 	maio 	> 	 ; Mobile Allocation Index Offset
+ 	< (hop=1) 	 	hsn 	> 	 ; Hopping Sequence Number
+ 	CSN1_S1  	hop_freq 	 ; Hopping Frequencies
+}
+
+
+
+COMP 	gr_call_info 	"Group Call Information"
+{
+ 	 	dgcr 	 ; Descriptive Group Call Reference
+ 	CSN1_S1  	gr_ch_desc 	 ; Group Channel Description 2
+}
+
+
+
+COMP 	ia_freq_par 	"IA Frequency Parameters"
+{
+ 	 	fp_len 	 ; Length Of Frequency Parameters
+ 	< (fp_len#0) 	.00 > 	 ; Spare
+ 	< (fp_len#0) 	 	maio 	> 	 ; Mobile Allocation Index Offset
+ 	< (fp_len#0) 	 	mac 	[fp_len-1..11] 	> 	 ; Mobile Allocation Contents
+}
+
+
+
+COMP 	ia_2nd_part 	"IA Second Part Packet Assignment"
+{
+ 	CSN1_S1  	ext_ra 	 ; Extended RA
+}
+
+
+
+COMP 	iar_rest_oct 	%REL99% 	"IAR Rest Octets"
+{
+ 	CSN1_S1  	ext_ra 	[4] 	 ; Extended RA
+ 	S_PADDING .00101011 (22) ; Spare padding
+}
+
+
+
+COMP 	loc_area_ident 	"Location Area Identification"
+{
+ 	BCD_NOFILL  	mcc 	[3] 	 ; Mobile Country Code
+ 	BCD_MNC  	mnc 	[2..3] 	 ; Mobile Network Code
+ 	 	lac 	 ; Location Area Code
+}
+
+
+
+COMP 	lsa_id_info 	"LSA ID Information"
+{
+ 	 	lsa_id 	 ; LSA ID
+ 	CSN1_S1  	lsa_id_add 	[0..MAX_LSA_ID] 	 ; Additional LSA IDs
+}
+
+
+
+COMP 	chan_coding 	"MAC Mode And Channel Coding"
+{
+ 	 	mac_mode 	 ; MAC Mode
+ 	 	cod_scheme 	 ; Coding Scheme
+}
+
+
+
+COMP 	mob_alloc 	"Mobile Allocation"
+{
+ 	 	mac 	[1..N_MOB_ALLOC] 	 ; Mobile Allocation Contents
+}
+TYPEDEF COMP mob_alloc 	mob_alloc_before 	"Mobile Allocation"
+TYPEDEF COMP mob_alloc 	mob_alloc_after 	"Mobile Allocation"
+
+
+
+COMP 	mob_ident 	"Mobile Identity"
+{
+ 	 	ident_type 	(GETPOS,:,4,+,:,1,+,SETPOS) ; Type of identity
+ 	 	odd_even 	(SETPOS) ; Odd/ Even indication
+ 	< (ident_type # ID_TYPE_NO_IDENT AND ident_type # ID_TYPE_TMSI) 	BCDODD  	ident_dig 	[0..16] 	(SETPOS)> 	 ; Identity digit
+ 	< (ident_type = ID_TYPE_TMSI) 	.1111 (:,SETPOS,8,+)> 	 ; spare
+ 	< (ident_type = ID_TYPE_TMSI) 	 	tmsi_1 	[.32] 	(SETPOS)> 	 ; TMSI
+}
+TYPEDEF COMP mob_ident 	mob_ident_2 	"Mobile Identity"
+
+
+
+COMP 	mob_time_diff 	"Mobile Time Difference"
+{
+ 	 	diff 	 ; time difference
+ 	.000  ; spare
+}
+
+
+
+COMP 	multirate_conf 	"Multi Rate Configuration"
+{
+ 	NO_CODE  	tlv_len 	 ; Length Information of TLV
+ 	 	mr_vers 	 ; Multi Rate Speech Version
+ 	 	nscb 	 ; Noise Suppression Control Bit
+ 	 	icmi 	 ; Initial Codec Mode Indicator
+ 	.0  ; Spare
+ 	 	st_mode 	 ; Start Mode
+ 	 	set_amr 	 ; Set of AMR Codec Modes
+ 	< (tlv_len>2) 	.00 > 	 ; Spare
+ 	< (tlv_len>2) 	 	cod_prop 	[tlv_len-3..3] 	> 	 ; Codec Properties
+ 	< (tlv_len=4) 	.0000 > 	 ; Spare
+ 	< (tlv_len=5) 	.00 > 	 ; Spare
+}
+
+
+
+COMP 	multislot_alloc 	"Multislot Configuration"
+{
+ 	+ 	 	dab 	 ; Downlink Assignment Bitmap
+ 	* 	 	uab 	 ; Uplink Assignment Bitmap
+ 	 	chan_set 	[0..8] 	 ; Channel Set Bitmap
+}
+
+
+
+COMP 	nc_mode 	"NC Mode For Target Cell"
+{
+ 	.00  ; Spare
+ 	 	ncm 	 ; NC Mode
+}
+
+
+
+COMP 	ncell 	"Ncell"
+{
+ 	 	rx_lev_ncell 	 ; RX Level Ncell
+ 	 	bcch_ncell 	 ; BCCH Frequency Ncell
+ 	 	bsic 	 ; BSIC Ncell
+}
+
+
+
+COMP 	meas_result 	"Measurement Results"
+{
+ 	 	ba_used 	 ; BA used
+ 	 	dtx_used 	 ; DTX used
+ 	 	rxlev_full 	 ; RX Level Full Serving Cell
+ 	.0  ; spare
+ 	 	meas_valid 	 ; Measurement valid
+ 	 	rxlev_sub 	 ; RX Level Sub Serving Cell
+ 	.0  ; spare
+ 	 	rxqual_full 	 ; RX Quality Full Serving Cell
+ 	 	rxqual_sub 	 ; RX Quality Sub Serving Cell
+ 	 	num_ncell 	 ; Number of Cells
+ 	 	ncell 	[N_CELL_MRES] 	 ; Ncell
+}
+
+
+
+COMP 	nc_meas_struct 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"NC Measurement struct"
+{
+ 	 	nc_non_drx 	 ; NC Non DRX period
+ 	 	nc_rep_i 	 ; NC reporting period I
+ 	 	nc_rep_t 	 ; NC reporting period T
+}
+
+
+
+COMP 	nc_meas_para 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"NC Measurement Parameters"
+{
+ 	 	nco 	 ; Network control order
+ 	CSN1_S1  	nc_meas_struct 	 ; NC Measurement struct
+}
+
+
+
+COMP 	nln_stat 	"NLN(PCH) and Status"
+{
+ 	 	nln_pch 	 ; Notification List Number PCH
+ 	 	nln_status 	 ; Notification List Number Status
+}
+
+
+
+COMP 	nt_rest_oct 	"NT/N Rest Octets"
+{
+ 	CSN1_S1  	nln_pch 	 ; NLN(PCH)
+ 	CSN1_S1  	gr_call_info 	[0..MAX_GR_C_INFO] 	 ; Group Call Information
+ 	S_PADDING .00101011 (0) ; Spare padding
+}
+
+
+
+COMP 	opt_mcc 	"Optional MCC"
+{
+ 	 	mcc 	[3] 	 ; Mobile Country Code
+}
+
+
+
+COMP 	lsa_param 	"LSA parameters"
+{
+ 	 	prio_thr 	 ; Priority Threshold
+ 	 	lsa_offs 	 ; LSA Offset
+ 	CSN1_S1  	opt_mcc 	 ; Optional MCC
+ 	 	mnc 	[3] 	 ; MNC
+}
+
+
+
+COMP 	lsa_par_id 	"LSA Parameters and LSA ID"
+{
+ 	 	lsa_param 	 ; LSA parameters
+ 	 	lsa_id_info 	 ; LSA ID Information
+}
+
+
+
+COMP 	opt_sel_par 	"Optional Selection Parameters"
+{
+ 	 	cell_bar_qual 	 ; Cell Bar Qualify
+ 	 	cell_resel_offs 	 ; Cell Reselect Offset
+ 	 	temp_offs 	 ; Temporary Offset
+ 	 	penalty_time 	 ; Penalty Time
+}
+
+
+
+COMP 	p0_pwr_ctrl_mode 	"P0 and BTS Power Control Mode"
+{
+ 	 	p0 	 ; P0
+ 	 	pwr_ctrl_mode 	 ; BTS Power Control Mode
+}
+
+
+
+COMP 	p0_prmode 	"P0 PR Mode"
+{
+ 	 	p0 	 ; P0
+ 	 	pr_mode 	 ; PR_Mode
+}
+
+
+
+COMP 	p0_bts_prmode 	"P0 BTS Power Control PR Mode"
+{
+ 	 	p0 	 ; P0
+ 	 	pwr_ctrl_mode 	 ; BTS Power Control Mode
+ 	 	pr_mode 	 ; PR_Mode
+}
+
+
+
+COMP 	pck_page1 	"Packet Page Indication 1"
+{
+}
+TYPEDEF COMP pck_page1 	pck_page2 	"Packet Page Indication 2"
+TYPEDEF COMP pck_page1 	pck_page3 	"Packet Page Indication 3"
+
+
+
+COMP 	pck_chan_desc 	"Packet Channel Description"
+{
+ 	 	pck_chan_type 	 ; Packet Channel type
+ 	 	tn 	 ; Time Slot
+ 	 	tsc 	 ; Training Sequence Code
+ 	 	hop 	 ; Hopping
+ 	< (hop=0) 	 	indir 	> 	 ; Indirect
+ 	< (hop=0) 	.0 > 	 ; Spare
+ 	< (hop=0 AND indir=0) 	 	arfcn 	> 	 ; Absolute RF Channel Number
+ 	< (hop=1 OR hop=0 AND indir=1) 	 	maio 	> 	 ; Mobile Allocation Index Offset
+ 	< (hop=0 AND indir=1) 	 	ma_num 	> 	 ; MA Number Indication
+ 	< (hop=0 AND indir=1) 	 	flag 	> 	 ; Flag
+ 	< (hop=0 AND indir=1 AND flag=0) 	.00 > 	 ; Spare
+ 	< (hop=0 AND indir=1 AND flag=1) 	 	ch_mark1 	> 	 ; Change Mark 1
+ 	< (hop=1) 	 	hsn 	> 	 ; Hopping Sequence Number
+}
+
+
+
+COMP 	pda_egprs_par 	%REL99% 	"PDA EGPRS Parameters"
+{
+ 	 	e_window 	 ; EGPRS Window Size
+ 	 	lqm_mode 	 ; Structured Element Item
+ 	CSN1_S1  	bep_period 	 ; BEP Period 2
+}
+
+
+
+COMP 	page_mode 	"Page Mode"
+{
+ 	.00  ; spare
+ 	 	pm 	 ; Page Mode
+}
+
+
+
+COMP 	pbcch_des 	"PBCCH Description"
+{
+ 	 	pb 	 ; Pb
+ 	 	tsc 	 ; Training Sequence Code
+ 	 	tn 	 ; Time Slot Number
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	flag2 	> 	 ; Flag2
+ 	< (flag=0 AND flag2=1) 	 	arfcn 	> 	 ; ARFCN
+ 	< (flag=1) 	 	maio 	> 	 ; Mobile Allocation Index Offset
+}
+
+
+
+COMP 	pch_nch_info 	"PCH and NCH Info"
+{
+ 	 	pch_restruct 	 ; Paging Channel Restructuring
+ 	 	nln_sacch 	 ; Notification List Number SACCH
+ 	 	call_prio 	 ; Call Priority
+ 	 	nln_status 	 ; Notification List Number Status
+}
+
+
+
+COMP 	pos 	"Position"
+{
+ 	 	mod 	 ; Modulus
+ 	< (mod#0) 	 	rel_pos 	[.mod+1..16] 	> 	 ; Relative Position
+ 	 	bcch_type 	 ; BCCH Type
+}
+TYPEDEF COMP pos 	poso 	"Optional Position"
+
+
+
+COMP 	poss 	"Positions"
+{
+ 	 	pos 	 ; Position
+ 	CSN1_S1  	poso 	[0..MAX_POS] 	 ; Optional Position
+}
+
+
+
+COMP 	itp 	"Info Type and Positions"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	it4 	> 	 ; Info Type 4
+ 	< (flag=1) 	 	flag1 	> 	 ; Flag1
+ 	< (flag=1 AND flag1=0) 	 	it5 	> 	 ; Info Type 5
+ 	< (flag=1 AND flag1=6) 	 	it6 	> 	 ; Info Type 6
+ 	 	poss 	 ; Positions
+}
+TYPEDEF COMP itp 	itpo 	"Info Type and Positions Optional"
+
+
+
+COMP 	pow_cmd 	"Power Command"
+{
+ 	.000  ; spare
+ 	 	pow 	 ; Power Level
+}
+
+
+
+COMP 	pow_cmd_access 	"Power Command & access type"
+{
+ 	 	atc 	 ; Access Type Control
+ 	.00  ; spare
+ 	 	pow 	 ; Power Level
+}
+
+
+
+COMP 	rach_ctrl 	"RACH Control Parameters"
+{
+ 	 	max_retrans 	 ; Maximum Number of Retransmissions
+ 	 	tx_integer 	 ; Tx-integer
+ 	 	cell_bar_access 	 ; Cell Barred for Access
+ 	 	re 	 ; Call Reestablishment allowed
+ 	 	ac 	 ; Access Control Class
+}
+
+
+
+COMP 	req_ref 	"Request Reference"
+{
+ 	 	ra 	 ; Random Access Information
+ 	 	t1 	 ; T1'
+ 	 	t3 	 ; T3
+ 	 	t2 	 ; T2
+}
+TYPEDEF COMP req_ref 	req_ref_2 	"Request Reference"
+TYPEDEF COMP req_ref 	req_ref_3 	"Request Reference"
+TYPEDEF COMP req_ref 	req_ref_4 	"Request Reference"
+
+
+
+COMP 	rout_area_id 	"Routing Area Identification"
+{
+ 	BCD_NOFILL  	mcc 	[3] 	 ; Mobile Country Code
+ 	BCD_MNC  	mnc 	[2..3] 	 ; Mobile Network Code
+ 	 	lac 	 ; Location Area Code
+ 	 	rac 	 ; Routing Area Code
+}
+
+
+
+COMP 	sched 	"Scheduling Info"
+{
+ 	 	itp 	 ; Info Type and Positions
+ 	CSN1_S1  	itpo 	[0..MAX_ITP] 	 ; Info Type and Positions Optional
+}
+
+
+
+COMP 	si1_rest_oct 	"SI 1 Rest Octets"
+{
+ 	CSN1_SHL  	nch_position 	 ; NCH Position
+ 	 	band_indicator 	 	%TI_PS_FF_QUAD_BAND_SUPPORT% ; Band Indicator
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+COMP 	meas_para 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"Measurement_parameter description"
+{
+ 	 	report_type 	 ; Report type
+ 	 	serv_band_rep 	 ; Serving band reporting
+}
+
+
+
+COMP 	gprs_meas_para 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"GPRS MEASUREMENT Parameters Description"
+{
+ 	 	report_type 	 ; Report type
+ 	 	reporting_rate 	 ; Reporting rate
+ 	 	inv_bsic_rep 	 ; Invalid BSIC reporting
+ 	CSN1_S1  	mr 	 ; Multiband Reporting
+ 	CSN1_S1  	serv_band_rep 	 ; Serving band reporting
+ 	 	scale_ord 	 ; Scale ord
+ 	CSN1_S1 EXTERN @m_rr_com - report_900@ 	 	report_900 	 ; reporting 900
+ 	CSN1_S1 EXTERN @m_rr_com - report_1800@ 	 	report_1800 	 ; reporting 1800
+ 	CSN1_S1 EXTERN @m_rr_com - report_400@ 	 	report_400 	 ; reporting 400
+ 	CSN1_S1 EXTERN @m_rr_com - report_1900@ 	 	report_1900 	 ; reporting 1900
+ 	CSN1_S1 EXTERN @m_rr_com - report_850@ 	 	report_850 	 ; reporting 850
+}
+
+
+
+COMP 	si4_rest_octets_s 	"SI4 Rest Octets_S"
+{
+ 	CSN1_SHL  	lsa_param 	 ; LSA Parameters
+ 	CSN1_SHL  	cell_ident 	 ; Cell identity
+ 	CSN1_SHL  	lsa_id_info 	 ; LSA ID Information
+}
+
+
+
+COMP 	si4_rest_octets_bs 	"Structured Element"
+{
+ 	HL_FLAG  	flag 	 ; HL Flag
+ 	< (flag = 0) 	HL_FLAG  	break_ind 	> 	 ; Break Indicator
+ 	< (flag = 1) 	 	si4_rest_octets_s 	> 	 ; SI4 Rest Octets_S
+}
+
+
+
+COMP 	si4_rest_oct 	"SI 4 Rest Octets"
+{
+ 	CSN1_SHL  	opt_sel_par 	 ; Optional selection Parameters
+ 	CSN1_SHL  	pow_offs 	 ; Power Offset
+ 	CSN1_SHL  	gprs_indic 	 ; GPRS Indicator
+ 	HL_FLAG  	si4_rest_octets_bs 	 ; Structure contains Break Indicator & SI4 Rest Octets_S
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+COMP 	si7_rest_oct 	"SI 7 Rest Octets"
+{
+ 	CSN1_SHL  	opt_sel_par 	 ; Optional Selection Prameter
+ 	CSN1_SHL  	pow_offs 	 ; Power Offset
+ 	CSN1_SHL  	gprs_indic 	 ; GPRS Indicator
+ 	 	si4_rest_octets_s 	 ; SI Rest octets S
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+TYPEDEF COMP si7_rest_oct 	si8_rest_oct 	"SI 8 Rest Octets"
+
+
+
+COMP 	si9_rest_oct 	"SI 9 Rest Octets"
+{
+ 	CSN1_SHL  	sched 	 ; Scheduling Info
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+COMP 	si13_info 	"SI 13 Info"
+{
+ 	 	bcch_cm 	 ; BCCH Change Mark
+ 	 	si_cf 	 ; SI Change Field
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	si13_cm 	> 	 ; SI 13 Change Mark
+ 	< (flag=1) 	 	gprs_ma 	> 	 ; GPRS Mobile Allocation
+ 	 	flag1 	 ; Flag1
+ 	< (flag1=0) 	 	rac 	> 	 ; Routing Area Code
+ 	< (flag1=0) 	 	spgc 	> 	 ; Split PG Cycle Support
+ 	< (flag1=0) 	 	prio_acc_thr 	> 	 ; Priority Access Threshold
+ 	< (flag1=0) 	 	nco 	> 	 ; Network Control Order
+ 	< (flag1=0) 	EXTERN @m_rr_com - gprs_cell_opt@ 	 	gprs_cell_opt 	> 	 ; GPRS Cell Options
+ 	< (flag1=0) 	 	alpha 	> 	 ; Alpha
+ 	< (flag1=0) 	 	t_avg_w 	> 	 ; T_AVG_W Value
+ 	< (flag1=0) 	 	t_avg_t 	> 	 ; T_AVG_T Value
+ 	< (flag1=0) 	 	pc_meas_chan 	> 	 ; Power Control Measurement Channel
+ 	< (flag1=0) 	 	n_avg_i 	> 	 ; N_AVG_I Value
+ 	< (flag1=1) 	 	psi1_period 	> 	 ; PSI1 Repeat Period
+ 	< (flag1=1) 	 	pbcch_des 	> 	 ; PBCCH Description
+ 	CSN1_SHL  	sgsnr 	 	%REL99% ; SGSNR bit
+}
+
+
+
+COMP 	si13_rest_oct 	"SI 13 Rest Octets"
+{
+ 	CSN1_SHL  	si13_info 	 ; SI 13 Info
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+COMP 	si16_rest_oct 	"SI 16 Rest Octets"
+{
+ 	CSN1_SHL  	lsa_par_id 	 ; LSA Parameters and LSA ID
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+TYPEDEF COMP si16_rest_oct 	si17_rest_oct 	"SI 17 Rest Octets"
+
+
+
+COMP 	single_alloc 	"Single Block Allocation"
+{
+ 	 	tn 	 ; Timeslot Number
+ 	CSN1_S1  	alpha_gamma 	 ; Alpha Gamma
+ 	CSN1_S1  	p0_pwr_ctrl_mode 	 ; P0 and BTS Power Control Mode
+}
+
+
+
+COMP 	start_time 	"Starting Time"
+{
+ 	 	t1 	 ; T1'
+ 	 	t3 	 ; T3
+ 	 	t2 	 ; T2
+}
+TYPEDEF COMP start_time 	tbf_start_time 	"TBF Starting Time"
+TYPEDEF COMP start_time 	meas_start 	"Measurement Starting Time"
+
+
+
+COMP 	pck_meas_par 	"Packet Measurement Parameters"
+{
+ 	 	meas_start 	 ; Measurement Starting Time
+ 	 	meas_int 	 ; Measurement Interval
+ 	 	meas_bmp 	 ; Measurement Bitmap
+}
+
+
+
+COMP 	mb_alloc 	%REL99% 	"Multi Block Allocation"
+{
+ 	CSN1_S1  	alpha 	 ; Alpha
+ 	 	gamma 	 ; Gamma
+ 	 	tbf_start_time 	 ; TBF Starting Time
+ 	 	nr_rb 	 ; Number Of Radio Blocks Allocated
+ 	CSN1_S1  	p0_bts_prmode 	 ; P0 BTS PR Mode
+}
+
+
+
+COMP 	si2ter_ind 	"system information 2ter indicator"
+{
+}
+
+
+
+COMP 	synch_ind 	"Synchronization Indication"
+{
+ 	 	nci 	 ; Normal cell indication
+ 	 	rot 	 ; Report Observed Time Difference
+ 	 	si 	 ; Synchronisation indication
+}
+
+
+
+COMP 	t_ext_ra 	%REL99% 	"Tagged Extended RA"
+{
+ 	CSN1_S1  	ext_ra 	 ; Extended RA
+}
+
+
+
+COMP 	tagged_gamma 	"Tagged Gamma"
+{
+ 	CSN1_SHL  	gamma 	 ; Gamma
+}
+
+
+
+COMP 	pwr_ctrl 	"Power Control Parameters"
+{
+ 	 	alpha 	 ; Alpha
+ 	 	tagged_gamma 	[8] 	 ; Tagged Gamma
+}
+
+
+
+COMP 	tagged_call_prio 	"Tagged Priority"
+{
+ 	CSN1_SHL  	call_prio 	 ; Call Priority
+}
+
+
+
+COMP 	p3_rest_oct 	"P3 Rest Octets"
+{
+ 	CSN1_SHL  	chan_needed3_4 	 ; Channel Needed for Mobile ID 3 and 4
+ 	CSN1_SHL  	nln_stat 	 ; NLN(PCH) and Status
+ 	 	tagged_call_prio 	[4] 	 ; Priority 1 until 4
+ 	S_PADDING .00101011 (23) ; Spare Padding
+}
+
+
+
+COMP 	p2_rest_oct 	"P2 Rest Octets"
+{
+ 	CSN1_SHL  	cn3 	 ; Channel Needed for Mobile ID 3
+ 	CSN1_SHL  	nln_stat 	 ; NLN(PCH) and Status
+ 	 	tagged_call_prio 	[3] 	 ; Priority 1 until 3
+ 	CSN1_SHL  	pck_page3 	 ; Packet Page Indication 3
+ 	S_PADDING .00101011 (23) ; Spare Padding
+}
+
+
+
+COMP 	p1_rest_oct 	"P1 Rest Octets"
+{
+ 	CSN1_SHL  	nln_stat 	 ; NLN(PCH) and Status
+ 	 	tagged_call_prio 	[2] 	 ; Priority 1 and 2
+ 	CSN1_SHL  	gr_call_info 	 ; Group Call Information
+ 	CSN1_SHL  	pck_page1 	 ; Packet Page Indication 1
+ 	CSN1_SHL  	pck_page2 	 ; Packet Page Indication 2
+ 	S_PADDING .00101011 (23) ; Spare Padding
+}
+
+
+
+COMP 	tagged_usf_tn 	"Tagged USF For Timeslot"
+{
+ 	CSN1_S1  	usf 	 ; Uplink State Flag
+}
+
+
+
+COMP 	time_advance 	"Timing Advance"
+{
+ 	.00  ; spare
+ 	 	ta 	 ; Timing advance value
+}
+TYPEDEF COMP time_advance 	time_advance_2 	"Timing Advance"
+
+
+
+COMP 	ta_idx_nm 	"Timing Advance Index and Number"
+{
+ 	 	ta_idx 	 ; Timing Advance Index
+ 	 	ta_nm 	 ; Timing Advance Timeslot Number
+}
+
+
+
+COMP 	pck_ta 	"Packet Timing Advance"
+{
+ 	CSN1_S1  	ta 	 ; Timing Advance value
+ 	CSN1_S1  	ta_idx_nm 	 ; Timing Advance Index and Number
+}
+
+
+
+COMP 	pck_dl_ass 	"RR Packet Downlink Assignment"
+{
+ 	 	mac_mode 	 ; MAC Mode
+ 	 	rlc_mode 	 ; RLC Mode
+ 	 	ts_all 	 ; Timeslot Allocation
+ 	 	pck_ta 	 ; Packet Timing Advance
+ 	CSN1_S1  	pwr_ctrl 	 ; Power Control Parameters
+ 	CSN1_S1  	tfi 	 ; Downlink TFI Assignment
+ 	CSN1_S1  	pck_meas_par 	 ; Packet Measurement Parameters
+ 	S_PADDING .00000000 (0) ; N Spare Padding
+}
+
+
+
+COMP 	tfi_ass_alloc 	"TFI Assignment and Allocation"
+{
+ 	 	tfi 	 ; TFI Assignment
+ 	 	poll 	 ; Polling
+ 	 	allo_flag 	 ; Allocation flag
+ 	< (allo_flag=0) 	 	usf 	> 	 ; Uplink State Flag
+ 	< (allo_flag=0) 	 	usf_gran 	> 	 ; USF Granularity
+ 	< (allo_flag=0) 	CSN1_S1  	p0_prmode 	> 	 ; P0 and PR Mode
+ 	< (allo_flag#0) 	 	allo_len5 	> 	 ; Allocation Bitmap Length
+ 	< (allo_flag#0) 	 	allo_bmp5 	[allo_len5..31] 	> 	 ; Allocation Bitmap
+ 	< (allo_flag#0) 	CSN1_S1  	p0_bts_prmode 	> 	 ; P0 BTS PR Mode
+ 	 	ccm 	 ; Channel Coding Command
+ 	 	tlli_bcc 	 ; TLLI Block Channel Coding
+ 	CSN1_S1  	alpha 	 ; Alpha
+ 	 	gamma 	 ; Gamma
+ 	CSN1_S1  	ta_idx 	 ; Timing Advance Index
+ 	CSN1_S1  	tbf_start_time 	 ; TBF Starting Time
+}
+
+
+
+COMP 	tfi_ass_rlc 	"TFI Assignment and RLC Mode"
+{
+ 	 	tfi 	 ; TFI Assignment
+ 	 	rlc_mode 	 ; RLC Mode
+ 	CSN1_S1  	alpha 	 ; Alpha
+ 	 	gamma 	 ; Gamma
+ 	 	poll 	 ; Polling
+ 	 	ta_valid 	 ; Timing Advance Valid
+}
+
+
+
+COMP 	pck_downl_ass_ia 	"Packet Downlink Assignment (IA)"
+{
+ 	 	ded_tlli 	 ; Temporary Logical Link Identifier
+ 	CSN1_S1  	tfi_ass_rlc 	 ; TFI Assignment and RLC Mode
+ 	CSN1_S1  	ta_idx 	 ; Timing Advance Index
+ 	CSN1_S1  	tbf_start_time 	 ; TBF Starting Time
+ 	CSN1_S1  	p0_bts_prmode 	 ; P0 BTS PR Mode
+ 	CSN1_SHL_OPT  	pda_egprs_par 	 	%REL99% ; PDA EGPRS Parameters
+}
+
+
+
+COMP 	usf_gamma 	"USF For Timeslot And Gamma"
+{
+ 	 	usf 	 ; Uplink State Flag
+ 	 	gamma 	 ; Gamma
+}
+
+
+
+COMP 	usf_gamma_csn1 	"USF For Timeslot And Gamma (CSN1)"
+{
+ 	CSN1_S1  	usf_gamma 	 ; USF For Timeslot And Gamma
+}
+
+
+
+COMP 	dyn_alloc 	"Dynamic Allocation"
+{
+ 	 	ext_dyn_all 	 ; Extended Dynamic Allocation
+ 	CSN1_S1  	p0 	 ; P0
+ 	 	usf_gran 	 ; USF Granularity
+ 	CSN1_S1  	tfi 	 ; Uplink TFI Assignment
+ 	CSN1_S1  	rlc_blks 	 ; RLC Data Blocks Granted
+ 	 	flag_pp 	 ; Flag Parameters Present
+ 	< (flag_pp=0) 	 	tagged_usf_tn 	[8] 	> 	 ; Tagged USF For Timeslot
+ 	< (flag_pp=1) 	 	alpha 	> 	 ; Alpha
+ 	< (flag_pp=1) 	 	usf_gamma_csn1 	[8] 	> 	 ; USF For Timeslot And Gamma (CSN1)
+}
+
+
+
+COMP 	utran_freq_list 	%REL99% 	"UTRAN Freq List"
+{
+ 	 	length 	 ; Count
+ 	CSN1_S1 EXTERN @m_rr_com - fdd_arfcn@ 	 	fdd_arfcn 	[0..MAX_FDD] 	 ; FDD_ARFCN
+ 	CSN1_S1 EXTERN @m_rr_com - tdd_arfcn@ 	 	tdd_arfcn 	[0..MAX_TDD] 	 ; TDD_ARFCN
+ 	S_PADDING .00101011 (0) ; Spare Padding
+}
+
+
+
+COMP 	vbs_vgcs_opt 	"VBS/VGCS Options"
+{
+ 	 	inband_not 	 ; Inband Notification
+ 	 	inband_pag 	 ; Inband pagings
+}
+
+
+
+COMP 	vgcs_tmi 	"VGCS Target Mode Indication"
+{
+ 	 	tm 	 ; Target mode
+ 	 	group_ckn 	 ; Group Cipher Key Number
+ 	.11  ; Spare
+}
+
+
+
+COMP 	fa_blk_ia 	"Fixed Allocation Block Structure"
+{
+ 	 	blp 	 ; Blocks Or Block Periods
+ 	 	allo_len7 	 ; Allocation Bitmap Length
+ 	 	allo_bmp7 	[allo_len7..127] 	 ; Allocation Bitmap
+}
+
+
+
+COMP 	fix_alloc 	"Fixed Allocation"
+{
+ 	CSN1_S1  	tfi 	 ; Uplink TFI Assignment
+ 	 	final 	 ; Final Allocation
+ 	 	dl_ctrl_tn 	 ; Downlink Control Timeslot
+ 	CSN1_S1  	p0_pwr_ctrl_mode 	 ; P0 and BTS Power Control Mode
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	ts_all 	> 	 ; Timeslot Allocation
+ 	< (flag=1) 	 	pwr_ctrl 	> 	 ; Power Control Parameters
+ 	 	hdm 	 ; Half Duplex Mode
+ 	.0  ; spare
+ 	 	flag1 	 ; Flag1
+ 	< (flag1=0) 	 	fa_blk_ia 	> 	 ; Fixed Allocation Block Structure
+ 	< (flag1=1) 	 	allo_var 	[allo_len7..127] 	> 	 ; Allocation Bitmap Var
+}
+
+
+
+COMP 	pck_ul_ass 	"RR Packet Uplink Assignment"
+{
+ 	 	ccm 	 ; Channel Coding Command
+ 	 	tlli_bcc 	 ; TLLI Block Channel Coding
+ 	 	pck_ta 	 ; Packet Timing Advance
+ 	 	flag 	 ; Flag
+ 	 	flag1 	 ; Flag1
+ 	< (flag=0 AND flag1=1) 	 	dyn_alloc 	> 	 ; Dynamic Allocation
+ 	< (flag=1 AND flag1=0) 	 	single_alloc 	> 	 ; Single Block Allocation
+ 	< (flag=1 AND flag1=1) 	 	fix_alloc 	> 	 ; Fixed Allocation
+ 	S_PADDING .00000000 (0) ; N Spare Padding
+}
+
+
+
+COMP 	sngl_block_alloc 	"Single Block Allocation"
+{
+ 	CSN1_S1  	alpha 	 ; Alpha
+ 	 	gamma 	 ; Gamma
+ 	.01  ; Spare
+ 	 	tbf_start_time 	 ; TBF Starting Time
+ 	CSN1_SHL  	p0_bts_prmode 	 ; P0 BTS PR Mode
+}
+
+
+
+COMP 	pck_upl_ass_ia 	"Packet Uplink Assignment (IA)"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag = 1) 	 	tfi_ass_alloc 	> 	 ; TFI Assignment and Allocation
+ 	< (flag = 0) 	 	sngl_block_alloc 	> 	 ; Single Block Allocation
+ 	CSN1_SHL_OPT  	t_ext_ra 	 ; Tagged Extended RA
+}
+
+
+
+COMP 	ia_assign_par 	"IA Assignment Parameters"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag = 0) 	 	flag1 	> 	 ; Flag
+ 	< (flag = 0 AND flag1 = 0) 	 	pck_upl_ass_ia 	> 	 ; Packet Uplink Assignment (IA)
+ 	< (flag = 0 AND flag1 # 0) 	 	pck_downl_ass_ia 	> 	 ; Packet Downlink Assignment (IA)
+ 	< (flag = 1) 	 	ia_2nd_part 	> 	 ; IA Second Part Packet Assignment
+}
+
+
+
+COMP 	class_enq_mask 	%REL99% 	"Classmark enquiry mask"
+{
+ 	 	class_req 	 ; Classmark change request
+ 	 	utran_class_req 	 ; Utran Classmark change request
+ 	 	cdma_class_req 	 ; CDMA2000 Classmark change request
+ 	.000  ; spare
+}
+
+
+
+COMP 	si2q_extn_info 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"SI 2 Quater Extension Info"
+{
+ 	CSN1_S1 EXTERN @m_rr_com - ccn_support_description@ 	 	ccn_support_description 	 ; CCN Support Desc
+}
+
+
+
+COMP 	si2q_extn_bits 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"SI 2 Quater Extension Info"
+{
+ 	 	ext_length 	 ; Extension len
+ 	 	si2q_extn_info 	[.ext_length+1..256] 	 ; SI 2 Quater Extension Info
+}
+
+
+
+COMP 	si_2qua_octets 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% 	"SI 2quater Rest Octets"
+{
+ 	 	ba_ind 	 ; BA_ind
+ 	 	threeg_ba_ind 	 ; ThreeG BA ind
+ 	 	mp_change_mark 	 ; MP change mark
+ 	 	si2qua_index 	 ; SI2quater_index
+ 	 	si2qua_count 	 ; SI2quater_count
+ 	CSN1_S1  	meas_para 	 ; Measurement parameter description
+ 	CSN1_S1 EXTERN @m_rr_com - rtdd@ 	 	rtdd 	 ; GPRS Real Time Difference Description
+ 	CSN1_S1 EXTERN @m_rr_com - gprs_bsic@ 	 	gprs_bsic 	 ; GPRS BSIC Description
+ 	CSN1_S1 EXTERN @m_rr_com - gprs_rep_prio@ 	 	gprs_rep_prio 	 ; GPRS REPORT PRIORITY Description
+ 	CSN1_S1  	gprs_meas_para 	 ; GPRS MEASUREMENT Parameters Description
+ 	CSN1_S1  	nc_meas_para 	 ; NC Measurement Parameters
+ 	CSN1_S1  	si2q_extn_bits 	 ; SI2 Quater Extension Info
+}
+
+
+
+COMP 	threeg_es_tag_ind 	%REL99% 	"3G Early Classmark Sending Restriction (1 bit field)"
+{
+}
+
+
+
+COMP 	si2quater_ind 	%REL99% 	"SI2quater Indicator struct"
+{
+ 	 	si2quater_pos 	 	%REL99% ; Structured Element Item
+}
+
+
+
+COMP 	si3_rest_oct 	"SI 3 Rest Octets"
+{
+ 	CSN1_SHL  	opt_sel_par 	 ; Optional Selection Parameters
+ 	CSN1_SHL  	pow_offs 	 ; Power Offset
+ 	CSN1_SHL  	si2ter_ind 	 ; System Information 2ter Indicator
+ 	CSN1_SHL  	es_ind_tag 	 ; Early Classmark Sending Tag
+ 	CSN1_SHL  	if_and_where 	 ; If And Where
+ 	CSN1_SHL  	gprs_indic 	 ; GPRS Indicator
+ 	CSN1_SHL  	threeg_es_tag_ind 	 	%REL99% ; 3G Early Classmark Sending Restriction (1 bit field)
+ 	CSN1_SHL  	si2quater_ind 	 	%REL99% ; SI2quater Indicator struct
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+COMP 	d_alloc 	%REL99% 	"Dynamic Allocation"
+{
+ 	 	usf 	 ; Uplink State Flag
+ 	 	usf_gran 	 ; USF Granularity
+ 	CSN1_S1  	p0_prmode 	 ; P0 and PR Mode
+}
+
+
+
+COMP 	f_alloc 	%REL99% 	"Fixed Allocation"
+{
+ 	 	allo_len5 	 ; Allocation Bitmap Length
+ 	 	allo_bmp5 	[allo_len5..31] 	 ; Allocation Bitmap
+ 	CSN1_S1  	p0_bts_prmode 	 ; P0 BTS PR Mode
+}
+
+
+
+COMP 	d_f_alloc 	%REL99% 	"Dynamic or Fixed Allocation"
+{
+ 	 	tfi 	 ; TFI Assignment
+ 	 	poll 	 ; Polling
+ 	 	allo_flag 	 ; Allocation flag
+ 	< (allo_flag=0) 	 	d_alloc 	> 	 ; Dynamic Allocation
+ 	< (allo_flag=1) 	 	f_alloc 	> 	 ; Fixed Allocation
+ 	 	mcs 	 ; EGPRS Modulation and coding Scheme
+ 	 	tlli_bcc 	 ; TLLI Block Channel Coding
+ 	CSN1_S1  	bep_period 	 ; BEP Period 2
+ 	 	resegm 	 ; Resegment
+ 	 	e_window 	 ; EGPRS Window Size
+ 	CSN1_S1  	alpha 	 ; Alpha
+ 	 	gamma 	 ; Gamma
+ 	CSN1_S1  	ta_idx 	 ; Timing Advance Index
+ 	CSN1_S1  	tbf_start_time 	 ; TBF Starting Time
+}
+
+
+
+COMP 	egprs_pua 	%REL99% 	"EGPRS Packet Uplink Assignment"
+{
+ 	 	ext_ra 	 ; Extended RA
+ 	CSN1_S1  	acc_tt 	[0..MAX_ACCESS_TT] 	 ; Access technology type
+ 	 	flag 	 ; Flag
+ 	< (flag=1) 	 	d_f_alloc 	> 	 ; Dynamic or Fixed Allocation
+ 	< (flag=0) 	 	mb_alloc 	> 	 ; Multi Block Allocation
+}
+
+
+
+COMP 	ia_egprs_par 	%REL99% 	"IA EGPRS Parameters"
+{
+ 	 	flag 	 ; Flag
+ 	< (flag=0) 	 	flag1 	> 	 ; Flag
+ 	< (flag=0 AND flag1=0) 	 	egprs_pua 	> 	 ; EGPRS Packet Uplink Assignment
+}
+
+
+
+COMP 	ia_rest_oct 	"IA Rest Octets"
+{
+ 	 	flag_2bit 	 ; Flag twobit
+ 	< (flag_2bit=0b01) 	 	ia_egprs_par 	> 	 	%REL99% ; IA EGPRS Packet Uplink Assignment
+ 	< (flag_2bit=0b10) 	 	ia_freq_par 	> 	 ; IA Frequency Parameters
+ 	< (flag_2bit=0b11) 	 	ia_assign_par 	> 	 ; IA Assignment Parameters
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+COMP 	si6_rest_oct_dtm 	%TI_PS_FF_QUAD_BAND_SUPPORT% 	"Structured Element"
+{
+ 	 	rac 	 ; RAC
+ 	 	max_lapdm 	 ; MAX LAPDm
+}
+
+
+
+COMP 	si6_rest_oct 	"SI 6 Rest Octets"
+{
+ 	CSN1_SHL  	pch_nch_info 	 ; PCH and NCH Info
+ 	CSN1_SHL  	vbs_vgcs_opt 	 ; VBS/VGCS Options
+ 	CSN1_SHL  	si6_rest_oct_dtm 	 	%TI_PS_FF_QUAD_BAND_SUPPORT% ; DTM Support Info
+ 	 	band_indicator 	 	%TI_PS_FF_QUAD_BAND_SUPPORT% ; Band Indicator
+ 	S_PADDING .00101011 (18) ; Spare Padding
+}
+
+
+
+
+
+
+MSG 	b_applic_info 	both 	0b00111000 ; Application Information
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	apdu_id 	 ; APDU ID
+ 	GSM1_V  	apdu_flags 	 ; APDU Flags
+ 	GSM4_LV  	apdu_data 	 ; APDU Data
+}
+
+
+
+MSG 	d_add_assign 	downlink 	0b00111011 ; Additional assignment
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	chan_desc 	 ; Channel Description
+ 	GSM4_TLV  	mob_alloc 	0x72 	 ; Mobile Allocation
+ 	GSM3_TV  	start_time 	0x7C 	 ; Starting Time
+}
+
+
+
+MSG 	d_assign_cmd 	downlink 	0b00101110 ; Assignment command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	chan_desc 	 ; Description of the First Channel, after time
+ 	GSM3_V  	pow_cmd 	 ; Power Command
+ 	GSM4_TLV  	freq_list_after 	0x05 	 ; Frequency List, after time
+ 	GSM3_TV  	cell_chan_desc 	0x62 	 ; Cell Channel Description
+ 	GSM4_TLV  	multislot_alloc 	0x10 	 ; Multislot Configuration
+ 	GSM3_TV  	chan_mode 	0x63 	 ; Mode of the 1st  Channel
+ 	GSM3_TV  	chan_mode2 	0x11 	 ; Mode of the 2nd  Channel Set
+ 	GSM3_TV  	chan_mode3 	0x13 	 ; Mode of the 3rd  Channel Set
+ 	GSM3_TV  	chan_mode4 	0x14 	 ; Mode of the 4th  Channel Set
+ 	GSM3_TV  	chan_mode5 	0x15 	 ; Mode of the 5th  Channel Set
+ 	GSM3_TV  	chan_mode6 	0x16 	 ; Mode of the 6th  Channel Set
+ 	GSM3_TV  	chan_mode7 	0x17 	 ; Mode of the 7th  Channel Set
+ 	GSM3_TV  	chan_mode8 	0x18 	 ; Mode of the 8th  Channel Set
+ 	GSM3_TV  	chan_desc_after_2 	0x64 	 ; Description of the 2nd Channel, after time
+ 	GSM3_TV  	chan_mode_2 	0x66 	 ; Mode of the 2nd  Channel
+ 	GSM4_TLV  	mob_alloc_after 	0x72 	 ; Mobile Allocation, after time
+ 	GSM3_TV  	start_time 	0x7C 	 ; Starting Time
+ 	GSM4_TLV  	freq_list_before 	0x19 	 ; Frequency List, before time
+ 	GSM3_TV  	chan_desc_before 	0x1C 	 ; Description of the 1st Channel, before time
+ 	GSM3_TV  	chan_desc_before_2 	0x1D 	 ; Description of the 2nd Channel, before time
+ 	GSM3_TV  	freq_chan_seq 	0x1E 	 ; Frequency channel sequence before time
+ 	GSM4_TLV  	mob_alloc_before 	0x21 	 ; Mobile Allocation, before time
+ 	GSM1_TV  	ciph_mode_set 	0x09 	 ; Cipher Mode Setting
+ 	GSM4_TLV  	vgcs_tmi 	0x01 	 ; VGCS Target Mode Indication
+ 	GSM4_TLV  	multirate_conf 	0x03 	 ; Multi Rate Configuration
+}
+
+
+
+MSG 	u_assign_comp 	uplink 	0b00101001 ; Assignment complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rr_cause 	 ; RR Cause
+}
+
+
+
+MSG 	u_assign_fail 	uplink 	0b00101111 ; Assignment failure
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rr_cause 	 ; RR cause
+}
+
+
+
+MSG 	d_chan_mod 	downlink 	0b00010000 ; Channel mode modify
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	chan_desc 	 ; Channel Description
+ 	GSM3_V  	chan_mode 	 ; Channel Mode
+ 	GSM4_TLV  	vgcs_tmi 	0x01 	 ; VGCS Target Mode Indication
+ 	GSM4_TLV  	multirate_conf 	0x03 	 ; Multi-Rate Configuration
+}
+
+
+
+MSG 	u_chan_mod_ack 	uplink 	0b00010111 ; Channel mode modify acknowledge
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	chan_desc 	 ; Channel Description
+ 	GSM3_V  	chan_mode 	 ; Channel Mode
+}
+
+
+
+MSG 	d_chan_rel 	downlink 	0b00001101 ; Channel release
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rr_cause 	 ; RR Cause
+ 	GSM4_TLV  	ba_range 	0x73 	 ; BA Range
+ 	GSM4_TLV  	group_chan_desc 	0x74 	 ; Group Channel Description
+ 	GSM3_TV  	group_ckn 	0x08 	 ; Group Cipher Key Number
+ 	GSM1_TV  	gprs_resum 	0x0C 	 ; GPRS Resumption
+ 	GSM4_TLV  	ba_list_pref 	0x75 	 ; BA List Pref
+ 	GSM4_TLV  	utran_freq_list 	0x76 	 	%REL99% ; UTRAN Freq List
+ 	GSM3_TV  	cell_chan_desc 	0x62 	 	%REL99% ; Cell Channel Description
+}
+
+
+
+MSG 	d_ciph_cmd 	downlink 	0b00110101 ; Ciphering mode command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	ciph_mode_set 	 ; Ciphering Mode Setting
+ 	GSM1_V  	ciph_res 	 ; Cipher Response
+}
+
+
+
+MSG 	u_ciph_comp 	uplink 	0b00110010 ; Ciphering mode complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	mob_ident 	0x17 	 ; Mobile Equipment Identity
+}
+
+
+
+MSG 	u_class_chng 	uplink 	0b00010110 ; Classmark change
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV EXTERN @m_rr_com - mob_class_2@ 	 	mob_class_2 	 ; Mobile Station Classmark
+ 	GSM4_TLV EXTERN @m_rr_com - mob_class_3@ 	 	mob_class_3 	0x20 	 ; Additional Mobile Station Classmark Information
+}
+
+
+
+MSG 	d_class_enq 	downlink 	0b00010011 ; Classmark enquiry
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	class_enq_mask 	0x10 	 	%REL99% ; Classmark enquiry mask
+}
+
+
+
+MSG 	d_conf_change_cmd 	downlink 	0b00110000 ; Configuration Change Command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	multislot_alloc 	 ; Multislot Configuration
+ 	GSM3_TV  	chan_mode 	0x63 	 ; Mode of the 1st  Channel Set
+ 	GSM3_TV  	chan_mode2 	0x11 	 ; Mode of the 2nd  Channel Set
+ 	GSM3_TV  	chan_mode3 	0x13 	 ; Mode of the 3rd  Channel Set
+ 	GSM3_TV  	chan_mode4 	0x14 	 ; Mode of the 4th  Channel Set
+ 	GSM3_TV  	chan_mode5 	0x15 	 ; Mode of the 5th  Channel Set
+ 	GSM3_TV  	chan_mode6 	0x16 	 ; Mode of the 6th  Channel Set
+ 	GSM3_TV  	chan_mode7 	0x17 	 ; Mode of the 7th  Channel Set
+ 	GSM3_TV  	chan_mode8 	0x18 	 ; Mode of the 8th  Channel Set
+}
+
+
+
+MSG 	d_conf_change_ack 	uplink 	0b00110001 ; Configuration Change Acknowledge
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_config_change_rej 	uplink 	0b00110011 ; Configuration Change Reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rr_cause 	 ; RR Cause
+}
+
+
+
+MSG 	d_ext_meas_order 	downlink 	0b00110111 ; Extended Measurement Order
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	ext_meas_freq 	 ; Extended Measurement Frequency List
+}
+
+
+
+MSG 	u_ext_meas_report 	uplink 	0b00110110 ; Extended Measurement Report
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	ext_meas_res 	 ; Extended Measurement Results
+}
+
+
+
+MSG 	d_freq_redef 	downlink 	0b00010100 ; Frequency redefinition
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	chan_desc 	 ; Channel Description
+ 	GSM4_LV  	mob_alloc 	 ; Mobile Allocation
+ 	GSM3_V  	start_time 	 ; Starting Time
+ 	GSM3_TV  	cell_chan_desc 	0x62 	 ; Cell Channel Description
+}
+
+
+
+MSG 	u_gprs_susp_req 	uplink 	0b00110100 ; GPRS suspension request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	ded_tlli 	 ; Temporary Logical Link Identifier
+ 	GSM3_V  	rout_area_id 	 ; Routing Area Identification
+ 	GSM3_V  	susp_cause 	 ; Suspension Cause
+}
+
+
+
+MSG 	d_handov_cmd 	downlink 	0b00101011 ; Handover command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	cell_desc 	 ; Cell Description
+ 	GSM3_V  	chan_desc_after 	 ; Description of 1st channel, after time
+ 	GSM3_V  	handov_ref 	 ; Handover Reference
+ 	GSM3_V  	pow_cmd_access 	 ; Power Command and Access type
+ 	GSM1_TV  	synch_ind 	0x0D 	 ; Synchronization Indication
+ 	GSM3_TV  	freq_short_list_after 	0x02 	 ; Frequency Short List, after time
+ 	GSM4_TLV  	freq_list_after 	0x05 	 ; Frequency List, after time
+ 	GSM3_TV  	cell_chan_desc 	0x62 	 ; Cell Channel Description
+ 	GSM4_TLV  	multislot_alloc 	0x10 	 	%REL99% ; Multislot Configuration
+ 	GSM3_TV  	chan_mode 	0x63 	 ; Mode of the First Channel
+ 	GSM3_TV  	chan_mode2 	0x11 	 ; Mode of the 2nd  Channel Set
+ 	GSM3_TV  	chan_mode3 	0x13 	 ; Mode of the 3rd  Channel Set
+ 	GSM3_TV  	chan_mode4 	0x14 	 ; Mode of the 4th  Channel Set
+ 	GSM3_TV  	chan_mode5 	0x15 	 ; Mode of the 5th  Channel Set
+ 	GSM3_TV  	chan_mode6 	0x16 	 ; Mode of the 6th  Channel Set
+ 	GSM3_TV  	chan_mode7 	0x17 	 ; Mode of the 7th  Channel Set
+ 	GSM3_TV  	chan_mode8 	0x18 	 ; Mode of the 8th  Channel Set
+ 	GSM3_TV  	chan_desc_after_2 	0x64 	 ; Description of 2nd Channel, after time
+ 	GSM3_TV  	chan_mode_2 	0x66 	 ; Mode of the 2nd Channel
+ 	GSM3_TV  	freq_chan_seq_after 	0x69 	 ; Freq. Channel Sequence, after time
+ 	GSM4_TLV  	mob_alloc_after 	0x72 	 ; Mobile Allocation, after time
+ 	GSM3_TV  	start_time 	0x7C 	 ; Starting Time
+ 	GSM4_TLV  	time_diff 	0x7B 	 ; Real Time Difference
+ 	GSM3_TV  	time_advance 	0x7D 	 ; Timing Advance
+ 	GSM3_TV  	freq_short_list_before 	0x12 	 ; Frequency Short List, before time
+ 	GSM4_TLV  	freq_list_before 	0x19 	 ; Frequency List, before time
+ 	GSM3_TV  	chan_desc_before 	0x1C 	 ; Description of 1st Channel, before time
+ 	GSM3_TV  	chan_desc_before_2 	0x1D 	 ; Description of 2nd Channel, before time
+ 	GSM3_TV  	freq_chan_seq_before 	0x1E 	 ; Freq. channel sequence before time
+ 	GSM4_TLV  	mob_alloc_before 	0x21 	 ; Mobile Allocation, before time
+ 	GSM1_TV  	ciph_mode_set 	0x09 	 ; Cipher Mode Setting
+ 	GSM4_TLV  	vgcs_tmi 	0x01 	 ; VGCS Target Mode Indication
+ 	GSM4_TLV  	multirate_conf 	0x03 	 ; Multi Rate Configuration
+}
+
+
+
+MSG 	u_handov_comp 	uplink 	0b00101100 ; Handover complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rr_cause 	 ; RR Cause
+ 	GSM4_TLV  	mob_time_diff 	0x77 	 ; Mobile Observed Time Difference
+}
+
+
+
+MSG 	u_handov_fail 	uplink 	0b00101000 ; Handover failure
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rr_cause 	 ; RR Cause
+}
+
+
+
+MSG 	d_imm_assign 	downlink 	0b00111111 ; Immediate assignment
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	.0  ; Dedicated Mode Or TBF Spare
+ 	 	tma 	 ; Two-message Assignment
+ 	 	dl 	 ; Downlink Assignment
+ 	 	d_t 	 ; Dedicated Mode or TBF
+ 	GSM1_V  	page_mode 	 ; Page Mode
+ 	< (d_t=0) 	GSM3_V  	chan_desc 	> 	 ; Channel Description
+ 	< (d_t=1) 	GSM3_V  	pck_chan_desc 	> 	 ; Packet Channel Description
+ 	GSM3_V  	req_ref 	 ; Request Reference
+ 	GSM3_V  	time_advance 	 ; Timing Advance
+ 	GSM4_LV  	mob_alloc 	 ; Mobile Allocation
+ 	GSM3_TV  	start_time 	0x7C 	 ; Starting Time
+ 	 	ia_rest_oct 	 ; IA Rest Octets (freq. parameters, before time)
+}
+
+
+
+MSG 	d_imm_assign_ext 	downlink 	0b00111001 ; Immediate assignment extended
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	page_mode 	 ; Page Mode
+ 	.0000  ; Spare Half Octet
+ 	GSM3_V  	chan_desc 	 ; Channel Description 1
+ 	GSM3_V  	req_ref 	 ; Request Reference 1
+ 	GSM3_V  	time_advance 	 ; Timing Advance 1
+ 	GSM3_V  	chan_desc_2 	 ; Channel Description 2
+ 	GSM3_V  	req_ref_2 	 ; Request Reference 2
+ 	GSM3_V  	time_advance_2 	 ; Timing Advance 2
+ 	GSM4_LV  	mob_alloc 	 ; Mobile Allocation
+ 	GSM3_TV  	start_time 	0x7C 	 ; Starting Time
+ 	S_PADDING .00101011 (22) ; IAX Rest Octets
+}
+
+
+
+MSG 	d_imm_assign_rej 	downlink 	0b00111010 ; Immediate assignment reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	page_mode 	 ; Page Mode
+ 	.0000  ; Spare Half Octet
+ 	GSM3_V  	req_ref 	 ; Request Reference 1
+ 	GSM3_V  	t3122 	 ; T3122 Wait Indication 1
+ 	GSM3_V  	req_ref_2 	 ; Request Reference 2
+ 	GSM3_V  	t3122_2 	 ; T3122 Wait Indication 2
+ 	GSM3_V  	req_ref_3 	 ; Request Reference 3
+ 	GSM3_V  	t3122_3 	 ; T3122 Wait Indication 3
+ 	GSM3_V  	req_ref_4 	 ; Request Reference 4
+ 	GSM3_V  	t3122_4 	 ; T3122 Wait Indication 4
+ 	GSM3_V  	iar_rest_oct 	 	%REL99% ; IAR Rest Octets
+ 	S_PADDING .00101011 (22) 	%!REL99% ; IAR Rest Octets
+}
+
+
+
+MSG 	u_meas_rep 	uplink 	0b00010101 ; Measurement report
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	meas_result 	 ; Measurement Results
+}
+
+
+
+MSG 	d_notify_nch 	downlink 	0b00100000 ; Notification/NCH
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	nt_rest_oct 	 ; NT/N Rest Octets
+}
+
+
+
+MSG 	d_pag_req_1 	downlink 	0b00100001 ; Paging request type 1
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	page_mode 	 ; Page Mode
+ 	GSM1_V  	chan_needed 	 ; Channels Needed for Mobiles 1 and 2
+ 	GSM4_LV  	mob_ident 	 ; Mobile Identity 1
+ 	GSM4_TLV  	mob_ident_2 	0x17 	 ; Mobile Identity 2
+ 	 	p1_rest_oct 	 ; P1 Rest Octets
+}
+
+
+
+MSG 	d_pag_req_2 	downlink 	0b00100010 ; Paging request type 2
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	page_mode 	 ; Page Mode
+ 	GSM1_V  	chan_needed 	 ; Channels Needed for Mobiles 1 and 2
+ 	GSM3_V  	tmsi_1 	 ; Mobile Identity 1
+ 	GSM3_V  	tmsi_2 	 ; Mobile Identity 2
+ 	GSM4_TLV  	mob_ident 	0x17 	 ; Mobile Identity 3
+ 	 	p2_rest_oct 	 ; P2 Rest Octets
+}
+
+
+
+MSG 	d_pag_req_3 	downlink 	0b00100100 ; Paging request type 3
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	page_mode 	 ; Page Mode
+ 	GSM1_V  	chan_needed 	 ; Channels Needed for Mobiles 1 and 2
+ 	GSM3_V  	tmsi_1 	 ; Mobile Identity 1
+ 	GSM3_V  	tmsi_2 	 ; Mobile Identity 2
+ 	GSM3_V  	tmsi_3 	 ; Mobile Identity 3
+ 	GSM3_V  	tmsi_4 	 ; Mobile Identity 4
+ 	 	p3_rest_oct 	 ; P3 Rest Octets
+}
+
+
+
+MSG 	u_pag_res 	uplink 	0b00100111 ; Paging response
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	ciph_key_num 	 ; Ciphering Key Sequence Number
+ 	.0000  ; Spare Half Octet
+ 	GSM4_LV EXTERN @m_rr_com - mob_class_2@ 	 	mob_class_2 	 ; Mobile Station Classmark
+ 	GSM4_LV  	mob_ident 	 ; Mobile Identity
+}
+
+
+
+MSG 	d_part_rel 	downlink 	0b00001010 ; Partial release
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	chan_desc 	 ; Channel Description
+}
+
+
+
+MSG 	u_part_rel_comp 	uplink 	0b00001111 ; Partial release complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_pdch_ass_cmd 	downlink 	0b00100011 ; PDCH Assignment Command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	chan_desc 	 ; Description of the Channel, after time
+ 	GSM3_TV  	cell_chan_desc 	0x62 	 ; Cell Channel Description
+ 	GSM4_TLV  	freq_list_after 	0x05 	 ; Frequency List, after time
+ 	GSM4_TLV  	mob_alloc_after 	0x72 	 ; Mobile Allocation, after time
+ 	GSM3_TV  	start_time 	0x7C 	 ; Starting Time
+ 	GSM4_TLV  	freq_list_before 	0x19 	 ; Frequency List, before time
+ 	GSM3_TV  	chan_desc_before 	0x1C 	 ; Description of the Channel, before time
+ 	GSM3_TV  	freq_chan_seq 	0x1E 	 ; Frequency channel sequence before time
+ 	GSM4_TLV  	mob_alloc_before 	0x21 	 ; Mobile Allocation, before time
+ 	GSM4_TLV  	pck_ul_ass 	0x22 	 ; RR Packet Uplink Assignment
+ 	GSM4_TLV  	pck_dl_ass 	0x23 	 ; RR Packet Downlink Assignment
+}
+
+
+
+MSG 	d_phys_info 	downlink 	0b00101101 ; Physical information
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	time_advance 	 ; Timing Advance
+}
+
+
+
+MSG 	d_change_order 	downlink 	0b00001000 ; RR-Cell Change Order
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	cell_desc 	 ; Cell Description
+ 	GSM1_V  	nc_mode 	 ; NC Mode For Target Cell
+}
+
+
+
+MSG 	d_rr_init_req 	uplink 	0b00111100 ; RR Initialisation Request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	ciph_key_num 	 ; Ciphering Key Sequence Number
+ 	GSM1_V  	chan_coding 	 ; MAC Mode And Channel Coding
+ 	GSM4_LV EXTERN @m_rr_com - mob_class_2@ 	 	mob_class_2 	 	 ; Mobile Station Classmark
+ 	GSM3_V  	ded_tlli 	 ; Temporary Logical Link Identifier
+ 	GSM3_V  	chan_req_desc 	 ; Channel Request Description
+ 	GSM3_V  	gprs_meas_res 	 ; GPRS Measurement Results
+}
+
+
+
+MSG 	b_rr_status 	both 	0b00010010 ; RR Status
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rr_cause 	 ; RR Cause
+}
+
+
+
+MSG 	d_sys_info_1 	downlink 	0b00011001 ; System information Type 1
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	cell_chan_desc 	 ; Cell Channel Description
+ 	GSM3_V  	rach_ctrl 	 ; RACH Control Parameter
+ 	 	si1_rest_oct 	 ; SI 1 Rest Octets
+}
+
+
+
+MSG 	d_sys_info_2 	downlink 	0b00011010 ; System information Type 2
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	neigh_cell_desc 	 ; BCCH Frequency List
+ 	GSM3_V  	ncc_permit 	 ; NCC Permitted
+ 	GSM3_V  	rach_ctrl 	 ; RACH Control Parameter
+}
+
+
+
+MSG 	d_sys_info_2bis 	downlink 	0b00000010 ; System information Type 2bis
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	neigh_cell_desc 	 ; Extended BCCH Frequency List
+ 	GSM3_V  	rach_ctrl 	 ; RACH Control Parameters
+ 	S_PADDING .00101011 (22) ; SI 2bis Rest Octets
+}
+
+
+
+MSG 	d_sys_info_2quater 	downlink 	0b00000111 	%REL99 AND (TI_PS_FF_EMR OR TI_PS_FF_RTD)% ; System information Type 2quater
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	si_2qua_octets 	 ; SI 2quater Rest Octets
+}
+
+
+
+MSG 	d_sys_info_2ter 	downlink 	0b00000011 ; System information Type 2ter
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	neigh_cell_desc 	 ; Extended BCCH Frequency List
+ 	S_PADDING .00101011 (22) ; SI 2ter Rest Octets
+}
+
+
+
+MSG 	d_sys_info_3 	downlink 	0b00011011 ; System information Type 3
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	cell_ident 	 ; Cell Identity
+ 	GSM3_V  	loc_area_ident 	 ; Location Area Identification
+ 	GSM3_V  	ctrl_chan_desc 	 ; Control Channel Description
+ 	GSM3_V  	cell_opt_bcch 	 ; Cell Options
+ 	GSM3_V  	cell_select 	 ; Cell Selection Parameters
+ 	GSM3_V  	rach_ctrl 	 ; RACH Control Parameters
+ 	 	si3_rest_oct 	 ; SI 3 Rest Octets
+}
+
+
+
+MSG 	d_sys_info_4 	downlink 	0b00011100 ; System information Type 4
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	loc_area_ident 	 ; Location Area Identification
+ 	GSM3_V  	cell_select 	 ; Cell Selection Parameters
+ 	GSM3_V  	rach_ctrl 	 ; RACH Control Parameters
+ 	GSM3_TV  	chan_desc 	0x64 	 ; CBCH Channel Description
+ 	GSM4_TLV  	mob_alloc 	0x72 	 ; CBCH Mobile Allocation
+ 	CSN1_CONCAT  	si4_rest_oct 	 ; SI 4 Rest Octets
+ 	S_PADDING .00101011 (22) ; Spare Padding
+}
+
+
+
+MSG 	d_sys_info_5 	downlink 	0b00011101 ; System information Type 5
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	neigh_cell_desc 	 ; BCCH Frequency List
+}
+
+
+
+MSG 	d_sys_info_5bis 	downlink 	0b00000101 ; System information Type 5bis
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	neigh_cell_desc 	 ; Extension of the BCCH Frequency List Description
+}
+
+
+
+MSG 	d_sys_info_5ter 	downlink 	0b00000110 ; System information Type 5ter
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	neigh_cell_desc 	 ; Extended BCCH Frequency List
+}
+
+
+
+MSG 	d_sys_info_6 	downlink 	0b00011110 ; System information Type 6
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	cell_ident 	 ; Cell Identity
+ 	GSM3_V  	loc_area_ident 	 ; Location Area Identification
+ 	GSM3_V  	cell_opt_sacch 	 ; Cell Options
+ 	GSM3_V  	ncc_permit 	 ; NCC Permitted
+ 	 	si6_rest_oct 	 ; SI 6 Rest Octets
+}
+
+
+
+MSG 	d_sys_info_7 	downlink 	0b00011111 ; System information Type 7
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	si7_rest_oct 	 ; SI 7 Rest Octets
+}
+
+
+
+MSG 	d_sys_info_8 	downlink 	0b00011000 ; System information Type 8
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	si8_rest_oct 	 ; SI 8 Rest Octets
+}
+
+
+
+MSG 	d_sys_info_9 	downlink 	0b00000100 ; System information Type 9
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rach_ctrl 	 ; RACH Control Parameter
+ 	 	si9_rest_oct 	 ; SI 9 Rest Octets
+}
+
+
+
+MSG 	d_sys_info_13 	downlink 	0b00000000 ; System information Type 13
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	si13_rest_oct 	 ; SI 13 Rest Octets
+}
+
+
+
+MSG 	d_sys_info_16 	downlink 	0b00111101 ; System information Type 16
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	si16_rest_oct 	 ; SI 16 Rest Octets
+}
+
+
+
+MSG 	d_sys_info_17 	downlink 	0b00111110 ; System information Type 17
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	 	si17_rest_oct 	 ; SI 17 Rest Octets
+}
+
+
+
+MSG 	talker_ind 	uplink 	0b00010001 ; Talker Indication
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV EXTERN @m_rr_com - mob_class_2@ 	 	mob_class_2 	 ; Mobile Station Classmark
+ 	GSM4_LV  	mob_ident 	 ; Mobile Identity
+}
+
+
+
+MSG 	d_uplink_busy 	downlink 	0b00101010 ; Uplink Busy
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	b_uplink_rel 	both 	0b00001110 ; Uplink release
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	rr_cause 	 ; RR Cause
+}
+
+
+
+MSG 	d_vgcs_uplink_grant 	downlink 	0b00001001 ; VGCS uplink grant
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	req_ref 	 ; Request Reference
+ 	GSM3_V  	time_advance 	 ; Timing Advance
+}
+
+
+
+
+
+

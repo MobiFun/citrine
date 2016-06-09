@@ -1,0 +1,4102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">cgrlc</DocName>
+        <DocNum Number="119" Project="8010"/>
+        <Description>
+            <Section>The Service Access Point (SAP) for an entity defines the interface supported by that entity in order to gain access to its services. This document contains a specification of the CGRLC SAP for the GPRS Radio Link Control (GRLC) entity of the Texas Instruments Dual mode protocol stack.</Section>
+            <Section>The CGRLC SAP is based on the exchange of primitives between the GRLC entity and the RR entity. Further information on the system design can be found in "Dual Mode System Design" [TI 8010.944]. The method used for exchange of primitives is message passing. The terms "message" and "primitive" are used interchangeably in this document.</Section>
+            <Section>This document has three primary sections. The first (section 2) contains a specification of constants used on the interface, which are not specific to the value of a particular parameter. Such constants are typically size fields, specifying array or element sizes.</Section>
+            <Section>The second primary section (section 3) contains the top-level description of the primitives defined for the interface. For each primitive its function is described, and a parameter list is given.</Section>
+            <Section>For any primitive using complex structures or parameters with identified values, references will be given to subsections of the third primary section (section 0). This section contains specifications of the complex types used in the primitives of the interface. It also contains specifications of parameters with predefined values or value ranges. Cross-references to subtypes may be used within this section for complex type declarations. Types, which are common for more SAP's or are defined as ASN1 types, are specified in common include-files, and references to these files will be given instead.</Section>
+            <Section>For all primitives included in this SAP, it is a sad but unavoidable fact that as the world of 3G evolves, some changes to this interface may be necessary. However, as this document is the basis for the CGRLC SAP it will be fully maintained and all necessary changes will result in updated versions of this document.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="02" Year="001"/>
+            <Date Day="29" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="02" Year="002"/>
+            <Date Day="29" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document based on 7010.119.02.003</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="02" Year="003"/>
+            <Date Day="3" Month="12" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document update based on 7010_119_02_003_review_report</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="02" Year="004"/>
+            <Date Day="19" Month="12" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>CGRLC_DATA_IND moved to GRLC-SAP (GRLC_GRR_DATA_IND)</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="03" Year="005"/>
+            <Date Day="28" Month="1" Year="2003"/>
+            <Author>NIA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed upcodes</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="03" Year="006"/>
+            <Date Day="20" Month="5" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Updated due to Berlin/Aalborg meeting.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="03" Year="007"/>
+            <Date Day="13" Month="6" Year="2003"/>
+            <Author>FLF</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>8010.119.02.008 CAN 03 July, 2003 Being Processed Updated due to the Aalborg meeting held on the 3rd and 4th of June 03</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="04" Year="008"/>
+            <Date Day="17" Month="05" Year="2004"/>
+            <Author>SAB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Rework of uplink power control interface (remove memory shared between RR and GRLC).</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>2 Constants</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">CGRLC</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Adds enumerations in the .val file.</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Disable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="29" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Initial.</Comment>
+        </History>
+        <History>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Pragma inserted.</Comment>
+        </History>
+        <History>
+            <Date Day="20" Month="5" Year="2003"/>
+            <Author>AGR</Author>
+            <Comment>The MAX_CTRL_MSG_SIZE is inserted.</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="6" Year="2003"/>
+            <Author>FLF</Author>
+            <Comment>The MAX_TIMESLOTS is inserted.</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>2 Constants</Section>
+        </Description>
+        <Constant>
+            <Alias>MAX_CTRL_MSG_SIZE</Alias>
+            <Value ValueType="DEC">23</Value>
+            <Comment>Maximum size of a control message in bytes.</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_TIMESLOTS</Alias>
+            <Value ValueType="DEC">8</Value>
+            <Comment>Maximum number of timeslots</Comment>
+        </Constant>
+        <History>
+            <Date Day="29" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Initial.</Comment>
+        </History>
+        <History>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Pragma inserted.</Comment>
+        </History>
+        <History>
+            <Date Day="20" Month="5" Year="2003"/>
+            <Author>AGR</Author>
+            <Comment>The MAX_CTRL_MSG_SIZE is inserted.</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="6" Year="2003"/>
+            <Author>FLF</Author>
+            <Comment>The MAX_TIMESLOTS is inserted.</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="152">
+        <Description>
+            <Section>This section contains all primitives that are defined for the CGRLC SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>Request used by RR. GRLC is set to packet idle mode. Transmission of LLC frames is allowed. The parameter queue_mode indicates whether it is Signalling (GMM data) or User Data (LLC data).</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_ENABLE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>enable_cause</Name>
+                </ItemLink>
+                <Comment>Enable Cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ul_tlli</Name>
+                </ItemLink>
+                <Comment>Uplink TLLI value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>dl_tlli</Name>
+                </ItemLink>
+                <Comment>Downlink TLLI value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pan_struct</Name>
+                </ItemLink>
+                <Comment>Pan Structure</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>queue_mode</Name>
+                </ItemLink>
+                <Comment>Type of Queue Mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>burst_type</Name>
+                </ItemLink>
+                <Comment>Default bust type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ab_type</Name>
+                </ItemLink>
+                <Comment>Default Access bust type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>t3168_val</Name>
+                </ItemLink>
+                <Comment>T3168 Value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>cu_cause</Name>
+                </ItemLink>
+                <Comment>Cell update cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ac_class</Name>
+                </ItemLink>
+                <Comment>Access control class</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>change_mark</Name>
+                </ItemLink>
+                <Comment>Change mark value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>nw_rel</Name>
+                </ItemLink>
+                <Version>REL99</Version>
+                <Comment>Network Release Flag</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pfi_support</Name>
+                </ItemLink>
+                <Version>REL99</Version>
+                <Comment>Network PFC Support R99</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>burst_type class added.</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Add enable_cause</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="11" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Add change_mark</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Request used by RR. GRLC shall abort any TBF and switch to access not allowed state (e.g. Cell Reselection is running).</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_DISABLE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>disable_class</Name>
+                </ItemLink>
+                <Comment>Disable Class</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>prim_status</Name>
+                </ItemLink>
+                <Comment>Primitive Queue Handler</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Disable class added.</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>prim_status class added.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Response used by RR. This primitive sets up an uplink TBF. Concurrent TBF is not possible. It could also be a failed access.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_UL_TBF_RES</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>starting_time</Name>
+                </ItemLink>
+                <Comment>TBF starting time</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tbf_mode</Name>
+                </ItemLink>
+                <Comment>Type of TBF</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>prim_status</Name>
+                </ItemLink>
+                <Comment>Primitive Queue Handler</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>polling_bit</Name>
+                </ItemLink>
+                <Comment>Polling bit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>cs_mode</Name>
+                </ItemLink>
+                <Comment>Type of Coding Scheme</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>mac_mode</Name>
+                </ItemLink>
+                <Comment>Type of MAC mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>nts_max</Name>
+                </ItemLink>
+                <Comment>Number of Timeslots</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tn_mask</Name>
+                </ItemLink>
+                <Comment>Timeslot mask</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tfi</Name>
+                </ItemLink>
+                <Comment>TFI value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>TLLI indicator</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>bs_cv_max</Name>
+                </ItemLink>
+                <Comment>Maximum Countdown value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tlli_cs_mode</Name>
+                </ItemLink>
+                <Comment>Type of Coding Scheme in Contention Resolution</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>r_bit</Name>
+                </ItemLink>
+                <Comment>R bit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>fix_alloc_struct</Name>
+                </ItemLink>
+                <Comment>Fixed Allocation structure</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>rlc_db_granted</Name>
+                </ItemLink>
+                <Comment>RLCdata block granted</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pwr_ctrl</Name>
+                </ItemLink>
+                <Comment>Power Control Information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>UL and DL are seperated.</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Polling bit added</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>r_bit bit added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>fixed alloc struct added</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="11" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>rlc_db_granted added</Comment>
+            </History>
+            <History>
+                <Date Day="02" Month="04" Year="2004"/>
+                <Author>CAN</Author>
+                <Comment>ts_mask added</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Add &lt;pwr_ctrl&gt;.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Request used by RR. This primitive sets up an downlink TBF. Concurrent TBF is not possible.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_DL_TBF_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>starting_time</Name>
+                </ItemLink>
+                <Comment>TBF starting time</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>rlc_mode</Name>
+                </ItemLink>
+                <Comment>Type of RLC mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>cs_mode</Name>
+                </ItemLink>
+                <Comment>Type of Coding Scheme</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>mac_mode</Name>
+                </ItemLink>
+                <Comment>Type of MAC mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>nts_max</Name>
+                </ItemLink>
+                <Comment>Number of Timeslots</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tn_mask</Name>
+                </ItemLink>
+                <Comment>Timeslot mask</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tfi</Name>
+                </ItemLink>
+                <Comment>TFI value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>t3192_val</Name>
+                </ItemLink>
+                <Comment>Value of timer T3192</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ctrl_ack_bit</Name>
+                </ItemLink>
+                <Comment>Ctrl ack bit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>polling_bit</Name>
+                </ItemLink>
+                <Comment>Polling bit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pwr_ctrl</Name>
+                </ItemLink>
+                <Comment>Power Control Information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>UL and DL are seperated.</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>ctrl ack bit defined.</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Polling bit added</Comment>
+            </History>
+            <History>
+                <Date Day="02" Month="04" Year="2004"/>
+                <Author>CAN</Author>
+                <Comment>tn_mask added</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Add &lt;pwr_ctrl&gt;.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive requests the release of TBF(s).</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TBF_REL_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tbf_mode</Name>
+                </ItemLink>
+                <Comment>Type of TBF</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tbf_rel_cause</Name>
+                </ItemLink>
+                <Comment>TBF Release Cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>rel_fn</Name>
+                </ItemLink>
+                <Comment>Release after Poll with fn</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by GRLC to inform RR that the corresponding tbf(s) were released.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TBF_REL_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tbf_mode</Name>
+                </ItemLink>
+                <Comment>Type of TBF</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tbf_rel_cause</Name>
+                </ItemLink>
+                <Comment>TBF Release Cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>c_value</Name>
+                </ItemLink>
+                <Comment>Power Control Information</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>dl_trans_id</Name>
+                </ItemLink>
+                <Comment>DL Assignment Id</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Add &lt;c_value&gt;.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This response is sent from RR to GRLC after the TBF(s) were released in Layer1 and RR.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TBF_REL_RES</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tbf_mode</Name>
+                </ItemLink>
+                <Comment>Type of TBF</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by GRLC to establish an uplink TBF.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_UL_TBF_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>access_type</Name>
+                </ItemLink>
+                <Comment>Access Type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ra_prio</Name>
+                </ItemLink>
+                <Comment>Radio Priority</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>nr_blocks</Name>
+                </ItemLink>
+                <Comment>Number of blocks</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>llc_prim_type</Name>
+                </ItemLink>
+                <Comment>LLC Primitive type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>peak</Name>
+                </ItemLink>
+                <Comment>Peak value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>rlc_oct_cnt</Name>
+                </ItemLink>
+                <Comment>RLC octet count</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tbf_est_pacch</Name>
+                </ItemLink>
+                <Version>REL99 AND TI_PS_FF_TBF_EST_PACCH</Version>
+                <Comment>TBF est on PACCH</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Request used by RR to send a control message via GRLC.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>blk_owner</Name>
+                </ItemLink>
+                <Comment>Block Owner</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>data_array</Name>
+                </ItemLink>
+                <Control>[MAX_CTRL_MSG_SIZE]</Control>
+                <Comment>Data array</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by GRLC to pass on a received control messages from the network to RR.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Comment>Received frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tn</Name>
+                </ItemLink>
+                <Comment>Timeslot number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>data_array</Name>
+                </ItemLink>
+                <Control>[MAX_CTRL_MSG_SIZE]</Control>
+                <Comment>Data array</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>tn added, poll must be sent on this tn</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Request used by RR to send the Packet Control Acknowledgement message via GRLC. The parameter poll_fn specifies the frame number at which the control message must be sent.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_POLL_REQ</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>poll_fn</Name>
+                </ItemLink>
+                <Comment>Poll frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tn</Name>
+                </ItemLink>
+                <Comment>Timeslot number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>poll_b_type</Name>
+                </ItemLink>
+                <Comment>Poll burst type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ctrl_ack</Name>
+                </ItemLink>
+                <Comment>Ctrl_ack</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version MSC).</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>tn and poll bust type added added, data aray deleted</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Request used by RR to retrieve the access type status from GRLC. It is sent from RR to GRLC after a single block downlink assignment procedure without any TBF establishment.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_ACCESS_STATUS_REQ</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version MSC).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by GRLC to inform RR that a control message was sent.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_CTRL_MSG_SENT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by GRLC to inform RR that starting time is elapsed and tfi has changed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_STARTING_TIME_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tbf_mode</Name>
+                </ItemLink>
+                <Comment>Type of TBF</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>tfi</Name>
+                </ItemLink>
+                <Comment>TFI value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by GRLC to inform RR that the T3192 is started.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_T3192_STARTED_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by GRLC to indicate that contention resolution is done successfully. This is needed for network controlled cell reselection (Packet cell change order procedure).</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_CONT_RES_DONE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version MSC).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by GRLC to inform RR that a new timing advance value was received via the Layer1 function interface.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TA_VALUE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ta_value</Name>
+                </ItemLink>
+                <Comment>Timing Advance Value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by GRLC to inform MM that a lower layer failure has occurred. The parameter failure contains the error that GRLC wants to report.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_STATUS_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>failure</Name>
+                </ItemLink>
+                <Comment>Lower layer failure</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Primitive used by MM when it has received GPRS TEST MODE air message and forwards the results to GRLC.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TEST_MODE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>no_of_pdus</Name>
+                </ItemLink>
+                <Comment>Number of PDUs</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>dl_timeslot_offset</Name>
+                </ItemLink>
+                <Comment>Downlink Timeslot Offset</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>test_mode_flag</Name>
+                </ItemLink>
+                <Comment>Test Mode Flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Primitive used by GRLC when it confirms to MM that it has successfully finished the test mode.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TEST_MODE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Primitive used by MM. Because of SIM is removed GRLC has to stop testing. The primitive CGRLC_TEST_MODE_CNF is sent by GRLC if this is finished as a response.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TEST_END_REQ</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Primitive used by GRLC in order to inform MM when one or more LLC PDU are confirmed at GRLC level by the Network. The parameter prim_type indicates if at least one MM primitive was confirmed or not.</Section>
+                <Section>The CGRLC_TRIGGER_IND is only sent to MM upon transmission of user data if GRLC is configured to send it, or at all time if GMM data was acknowledged. This is specified by the CGRLC_ENABLE_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TRIGGER_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>prim_type</Name>
+                </ItemLink>
+                <Comment>Type of primitive</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Added the comment about GMM data at all time.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Primitive used by GRLC in order to inform MM that the Ready Timer (T3314) has expired.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_STANDBY_STATE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Name changed from CGRLC_READY_TIMER_EXPIRED.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Primitive used by GRLC in order to inform MM that the Ready state is entered, due the first acknowledged PDU in standby state.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_READY_STATE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Primitive used by GRR when it has received a new timing advance value and forwards the results to GRLC.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TA_VALUE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>GRR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ta_value</Name>
+                </ItemLink>
+                <Comment>Timing Advance Value</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial (provide vinital ta value).</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Primitive used by RR in order to inform GRLC about the newest interference levels on the assigned channel used for the currently active TBF.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_INT_LEVEL_REQ</Name>
+                <PrimID Direction="UPLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>ilev</Name>
+                </ItemLink>
+                <Control>[MAX_TIMESLOTS]</Control>
+                <Comment>Interference Level</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="10" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive indicattes the start of testmode. GRR is hable to SI13 reading during testmode procedure</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_TEST_MODE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>GRR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>test_mode_flag</Name>
+                </ItemLink>
+                <Comment>indicate the type of testmode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="06" Year="2004"/>
+                <Author>can</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by GMM to configure the handling of the Ready Timer (T3314) in GRLC. The parameter ready_timer_action specifies the actions to be taken by GRLC.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_READY_TIMER_CONFIG_REQ</Name>
+                <PrimID Direction="UPLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>t3314_val</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="05" Year="2004"/>
+                <Author>Alfredo Ielpo</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Primitive used by MM to force GRLC to enter standby state immediately. GRLC has to inform at least MM about the state change with GRLC_STANDBY_IND. GGRLC_TRIIGER_REQ has nothing to do with this primitive anymore.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_FORCE_TO_STANDBY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="15"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="05" Year="2004"/>
+                <Author>Alfredo Ielpo</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive is used to inform CGRLC about new power control parameters and latest C-value.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_PWR_CTRL_REQ</Name>
+                <PrimID Direction="UPLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pwr_ctrl</Name>
+                </ItemLink>
+                <Comment>Power Control Information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to inform RR that processing of primitive CGRLC_PWR_CTRL_REQ has been finished.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CGRLC_PWR_CTRL_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This struct includes parameters for fixed allocation .</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>fix_alloc_struct</Name>
+                <Comment>Fixed Allocation structure</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>bitmap_len</Name>
+                </ItemLink>
+                <Comment>Bitmap length</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>bitmap_array</Name>
+                </ItemLink>
+                <Control>[127]</Control>
+                <Comment>Bitmap array</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>end_fn</Name>
+                </ItemLink>
+                <Comment>End of bitmap framenumber</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>final_alloc</Name>
+                </ItemLink>
+                <Comment>Final allocation</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="21" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The frequency parameters structure contains information whether hopping is used or not and about the assigned frequency band.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>freq_param</Name>
+                <Comment>Frequency Parameters</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>bcch_arfcn</Name>
+                </ItemLink>
+                <Comment>ARFCN of the BCCH</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pdch_hopping</Name>
+                </ItemLink>
+                <Comment>Hopping or no hopping is used on the assigned PDCH</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pdch_band</Name>
+                </ItemLink>
+                <Comment>PDCH band</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Add &lt;band_indicator&gt;.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This structure contains the power control parameters assigned to the MS.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>pwr_ctrl_param</Name>
+                <Comment>Power Control Parameters</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>alpha</Name>
+                </ItemLink>
+                <Comment>Alpha value</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>gamma_ch</Name>
+                </ItemLink>
+                <Control>[MAX_TIMESLOTS]</Control>
+                <Comment>Gamma value for each timeslot</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Remove &lt;gamma_0&gt;, add &lt;pwr_offset&gt; and &lt;gprs_ms_txpwr_max_cch&gt;</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Remove &lt;t_avg_w&gt;, &lt;t_avg_t&gt;, &lt;pb&gt;, &lt;pwr_offset&gt;, &lt;pc_meas_chan&gt;, &lt;gprs_ms_txpwr_max_cch&gt;</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This structure contains raw data, which describe the C-value.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>c_value</Name>
+                <Comment>C-Value</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>c_lev</Name>
+                </ItemLink>
+                <Comment>C-value raw data level</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>c_idx</Name>
+                </ItemLink>
+                <Comment>C-value raw data index</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>c_acrcy</Name>
+                </ItemLink>
+                <Comment>C-value raw data accuracy</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="9" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Remove &lt;c_raw_data&gt; and &lt;clev&gt;, add &lt;c_level&gt;, &lt;c_idx&gt; and &lt;c_acrcy&gt;</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This structure contains the pan values.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>pan_struct</Name>
+                <Comment>Pan Structure</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>inc</Name>
+                </ItemLink>
+                <Comment>Pan increment</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>dec</Name>
+                </ItemLink>
+                <Comment>Pan decrement</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pmax</Name>
+                </ItemLink>
+                <Comment>Pan maximum</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="27" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This structure contains the global power control parameters assigned to the MS.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>glbl_pwr_ctrl_param</Name>
+                <Comment>Global Power Control Parameters</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>alpha</Name>
+                </ItemLink>
+                <Comment>Alpha value</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>t_avg_t</Name>
+                </ItemLink>
+                <Comment>T_AVG_T</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pb</Name>
+                </ItemLink>
+                <Comment>Power reduction value</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pc_meas_chan</Name>
+                </ItemLink>
+                <Comment>PC_MEAS_CHAN</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pwr_max</Name>
+                </ItemLink>
+                <Comment>Maximum output power of the MS.</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This structure just summarize a few parameters related to the uplink power control concept.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>pwr_ctrl</Name>
+                <Comment>Power Control Information</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>pwr_ctrl_param</Name>
+                </ItemLink>
+                <Comment>Power Control Parameters</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>glbl_pwr_ctrl_param</Name>
+                </ItemLink>
+                <Comment>Global Power Control Parameters</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>freq_param</Name>
+                </ItemLink>
+                <Comment>Frequency Parameters</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">cgrlc</DocName>
+                    <Name>c_value</Name>
+                </ItemLink>
+                <Comment>C-Value</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the access type for the uplink TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>access_type</Name>
+                <Type>U8</Type>
+                <Comment>Access Type.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_access_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a RLC/MAC control message(data array) or bitmap array for fixed allocation.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data_array</Name>
+                <Type>U8</Type>
+                <Comment>Data Array.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>add bitmap array</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a RLC/MAC control message(data array) or bitmap array for fixed allocation.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bitmap_array</Name>
+                <Type>U8</Type>
+                <Comment>Bitmap array</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>add bitmap array</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter dl_timeslot_offset is used for Test Mode. See GSM 04.14, section 8.13. tn indicates the timeslot number of the received control message.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dl_timeslot_offset</Name>
+                <Type>U8</Type>
+                <Comment>Downlink Timeslot Offset.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_dl_timeslot_offset</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section/>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tn_mask</Name>
+                <Type>U8</Type>
+                <Comment>timeslot mask</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="02" Month="04" Year="2004"/>
+                <Author>can</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter dl_timeslot_offset is used for Test Mode. See GSM 04.14, section 8.13. tn indicates the timeslot number of the received control message.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tn</Name>
+                <Type>U8</Type>
+                <Comment>Timeslot number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_dl_timeslot_offset</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the RLC/MAC failure types.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>failure</Name>
+                <Type>U8</Type>
+                <Comment>Lower layer failure.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_failure</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the beginning of the countdown procedure.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bs_cv_max</Name>
+                <Type>U8</Type>
+                <Comment>Maximum Countdown value.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for Test Mode. See GSM 04.14, section 8.13.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>no_of_pdus</Name>
+                <Type>U16</Type>
+                <Comment>Number of PDUs.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the number of timeslots for the corresponding TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nts_max</Name>
+                <Type>U8</Type>
+                <Comment>Number of Timeslots.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates, in case of access failure, how many primitives shall be deleted.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>prim_status</Name>
+                <Type>U8</Type>
+                <Comment>Primitive Queue Handler.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_prim_status</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the type of the confirmed primitives.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>prim_type</Name>
+                <Type>U8</Type>
+                <Comment>Type of primitive.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_prim_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates if the TBF is or shall be released in a normal or abnormal way.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tbf_rel_cause</Name>
+                <Type>U8</Type>
+                <Comment>TBF Release Cause.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_tbf_rel_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>add cell reselection request.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the starting time for the corresponding TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>starting_time</Name>
+                <Type>U32</Type>
+                <Comment>TBF starting time.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_starting_time</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the starting time for the corresponding TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rel_fn</Name>
+                <Type>U32</Type>
+                <Comment>Release after Poll with fn.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_starting_time</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the starting time for the corresponding TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>fn</Name>
+                <Type>U32</Type>
+                <Comment>Received frame number.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_starting_time</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the starting time for the corresponding TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>poll_fn</Name>
+                <Type>U32</Type>
+                <Comment>Poll frame number.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_starting_time</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the starting time for the corresponding TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>end_fn</Name>
+                <Type>U32</Type>
+                <Comment>End of bitmap framenumber</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_starting_time</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for Test Mode. See GSM 04.14, section 8.13.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>test_mode_flag</Name>
+                <Type>U8</Type>
+                <Comment>Test mode flag.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_test_mode_flag</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the TFI value for the corresponding TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tfi</Name>
+                <Type>U8</Type>
+                <Comment>TFI value.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the Timing Advance value.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ta_value</Name>
+                <Type>U8</Type>
+                <Comment>Timing Advance Value.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates if the TLLI shall be sent or not within a RLC data block (contention resolution).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ti</Name>
+                <Type>U8</Type>
+                <Comment>TLLI indicator.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_ti</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the TLLI value for the corresponding TBF. In the uplink TBF it is used for the contention resolution procedure. In the downlink TBF it is used in downlink data indication primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ul_tlli</Name>
+                <Type>U32</Type>
+                <Comment>Uplink TLLI value.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the TLLI value for the corresponding TBF. In the uplink TBF it is used for the contention resolution procedure. In the downlink TBF it is used in downlink data indication primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dl_tlli</Name>
+                <Type>U32</Type>
+                <Comment>Downlink TLLI value.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the initial coding scheme.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cs_mode</Name>
+                <Type>U8</Type>
+                <Comment>Type of Coding Scheme.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_cs_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates if Coding Scheme 1 shall be used during contention resolution.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tlli_cs_mode</Name>
+                <Type>U8</Type>
+                <Comment>Type of Coding Scheme in Contention Resolution.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_tlli_cs_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the type of MAC mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mac_mode</Name>
+                <Type>U8</Type>
+                <Comment>Type of MAC mode.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_mac_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates which queue shall be used. After Cell Reselection RR has to decide if GMM data shall be used. If not LLC will be used. If the GMM queue is finished, RR triggers GRLC to resume with the LLC queue.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>queue_mode</Name>
+                <Type>U8</Type>
+                <Comment>Type of Queue Mode.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_queue_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the type of RLC mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rlc_mode</Name>
+                <Type>U8</Type>
+                <Comment>Type of RLC mode.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_rlc_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the TBF type.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tbf_mode</Name>
+                <Type>U8</Type>
+                <Comment>Type of TBF.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_tbf_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Add TBF_MODE_NULL</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>move TBF_ACCESS_NOT_ALLOWED to ESTABLISHMENT_FAILURE</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the value for timer T3192 in the downlink TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t3192_val</Name>
+                <Type>U8</Type>
+                <Comment>Value of T3192.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial (based on the Berlin version).</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the value for the Ready Timer (T3314).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t3314_val</Name>
+                <Type>U32</Type>
+                <Comment>Value of T3314.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_t3314_val</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="02" Month="07" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Add values link.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the value for the Ready Timer (T3314).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t3168_val</Name>
+                <Type>U8</Type>
+                <Comment>T3168 Value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Contains the power strength level, corresponding to the RXLEV. The mapping is as defined in [3G 05.08], with 0 corresponding to -112 dBm and 63 to -48 dBm. The values continue below 0 and above 63.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ilev</Name>
+                <Type>U8</Type>
+                <Comment>Interference level</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_ilev</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Rename and add c-macro, add ilev and clev</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>A power reduction value used by the BTS on PBCCH/PCCCH blocks (PBCCH and PCCH are considered transmitted with the same output power), relative to the output power used on BCCH. The actual relative reduction is pb * -2 dB.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pb</Name>
+                <Type>U8</Type>
+                <Comment>Power reduction value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This field is the binary representation of the parameter for MS output power control in units of 0.1. (See 3GPP TS 05.08. Range: 0 to 10)</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>alpha</Name>
+                <Type>U8</Type>
+                <Comment>Alpha</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_alpha</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Add values</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The PC_MEAS_CHAN parameter indicates where the mobile station shall measure the received power level on the downlink for the purpose of the uplink power control.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pc_meas_chan</Name>
+                <Type>U8</Type>
+                <Comment>PC_MEAS_CHAN</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_pc_meas_chan</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The T_AVG_T parameter is a signal strength filter period for power control in packet transfer mode. 2(k/2) / 6 multiframes, k = 0, 1, 2, ... 25 (see 3GPP TS 05.08). Values greater than 25 shall be interpreted as 25 by the mobile station.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t_avg_t</Name>
+                <Type>U8</Type>
+                <Comment>T_AVG_T</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The GAMMA_TN0..7 fields are the binary representation of the parameter GCH for MS output power control in units of 2 dB, see 3GPP TS 05.08.The actual GCH is gamma  * 2 dB.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gamma_ch</Name>
+                <Type>U8</Type>
+                <Comment>Gamma</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_gamma_ch</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Remove &lt;gamma_0&gt;, add values</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This field contains the BCCH frequency of the current cell. This field is encoded as the ARFCN defined in the L1 interface specification.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bcch_arfcn</Name>
+                <Type>U16</Type>
+                <Comment>ARFCN of the BCCH</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Indicates whether hopping or no hopping is used on the assigned PDCH.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pdch_hopping</Name>
+                <Type>U8</Type>
+                <Comment>Hopping or no hopping is used on the assigned PDCH</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="13" Month="6" Year="2003"/>
+                <Author>FLF</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the type of the cgrlc_disable_req. It is needed at receiving user data in disabled state.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>disable_class</Name>
+                <Type>U8</Type>
+                <Comment>Disable class.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_disable_class</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the radio priority of the first LLC PDU.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ra_prio</Name>
+                <Type>U8</Type>
+                <Comment>Radio priority</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the bust type of the requested poll.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>poll_b_type</Name>
+                <Type>U8</Type>
+                <Comment>Poll burst type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_poll_b_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the ctrl ack value, sent with packet control acknowledgement.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ctrl_ack</Name>
+                <Type>U8</Type>
+                <Comment>Ctrl_ack</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the default bust type of the requested poll.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>burst_type</Name>
+                <Type>U8</Type>
+                <Comment>Default burst type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_burst_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>New ab defined, no diff. Needed here .</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the default access burst type of the requested poll.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ab_type</Name>
+                <Type>U8</Type>
+                <Comment>Default access burst type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_ab_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This structure contains the pan values.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>inc</Name>
+                <Type>U8</Type>
+                <Comment>Pan increment</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This structure contains the pan values.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dec</Name>
+                <Type>U8</Type>
+                <Comment>Pan decrement</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This field contains the control ack bit,received with a packet downlink assignment or packet timeslot configure. It indicates if the downlink shall released while timer 3192 is running before starting the new downlink tbf.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ctrl_ack_bit</Name>
+                <Type>U8</Type>
+                <Comment>Ctrl ack bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="31" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the block owner of a control message.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>blk_owner</Name>
+                <Type>U8</Type>
+                <Comment>Block owner.</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_blk_owner</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="31" Month="7" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the number of blocks in case of short access.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nr_blocks</Name>
+                <Type>U8</Type>
+                <Comment>Number of blocks</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates if cell update is required with next packet access.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cu_cause</Name>
+                <Type>U8</Type>
+                <Comment>Cell update cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_cu_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the maximum value for counter N3102.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pmax</Name>
+                <Type>U8</Type>
+                <Comment>Pan maximum</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_pmax</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the primitive type.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>llc_prim_type</Name>
+                <Type>U8</Type>
+                <Comment>LLC Primitive type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_llc_prim_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="12" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the peak value (QOS parameter).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>peak</Name>
+                <Type>U16</Type>
+                <Comment>Peak value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="12" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates if a poll  shall be sent at starting time is elapsed. This bit is set in the Immediate assignment (Rest octets , packet uplink assignment).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>polling_bit</Name>
+                <Type>U8</Type>
+                <Comment>Polling bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="12" Month="8" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the number of bytes for a tbf .</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rlc_oct_cnt</Name>
+                <Type>U16</Type>
+                <Comment>Number of bytes for TBF</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the r bit, set in the mac header .</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>r_bit</Name>
+                <Type>U8</Type>
+                <Comment>R bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="1" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates if access is allowed or not including the net radio priority.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ac_class</Name>
+                <Type>U8</Type>
+                <Comment>Access control class</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_ac_class</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The GPRS_MS_TXPWR_MAX_CCH field is coded as the binary representation of the 'power control level' in 3GPP TS 05.05 corresponding to the maximum TX power level a mobile station may use when accessing on a packet control channel. The maxmium output power of the MS according to the MS power class has already been considered when receiving the parameter &lt;pwr_max&gt;.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pwr_max</Name>
+                <Type>U8</Type>
+                <Comment>Maximum output power of the MS.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Rename from &lt;gprs_ms_txpwr_max_cch&gt; to &lt;pwr_max&gt;.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>*No description found in source document*</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_lev</Name>
+                <Type>S32</Type>
+                <Comment>C-value raw data level</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Rename from &lt;c_raw_data_level&gt; to &lt;c_level&gt;. Update type from &lt;U16&gt; to &lt;S32&gt;.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>*No description found in source document*</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_idx</Name>
+                <Type>U16</Type>
+                <Comment>C-value raw data index</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Rename from &lt;c_raw_data_idx&gt; to &lt;c_idx&gt;.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>*No description found in source document*</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_acrcy</Name>
+                <Type>U16</Type>
+                <Comment>C-value raw data accuracy</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Rename from &lt;c_raw_data_acrcy&gt; to &lt;c_acrcy&gt;.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates bitmap length of fixed allocation structure.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bitmap_len</Name>
+                <Type>U8</Type>
+                <Comment>Bitmap length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates final allocation bit in fixed allocation mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>final_alloc</Name>
+                <Type>U8</Type>
+                <Comment>Final allocation</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="9" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for abnormal tbf releases with cell reselection. GRLC is indicating the abnormal release with CGRLC_TBF_REL_IND with tbf_rel_casue = TBF_REL_WITH_CELL_RESELECT. GRR(RR) has to perform cell reselection. If the cell reselection fails and GRR(RR) enters the old cell, this parameter must be set to ENAC_ABNORM_RELEASE_CRESELECT_FAILED. In all other cases the value is set to ENAC_NORMAL. In the faailure case the data queue in GRLC mustt be deleted.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>enable_cause</Name>
+                <Type>U8</Type>
+                <Comment>Enable Cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_enable_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates change mark value, which has to be sent in the packet resourcee request.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>change_mark</Name>
+                <Type>U8</Type>
+                <Comment>Change mark value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="12" Month="11" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the number of rlc data blocks in case of close ended TBF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rlc_db_granted</Name>
+                <Type>U16</Type>
+                <Comment>RLCdata block granted</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_rlc_db_granted</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="11" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates the used frequency band on the assigned PDCH.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pdch_band</Name>
+                <Type>U8</Type>
+                <Comment>PDCH band</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>VAL_pdch_band</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>DL assignment Id used for DL Release sync in GRR and GRLC.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dl_trans_id</Name>
+                <Type>U8</Type>
+                <Comment>DL Assignmnet ID</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="12" Year="2005"/>
+                <Author>xparapgu</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section/>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>nw_rel</Name>
+                <Type>U8</Type>
+                <Version>REL99</Version>
+                <Comment>Network Release Flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="07" Year="2006"/>
+                <Author>K.Gopinath</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section/>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pfi_support</Name>
+                <Type>U8</Type>
+                <Version>REL99</Version>
+                <Comment>Basic Element</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cgrlc</DocName>
+                <Name>Val_pfi_support</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="07" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section/>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tbf_est_pacch</Name>
+                <Type>U8</Type>
+                <Version>REL99 AND TI_PS_FF_TBF_EST_PACCH</Version>
+                <Comment>TBF establishment on PACCH</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="08" Year="2006"/>
+                <Author>K.Gopinath</Author>
+                <Comment>Locosto REL99 feature</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the CGRLC SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_access_type</Name>
+                <Comment>values for access_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>AT_NULL</Alias>
+                <Comment>No access is required</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>AT_ONE_PHASE</Alias>
+                <Comment>One phase access requested.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>AT_TWO_PHASE</Alias>
+                <Comment>Two phase access requested.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>AT_SHORT_ACCESS</Alias>
+                <Comment>Short access requested.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>AT_PAGE_RESPONSE</Alias>
+                <Comment>Page response requested.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>AT_CELL_UPDATE</Alias>
+                <Comment>Access for cell update primitive requested.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>AT_MM_PROCEDURE</Alias>
+                <Comment>Access for MM/GMM primitive requested.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>AT_SINGLE_BLOCK</Alias>
+                <Comment>Only used in GRR: access for single block without TBF</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dl_timeslot_offset</Name>
+                <Comment>values for dl_timeslot_offset</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TEST_TN0</Alias>
+                <Comment>Downlink timeslot offset 0.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TEST_TN1</Alias>
+                <Comment>Downlink timeslot offset 1.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TEST_TN2</Alias>
+                <Comment>Downlink timeslot offset 2.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TEST_TN3</Alias>
+                <Comment>Downlink timeslot offset 3.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TEST_TN4</Alias>
+                <Comment>Downlink timeslot offset 4.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>TEST_TN5</Alias>
+                <Comment>Downlink timeslot offset 5.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>TEST_TN6</Alias>
+                <Comment>Downlink timeslot offset 6.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>TEST_TN7</Alias>
+                <Comment>Downlink timeslot offset 7.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_failure</Name>
+                <Comment>values for failure</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ACCESS_2_NETWORK_NOT_ALLOWED</Alias>
+                <Comment>Access to the network is not allowed.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PACKET_ACCESS_FAILURE</Alias>
+                <Comment>Failure during packet access procedure, e.g. T3162 expired.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>RLC_MAC_ERROR</Alias>
+                <Comment>T3168 expires during contention resolution.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TLLI_MISMATCH</Alias>
+                <Comment>TLLI mismatch has occurred.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TBF_ESTABLISHMENT_FAILURE</Alias>
+                <Comment>T3164 expires or failure occurs due to any other reason.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>RESUMPTION_FAILURE</Alias>
+                <Comment>Resumption failure after dedicated mode was left.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>CONTENTION_RESOLUTION_FAILED</Alias>
+                <Comment>Contention Resolution has failed.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_prim_status</Name>
+                <Comment>values for prim_status</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PRIM_STATUS_NULL</Alias>
+                <Comment>No primitives shall be deleted.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PRIM_STATUS_ONE</Alias>
+                <Comment>One primitive shall be deleted.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PRIM_STATUS_TBF</Alias>
+                <Comment>All primitives, which belongs to the current TBF, shall be deleted.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>PRIM_STATUS_ALL</Alias>
+                <Comment>All primitives shall be deleted.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_prim_type</Name>
+                <Comment>values for prim_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PRIM_TYPE_GMM</Alias>
+                <Comment>At least one GMM primitive was confirmed.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PRIM_TYPE_OTHER</Alias>
+                <Comment>No GMM primitive was confirmed. Other User data was confirmed.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tbf_rel_cause</Name>
+                <Comment>values for tbf_rel_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TBF_REL_NORMAL</Alias>
+                <Comment>Normal TBF release is or shall be performed.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TBF_REL_ABNORMAL</Alias>
+                <Comment>Abnormal TBF release is or shall be performed.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TBF_REL_CR_FAILED</Alias>
+                <Comment>Contention resolution failed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TBF_REL_WITH_CELL_RESELECT</Alias>
+                <Comment>TBF release with cell reselection</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_starting_time</Name>
+                <Comment>values for starting_time</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FFFFFFFF</Value>
+                <Alias>STARTING_TIME_NOT_PRESENT</Alias>
+                <Comment>No TBF starting time present.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_test_mode_flag</Name>
+                <Comment>values for test_mode_flag</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TEST_RANDOM</Alias>
+                <Comment>Pseudo random data.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LOOP</Alias>
+                <Comment>Loop back.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">FE</Value>
+                <Alias>TEST_MODE_RELEASE</Alias>
+                <Comment>used in GRLC, intermediate status during release procedure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>NO_TEST_MODE</Alias>
+                <Comment>No testmode active</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="06" Year="2004"/>
+                <Author>can</Author>
+                <Comment>add new values</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ti</Name>
+                <Comment>values for ti</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TLLI_NOT_PRESENT</Alias>
+                <Comment>TLLI shall not be sent in the RLC data block.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TLLI_PRESENT</Alias>
+                <Comment>TLLI shall be sent in the RLC data block.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cs_mode</Name>
+                <Comment>values for cs_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CS_MODE_1</Alias>
+                <Comment>Coding scheme 1.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CS_MODE_2</Alias>
+                <Comment>Coding scheme 2.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CS_MODE_3</Alias>
+                <Comment>Coding scheme 3.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CS_MODE_4</Alias>
+                <Comment>Coding scheme 4.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tlli_cs_mode</Name>
+                <Comment>values for tlli_cs_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TLLI_CS_MODE_1</Alias>
+                <Comment>CS 1 shall be used during Contention resolution.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TLLI_CS_MODE_DEF</Alias>
+                <Comment>Default coding scheme shall be used during Contention resolution.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mac_mode</Name>
+                <Comment>values for mac_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MAC_MODE_DA</Alias>
+                <Comment>Dynamic allocation.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MAC_MODE_EDA</Alias>
+                <Comment>Extended dynamic allocation.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>MAC_MODE_FA</Alias>
+                <Comment>Fixed allocation.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>MAC_MODE_FA_HD</Alias>
+                <Comment>Fixed allocation, half duplex mode.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_queue_mode</Name>
+                <Comment>values for queue_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>QUEUE_MODE_DEFAULT</Alias>
+                <Comment>Use current queue.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>QUEUE_MODE_GMM</Alias>
+                <Comment>Use GMM queue (RAU procedure).</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>QUEUE_MODE_LLC</Alias>
+                <Comment>Use LLC queue.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rlc_mode</Name>
+                <Comment>values for rlc_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RLC_MODE_ACK</Alias>
+                <Comment>RLC acknowledged mode.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RLC_MODE_UACK</Alias>
+                <Comment>RLC unacknowledged mode.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_tbf_mode</Name>
+                <Comment>values for tbf_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TBF_MODE_NULL</Alias>
+                <Comment>No tbf active, used in GRR</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TBF_MODE_ACCESS_FAILED</Alias>
+                <Comment>Access has failed. GRLC handles prim queue.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TBF_MODE_DL</Alias>
+                <Comment>Downlink TBF is assigned/released.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TBF_MODE_UL</Alias>
+                <Comment>Uplink TBF is assigned/released.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TBF_MODE_TMA</Alias>
+                <Comment>Uplink TBF for Testmode A is assigned.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>TBF_MODE_TMB</Alias>
+                <Comment>Uplink TBF for Testmode B is assigned.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>TBF_MODE_DL_UL</Alias>
+                <Comment>Uplink and Downlink TBF assigned/released.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>TBF_MODE_ESTABLISHMENT_FAILURE</Alias>
+                <Comment>T3164 expires or failure occurs due to any other reason</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>TBF_MODE_2PA</Alias>
+                <Version>REL99 AND TI_PS_FF_TBF_EST_PACCH</Version>
+                <Comment>2 Phase access mode during TBF est on PACCH</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section/>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rxlev</Name>
+                <Comment>values for rxlev</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>RXLEV_MIN</Alias>
+                <Comment>Minimum receive signal level value.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">3F</Value>
+                <Alias>RXLEV_MAX</Alias>
+                <Comment>Maximum receive signal level value.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">80</Value>
+                <Alias>RXLEV_NONE</Alias>
+                <Comment>Specific value used to indicate that no new RX value is present or RX value is invalid.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_alpha</Name>
+                <Comment>values for alpha</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>ALPHA_INVALID</Alias>
+                <Comment>No alpha value is available.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pc_meas_chan</Name>
+                <Comment>values for pc_meas_chan</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MEAS_CHAN_BCCH</Alias>
+                <Comment>Downlink measurements for power control shall be made on BCCH.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MEAS_CHAN_PDCH</Alias>
+                <Comment>Downlink measurements for power control shall be made on PDCH.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_gamma_ch</Name>
+                <Comment>values for gamma_ch</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>GAMMA_INVALID</Alias>
+                <Comment>No GCH is available.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_disable_class</Name>
+                <Comment>values for disable_class</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DISABLE_CLASS_NULL</Alias>
+                <Comment>Initial state of the disable class</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DISABLE_CLASS_OTHER</Alias>
+                <Comment>Any other cause for disable class</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DISABLE_CLASS_CR</Alias>
+                <Comment>Disable cause is cell reselection</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_poll_b_type</Name>
+                <Comment>values for poll_b_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>POLL_NONE</Alias>
+                <Comment>No poll position present,only in grlc</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>POLL_COLLISION</Alias>
+                <Comment>Collision detected, only in grlc</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>POLL_DATA</Alias>
+                <Comment>Poll for dl ack/nack, only in grlc</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>POLL_UACK</Alias>
+                <Comment>Poll for pca uplink tbf relaase</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>POLL_CTRL</Alias>
+                <Comment>Default poll for control msg.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>POLL_RES_NB</Alias>
+                <Comment>Poll for normal burst with packet polling req</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>POLL_RES_AB</Alias>
+                <Comment>Poll for access burst with packet polling req</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>POLL_RE_ASS</Alias>
+                <Version>REL99 AND TI_PS_FF_TBF_EST_PACCH</Version>
+                <Comment>Poll for TBF on PACCH for sendong PCA or PRR </Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_burst_type</Name>
+                <Comment>values for burst_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>BURST_TYPE_AB</Alias>
+                <Comment>Access burst</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>BURST_TYPE_NB</Alias>
+                <Comment>Normal burst</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ab_type</Name>
+                <Comment>values for ab_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>AB_8_BIT</Alias>
+                <Comment>8 bit access burst</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>AB_11_BIT</Alias>
+                <Comment>11 bit access burst</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_blk_owner</Name>
+                <Comment>values for blk_owner</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>BLK_OWNER_CTRL</Alias>
+                <Comment>Owner is service ctrl (GRR).</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>BLK_OWNER_CS</Alias>
+                <Comment>Owner is service cs (GRR).</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>BLK_OWNER_TM</Alias>
+                <Comment>Owner is service tm (GRLC).</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>BLK_OWNER_MEAS</Alias>
+                <Comment>Owner is service meas (GRR).</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>BLK_OWNER_NONE</Alias>
+                <Comment>Owner is not specified</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cu_cause</Name>
+                <Comment>values for cu_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RA_DEFAULT</Alias>
+                <Comment>No action required</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RA_CU</Alias>
+                <Comment>Next packet access cause will be cell update</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pmax</Name>
+                <Comment>values for pmax</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>NO_UPDATE_N3102</Alias>
+                <Comment>N3102 shall not be updated</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_llc_prim_type</Name>
+                <Comment>values for llc_prim_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>LLC_PRIM_TYPE_NULL</Alias>
+                <Comment>No primitive available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LLC_PRIM_TYPE_DATA_REQ</Alias>
+                <Comment>GRLC_DATA_REQ</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>LLC_PRIM_TYPE_UNITDATA_REQ</Alias>
+                <Comment>GRLC_UNITDATA_REQ</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ac_class</Name>
+                <Comment>values for ac_class</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>CCCH_AC_NOT_ALLOWED</Alias>
+                <Comment>CCCH access control class not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>PCCCH_AC_NOT_ALLOWED</Alias>
+                <Comment>PCCCH access control class not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>PCCCH_AC_ALLOWED</Alias>
+                <Comment>PCCCH access control class allowed</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>7</MaxValue>
+                <Comment>Allowed Radio priority</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_enable_cause</Name>
+                <Comment>values for enable_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ENAC_NORMAL</Alias>
+                <Comment>Normal Operation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>ENAC_ABNORM_RELEASE_CRESELECT_FAILED</Alias>
+                <Comment>Abnormal Release with Cell Re-Selection has Failed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rlc_db_granted</Name>
+                <Comment>values for rlc_db_granted</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>OPEN_ENDED_TBF</Alias>
+                <Comment>Open ended tbf</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>255</MaxValue>
+                <Comment>Close ended tbf</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section/>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_t3314_val</Name>
+                <Comment> Values for T3314</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>STANDBY</Alias>
+                <Comment>MS always in STANDBY state.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0000ABE0</Value>
+                <Alias>T3314_DEFAULT</Alias>
+                <Comment>Default timeout value for T3314.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">FFFFFFFF</Value>
+                <Alias>DEACTIVATED</Alias>
+                <Comment>MS always in READY state.</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="HEX">
+                <MinValue>0</MinValue>
+                <MaxValue>FFFFFFFF</MaxValue>
+                <Comment>Values Range</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="02" Month="07" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Merged from Two2One Project.</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section/>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pdch_band</Name>
+                <Comment>values for PDCH band</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GSM_400</Alias>
+                <Comment>GSM 400MHz Band.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GSM_850</Alias>
+                <Comment>GSM 850MHz Band.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GSM_900</Alias>
+                <Comment>GSM 900MHz Band.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>DCS_1800</Alias>
+                <Comment>DCS 1800MHz Band.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>PCS_1900</Alias>
+                <Comment>PCS 1900MHz Band.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section/>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ilev</Name>
+                <Comment>values for ilev</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>ILEV_MIN</Alias>
+                <Comment>Minimum interference level value.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">3F</Value>
+                <Alias>ILEV_MAX</Alias>
+                <Comment>Maximum interference level value.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">80</Value>
+                <Alias>ILEV_NONE</Alias>
+                <Comment>Specific value used to indicate that no new interference level value is present or interference level value is invalid.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="18" Month="05" Year="2004"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section/>
+            </Description>
+            <ValuesDef>
+                <Name>Val_pfi_support</Name>
+                <Version>REL99</Version>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PFI_NOT_SUPPORTED</Alias>
+                <Comment>PFC Not Supported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PFI_SUPPORTED</Alias>
+                <Comment>PFC  Supported</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="21" Month="07" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

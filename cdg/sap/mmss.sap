@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">mmss</DocName>
+        <DocNum Number="105" Project="6147"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the mobility management to supplementary services.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="97"/>
+            <Date Day="7" Month="7" Year="1997"/>
+            <Author>LE</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="97"/>
+            <Date Day="17" Month="4" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switch to new template. Switch to 32bit opcodes.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="97"/>
+            <Date Day="19" Month="7" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Revised for cause concept.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the MMSS SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>MAX_SDU_LEN</Alias>
+            <Value ValueType="DEC">1</Value>
+            <Comment>maximum service data unit length</Comment>
+        </Constant>
+        <History>
+            <Date Day="7" Month="7" Year="1997"/>
+            <Author>HK</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="8">
+        <Description>
+            <Section>This section contains all primitives that are defined for the MMSS SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The MMSS_ESTABLISH_REQ primitive is used to request establishment of a MM connection for supplementary services.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMSS_ESTABLISH_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>SS</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMSS_RELEASE_REQ primitive is used to release a MM connection for supplementary services.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMSS_RELEASE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>SS</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMSS_DATA_REQ primitive is used to send a layer 3 SS message to the network.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMSS_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>SS</Sender>
+                    <Receiver>MM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>d1</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>d2</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>dummy Parameter added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMSS_DATA_IND primitive is used to forward a layer 3 SS message to SS.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMSS_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>SS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>d1</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>d2</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>dummy Parameter added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMSS_ERROR_IND primitive is used to signal an error occurred in RR or DL to SS.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMSS_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>SS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Field reest removed, errcs => cause</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMSS_ESTABLISH_CNF primitive is used to signal the successful establishment of the MM connection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMSS_ESTABLISH_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>SS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMSS_ESTABLISH_IND primitive is used to signal the successful establishment of the MM connection for the mobile terminated transaction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMSS_ESTABLISH_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>SS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>d1</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>d2</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>dummy Parameter added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MMSS_RELEASE_IND primitive is used to signal the failed establishment or the release of the transaction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MMSS_RELEASE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MM</Sender>
+                    <Receiver>SS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>release cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>relcs => cause</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the  values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>Service Data Unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mmss</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[MAX_SDU_LEN]</Control>
+                <Comment>bit buffer</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the  values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the MM cause. For a description of the possible values, see the MMCC SAP document.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>MM cause</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>MM causes added</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="11" Year="2000"/>
+                <Author>HM</Author>
+                <Comment>Added 0x8310, 0x8311, 0x8312</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="2" Year="2002"/>
+                <Author>HM</Author>
+                <Comment>Removed all possible values, made reference to MMCC SAP</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a message as bitstream.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>bit buffer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies a transaction.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ti</Name>
+                <Type>U8</Type>
+                <Comment>transaction identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mmss</DocName>
+                <Name>VAL_ti</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="7" Year="1997"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used as dummy to avoid unnecessary copying of data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d1</Name>
+                <Type>U8</Type>
+                <Comment>dummy, not used</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used as dummy to avoid unnecessary copying of data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d2</Name>
+                <Type>U8</Type>
+                <Comment>dummy, not used</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="8" Year="1997"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the MMSS SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ti</Name>
+                <Comment>values for ti</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>TI_RES_MO</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>TI_RES_MT</Alias>
+                <Comment>reserved</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>6</MaxValue>
+                <Comment>ms originated transaction</Comment>
+            </ValuesRange>
+            <ValuesRange ValueType="DEC">
+                <MinValue>8</MinValue>
+                <MaxValue>14</MaxValue>
+                <Comment>ms originated transaction</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

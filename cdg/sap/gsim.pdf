@@ -1,0 +1,200 @@
+;********************************************************************************
+;*** File           : gsim.pdf
+;*** Creation       : Wed Mar 11 09:58:11 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : gsim
+;*** Document No.   : 8441.113.99.004
+;*** Document Date  : 2003-02-04
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: LG
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:43:12 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-02-04"
+PRAGMA 	ID_AND_VERSION 	"8441.113.99.004"
+
+
+
+CONST 	GSIM_PTMSI_NA 	0xFFFFFFFF 	; P-TMSI not applicable (i.e. this parameter shall be ignored)
+CONST 	SIZE_SRES 	4 	; size of sres
+CONST 	SIZE_KC 	8 	; size of kc
+CONST 	SIZE_RAND 	16 	; size of rand
+CONST 	MAX_IMSI 	9 	; Number of bytes to be read from EF(IMSI)
+
+
+
+VALTAB 	VAL_gu
+VAL 	0 	GSIM_GU_NA 	"GPRS update status not applicable (i.e. this parameter shall be ignored)"
+VAL 	1 	GSIM_GU1_UPDATED 	"last GPRS attach or RAU attempt successful"
+VAL 	2 	GSIM_GU2_NOT_UPDATED 	"last GPRS attach or RAU attempt failed procedurally"
+VAL 	3 	GSIM_GU3_ROAMING_NOT_ALLOWED 	"last GPRS attach or RAU attempt correctly performed, but negative answer from network received"
+
+VALTAB 	VAL_tmsi
+VAL 	0xFFFFFFFF 	GSIM_TMSI_INVALID 	"P-TMSI invalid (see GSM 3.03)"
+
+VALTAB 	VAL_ptmsi_signature_flag
+VAL 	0 	GSIM_PTMSI_SIG_DEL 	"P-TMSI Dignature shall be deleted"
+VAL 	1 	GSIM_PTMSI_SIG_VALID 	"P-TMSI Signature is valid"
+VAL 	2 	GSIM_PTMSI_SIG_NA 	"P-TMSI Signature not applicable (i.e. this parameter shall be ignored)"
+
+VALTAB 	VAL_gsim_cksn
+VAL 	0 	GSIM_CKSN_NA 	"GPRS ciphering key sequence number not applicable (i.e. this parameter shall be ignored)"
+
+VALTAB 	VAL_sim_gprs_invalid
+VAL 	0 	GSIM_SIM_GPRS_NA 	"not applicable (i.e. this parameter shall be ignored)"
+VAL 	1 	GSIM_SIM_GPRS_VALID 	"SIM is considered as valid for GPRS"
+VAL 	2 	GSIM_SIM_GPRS_INVALID 	"SIM is considered as invalid for GPRS"
+
+
+
+
+VAR 	gu 	"GPRS update status" 	B
+
+VAL 	@p_gsim - VAL_gu@ 	
+
+VAR 	rai 	"routing_area information" 	B
+
+
+VAR 	tmsi 	"temporary mobile subscriber identity" 	L
+
+VAL 	@p_gsim - VAL_tmsi@ 	
+
+VAR 	ptmsi 	"packet temporary mobile subscriber identity" 	L
+
+VAL 	@p_gsim - VAL_tmsi@ 	
+
+VAR 	c_field 	"length of imsi" 	B
+
+
+VAR 	field 	"imsi" 	B
+
+
+VAR 	ptmsi_signature_flag 	"P-TMSI Signature flag" 	B
+
+VAL 	@p_gsim - VAL_ptmsi_signature_flag@ 	
+
+VAR 	gsim_kc 	"GPRS ciphering key" 	B
+
+
+VAR 	gsim_cksn 	"GPRS ciphering key sequence number" 	B
+
+VAL 	@p_gsim - VAL_gsim_cksn@ 	
+
+VAR 	sres 	"authentication parameter Sres" 	B
+
+
+VAR 	rand 	"authentication parameter rand" 	B
+
+
+VAR 	sim_gprs_invalid 	"SIM invalid for GPRS service" 	B
+
+VAL 	@p_gsim - VAL_sim_gprs_invalid@ 	
+
+VAR 	acc_contr_class 	"Access Control Class" 	S
+
+
+
+
+
+COMP 	imsi_field 	 "international mobile subscriber identity"
+{
+ 	c_field 	 ; length of imsi
+ 	field 	[MAX_IMSI] 	 ; imsi
+}
+
+
+
+
+
+
+; GSIM_UPDATE_REQ 	0x2900
+; GSIM_STORE_KC_REQ 	0x2901
+; GSIM_INSERTED_IND 	0x6900
+; GSIM_REMOVED_IND 	0x6901
+; GSIM_AUTHENTICATION_REQ 	0x2902
+; GSIM_AUTHENTICATION_CNF 	0x6902
+
+
+
+PRIM 	GSIM_UPDATE_REQ 	0x2900
+{
+ 	sim_gprs_invalid 	 ; SIM invalid for GPRS service
+ 	gu 	 ; GPRS update status
+ 	ptmsi 	 ; packet temporary mobile subscriber identity
+ 	ptmsi_signature_flag 	 ; P-TMSI Signature flag
+ 	rai 	[7] 	 ; routing area identification
+}
+
+
+
+
+
+
+PRIM 	GSIM_STORE_KC_REQ 	0x2901
+{
+ 	gsim_kc 	[8] 	 ; GPRS ciphering key
+ 	gsim_cksn 	 ; GPRS ciphering key sequence number
+}
+
+
+
+
+
+
+PRIM 	GSIM_INSERTED_IND 	0x6900
+{
+ 	sim_gprs_invalid 	 ; SIM invalid for GPRS service
+ 	gu 	 ; GPRS update status
+ 	rai 	[7] 	 ; routing area identification
+ 	ptmsi 	 ; packet temporary mobile subscriber identity
+ 	tmsi 	 ; temporary mobile subscriber identity
+ 	imsi_field 	 ; international mobile subscriber identity
+ 	gsim_kc 	[8] 	 ; GPRS ciphering key
+ 	gsim_cksn 	 ; GPRS ciphering key sequence number
+ 	acc_contr_class 	 ; Access control class
+}
+
+
+
+
+
+
+PRIM 	GSIM_REMOVED_IND 	0x6901
+{
+}
+
+
+
+
+
+
+PRIM 	GSIM_AUTHENTICATION_REQ 	0x2902
+{
+ 	rand 	[SIZE_RAND] 	 ; rand
+ 	gsim_cksn 	 ; ciphering key sequence number
+}
+
+
+
+
+
+
+PRIM 	GSIM_AUTHENTICATION_CNF 	0x6902
+{
+ 	sres 	[SIZE_SRES] 	 ; Sres
+ 	gsim_kc 	[SIZE_KC] 	 ; Kc
+}
+
+
+
+
+
+
+
+
+

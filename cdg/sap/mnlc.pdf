@@ -1,0 +1,95 @@
+;********************************************************************************
+;*** File           : mnlc.pdf
+;*** Creation       : Wed Mar 11 09:58:25 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mnlc
+;*** Document No.   : 8443.104.02.003
+;*** Document Date  : 2002-10-25
+;*** Document Status: SUBMITTED
+;*** Document Author: TML
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:48:12 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-10-25"
+PRAGMA 	ID_AND_VERSION 	"8443.104.02.003"
+
+
+
+CONST 	L_MAX_CALLED_BCD_NO_LENGTH 	10 	; Max Bcd number length (digits)
+CONST 	CURSOR_SMS_TEXT_140 	140 	; Position SMS Message
+
+
+
+VALTAB 	VAL_data_valid
+VAL 	0 	DATA_VALID 	""
+VAL 	1 	DATA_INVALID 	""
+
+
+
+
+VAR 	reference 	"Reference" 	S
+
+
+VAR 	bcd 	"Bcd Number" 	B
+
+
+VAR 	data_valid 	"Cursor Data Valid" 	B
+
+VAL 	@p_mnlc - VAL_data_valid@ 	
+
+VAR 	number_length 	"Number of decimal digits in the Bcd number" 	B
+
+
+VAR 	sms_text 	"SMS text" 	B
+
+
+
+
+
+COMP 	called_party_bcd_num 	 "called Party Bcd number"
+{
+ 	number_length 	 ; Number Length
+ 	bcd 	[L_MAX_CALLED_BCD_NO_LENGTH] 	 ; Bcd Number
+}
+
+
+
+
+
+
+; MNLC_SMS_MEAS_REQ 	0x80000044
+; MNLC_SMS_MEAS_CNF 	0x80004044
+
+
+
+PRIM 	MNLC_SMS_MEAS_REQ 	0x80000044
+{
+ 	reference 	 ; Reference SMS request
+ 	called_party_bcd_num 	 ; Called Bcd Number
+}
+
+
+
+
+
+
+PRIM 	MNLC_SMS_MEAS_CNF 	0x80004044
+{
+ 	reference 	 ; Reference SMS request
+ 	data_valid 	 ; Cursor Data Valid
+ 	sms_text 	[CURSOR_SMS_TEXT_140] 	 ; Cursor SMS
+}
+
+
+
+
+
+
+
+
+

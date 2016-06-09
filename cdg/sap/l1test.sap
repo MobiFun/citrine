@@ -1,0 +1,1019 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">l1test</DocName>
+        <DocNum Number="148" Project="8010"/>
+        <Description>
+            <Section>This document describes the L1TEST interface. It contains only function test primitives, which are used to simulate the function calls in MPHC_SAP and MPHP_SAP, when PC testing. The function test primitives are therefore only used for testing higher layer entities, which calls those functions.</Section>
+            <Section>1.1 Reading Guide</Section>
+            <Section>When testing the functions in MPHC_SAP and MPHP_SAP, the following function/primitive relation is used:</Section>
+            <Section>* The L1TEST_CALL_X primitive contains the input parameters to the function X.</Section>
+            <Section>* The L1TEST_RETURN_X primitive contains the output parameters returned from the function X.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="03"/>
+            <Date Day="6" Month="5" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="03"/>
+            <Date Day="20" Month="5" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>More function parameters are inserted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="03"/>
+            <Date Day="6" Month="6" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>The MPHC function parameters are inserted.</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the L1TEST SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">L1TEST</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="6" Month="5" Year="2003"/>
+            <Author>AGR</Author>
+            <Comment>Initial.</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the L1TEST SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>TEST_BUFFER_SIZE</Alias>
+            <Value ValueType="DEC">1000</Value>
+            <Comment>Test data buffer size</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_TIMESLOTS</Alias>
+            <Value ValueType="DEC">8</Value>
+            <Comment>Defines the maximum number of timeslots per frame</Comment>
+        </Constant>
+        <Constant>
+            <Alias>BURST_PER_BLOCK</Alias>
+            <Value ValueType="DEC">4</Value>
+            <Comment>Number of bursts that compose a block</Comment>
+        </Constant>
+        <History>
+            <Date Day="6" Month="5" Year="2003"/>
+            <Author>AGR</Author>
+            <Comment>Initial.</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="155">
+        <Description>
+            <Section>This section contains all primitives that are defined for the L1TEST SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The use and parameters are the same as the mphc_read_dcch in [TI 8010.121 MPHC_SAP]. However, the return value of the l2_frame (call by reference in the function) is simulated in the corresponding return primitive below.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_CALL_MPHC_READ_DCCH</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>L1</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>chn_mode</Name>
+                </ItemLink>
+                <Comment>Channel mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is the return values of the call to the function mphc_read_dcch in [TI 8010.121 MPHC_SAP]. The return value of the l2_frame (call by reference in the function) is simulated in this primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_RETURN_MPHC_READ_DCCH</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>L1</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mphc</DocName>
+                    <Name>l2_frame</Name>
+                </ItemLink>
+                <Comment>L2 radio frame</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The use and parameters are the same as the mphc_dcch_downlink in [TI 8010.121 MPHC_SAP]. However, the downlink data (pointer in the function) is simulated with the l2_frame.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_CALL_MPHC_DCCH_DOWNLINK</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>L1</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mphc</DocName>
+                    <Name>l2_frame</Name>
+                </ItemLink>
+                <Comment>L2 radio frame</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>valid_flag</Name>
+                </ItemLink>
+                <Comment>Valid flag for received data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is the return values of the call to the function mphc_dcch_downlink in [TI 8010.121 MPHC_SAP]. There is no return value for the time being.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_RETURN_MPHC_DCCH_DOWNLINK</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>L1</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The use and parameters are the same as the mphc_data_ul in [TI 8010.121 MPHC_SAP]. However, the return values (call by references in the function) are all simulated in the corresponding return primitive below.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_CALL_MPHC_DATA_UL</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>L1</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is the return values of the call to the function mphc_data_ul in [TI 8010.121 MPHC_SAP]. The return values (call by references in the function) are all simulated in this primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_RETURN_MPHC_DATA_UL</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>L1</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mphc</DocName>
+                    <Name>l2_frame</Name>
+                </ItemLink>
+                <Comment>L2 radio frame</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>d_ra_conf</Name>
+                </ItemLink>
+                <Comment>Traffic control register</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>d_ra_act</Name>
+                </ItemLink>
+                <Comment>Activity word</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>d_ra_statu</Name>
+                </ItemLink>
+                <Comment>Rate adaptation status word</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>d_fax</Name>
+                </ItemLink>
+                <Comment>Fax status and parameter word</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The use and parameters are the same as the mphc_data_dl in [TI 8010.121 MPHC_SAP]. However, the parameters (pointers in the function) are simulated with the actual values.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_CALL_MPHC_DATA_DL</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>L1</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mphc</DocName>
+                    <Name>l2_frame</Name>
+                </ItemLink>
+                <Comment>L2 radio frame</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>d_ra_act</Name>
+                </ItemLink>
+                <Comment>Activity word</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>d_ra_statd</Name>
+                </ItemLink>
+                <Comment>Rate adaptation status word</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is the return values of the call to the function mphc_data_dl in [TI 8010.121 MPHC_SAP]. There is no return value for the time being.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_RETURN_MPHC_DATA_DL</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>L1</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The use and parameters are the same as the mphp_power_control in [TI 8010.122 MPHP_SAP]. However, the return value of the pch array (call by reference in the function) is simulated in the corresponding return primitive below.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_CALL_MPHP_POWER_CONTROL</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>L1</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>assignment_id</Name>
+                </ItemLink>
+                <Comment>Assignment Id</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>crc_error</Name>
+                </ItemLink>
+                <Comment>CRC error</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>bcch_level</Name>
+                </ItemLink>
+                <Comment>BCCH level</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>radio_freq</Name>
+                </ItemLink>
+                <Control>[BURST_PER_BLOCK]</Control>
+                <Comment>Radio frequency</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>burst_level</Name>
+                </ItemLink>
+                <Control>[BURST_PER_BLOCK]</Control>
+                <Comment>Burst level</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The assignment_id is inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is the return values of the call to the function mphp_power_control in [TI 8010.122 MPHP_SAP]. The return value of the pch array (call by reference in the function) is simulated in this primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_RETURN_MPHP_POWER_CONTROL</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>L1</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>pch</Name>
+                </ItemLink>
+                <Control>[MAX_TIMESLOTS]</Control>
+                <Comment>PCH</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The use and parameters are the same as the mphp_uplink in [TI 8010.122 MPHP_SAP]. However, the return value of the ul_poll_resp array and ul_data array (call by reference in the function) is simulated in the corresponding return primitive below.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_CALL_MPHP_UPLINK</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>L1</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>assignment_id</Name>
+                </ItemLink>
+                <Comment>Assignment Id</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>tx_data_no</Name>
+                </ItemLink>
+                <Comment>Tx data number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>timing_advance_value</Name>
+                </ItemLink>
+                <Comment>Timing advance value</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>allocation_exhausted</Name>
+                </ItemLink>
+                <Comment>Allocation exhausted</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is the return values of the call to the function mphp_uplink in [TI 8010.122 MPHP_SAP]. The return value of the ul_poll_resp array and ul_data array (call by reference in the function) is simulated in this primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_RETURN_MPHP_UPLINK</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>L1</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mac</DocName>
+                    <Name>ul_poll_resp</Name>
+                </ItemLink>
+                <Control>[4]</Control>
+                <Comment>UL poll response</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mac</DocName>
+                    <Name>ul_data</Name>
+                </ItemLink>
+                <Control>[4]</Control>
+                <Comment>UL data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The use and parameters are the same as the mphp_downlink in [TI 8010.122 MPHP_SAP]. However, the downlink structure (pointer in the function) is simulated with the dl_data array.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_CALL_MPHP_DOWNLINK</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>L1</Sender>
+                    <Receiver>GRLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>assignment_id</Name>
+                </ItemLink>
+                <Comment>Assignment Id</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mac</DocName>
+                    <Name>dl_data</Name>
+                </ItemLink>
+                <Control>[0..4]</Control>
+                <Comment>DL data</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>rlc_blocks_sent</Name>
+                </ItemLink>
+                <Comment>RLC blocks sent</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l1test</DocName>
+                    <Name>last_poll_response</Name>
+                </ItemLink>
+                <Comment>Last poll response</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This is the return values of the call to the function mphp_downlink in [TI 8010.122 MPHP_SAP]. There is no return value for the time being.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L1TEST_RETURN_MPHP_DOWNLINK</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>GRLC</Sender>
+                    <Receiver>L1</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="6" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>chn_mode</Name>
+                <Type>U8</Type>
+                <Comment>Channel mode</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>valid_flag</Name>
+                <Type>U8</Type>
+                <Comment>Valid flag for received data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d_ra_conf</Name>
+                <Type>U16</Type>
+                <Comment>Traffic control register</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d_ra_act</Name>
+                <Type>U16</Type>
+                <Comment>Activity word</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d_fax</Name>
+                <Type>U16</Type>
+                <Comment>Fax status and parameter word</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d_ra_statu</Name>
+                <Type>U16</Type>
+                <Comment>Rate adaptation status word for uplink</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>d_ra_statd</Name>
+                <Type>U16</Type>
+                <Comment>Rate adaptation status word for downlink</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>crc_error</Name>
+                <Type>U8</Type>
+                <Comment>CRC error</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bcch_level</Name>
+                <Type>S8</Type>
+                <Comment>BCCH level</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>radio_freq</Name>
+                <Type>U16</Type>
+                <Comment>Radio frequency</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>burst_level</Name>
+                <Type>S8</Type>
+                <Comment>Burst level</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pch</Name>
+                <Type>U8</Type>
+                <Comment>PCH</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>assignment_id</Name>
+                <Type>U8</Type>
+                <Comment>Assignment Id</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tx_data_no</Name>
+                <Type>U8</Type>
+                <Comment>Tx data number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>fn</Name>
+                <Type>U32</Type>
+                <Comment>Frame number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>timing_advance_value</Name>
+                <Type>U8</Type>
+                <Comment>Timing advance value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>allocation_exhausted</Name>
+                <Type>U8</Type>
+                <Comment>Allocation exhausted</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rlc_blocks_sent</Name>
+                <Type>U8</Type>
+                <Comment>RLC blocks sent</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The elements here are temporary imported without links, due to Tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>last_poll_response</Name>
+                <Type>U8</Type>
+                <Comment>Last poll response</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="5" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="6" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>More function parameters are inserted.</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+</SAP>

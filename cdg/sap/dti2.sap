@@ -1,0 +1,1432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">dti2</DocName>
+        <DocNum Number="111" Project="8411"/>
+        <Description>
+            <Section>This section contains general information on DTI2 SAP</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="01"/>
+            <Date Day="19" Month="3" Year="2001"/>
+            <Author>CLA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial, adopted from 8411.110 old DTI SAP.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="01"/>
+            <Date Day="19" Month="9" Year="2001"/>
+            <Author>PHE</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changes regarding break and escape handling.</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="55">
+        <Description>
+            <Section>This section contains all primitives that are defined for the DTI2 SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to open or reset a DTI connection. It is sent in uplink direction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_CONNECT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="80"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>version</Name>
+                </ItemLink>
+                <Comment>version of DTI</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to open or reset a DTI connection. It is sent in downlink direction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_CONNECT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="80"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>version</Name>
+                </ItemLink>
+                <Comment>version of DTI</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI2_CONNECT_CNF is the response primitive to DTI2_CONNECT_REQ. On reception of this primitive the DTI connection is opened and in an initial state. Each side has to send a Flow Control primitive to receive a Data primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_CONNECT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="81"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>version</Name>
+                </ItemLink>
+                <Comment>Version of DTI</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI2_CONNECT_RES is the response primitive to DTI2_CONNECT_IND. On reception of this primitive the DTI connection is opened and in an initial state. Each side has to send a Flow Control primitive to receive a Data primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_CONNECT_RES</Name>
+                <PrimID Direction="UPLINK" Number="81"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>version</Name>
+                </ItemLink>
+                <Comment>Version of DTI</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to close a DTI connection. It is sent in uplink direction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_DISCONNECT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="82"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Cause of disconnection</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used to close a DTI connection. It is sent in downlink direction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_DISCONNECT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="82"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Cause of disconnection</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI2_GETDATA_REQ is used for flow control and indicates that the sender of the primitive is ready to get the next DTI2_DATA_IND primitive. It is sent in uplink direction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_GETDATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="83"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>transmission unit identifier added and primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>added channel identifier, operation mode</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>link identifier is the only parameter in the primitive</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI2_READY_IND is used for flow control and indicates that the sender of the primitive is ready to get the next DTI2_DATA_REQ primitive. It is sent in downlink direction.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_READY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="83"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>transmission unit identifier added and primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>added channel identifier, operation mode</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>link identifier is the only parameter in the primitive</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI2_DATA_IND is used to pass on data to the neighbor entity. Before an entity can send this Data primitive it must have received a DTI2_GETDATA_REQ Flow Control primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="84"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>parameters</Name>
+                </ItemLink>
+                <Comment>Additional parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>desc_list2</Name>
+                </ItemLink>
+                <Comment>list of generic data descriptors</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>transmission unit identifier added and primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>added channel identifier, operation mode, protocol identifier</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>States for NT CSD added</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>c_id, op_ack and tui removed; link_id added</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>additional parameters structure added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name, Id and desc changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI2_DATA_REQ is used to pass on data to the neighbor entity. Before an entity can send this Data primitive it must have received a DTI2_READY_IND Flow Control primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="84"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>parameters</Name>
+                </ItemLink>
+                <Comment>Additional parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>desc_list2</Name>
+                </ItemLink>
+                <Comment>list of generic data descriptors</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>transmission unit identifier added and primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="4" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>added channel identifier, operation mode, protocol identifier</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>States for NT CSD added</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>c_id, op_ack and tui removed; link_id added</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>additional parameters structure added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name, Id and desc changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI2_DATA_TEST_IND is the test primitive of DTI2_DATA_IND.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_DATA_TEST_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="85"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>parameters</Name>
+                </ItemLink>
+                <Comment>Additional parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>test data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>c_id, op_ack and tui removed; link_id added</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>additional parameters structure added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI2_DATA_TEST_REQ is the test primitive of DTI2_DATA_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_DATA_TEST_REQ</Name>
+                <PrimID Direction="UPLINK" Number="85"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>parameters</Name>
+                </ItemLink>
+                <Comment>Additional parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>test data</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>c_id, op_ack and tui removed; link_id added</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>additional parameters structure added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>DTI2_DUMMY_REQ is there to avoid a warning during compilation. It creates a reference on the parameter desc. Otherwise the compiler gives a warning, that the parameter desc is defined but not used.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DTI2_DUMMY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="86"/>
+                <PrimUsage>
+                    <Sender>UL</Sender>
+                    <Receiver>DTI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>desc2</Name>
+                </ItemLink>
+                <Comment>generic data descriptor</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="5" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="2" Year="2001"/>
+                <Author>xof</Author>
+                <Comment>Id corrected</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Name and Id changed.</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter defines a list of data descriptors.</Section>
+                <Section>It is implemented as a linked list where the element 'first' is a pointer to the first generic data descriptor (see 4.2).</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>desc_list2</Name>
+                <Comment>List of generic data descriptors</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>list_len</Name>
+                </ItemLink>
+                <Comment>length in octets of whole data</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>first</Name>
+                </ItemLink>
+                <Comment>pointer to first generic data descriptor</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>desc_list changed.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'offset' contains the number of octets before the first valid octet within the data buffer. The member 'len' contains the number of valid octets within the data buffer. The member 'size' contains the number of octets of the data buffer. The member 'buffer' is the data buffer and contains the content of the descriptor. The size of the descriptor content is specified when the descriptor is allocated.</Section>
+                <Section>The following expression must always be true: size >= offset + len</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>desc2</Name>
+                <Comment>generic data descriptor</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>next</Name>
+                </ItemLink>
+                <Comment>next generic data descriptor</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>offset</Name>
+                </ItemLink>
+                <Comment>offset in octets</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>len</Name>
+                </ItemLink>
+                <Comment>length of content in octets</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>size</Name>
+                </ItemLink>
+                <Comment>size of buffer in octets</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>buffer</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>buffer content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>offset and size added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Desc changed.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the data.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>test data</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>test data</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains additional information.</Section>
+                <Section>The p_id parameter indicates the type of protocol contained in the Data primitive.</Section>
+                <Section>The st_lines strucure defines the line states of a serial link (see 4.8).</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>parameters</Name>
+                <Comment>Additional parameters</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>p_id</Name>
+                </ItemLink>
+                <Comment>protocol identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>st_lines</Name>
+                </ItemLink>
+                <Comment>serial line states</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This strucure defines the line states of a serial link.</Section>
+                <Section>The parameter st_flow defines the flow control of the serial link. The state of the flow control can be mapped onto the X bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_FLOW_ON as a default.</Section>
+                <Section>The parameter st_line_sa defines the status bit SA, which can be mapped onto the SA bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SA_ON as a default.</Section>
+                <Section>The parameter st_line_sb defines the status bit SB, which can be mapped onto the SB bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SB_ON as a default.</Section>
+                <Section>The parameter st_break_len indicates break status. As default it should be set to DTI_BREAK_OFF indicating that break was not detected. If break is detected st_break_len must hold the bit length of the break.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>st_lines</Name>
+                <Comment>Serial line states</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>st_flow</Name>
+                </ItemLink>
+                <Comment>flow control state</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>st_line_sa</Name>
+                </ItemLink>
+                <Comment>line state sa</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>st_line_sb</Name>
+                </ItemLink>
+                <Comment>line state sb</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dti2</DocName>
+                    <Name>st_break_len</Name>
+                </ItemLink>
+                <Comment>break length</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="9" Year="2001"/>
+                <Author>PHE</Author>
+                <Comment>st_escape removed and st_break_len added.</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines a list of data descriptors.</Section>
+                <Section>It is implemented as a linked list where the element 'first' is a pointer to the first generic data descriptor (see 4.2).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>list_len</Name>
+                <Type>U16</Type>
+                <Comment>length in octets of whole data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>desc_list changed.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines a list of data descriptors.</Section>
+                <Section>It is implemented as a linked list where the element 'first' is a pointer to the first generic data descriptor (see 4.2).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>first</Name>
+                <Type>U32</Type>
+                <Comment>pointer to first generic data descriptor</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>desc_list changed.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'offset' contains the number of octets before the first valid octet within the data buffer. The member 'len' contains the number of valid octets within the data buffer. The member 'size' contains the number of octets of the data buffer. The member 'buffer' is the data buffer and contains the content of the descriptor. The size of the descriptor content is specified when the descriptor is allocated.</Section>
+                <Section>The following expression must always be true: size &amp;gt;= offset + len</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>next</Name>
+                <Type>U32</Type>
+                <Comment>next generic data descriptor</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>offset and size added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Desc changed.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'offset' contains the number of octets before the first valid octet within the data buffer. The member 'len' contains the number of valid octets within the data buffer. The member 'size' contains the number of octets of the data buffer. The member 'buffer' is the data buffer and contains the content of the descriptor. The size of the descriptor content is specified when the descriptor is allocated.</Section>
+                <Section>The following expression must always be true: size &amp;gt;= offset + len</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>offset</Name>
+                <Type>U16</Type>
+                <Comment>offset in octets</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>offset and size added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Desc changed.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'offset' contains the number of octets before the first valid octet within the data buffer. The member 'len' contains the number of valid octets within the data buffer. The member 'size' contains the number of octets of the data buffer. The member 'buffer' is the data buffer and contains the content of the descriptor. The size of the descriptor content is specified when the descriptor is allocated.</Section>
+                <Section>The following expression must always be true: size &amp;gt;= offset + len</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>len</Name>
+                <Type>U16</Type>
+                <Comment>length of content in octets</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>offset and size added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Desc changed.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'offset' contains the number of octets before the first valid octet within the data buffer. The member 'len' contains the number of valid octets within the data buffer. The member 'size' contains the number of octets of the data buffer. The member 'buffer' is the data buffer and contains the content of the descriptor. The size of the descriptor content is specified when the descriptor is allocated.</Section>
+                <Section>The following expression must always be true: size &amp;gt;= offset + len</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>size</Name>
+                <Type>U16</Type>
+                <Comment>size of buffer in octets</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>offset and size added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Desc changed.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is one element of the linked list of generic data descriptors.</Section>
+                <Section>The member 'next' contains a pointer to the next descriptor or NULL if this is the last descriptor. The member 'offset' contains the number of octets before the first valid octet within the data buffer. The member 'len' contains the number of valid octets within the data buffer. The member 'size' contains the number of octets of the data buffer. The member 'buffer' is the data buffer and contains the content of the descriptor. The size of the descriptor content is specified when the descriptor is allocated.</Section>
+                <Section>The following expression must always be true: size &amp;gt;= offset + len</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buffer</Name>
+                <Type>U8</Type>
+                <Comment>buffer content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="1" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>offset and size added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2001"/>
+                <Author>CLA</Author>
+                <Comment>Desc changed.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Every DTI connection has this unique identifier. It is included in all DTI primitives.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>link_id</Name>
+                <Type>U32</Type>
+                <Comment>link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>To be compatible with earlier versions of DTI this parameter is used negotiate the DTI version which both DTI peers have to use.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>version</Name>
+                <Type>U32</Type>
+                <Comment>Version of DTI</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti2</DocName>
+                <Name>VAL_version</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="9" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the reason why an entity sends the Disconnect primitive.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U8</Type>
+                <Comment>cause of disconnection</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti2</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="29" Month="11" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used for test cases. It contains the data.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>test data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains additional information.</Section>
+                <Section>The p_id parameter indicates the type of protocol contained in the Data primitive.</Section>
+                <Section>The st_lines strucure defines the line states of a serial link (see 4.8).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p_id</Name>
+                <Type>U8</Type>
+                <Comment>protocol identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti2</DocName>
+                <Name>VAL_p_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This strucure defines the line states of a serial link.</Section>
+                <Section>The parameter st_flow defines the flow control of the serial link. The state of the flow control can be mapped onto the X bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_FLOW_ON as a default.</Section>
+                <Section>The parameter st_line_sa defines the status bit SA, which can be mapped onto the SA bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SA_ON as a default.</Section>
+                <Section>The parameter st_line_sb defines the status bit SB, which can be mapped onto the SB bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SB_ON as a default.</Section>
+                <Section>The parameter st_break_len indicates break status. As default it should be set to DTI_BREAK_OFF indicating that break was not detected. If break is detected st_break_len must hold the bit length of the break.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>st_flow</Name>
+                <Type>U8</Type>
+                <Comment>flow control state</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti2</DocName>
+                <Name>VAL_st_flow</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="9" Year="2001"/>
+                <Author>PHE</Author>
+                <Comment>st_escape removed and st_break_len added.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This strucure defines the line states of a serial link.</Section>
+                <Section>The parameter st_flow defines the flow control of the serial link. The state of the flow control can be mapped onto the X bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_FLOW_ON as a default.</Section>
+                <Section>The parameter st_line_sa defines the status bit SA, which can be mapped onto the SA bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SA_ON as a default.</Section>
+                <Section>The parameter st_line_sb defines the status bit SB, which can be mapped onto the SB bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SB_ON as a default.</Section>
+                <Section>The parameter st_break_len indicates break status. As default it should be set to DTI_BREAK_OFF indicating that break was not detected. If break is detected st_break_len must hold the bit length of the break.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>st_line_sa</Name>
+                <Type>U8</Type>
+                <Comment>line state sa</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti2</DocName>
+                <Name>VAL_st_line_sa</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="9" Year="2001"/>
+                <Author>PHE</Author>
+                <Comment>st_escape removed and st_break_len added.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This strucure defines the line states of a serial link.</Section>
+                <Section>The parameter st_flow defines the flow control of the serial link. The state of the flow control can be mapped onto the X bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_FLOW_ON as a default.</Section>
+                <Section>The parameter st_line_sa defines the status bit SA, which can be mapped onto the SA bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SA_ON as a default.</Section>
+                <Section>The parameter st_line_sb defines the status bit SB, which can be mapped onto the SB bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SB_ON as a default.</Section>
+                <Section>The parameter st_break_len indicates break status. As default it should be set to DTI_BREAK_OFF indicating that break was not detected. If break is detected st_break_len must hold the bit length of the break.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>st_line_sb</Name>
+                <Type>U8</Type>
+                <Comment>line state sb</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti2</DocName>
+                <Name>VAL_st_line_sb</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="9" Year="2001"/>
+                <Author>PHE</Author>
+                <Comment>st_escape removed and st_break_len added.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This strucure defines the line states of a serial link.</Section>
+                <Section>The parameter st_flow defines the flow control of the serial link. The state of the flow control can be mapped onto the X bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_FLOW_ON as a default.</Section>
+                <Section>The parameter st_line_sa defines the status bit SA, which can be mapped onto the SA bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SA_ON as a default.</Section>
+                <Section>The parameter st_line_sb defines the status bit SB, which can be mapped onto the SB bit of a V110 frame (ISDN). If this parameter is not used it should be set to DTI_SB_ON as a default.</Section>
+                <Section>The parameter st_break_len indicates break status. As default it should be set to DTI_BREAK_OFF indicating that break was not detected. If break is detected st_break_len must hold the bit length of the break.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>st_break_len</Name>
+                <Type>U16</Type>
+                <Comment>break length</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dti2</DocName>
+                <Name>VAL_st_break_len</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="1" Month="12" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="9" Year="2001"/>
+                <Author>PHE</Author>
+                <Comment>st_escape removed and st_break_len added.</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the DTI2 SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_version</Name>
+                <Comment>values for version</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_VERSION_10</Alias>
+                <Comment>version 1.0</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_CAUSE_NORMAL_CLOSE</Alias>
+                <Comment>connection is closed by the entity</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_CAUSE_UNEXPECTED_PRIMITIVE</Alias>
+                <Comment>unexpected primitive received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DTI_CAUSE_UNSUPPORTED_VERSION</Alias>
+                <Comment>negotiated version is not supported</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_p_id</Name>
+                <Comment>values for p_id</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">21</Value>
+                <Alias>DTI_PID_IP</Alias>
+                <Comment>simple ip packet</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">2D</Value>
+                <Alias>DTI_PID_CTCP</Alias>
+                <Comment>Van Jacobson compressed TCP/IP header</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">2F</Value>
+                <Alias>DTI_PID_UTCP</Alias>
+                <Comment>Van Jacobson uncompressed TCP/IP header</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>DTI_PID_UOS</Alias>
+                <Comment>unstructured octet stream</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_st_break_len</Name>
+                <Comment>values for st_break_len</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_BREAK_OFF</Alias>
+                <Comment>No break detected</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_st_flow</Name>
+                <Comment>values for st_flow</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_FLOW_ON</Alias>
+                <Comment>flow control is inactive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_FLOW_OFF</Alias>
+                <Comment>flow control is active</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_st_line_sa</Name>
+                <Comment>values for st_line_sa</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_SA_ON</Alias>
+                <Comment>SA is inactive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_SA_OFF</Alias>
+                <Comment>SA is active</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_st_line_sb</Name>
+                <Comment>values for st_line_sb</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DTI_SB_ON</Alias>
+                <Comment>SB is inactive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DTI_SB_OFF</Alias>
+                <Comment>SB is active</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

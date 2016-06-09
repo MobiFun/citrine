@@ -1,0 +1,525 @@
+;********************************************************************************
+;*** File           : mmi.pdf
+;*** Creation       : Wed Mar 11 09:58:20 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mmi
+;*** Document No.   : 6147.113.97.103
+;*** Document Date  : 2004-08-20
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: FMA
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:46:32 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-08-20"
+PRAGMA 	ID_AND_VERSION 	"6147.113.97.103"
+
+
+
+CONST 	CBCH_MSG_LEN 	88 	; length of a CBCH message
+CONST 	MAX_SDU_LEN 	1 	; length of service data unit for the display request
+CONST 	MAX_IDENTS 	20 	; maximum identifiers
+CONST 	MAX_IDENTS_SAT 	15 	; maximum identifiers for SIM Application Toolkit
+CONST 	MAX_RPD_MSG_LEN 	120 	; maximum size of message to ESIM RPD
+
+
+
+VALTAB 	VAL_control
+VAL 	0 	CTL_NORMAL 	"normal operation"
+VAL 	1 	CTL_HIDDEN 	"hidden attribut (used for cursor control)"
+
+VALTAB 	VAL_content
+VAL 	1 	CON_TEXT 	"sdu contains text"
+VAL 	2 	CON_CURSOR 	"positioning the cursor"
+
+VALTAB 	VAL_call_tone
+VAL 	1 - 15 	"custom specific ringing tones"
+VAL 	0 	CT_RING 	"ringing tone"
+VAL 	16 	CT_AUTH_NUM_UNOBTAIN 	"authentication or number unobtainable"
+VAL 	17 	CT_BUSY 	"busy tone"
+VAL 	18 	CT_CONGESTION 	"congestion tone"
+VAL 	19 	CT_CALL_DROPPED 	"call dropped"
+VAL 	20 	CT_RADIO_ACK 	"radio acknowledge"
+VAL 	21 	CT_CALL_WAIT 	"call waiting"
+VAL 	22 	DTMF_0 	"digit 0"
+VAL 	23 	DTMF_1 	"digit 1"
+VAL 	24 	DTMF_2 	"digit 2"
+VAL 	25 	DTMF_3 	"digit 3"
+VAL 	26 	DTMF_4 	"digit 4"
+VAL 	27 	DTMF_5 	"digit 5"
+VAL 	28 	DTMF_6 	"digit 6"
+VAL 	29 	DTMF_7 	"digit 7"
+VAL 	30 	DTMF_8 	"digit 8"
+VAL 	31 	DTMF_9 	"digit 9"
+VAL 	32 	DTMF_A 	"character A"
+VAL 	33 	DTMF_B 	"character B"
+VAL 	34 	DTMF_C 	"character C"
+VAL 	35 	DTMF_D 	"character D"
+VAL 	36 	DTMF_STAR 	"character *"
+VAL 	37 	DTMF_HASH 	"character #"
+VAL 	38 	CT_KEYBEEP 	"Keybeep"
+VAL 	39 	CT_RINGING 	"ringing tone"
+
+VALTAB 	VAL_key_stat
+VAL 	0 	KEY_STAT_PRS 	"pressed"
+VAL 	1 	KEY_STAT_REL 	"released"
+
+VALTAB 	VAL_mute_stat
+VAL 	0 	MUTE_STAT_OFF 	"audio path is not muted"
+VAL 	1 	MUTE_STAT_ON 	"audio path is muted"
+
+VALTAB 	VAL_speech_stat
+VAL 	0 	SPEECH_STAT_OFF 	"audio path switched off"
+VAL 	1 	SPEECH_STAT_ON 	"audio path switched on"
+
+VALTAB 	VAL_tone_stat
+VAL 	0 	TONE_SWT_OFF 	"switch off"
+VAL 	1 	TONE_SWT_ON_SINGLE 	"switch on one time"
+VAL 	2 	TONE_SWT_ON_PERIODIC 	"switch on periodically"
+VAL 	3 	TONE_SWT_ON_SILENT 	"switch on silent"
+
+VALTAB 	VAL_mode
+VAL 	0 	INDICATION_SINGLE 	"one single request"
+VAL 	1 	INDICATION_ON_CHANGE 	"new indication after intervall change"
+VAL 	2 	INDICATION_PERIODIC 	"new indication after time period"
+VAL 	3 	INDICATION_OFF 	"no further indications"
+
+VALTAB 	VAL_modus
+VAL 	0 	CBCH_ACCEPT 	"accept msg_id and dcs_id"
+VAL 	1 	CBCH_IGNORE 	"ignore msg_id and dcs_id"
+VAL 	2 	CBCH_HOMEZONE 	"Request homezone message after cell reseletion"
+VAL 	255 	MMI_CBCH_STOP 	"stop cbch reading"
+
+VALTAB 	VAL_ids_mode
+VAL 	0 	IDS_SPEECH 	"Speech mode"
+VAL 	1 	IDS_T_DATA 	"Transparent Data"
+VAL 	2 	IDS_T_FAX 	"Transparent Fax"
+VAL 	5 	IDS_NT_DATA 	"Non-Transparent Data"
+VAL 	6 	IDS_NT_FAX 	"Non-Transparent Fax"
+
+VALTAB 	VAL_vocoder_state
+VAL 	0 	VOCODER_DISABLE 	"Enable the vocoder"
+VAL 	1 	VOCODER_ENABLE 	"Disable the vocoder"
+
+
+
+
+VAR 	content 	"content type" 	S
+
+VAL 	@p_mmi - VAL_content@ 	
+
+VAR 	control 	"control" 	S
+
+VAL 	@p_mmi - VAL_control@ 	
+
+VAR 	bl_level 	"Backlight Level in percent" 	B
+
+
+VAR 	call_tone 	"Call tone" 	B
+
+VAL 	@p_mmi - VAL_call_tone@ 	
+
+VAR 	cbch_msg 	"CBCH message" 	B
+
+
+VAR 	msg_id 	"CBCH message identifier" 	S
+
+
+VAR 	rxlev 	"Fieldstrength of the serving cell" 	B
+
+
+VAR 	key_code 	"Keypad Code" 	B
+
+
+VAR 	key_stat 	"Key Status" 	B
+
+VAL 	@p_mmi - VAL_key_stat@ 	
+
+VAR 	mute_stat 	"Mute Status" 	B
+
+VAL 	@p_mmi - VAL_mute_stat@ 	
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"buffer content" 	B
+
+
+VAR 	speech_stat 	"Speech Status" 	B
+
+VAL 	@p_mmi - VAL_speech_stat@ 	
+
+VAR 	temp 	"Battery Temperature" 	B
+
+
+VAR 	tone_stat 	"Tone Status" 	B
+
+VAL 	@p_mmi - VAL_tone_stat@ 	
+
+VAR 	volt 	"Battery Voltage" 	B
+
+
+VAR 	volume 	"volume in percent" 	B
+
+
+VAR 	no_intervalls 	"number of intervalls" 	B
+
+
+VAR 	mode 	"operaton mode" 	B
+
+VAL 	@p_mmi - VAL_mode@ 	
+
+VAR 	period 	"time period" 	S
+
+
+VAR 	c_x 	"coordinate X" 	S
+
+
+VAR 	c_y 	"coordinate Y" 	S
+
+
+VAR 	dcs_id 	"CBCH data coding schemes" 	B
+
+
+VAR 	modus 	"CBCH use" 	B
+
+VAL 	@p_mmi - VAL_modus@ 	
+
+VAR 	ids_mode 	"IDS mode" 	B
+
+VAL 	@p_mmi - VAL_ids_mode@ 	
+
+VAR 	cbch_len 	"CBCH length" 	B
+
+
+VAR 	count 	"no. of msg id's" 	S
+
+
+VAR 	rpd_msg_id 	"Basic Element" 	S
+
+
+VAR 	rpd_msg 	"Basic Element" 	B
+
+
+VAR 	gil_cb 	"Function callback" 	L
+
+
+VAR 	gil_data 	"Message data" 	L
+
+
+VAR 	vocoder_state 	"Vocoder state" 	B
+
+VAL 	@p_mmi - VAL_vocoder_state@ 	
+
+VAR 	headset_status 	"Headset status" 	B
+
+
+VAR 	carkit_status 	"status" 	B
+
+
+
+
+
+COMP 	attrib 	 "Attribute"
+{
+ 	content 	 ; content type
+ 	control 	 ; control
+}
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[MAX_SDU_LEN] 	 ; buffer content
+}
+
+
+
+
+
+
+; MMI_KEYPAD_IND 	0x4E00
+; MMI_AUDIO_INPUT_REQ 	0x0E00
+; MMI_AUDIO_OUTPUT_REQ 	0x0E01
+; MMI_SPEECH_MODE_REQ 	0x0E02
+; MMI_AUDIO_MUTE_REQ 	0x0E03
+; MMI_AUDIO_TONE_REQ 	0x0E05
+; MMI_BACKLIGHT_REQ 	0x0E06
+; MMI_CBCH_REQ 	0x0E07
+; MMI_CBCH_IND 	0x4E01
+; MMI_RXLEV_REQ 	0x0E08
+; MMI_RXLEV_IND 	0x4E02
+; MMI_BATTERY_REQ 	0x0E09
+; MMI_BATTERY_IND 	0x4E03
+; MMI_DISPLAY_REQ 	0x0E0A
+; MMI_SAT_CBCH_DWNLD_REQ 	0x0E0B
+; MMI_SAT_CBCH_DWNLD_IND 	0x4E04
+; MMI_BT_CB_NOTIFY_IND 	0x4E05
+; MMI_RPD_MSG 	0x4E06
+; MMI_GIL_IND 	0x4E07
+; MMI_TCH_VOCODER_CFG_REQ 	0x0E0C
+; MMI_TCH_VOCODER_CFG_CON 	0x4E08
+; MMI_HEADSET_IND 	0x4E0C
+; MMI_CARKIT_IND 	0x4E0D
+
+
+
+PRIM 	MMI_KEYPAD_IND 	0x4E00
+{
+ 	key_code 	 ; key code
+ 	key_stat 	 ; key status
+}
+
+
+
+
+
+
+PRIM 	MMI_AUDIO_INPUT_REQ 	0x0E00
+{
+ 	volume 	 ; input volume
+}
+
+
+
+
+
+
+PRIM 	MMI_AUDIO_OUTPUT_REQ 	0x0E01
+{
+ 	volume 	 ; output volume
+}
+
+
+
+
+
+
+PRIM 	MMI_SPEECH_MODE_REQ 	0x0E02
+{
+ 	speech_stat 	 ; speech status
+ 	ids_mode 	 ; Ids mode
+}
+
+
+
+
+
+
+PRIM 	MMI_AUDIO_MUTE_REQ 	0x0E03
+{
+ 	mute_stat 	 ; mute status
+}
+
+
+
+
+
+
+PRIM 	MMI_AUDIO_TONE_REQ 	0x0E05
+{
+ 	tone_stat 	 ; tone status
+ 	volume 	 ; volume
+ 	call_tone 	 ; call tone
+}
+
+
+
+
+
+
+PRIM 	MMI_BACKLIGHT_REQ 	0x0E06
+{
+ 	bl_level 	 ; backlight level
+}
+
+
+
+
+
+
+PRIM 	MMI_CBCH_REQ 	0x0E07
+{
+ 	msg_id 	[MAX_IDENTS] 	 ; Message Identifier
+ 	dcs_id 	[MAX_IDENTS] 	 ; Data Coding Scheme
+ 	modus 	 ; mode
+}
+
+
+
+
+
+
+PRIM 	MMI_CBCH_IND 	0x4E01
+{
+ 	cbch_msg 	[CBCH_MSG_LEN] 	 ; CBCH message
+ 	cbch_len 	 ; CBCH length
+}
+
+
+
+
+
+
+PRIM 	MMI_RXLEV_REQ 	0x0E08
+{
+ 	mode 	 ; request mode
+ 	no_intervalls 	 ; no of intervalls
+ 	period 	 ; period
+}
+
+
+
+
+
+
+PRIM 	MMI_RXLEV_IND 	0x4E02
+{
+ 	rxlev 	 ; fieldstrength
+}
+
+
+
+
+
+
+PRIM 	MMI_BATTERY_REQ 	0x0E09
+{
+ 	mode 	 ; request mode
+ 	no_intervalls 	 ; no of intervalls
+ 	period 	 ; period
+}
+
+
+
+
+
+
+PRIM 	MMI_BATTERY_IND 	0x4E03
+{
+ 	temp 	 ; temperature
+ 	volt 	 ; voltage
+}
+
+
+
+
+
+
+PRIM 	MMI_DISPLAY_REQ 	0x0E0A
+{
+ 	attrib 	 ; attribute
+ 	c_y 	 ; y-coordinate
+ 	c_x 	 ; x-coordinate
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMI_SAT_CBCH_DWNLD_REQ 	0x0E0B
+{
+ 	count 	 ; Size
+ 	msg_id 	[MAX_IDENTS_SAT] 	 ; Message Identifier
+}
+
+
+
+
+
+
+PRIM 	MMI_SAT_CBCH_DWNLD_IND 	0x4E04
+{
+ 	cbch_msg 	[CBCH_MSG_LEN] 	 ; CBCH message
+ 	cbch_len 	 ; CBCH length
+}
+
+
+
+
+
+
+PRIM 	MMI_BT_CB_NOTIFY_IND 	0x4E05
+{
+}
+
+
+
+
+
+
+PRIM 	MMI_RPD_MSG 	0x4E06
+{
+ 	rpd_msg_id 	 ; Primitive Item
+ 	rpd_msg 	[MAX_RPD_MSG_LEN] 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MMI_GIL_IND 	0x4E07
+{
+ 	gil_cb 	 ; GIL callback function
+ 	gil_data 	 ; GIL data argument of the callback function
+}
+
+
+
+
+
+
+PRIM 	MMI_TCH_VOCODER_CFG_REQ 	0x0E0C
+{
+ 	vocoder_state 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MMI_TCH_VOCODER_CFG_CON 	0x4E08
+{
+}
+
+
+
+
+
+
+PRIM 	MMI_HEADSET_IND 	0x4E0C
+{
+ 	headset_status 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MMI_CARKIT_IND 	0x4E0D
+{
+ 	carkit_status 	 ; Primitive Item
+}
+
+
+
+
+
+
+
+
+

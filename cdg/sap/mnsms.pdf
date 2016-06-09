@@ -1,0 +1,648 @@
+;********************************************************************************
+;*** File           : mnsms.pdf
+;*** Creation       : Wed Mar 11 09:58:26 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mnsms
+;*** Document No.   : 6147.103.96.107
+;*** Document Date  : 2002-04-19
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SBK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:48:28 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-04-19"
+PRAGMA 	ID_AND_VERSION 	"6147.103.96.107"
+
+
+
+CONST 	SMS_MSG_LEN 	140 	; Length of message text counted as octets
+CONST 	SMS_CMD_LEN 	157 	; Length of command data (number of octets)
+CONST 	SIM_PDU_LEN 	175 	; Length of SMS data stored in nonvolatile memory (SIM/ME)
+EXTERN CONST 	@p_gsmcom - SMSCP_ORIGINATING_ENTITY@ 	SMSCP_ORIGINATING_ENTITY 	; mask for indicating the originating entity of a cause is SMS-CP
+EXTERN CONST 	@p_gsmcom - SMSRP_ORIGINATING_ENTITY@ 	SMSRP_ORIGINATING_ENTITY 	; mask for indicating the originating entity of a cause is SMS-RP
+EXTERN CONST 	@p_gsmcom - SMSTP_ORIGINATING_ENTITY@ 	SMSTP_ORIGINATING_ENTITY 	; mask for indicating the originating entity of a cause is SMS-CP
+
+
+
+VALTAB 	VAL_mem_type
+VAL 	1 	MEM_ME 	"mobile equipment memory 1"
+VAL 	3 	MEM_SM 	"subscriber identity module memory"
+VAL 	5 	MEM_SR 	"status report memory"
+
+VALTAB 	VAL_cause
+VAL 	0b1000100111111111 	SMS_NO_ERROR 	"No error"
+VAL 	0b1100100100000000 	SMS_CAUSE_PARAM_WRONG 	"Wrong parameter in primitive"
+VAL 	0b1100100100000001 	SMS_CAUSE_ENTITY_BUSY 	"Entity is busy"
+VAL 	0b1100100100000010 	SMS_CAUSE_OPER_NOT_ALLW 	"Operation not allowed"
+VAL 	0b1100100100000011 	SMS_CAUSE_OPER_NOT_SUPP 	"Operation not supported"
+VAL 	0b1100100100000100 	SMS_CAUSE_SIM_BUSY 	"SIM busy"
+VAL 	0b1100100100000101 	SMS_CAUSE_MEM_FAIL 	"Memory failure"
+VAL 	0b1100100100000110 	SMS_CAUSE_INV_INDEX 	"Invalid memory index"
+VAL 	0b1100100100001000 	SMS_CAUSE_MEM_FULL 	"Memory full"
+VAL 	0b1100100100001001 	SMS_CAUSE_NO_SERVICE 	"No network service"
+VAL 	0b1100100100001010 	SMS_CAUSE_NET_TIMEOUT 	"Network timeout"
+VAL 	0b1100100100001011 	SMS_CAUSE_UNEXP_CNMA 	"No +CNMA acknowledgement expected"
+VAL 	0b1100100100001111 	SMS_CAUSE_OTHER_ERROR 	"Any other error"
+VAL 	0b1100100100001100 	SMS_CAUSE_MEM_AVAIL 	"Memory available after full"
+VAL 	0b1100100100001110 	SMS_CAUSE_FAILED_MSG_NOT_FOUND 	%REL99% 	"Failed Message not found during Transmission"
+
+VALTAB 	VAL_state
+VAL 	0x3 - 0xFE 	"reserved, to be treated as SMS inoperable"
+VAL 	0 	SMS_STATE_READY 	"SMS is full operable"
+VAL 	1 	SMS_STATE_INITIALISING 	"SMS is in initialisation state"
+VAL 	2 	SMS_STATE_BUSY 	"SMS is in a busy condition"
+VAL 	0xFF 	SMS_STATE_NOT_AVAILABLE 	"SMS is inoperable"
+
+VALTAB 	VAL_condx
+VAL 	3 - 255 	"reserved, interpret as 'overwrite any'"
+VAL 	0 	SMS_CONDX_OVR_NON 	"do not overwrite an existing message"
+VAL 	1 	SMS_CONDX_OVR_MO 	"overwrite only an exisiting mobile originated message"
+VAL 	2 	SMS_CONDX_OVR_ANY 	"overwrite any existing message"
+
+VALTAB 	VAL_modify
+VAL 	5 - 255 	"reserved, interpret as 'complete substitution'"
+VAL 	0 	SMS_MODIFY_NON 	"no modification"
+VAL 	1 	SMS_MODIFY_TPOA 	"substitution of TP-OA"
+VAL 	2 	SMS_MODIFY_SCA 	"substitution of SCA"
+VAL 	3 	SMS_MODIFY_TPOA_SCA 	"substitution of TP-OA and SCA"
+VAL 	4 	SMS_MODIFY_ALL 	"substitution of the complete message"
+
+VALTAB 	VAL_rec_num
+VAL 	0x0 	SMS_RECORD_NOT_EXIST 	"record is not existing"
+
+VALTAB 	VAL_status
+VAL 	0x0 	SMS_RECORD_FREE 	"Free record"
+VAL 	0x3 	SMS_RECORD_REC_UNREAD 	"MT record, not read"
+VAL 	0x1 	SMS_RECORD_REC_READ 	"MT record, already read"
+VAL 	0x7 	SMS_RECORD_STO_UNSENT 	"MO record, not sent"
+VAL 	0x5 	SMS_RECORD_STO_SENT 	"MO record, already sent, status report not requested"
+VAL 	0x0D 	SMS_RECORD_STAT_UNRCVD 	"MO record, already sent, status report requested, not received"
+VAL 	0x15 	SMS_RECORD_STAT_UNSTRD 	"MO record, already sent, status report received, not stored"
+VAL 	0x1D 	SMS_RECORD_STAT_STRD 	"MO record, already sent, status report received and stored"
+VAL 	0xE0 	SMS_RECORD_INVALID 	"The record keeps unrecognizable data"
+
+VALTAB 	VAL_mt
+VAL 	0 	MT0 	"Mobile Terminated Mode 0"
+VAL 	1 	MT1 	"Mobile Terminated Mode 1"
+VAL 	2 	MT2 	"Mobile Terminated Mode 2"
+VAL 	3 	MT3 	"Mobile Terminated Mode 3"
+VAL 	4 	MT_DEF 	"Mobile Terminated Mode Default"
+
+VALTAB 	VAL_ds
+VAL 	0 	DS0 	"Status Report Mode 0: no status report to be returned"
+VAL 	1 	DS1 	"Status Report Mode 1: status report returned to MMI"
+VAL 	2 	DS2 	"Status Report Mode 2: status report stored, if possible"
+
+VALTAB 	VAL_mhc
+VAL 	0 	SMS_MHC_DEF 	"default (Phase 2)"
+VAL 	2 	SMS_MHC_PH2 	"Phase 2"
+VAL 	3 	SMS_MHC_PH2PLUS 	"Phase 2+"
+
+VALTAB 	VAL_read_mode
+VAL 	0 	READ_NORMAL 	"Normal reading"
+VAL 	1 	READ_PREVIEW 	"Reading without preview"
+VAL 	2 	READ_STATUS_CHANGE 	"Change only status"
+
+VALTAB 	VAL_resp
+VAL 	0 	SMS_RP_ACK 	"send RP-ACK to network"
+VAL 	1 	SMS_RP_ERROR 	"send RP-ERROR to network"
+
+VALTAB 	VAL_mo_sms_serv
+VAL 	0 	GPRS_SMS_GPRS_ONLY 	"Use GPRS only for MO SMS"
+VAL 	1 	GPRS_SMS_CCT_ONLY 	"Use CCT  only for MO SMS"
+VAL 	2 	GPRS_SMS_GPRS_PREF 	"Use GPRS in preference for MO SMS"
+VAL 	3 	GPRS_SMS_CCT_PREF 	"Use CCT in preference for MO SMS"
+
+VALTAB 	VAL_query
+VAL 	1 	SMS_QUERY_DELIVER_STATUS 	"Query Request is for delivery status (pause or resume)"
+
+VALTAB 	VAL_deliver_status
+VAL 	0x10 	SMS_DELIVER_STATUS_PAUSE 	"SMS delivery paused by user"
+VAL 	0x11 	SMS_DELIVER_STATUS_RESUME 	"SMS delivery to user allowed"
+
+VALTAB 	VAL_cmms_mode
+VAL 	0 	CMMS_MODE_DEF 	"Default value of 0 for +CMMS mode. The mode switches to 0 when timer expires if the mode set was 1. "
+VAL 	1 	CMMS_MODE_ONE 	"Mode value of one for +CMMS mode. For this mode set, when the timer expires, mode is switched back to 0."
+VAL 	2 	CMMS_MODE_TWO 	"Mode value of two for +CMMS mode. For this mode set, even after the timer expiry mode is not switched to 0"
+
+VALTAB 	VAL_delete_status
+VAL 	0 	CMGD_DEL_INDEX 	"Delete the messages specified by the index."
+VAL 	1 	CMGD_DEL_READ 	"Ignore the index and delete all the read messages."
+VAL 	2 	CMGD_DEL_READ_SENT 	"Ignore the index and delete all the read and sent messages."
+VAL 	3 	CMGD_DEL_READ_SENT_UNSENT 	"Ignore the index and delete all the read, send and unsent messages."
+VAL 	4 	CMGD_DEL_ALL 	"Ignore the index and delete all the messages whatever the status it is."
+
+VALTAB 	VAL_auto_rep_flag 	%REL99%
+VAL 	0 	AUTO_REP_FLAG_DISABLED  	%REL99% 	"Do not attempt retransmission"
+VAL 	1 	AUTO_REP_FLAG_ENABLED 	%REL99% 	"Attempt retransmission  "
+
+
+
+
+VAR 	mem_type 	"memory type" 	B
+
+VAL 	@p_mnsms - VAL_mem_type@ 	
+
+VAR 	pref_mem_3 	"memory type" 	B
+
+
+VAR 	cause 	"error code" 	S
+
+VAL 	@p_mnsms - VAL_cause@ 	
+
+VAR 	state 	"State of the SMS Entity" 	B
+
+VAL 	@p_mnsms - VAL_state@ 	
+
+VAR 	condx 	"write condition" 	B
+
+VAL 	@p_mnsms - VAL_condx@ 	
+
+VAR 	tp_mr 	"TP message reference" 	B
+
+
+VAR 	modify 	"Modifier" 	B
+
+VAL 	@p_mnsms - VAL_modify@ 	
+
+VAR 	rec_num 	"record number" 	B
+
+VAL 	@p_mnsms - VAL_rec_num@ 	
+
+VAR 	rec_next 	"number of a following record with a valid message, if existent" 	B
+
+VAL 	@p_mnsms - VAL_rec_num@ 	
+
+VAR 	rec_max 	"maximum number of records (1..255) in EF(SMS) or other memory" 	B
+
+VAL 	@p_mnsms - VAL_rec_num@ 	
+
+VAR 	rec_status 	"number of a record in EF(SMSR) related to the given stored message" 	B
+
+VAL 	@p_mnsms - VAL_rec_num@ 	
+
+VAR 	status 	"message status" 	B
+
+VAL 	@p_mnsms - VAL_status@ 	
+
+VAR 	mt 	"mobile terminated message handling" 	B
+
+VAL 	@p_mnsms - VAL_mt@ 	
+
+VAR 	ds 	"status report message handling" 	B
+
+VAL 	@p_mnsms - VAL_ds@ 	
+
+VAR 	mhc 	"status report message handling" 	B
+
+VAL 	@p_mnsms - VAL_mhc@ 	
+
+VAR 	read_mode 	"Read Mode" 	B
+
+VAL 	@p_mnsms - VAL_read_mode@ 	
+
+VAR 	resp 	"type of response" 	B
+
+VAL 	@p_mnsms - VAL_resp@ 	
+
+VAR 	mo_sms_serv 	"MO SMS Service" 	B
+
+VAL 	@p_mnsms - VAL_mo_sms_serv@ 	
+
+VAR 	l_buf 	"command length" 	S
+
+
+VAR 	o_buf 	"command offset" 	S
+
+
+VAR 	buf 	"command data" 	B
+
+
+VAR 	query_type 	"specifies to which status the query request refers to" 	B
+
+VAL 	@p_mnsms - VAL_query@ 	
+
+VAR 	deliver_status 	"sms delivery status - pause or resume" 	B
+
+VAL 	@p_mnsms - VAL_deliver_status@ 	
+
+VAR 	cmms_mode 	"Specifies the mode for +CMMS" 	B
+
+VAL 	@p_mnsms - VAL_cmms_mode@ 	
+
+VAR 	tmms_val 	"Timer value for +CMMS command" 	S
+
+
+VAR 	delete_status 	"Delete flag" 	B
+
+VAL 	@p_mnsms - VAL_delete_status@ 	
+
+VAR 	delete_rec_next 	"Next Record to be deleted." 	B
+
+
+VAR 	data 	"IMEI  and category status of the mobile to be extracted from TP user data" 	B
+
+
+VAR 	len 	"length of the OTA response" 	B
+
+
+VAR 	packedlen 	"length of the OTA response" 	B
+
+
+VAR 	auto_rep_flag 	%REL99% 	"Added auto_rep_flag variable" 	B
+
+
+VAR 	resend_count 	%REL99% 	"To resend the count to MMI during retransmission" 	B
+
+
+VAR 	max_retrans 	%REL99% 	"Maximum number of retransmission allowed which is communicated to MMI" 	B
+
+
+
+
+
+COMP 	sms_sdu 	 "SIM-PDU"
+{
+ 	l_buf 	 ; command length
+ 	o_buf 	 ; command offset
+ 	buf 	[SIM_PDU_LEN] 	 ; command data
+}
+
+
+
+
+
+
+; MNSMS_MESSAGE_IND 	0x8008400D
+; MNSMS_REPORT_IND 	0x8006400D
+; MNSMS_STATUS_IND 	0x8007400D
+; MNSMS_DELETE_REQ 	0x8000000D
+; MNSMS_DELETE_CNF 	0x8000400D
+; MNSMS_READ_REQ 	0x8001000D
+; MNSMS_READ_CNF 	0x8001400D
+; MNSMS_STORE_REQ 	0x8002000D
+; MNSMS_STORE_CNF 	0x8002400D
+; MNSMS_SUBMIT_REQ 	0x8003000D
+; MNSMS_SUBMIT_CNF 	0x8003400D
+; MNSMS_COMMAND_REQ 	0x8004000D
+; MNSMS_COMMAND_CNF 	0x8004400D
+; MNSMS_ACK_RES 	0x8008000D
+; MNSMS_CONFIGURE_REQ 	0x8005000D
+; MNSMS_ERROR_IND 	0x8009400D
+; MNSMS_MO_SERV_REQ 	0x800C000D
+; MNSMS_MO_SERV_CNF 	0x800C400D
+; MNSMS_PAUSE_REQ 	0x8006000D
+; MNSMS_RESUME_REQ 	0x8007000D
+; MNSMS_RESUME_CNF 	0x800A400D
+; MNSMS_QUERY_REQ 	0x800B000D
+; MNSMS_QUERY_CNF 	0x800B400D
+; MNSMS_OTA_MESSAGE_IND 	0x800D400D
+; MNSMS_OTA_MESSAGE_RES 	0x800D000D
+; MNSMS_RETRANS_REQ 	0x8009000D
+; MNSMS_RETRANS_CNF 	0x8005400D
+; MNSMS_SEND_PROG_IND 	0x800E400D
+
+
+
+PRIM 	MNSMS_MESSAGE_IND 	0x8008400D
+{
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	rec_max 	 ; maximum number of records
+ 	status 	 ; sms status
+ 	sms_sdu 	 ; SIM-PDU
+}
+
+
+
+
+
+
+PRIM 	MNSMS_REPORT_IND 	0x8006400D
+{
+ 	state 	 ; SMS state
+ 	< () 	cmms_mode 	> 	 ; Mode value for +CMMS command
+}
+
+
+
+
+
+
+PRIM 	MNSMS_STATUS_IND 	0x8007400D
+{
+ 	sms_sdu 	 ; SIM-PDU
+}
+
+
+
+
+
+
+PRIM 	MNSMS_DELETE_REQ 	0x8000000D
+{
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	delete_status 	 ; Delete flag
+}
+
+
+
+
+
+
+PRIM 	MNSMS_DELETE_CNF 	0x8000400D
+{
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	cause 	 ; Error code
+ 	delete_rec_next 	 ; Next Record
+}
+
+
+
+
+
+
+PRIM 	MNSMS_READ_REQ 	0x8001000D
+{
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	read_mode 	 ; read mode
+ 	status 	 ; message status
+}
+
+
+
+
+
+
+PRIM 	MNSMS_READ_CNF 	0x8001400D
+{
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	rec_next 	 ; number of next record
+ 	rec_max 	 ; maximum number of records
+ 	cause 	 ; Error code
+ 	rec_status 	 ; status record
+ 	status 	 ; message status
+ 	sms_sdu 	 ; SIM-PDU
+}
+
+
+
+
+
+
+PRIM 	MNSMS_STORE_REQ 	0x8002000D
+{
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	condx 	 ; write condition
+ 	status 	 ; message status
+ 	sms_sdu 	 ; SIM-PDU
+}
+
+
+
+
+
+
+PRIM 	MNSMS_STORE_CNF 	0x8002400D
+{
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	cause 	 ; Error code
+}
+
+
+
+
+
+
+PRIM 	MNSMS_SUBMIT_REQ 	0x8003000D
+{
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	condx 	 ; write condition
+ 	modify 	 ; Modifier
+ 	auto_rep_flag 	 	%REL99% ; Automatic repeat
+ 	sms_sdu 	 ; SIM-PDU
+}
+
+
+
+
+
+
+PRIM 	MNSMS_SUBMIT_CNF 	0x8003400D
+{
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	cause 	 ; Error code
+ 	tp_mr 	 ; TP Message Reference
+ 	sms_sdu 	 ; SIM-PDU
+}
+
+
+
+
+
+
+PRIM 	MNSMS_COMMAND_REQ 	0x8004000D
+{
+ 	auto_rep_flag 	 	%REL99% ; Automatic repeat
+ 	sms_sdu 	 ; SIM-PDU
+}
+
+
+
+
+
+
+PRIM 	MNSMS_COMMAND_CNF 	0x8004400D
+{
+ 	cause 	 ; Error code
+ 	tp_mr 	 ; TP Message Reference
+ 	sms_sdu 	 ; SIM-PDU
+}
+
+
+
+
+
+
+PRIM 	MNSMS_ACK_RES 	0x8008000D
+{
+ 	resp 	 ; type of response
+ 	sms_sdu 	 ; SIM-PDU
+}
+
+
+
+
+
+
+PRIM 	MNSMS_CONFIGURE_REQ 	0x8005000D
+{
+ 	pref_mem_3 	 ; preferred memory 3
+ 	mt 	 ; mobile terminated message handling
+ 	ds 	 ; status report handling
+ 	mhc 	 ; message handling compatibility
+ 	< () 	cmms_mode 	> 	 ; mode value of +CMMS command
+ 	< () 	tmms_val 	> 	 ; timer Value for +CMMS comamnd
+}
+
+
+
+
+
+
+PRIM 	MNSMS_ERROR_IND 	0x8009400D
+{
+ 	cause 	 ; Error code
+}
+
+
+
+
+
+
+PRIM 	MNSMS_MO_SERV_REQ 	0x800C000D
+{
+ 	mo_sms_serv 	 ; MO SMS Service
+}
+
+
+
+
+
+
+PRIM 	MNSMS_MO_SERV_CNF 	0x800C400D
+{
+ 	mo_sms_serv 	 ; MO SMS Service
+}
+
+
+
+
+
+
+PRIM 	MNSMS_PAUSE_REQ 	0x8006000D
+{
+}
+
+
+
+
+
+
+PRIM 	MNSMS_RESUME_REQ 	0x8007000D
+{
+}
+
+
+
+
+
+
+PRIM 	MNSMS_RESUME_CNF 	0x800A400D
+{
+ 	cause 	 ; Error Code
+}
+
+
+
+
+
+
+PRIM 	MNSMS_QUERY_REQ 	0x800B000D
+{
+ 	query_type 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MNSMS_QUERY_CNF 	0x800B400D
+{
+ 	query_type 	 ; Primitive Item
+ 	< () 	deliver_status 	> 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MNSMS_OTA_MESSAGE_IND 	0x800D400D
+{
+ 	EXTERN @m_sms - tp_pid@ 	tp_pid 	 ; Primitive Item
+ 	EXTERN @m_sms - tp_dcs@ 	tp_dcs 	 ; Primitive Item
+ 	EXTERN @m_sms - tp_ud@ 	tp_ud 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MNSMS_OTA_MESSAGE_RES 	0x800D000D
+{
+ 	EXTERN @m_sms - tp_pid@ 	tp_pid 	 ; Primitive Item
+ 	EXTERN @m_sms - tp_dcs@ 	tp_dcs 	 ; Primitive Item
+ 	len 	 ; Primitive Item
+ 	packedlen 	 ; Primitive Item
+ 	data 	[20] 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MNSMS_RETRANS_REQ 	0x8009000D 	%REL99%
+{
+ 	auto_rep_flag 	 	%REL99% ; auto repeat flag
+}
+
+
+
+
+
+
+PRIM 	MNSMS_RETRANS_CNF 	0x8005400D 	%REL99%
+{
+ 	cause 	 ; error cause
+ 	mem_type 	 ; memory type
+ 	rec_num 	 ; record number
+ 	tp_mr 	 ; message reference
+ 	sms_sdu 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	MNSMS_SEND_PROG_IND 	0x800E400D 	%REL99%
+{
+ 	resend_count 	 	%REL99% ; Resend count to MMI
+ 	max_retrans 	 	%REL99% ; Max retrans allowed(=1)
+}
+
+
+
+
+
+
+
+
+

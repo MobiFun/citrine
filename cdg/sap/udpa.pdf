@@ -1,0 +1,133 @@
+;********************************************************************************
+;*** File           : udpa.pdf
+;*** Creation       : Wed Mar 11 09:58:55 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : udpa
+;*** Document No.   : 8444.103.02.006
+;*** Document Date  : 2003-08-26
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: Jacek
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:56:38 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-08-26"
+PRAGMA 	ID_AND_VERSION 	"8444.103.02.006"
+
+
+
+CONST 	UDPA_ENTITY_NAME_LEN 	6 	; maximum length of entity name including NULL
+
+
+
+VALTAB 	VAL_dti_conn
+VAL 	0 	UDPA_CONNECT_DTI 	"Connect DTI2 to UDP"
+VAL 	1 	UDPA_DISCONNECT_DTI 	"Disconnect DTI2 from UDP"
+
+VALTAB 	VAL_link_id
+VAL 	0 	UDPA_LINK_ID_DEFAULT 	"Default link id"
+
+VALTAB 	VAL_dti_direction
+VAL 	0 	UDPA_DTI_TO_HIGHER_LAYER 	"DTI2 used normally"
+VAL 	1 	UDPA_DTI_TO_LOWER_LAYER 	"DTI2 is inverted"
+
+VALTAB 	VAL_cmd
+VAL 	0 	UDPA_CONFIG_UP 	"enable the interface"
+VAL 	1 	UDPA_CONFIG_DOWN 	"disable the interface"
+
+
+
+
+VAR 	dti_conn 	"DTI2 connect" 	B
+
+VAL 	@p_udpa - VAL_dti_conn@ 	
+
+VAR 	link_id 	"Link identifier" 	L
+
+VAL 	@p_udpa - VAL_link_id@ 	
+
+VAR 	dti_direction 	"DTI2 direction" 	B
+
+VAL 	@p_udpa - VAL_dti_direction@ 	
+
+VAR 	entity_name 	"name of an neighbour entity" 	B
+
+
+VAR 	cmd 	"command" 	B
+
+VAL 	@p_udpa - VAL_cmd@ 	
+
+
+
+
+
+
+
+; UDPA_DTI_REQ 	0x8000003B
+; UDPA_DTI_CNF 	0x8000403B
+; UDPA_DTI_IND 	0x8001403B
+; UDPA_CONFIG_REQ 	0x8001003B
+; UDPA_CONFIG_CNF 	0x8002403B
+
+
+
+PRIM 	UDPA_DTI_REQ 	0x8000003B
+{
+ 	dti_conn 	 ; DTI connect
+ 	entity_name 	[UDPA_ENTITY_NAME_LEN] 	 ; Entity name
+ 	link_id 	 ; Link identifier
+ 	dti_direction 	 ; DTI direction
+}
+
+
+
+
+
+
+PRIM 	UDPA_DTI_CNF 	0x8000403B
+{
+ 	dti_conn 	 ; DTI connect
+ 	link_id 	 ; Link identifier
+}
+
+
+
+
+
+
+PRIM 	UDPA_DTI_IND 	0x8001403B
+{
+ 	link_id 	 ; link identifier
+}
+
+
+
+
+
+
+PRIM 	UDPA_CONFIG_REQ 	0x8001003B
+{
+ 	cmd 	 ; Command
+}
+
+
+
+
+
+
+PRIM 	UDPA_CONFIG_CNF 	0x8002403B
+{
+}
+
+
+
+
+
+
+
+
+

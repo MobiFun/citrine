@@ -1,0 +1,338 @@
+;********************************************************************************
+;*** File           : mmcm.pdf
+;*** Creation       : Wed Mar 11 09:58:18 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mmcm
+;*** Document No.   : 6147.104.97.103
+;*** Document Date  : 2004-02-12
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:45:56 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-02-12"
+PRAGMA 	ID_AND_VERSION 	"6147.104.97.103"
+PRAGMA 	PREFIX 	MMCM 	; Prefix with 'MMCM'
+
+
+
+CONST 	MM_CAUSE 	0x04 	; Used in cause values to mark MM as the cause originating entity
+CONST 	TI_BERLIN 	1 	; TI Berlin variant of the SAP
+
+
+
+VALTAB 	VAL_ch_mode
+VAL 	0 	CHM_SIG_ONLY 	"signalling only"
+VAL 	1 	CHM_SPEECH 	"speech full rate or half rate version 1"
+VAL 	33 	CHM_SPEECH_V2 	"speech full rate or half rate version 2"
+VAL 	65 	CHM_SPEECH_V3 	"speech full rate or half rate version 3"
+VAL 	3 	CHM_DATA_9_6 	"data 9.6 kBit/s"
+VAL 	11 	CHM_DATA_4_8 	"data 4.8 kBit/s"
+VAL 	19 	CHM_DATA_2_4 	"data 2.4 kBit/s"
+VAL 	15 	CHM_DATA_14_4 	"data 2.4 kBit/s"
+
+VALTAB 	VAL_ch_type
+VAL 	0 	CH_SDCCH 	"SDCCH channel"
+VAL 	1 	CH_TCH_F 	"TCH Fullrate"
+VAL 	2 	CH_TCH_H 	"TCH Halfrate"
+
+VALTAB 	VAL_estcs
+VAL 	0x0400 	ESTCS_SERV_REQ_MM 	"service requested by MM (Location updating or detach)"
+VAL 	0x04A0 	ESTCS_EMERGE 	"emergency call"
+VAL 	0x04C0 	ESTCS_CAL_REEST 	"call reestablishment"
+VAL 	0x04E0 	ESTCS_MOB_ORIG_SPCH 	"mobile originated speech call by CC"
+VAL 	0x04E1 	ESTCS_MOB_ORIG_DATA 	"mobile originated data call by CC"
+VAL 	0x04E2 	ESTCS_MOB_ORIG_DATA_HR_SUFF 	"mobile originated data call by CC, halfrate channel sufficient"
+
+VALTAB 	VAL_cause
+VAL 	0x0402 	MMCS_IMSI_IN_HLR 	"IMSI unknown in HLR"
+VAL 	0x0403 	MMCS_ILLEGAL_MS 	"Illegal MS"
+VAL 	0x0404 	MMCS_IMSI_IN_VLR 	"IMSI unknown in VLR"
+VAL 	0x0405 	MMCS_IMEI_NOT_ACCEPTED 	"IMEI not accepted"
+VAL 	0x0406 	MMCS_ILLEGAL_ME 	"Illegal ME"
+VAL 	0x040B 	MMCS_PLMN_NOT_ALLOWED 	"PLMN not allowed"
+VAL 	0x040C 	MMCS_LA_NOT_ALLOWED 	"Location Area not allowed"
+VAL 	0x040D 	MMCS_ROAMING_NOT_ALLOWED 	"Roaming not allowed in this location area"
+VAL 	0x0411 	MMCS_NETWORK_FAILURE 	"Network failure"
+VAL 	0x0416 	MMCS_CONGESTION 	"Congestion"
+VAL 	0x0420 	MMCS_SERVICE_NOT_SUPPORTED 	"Service option not supported"
+VAL 	0x0421 	MMCS_SERVICE_NOT_SUBSCRIBED 	"Requested service option not subscribed"
+VAL 	0x0422 	MMCS_SERVICE_ORDER 	"Service option temporarily out of order"
+VAL 	0x0426 	MMCS_IDENTIFIY 	"Call cannot be identified"
+VAL 	0x0430 	MMCS_RETRY_IN_NEW_CELL 	"retry upon entry into a new cell (mapped 0x0430..0x043f -> 0x0430)"
+VAL 	0x045F 	MMCS_INCORRECT_MESSAGE 	"Semantically incorrect message"
+VAL 	0x0460 	MMCS_INVALID_MAND_MESSAGE 	"Invalid mandatory information"
+VAL 	0x0461 	MMCS_MESSAGE_TYPE_NOT_IMPLEM 	"Message type non-existent or not implemented"
+VAL 	0x0462 	MMCS_MESSAGE_TYPE_INCOMPAT 	"Message type not compatible with the protocol state"
+VAL 	0x0463 	MMCS_IE_NOT_IMPLEM 	"Information element non-existent or not implemented"
+VAL 	0x0464 	MMCS_CONDITIONAL_IE 	"Conditional IE error"
+VAL 	0x0465 	MMCS_MESSAGE_INCOMPAT 	"Message not compatible with the protocol state"
+VAL 	0x046F 	MMCS_UNSPECIFIED 	"Protocol error, unspecified"
+VAL 	0xC400 	MMCS_SUCCESS 	"No error, successful operation (MM)"
+VAL 	0xC480 	MMCS_NO_REGISTRATION 	"MS is not registered or deregistration started"
+VAL 	0xC481 	MMCS_TIMER_RECOVERY 	"time-out in MM during establishment"
+VAL 	0xC482 	MMCS_NO_REESTABLISH 	"Cell does not support call reestablishment"
+VAL 	0xC483 	MMCS_INT_PREEM 	"Preemptive release, e.g. MO-MT clash in MM"
+VAL 	0xC484 	MMCS_PLMN_NOT_IDLE_MODE 	"reject, not in idle mode (MMR_PLMN_IND)"
+VAL 	0xC488 	MMCS_AUTHENTICATION_REJECTED 	"AUTHENTICATION REJECT received"
+VAL 	0xC489 	MMCS_SIM_REMOVED 	"A valid SIM is not present"
+VAL 	0xC4FF 	MMCS_INT_NOT_PRESENT 	"No error cause (MM)"
+
+VALTAB 	VAL_ti
+VAL 	0 - 6 	"ms originated transaction"
+VAL 	8 - 14 	"ms originated transaction"
+VAL 	7 	 	"reserved"
+VAL 	15 	 	"reserved"
+
+VALTAB 	VAL_org_entity
+VAL 	0x00 	ORG_ENTITY_CC 	"originating entity is CC"
+VAL 	0x01 	ORG_ENTITY_SS 	"originating entity is SS"
+VAL 	0x02 	ORG_ENTITY_SMS 	"originating entity is SMS"
+
+
+
+
+VAR 	ch_type 	"Channel Type" 	B
+
+VAL 	@p_mmcm - VAL_ch_type@ 	
+
+VAR 	ch_mode 	"Channel Mode" 	B
+
+VAL 	@p_mmcm - VAL_ch_mode@ 	
+
+VAR 	estcs 	"establishment cause" 	S
+
+VAL 	@p_mmcm - VAL_estcs@ 	
+
+VAR 	cause 	"MM cause" 	S
+
+VAL 	@p_mmcm - VAL_cause@ 	
+
+VAR 	l_buf 	"length in bits" 	S
+
+
+VAR 	o_buf 	"offset in bits" 	S
+
+
+VAR 	buf 	"bit buffer" 	B
+
+
+VAR 	ti 	"transaction identifier" 	B
+
+VAL 	@p_mmcm - VAL_ti@ 	
+
+VAR 	d1 	"dummy, not used" 	B
+
+
+VAR 	d2 	"dummy, not used" 	B
+
+
+VAR 	org_entity 	"originating entity" 	B
+
+VAL 	@p_mmcm - VAL_org_entity@ 	
+
+
+
+
+COMP 	ch_info 	 "Channel information"
+{
+ 	ch_type 	 ; Channel Type
+ 	ch_mode 	 ; Channel Mode
+}
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length in bits
+ 	o_buf 	 ; offset in bits
+ 	buf 	[1] 	 ; bit buffer
+}
+
+
+
+COMP 	sync_info 	 "Container for synchronisation info"
+{
+ 	ch_info 	 ; channel info
+}
+
+
+
+
+
+
+; MMCM_ESTABLISH_REQ 	0x80000007
+; MMCM_ESTABLISH_CNF 	0x80004007
+; MMCM_ESTABLISH_IND 	0x80014007
+; MMCM_DATA_REQ 	0x80010007
+; MMCM_DATA_IND 	0x80024007
+; MMCM_RELEASE_REQ 	0x80020007
+; MMCM_RELEASE_IND 	0x80034007
+; MMCM_ERROR_IND 	0x80044007
+; MMCM_REESTABLISH_REQ 	0x80030007
+; MMCM_REESTABLISH_CNF 	0x80064007
+; MMCM_PROMPT_IND 	0x80074007
+; MMCM_PROMPT_RES 	0x80040007
+; MMCM_PROMPT_REJ 	0x80050007
+; MMCM_SYNC_IND 	0x80094007
+
+
+
+PRIM 	MMCM_ESTABLISH_REQ 	0x80000007
+{
+ 	ti 	 ; transaction identifier
+ 	org_entity 	 ; originating entity
+ 	estcs 	 ; establishment cause
+}
+
+
+
+
+
+
+PRIM 	MMCM_ESTABLISH_CNF 	0x80004007
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMCM_ESTABLISH_IND 	0x80014007
+{
+ 	d1 	 ; dummy
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMCM_DATA_REQ 	0x80010007
+{
+ 	org_entity 	 ; originating entity
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMCM_DATA_IND 	0x80024007
+{
+ 	d1 	 ; dummy
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMCM_RELEASE_REQ 	0x80020007
+{
+ 	ti 	 ; transaction identifier
+ 	org_entity 	 ; originating entity
+}
+
+
+
+
+
+
+PRIM 	MMCM_RELEASE_IND 	0x80034007
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; release cause
+}
+
+
+
+
+
+
+PRIM 	MMCM_ERROR_IND 	0x80044007
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	MMCM_REESTABLISH_REQ 	0x80030007
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMCM_REESTABLISH_CNF 	0x80064007
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMCM_PROMPT_IND 	0x80074007
+{
+}
+
+
+
+
+
+
+PRIM 	MMCM_PROMPT_RES 	0x80040007
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMCM_PROMPT_REJ 	0x80050007
+{
+}
+
+
+
+
+
+
+PRIM 	MMCM_SYNC_IND 	0x80094007
+{
+ 	ti 	 ; transaction identifier
+ 	sync_info 	 ; Synchronization info
+}
+
+
+
+
+
+
+
+
+

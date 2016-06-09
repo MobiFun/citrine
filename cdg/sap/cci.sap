@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">cci</DocName>
+        <DocNum Number="118" Project="8441"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for GPRS consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity.</Section>
+            <Section>Figure 1-1: Architecture of the GSM/GPRS protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the GPRS protocol stack are:</Section>
+            <Section>1.1 GRR (RLC/MAC) - Radio Link Control/Medium Access Control</Section>
+            <Section>This layer contains two functions: The Radio Link Control function provides a radio-solution-dependent reliable link. The Medium Access Control function controls the access signalling (request and grant) procedures for the radio channel, and the mapping of LLC frames onto the GSM physical channel.</Section>
+            <Section>1.2 LLC - Logical Link Control</Section>
+            <Section>The LLC entity provides multiple highly reliable logical links for asynchronous data transfer between the MS and the network. It supports variable-length information frames, acknowledged and unacknowledged data transfer, flow and sequence control, error detection and recovery, notification of unrecoverable errors, user identity confidentiality, and ciphering of user and signaling data.</Section>
+            <Section>1.3 GMM - GPRS Mobility Management</Section>
+            <Section>The GMM entity provides procedures for the mobility of the MS, such as informing the network of its present location, and user identity confidentiality. It manages the GMM context (attach, detach, routing area updating), supports security functions such as authentication of user and MS, controls ciphering of data, and initiates the response to paging messages.</Section>
+            <Section>1.4 SM - Session Management</Section>
+            <Section>The main function of the session management (SM) is to support PDP context handling of the user terminal. Session Management activates, modifies and deletes the contexts for packet data protocols (PDP). Session Management services are provided at the SMREG-SAP and the SNSM-SAP for anonymous and non-anonymous access. The non-anonymous and anonymous access procedures for PDP context activation and PDP context deactivation are available at the SMREG-SAP. In addition there exists a PDP context modification for non-anonymous PDP contexts.</Section>
+            <Section>1.5 SNDCP - Subnetwork Dependant Convergence Protocol</Section>
+            <Section>SNDCP carries out all functions related to transfer of Network layer Protocol Data Units (N-PDUs) over GPRS in a transparent way. SNDCP helps to improve channel efficiency by means of compression techniques. The set of protocol entities above SNDCP consists of commonly used network protocols. They all use the same SNDCP entity, which then performs multiplexing of data coming from different sources to be sent using the service provided by the LLC layer.</Section>
+            <Section>1.6 GACI - GPRS Application Control Interface</Section>
+            <Section>The GACI is the GPRS extension of the ACI. It is specified in GSM 07.07 and 07.60. It is responsible for processing of the GPRS related AT Commands to setup, activate and deactivate the PDP context parameter. It also provides functionality for the interworking between GMM/SM/SNDCP and a packet oriented protocol like PPP.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the GPRS. The driver has to be able to perform flow control.</Section>
+            <Section>1.8 TOM - Tunnelling of Messages</Section>
+            <Section>The TOM entity is present if and only if HS136 is supported (the feature flag FF_HS136 is enabled).</Section>
+            <Section>The main function of TOM is to tunnel non-GSM signalling messages between the MS and the SGSN. The only non-GSM signalling which is currently supported by TOM is for the EGPRS-136 system (according to TIA/EIA-136-376). Data transfer in both uplink and downlink direction is possible. Two different priorities (high, low) of signalling data transfer are supported. TOM uses the unacknowledged mode of LLC and the acknowledged mode of GRR (RLC/MAC).</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="00"/>
+            <Date Day="12" Month="4" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>DB, Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="00"/>
+            <Date Day="27" Month="4" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changed to SAP format, inserted CCI_RESET_REQ</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="00"/>
+            <Date Day="28" Month="4" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Inserted header_size in CCI_(DE)CIPHER_REQ</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="00"/>
+            <Date Day="2" Month="5" Year="2000"/>
+            <Author>HK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added parameters algo_type and comp_inst, renamed CCI_NEG_REQ to CCI_NEG_REQ_V42</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="00"/>
+            <Date Day="23" Month="5" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Inserted reference2 in CCI_DECIPHER_REQ/CNF, adjusted reserved_decipher_cnf</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="00"/>
+            <Date Day="26" Month="5" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Adapted ciphering_algorithm values to air interface messages</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="00"/>
+            <Date Day="21" Month="6" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changed primitive structures to match exactly internal primitive layout</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="00"/>
+            <Date Day="29" Month="6" Year="2000"/>
+            <Author>HK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changed parameters of CCI_TRANSFER_CNF, CCI_TRANSFER_REQ to be compatible with LL SAP (for PPASS). Added parameters to CCI_DATA primitives.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="00"/>
+            <Date Day="1" Month="8" Year="2000"/>
+            <Author>HK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Modified description for parameter 'pdu_ref'.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="00"/>
+            <Date Day="7" Month="8" Year="2000"/>
+            <Author>HK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Renamed compression related primitives.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="00"/>
+            <Date Day="10" Month="8" Year="2000"/>
+            <Author>HK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added 3 params to CCI_NEG_REQ_V42.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="012" Year="00"/>
+            <Date Day="2" Month="10" Year="2000"/>
+            <Author>HK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added param &quot;packet_type&quot;..</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="013" Year="00"/>
+            <Date Day="6" Month="10" Year="2000"/>
+            <Author>HK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added param &quot;pcomp&quot; to decomp prims.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="014" Year="00"/>
+            <Date Day="31" Month="10" Year="2000"/>
+            <Author>HK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Correct false references.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="015" Year="00"/>
+            <Date Day="26" Month="6" Year="2001"/>
+            <Author>GS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Reference renamed to reference1.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="016" Year="00"/>
+            <Date Day="15" Month="10" Year="2001"/>
+            <Author>GS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Add test primitives for compression.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="017" Year="00"/>
+            <Date Day="13" Month="1" Year="2003"/>
+            <Author>UT</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Add new primitives to support descriptor lists in uplink direction.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 05.02 version 8.0.0 Release 1999Digital cellular telecommunications system (Phase 2+);Multiplexing and multiple access on the radio path</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 04.60 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station (MS) - Base Station System (BSS) interface;Radio Link Control/ Medium Access Control (RLC/MAC) protocol</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 04.08 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface layer 3 specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 03.64 version 6.1.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Overall description of the GPRS radio interface; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 03.60 version 6.3.1 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Service description; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 04.07 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface signalling layer 3; General aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 04.64 version 6.7.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station - Serving GPRS Support Node (MS-SGSN)Logical Link Control (LLC) layer specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 05.08 version 6.4.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem link control</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 05.10 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem synchronization</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 03.20 TS 100 929: July 1998 (GSM 03.20 version 6.0.1)Security related network functions, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Draft GSM 03.22: August 1998 (GSM 03.22 version 6.1.0)Functions related to Mobile Station (MS) in idle mode and group receive mode, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 04.65 V6.3.0: Subnetwork Dependant Convergence Protocol ETSI, March 1999</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>ITU-T V42bis ITU-T, Recommendation V.42 bis 1990</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 09.60 GPRS Tunneling Protocol (GTP) across the Gn and Gp Interface</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>RFC 1661 IETF STD 51 July 1994The Point-to-Point Protocol (PPP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>RFC 1662 IETF STD 51 July 1994PPP in HDLC-like Framing</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>RFC 1570 January 1994PPP LCP Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>RFC 1989 August 1996PPP Link Quality Monitoring</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>RFC 1332 May 1992The PPP Internet Protocol Control Protocol (IPCP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>RFC 1877 December 1995PPP IPCP Extensions for Name Server Addresses</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>RFC 2153 May 1997PPP Vendor Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>RFC 1334 October 1992PPP Authentication Protocols (for Password Authentication Protocol only)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>RFC 1994 August 1996PPP Challenge Handshake Authentication Protocol (CHAP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>TIA/EIA-136-370Packet-Data Services - Enhanced General Packet Radio for TIA/EIA-136 (EGPRS-136) - Overview, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>TIA/EIA-136-376Packet-Data Services - EGPRS-136 Mobility Management, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>TIA/EIA-136-972Packet-Data Services - Stage 2 Description, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="54">
+        <Description>
+            <Section>This section contains all primitives that are defined for the CCI SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>This primitive (re-)initializes the compressor unit.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CCI_INIT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>SNDCP</Sender>
+                    <Receiver>CCI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cci</DocName>
+                    <Name>algo_type</Name>
+                </ItemLink>
+                <Comment>algorithm type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">cci</DocName>
+                    <Name>comp_inst</Name>
+                </ItemLink>
+                <Comment>compressor instance</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="3" Year="2000"/>
+                <Author>DB</Author>
+                <Comment>HK Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="4" Year="2000"/>
+                <Author>DB</Author>
+                <Comment>Modified for SAP format</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="5" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>Added parameters algo_type, comp_inst</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied, the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied, the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The algorithm type that is requested. Is part of the combined key algorithm type/compressor instance that is used to identify the compressor.</Section>
+                <Section>Used in: CCI_INIT_REQ, CCI_FLUSH_REQ, CCI_ERROR_IND, CCI_COMP_REQ, CCI_COMP_IND, CCI_DECOMP_REQ, CCI_DECOMP_IND.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>algo_type</Name>
+                <Type>U8</Type>
+                <Comment>algorithm type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cci</DocName>
+                <Name>VAL_algo_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="5" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The instance of compressor for a specific alorithm. This is also an information about how many instances of a compressor for the given algorithm may be used.</Section>
+                <Section>Currently there is only one possible instance for algorithm V42bis: CCI_COMP_INST_V42_0.</Section>
+                <Section>Is part of the combined key algorithm type/compressor instance that is used to identify the compressor.</Section>
+                <Section>Used in: CCI_NEQ_REQ_V42, CCI_INIT_REQ, CCI_FLUSH_REQ, CCI_ERROR_IND, CCI_COMP_REQ, CCI_COMP_IND, CCI_DECOMP_REQ, CCI_DECOMP_IND.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>comp_inst</Name>
+                <Type>U8</Type>
+                <Comment>compressor instance</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cci</DocName>
+                <Name>VAL_comp_inst</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="5" Year="2000"/>
+                <Author>HK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the CCI SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_algo_type</Name>
+                <Comment>values for algo_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CCI_ALGO_V42</Alias>
+                <Comment>V42bis algorithm</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_comp_inst</Name>
+                <Comment>values for comp_inst</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CCI_COMP_INST_V42_0</Alias>
+                <Comment>first instance for V42bis</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

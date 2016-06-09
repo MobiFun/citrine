@@ -1,0 +1,1960 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">l2r</DocName>
+        <DocNum Number="102" Project="8411"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for fax and data transmission consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity. The entity, which is described in this document, is coloured grey in the following figure :</Section>
+            <Section>Figure 1-1: Architecture of the fax and data protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the fax and data protocol stack are:</Section>
+            <Section>1.1 RA - Rate Adaptation</Section>
+            <Section>This entity performs an adaptation between an asynchronous or synchronous data stream with several bit rates on to the fixed bit rate used at the TCH. This is performed by the rate adaptation functions RA1' and RA0 described in GSM 04.21.</Section>
+            <Section>1.2 RLP - Radio Link Protocol</Section>
+            <Section>This entity provides a Layer 2 protocol for asynchronous reliable data transfer as specified in GSM 04.22. It includes error correction, sequence numbers and a mechanism for repeating corrupted and lost messages.</Section>
+            <Section>1.3 L2R - Layer 2 Relay Functionality</Section>
+            <Section>The L2R provides relay functions in order to adapt the character-oriented data received from the TE via USART to the bit-oriented RLP protocol.</Section>
+            <Section>1.4 FAD 03.45 - Fax Adaptation Protocol</Section>
+            <Section>The fax adaptation protocol, as specified in GSM 03.45, provides synchronisation with the BCS and MSG modems of the peer entity. It uses byte repetition in conjunction with a voting algorithm to handle corruption on the TCH data stream. The non-transparent fax protocol in accordance with GSM 03.46 is not part of this implementation.</Section>
+            <Section>The fax adapter enables T.30 to send BCS at 300 BPS and T.4 MSG in 2400, 4800, 7200 and 9600 BPS.</Section>
+            <Section>1.5 T.30 - Fax Protocol Entity</Section>
+            <Section>The protocol uses binary coded signals packed in HDLC frames to set up and release a connection in the message phase of the FAX transmission. This entity is specified in the ITU-T.30. The main tasks of this unit are:</Section>
+            <Section>* Building the HDLC frames with CRC.</Section>
+            <Section>* Performing bit stuffing/de-stuffing.</Section>
+            <Section>* Executing a sequence of 5 phases: 1.) set up, 2.) pre-message procedures, 3.) transmission/reception, 4.) post message procedures, 5.) waiting for call release.</Section>
+            <Section>1.6 ACI - AT Command Interpreter</Section>
+            <Section>The ACI is specified in GSM 07.07. It is responsible for call establishment via the GSM voice protocol stack and terminal adaptation for asynchronous transparent character-oriented data transmission. The ACI is able to receive AT commands and send the replies over the USART driver to a remote PC. This makes it possible to control the voice and data protocol stack from a remote application running on a PC. The ACI also provides a unique interface for an internal MMI in the MS.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the F&amp;D. The driver has to be able to perform flow control.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="98"/>
+            <Date Day="25" Month="3" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="98"/>
+            <Date Day="26" Month="3" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Attach/Connect revised</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="98"/>
+            <Date Day="6" Month="3" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_GETDATA_REQ added L2R_READY_IND added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="98"/>
+            <Date Day="14" Month="4" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_ASKSPACE_REQ, L2R_ASKSPACE_CNF, L2R_DATAAVAIL_REQ, L2R_SPACEAVAIL_REQ added; LSR_ACTIVATE_REQ: User information layer 2 protocol added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="104" Year="98"/>
+            <Date Day="15" Month="4" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_RESET_IND added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="105" Year="98"/>
+            <Date Day="21" Month="4" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Compression Parameters renamed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="106" Year="98"/>
+            <Date Day="16" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Formatting changed Window size as USHORT</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="107" Year="98"/>
+            <Date Day="28" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Values renamed. L2R_ASKSPACE_REQ, L2R_ASKSPACE_CNF, L2R_DATAAVAIL_REQ, L2R_SPACEAVAIL_REQ removed L2R_BREAK_xxx new Frames per primitive in L2R_ACTIVATE_REQ added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="108" Year="98"/>
+            <Date Day="28" Month="7" Year="1998"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>SDU aligned with reserved element.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="109" Year="98"/>
+            <Date Day="31" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_BREAK_xxx: Parameters added. L2R_ERR_IND values added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="110" Year="98"/>
+            <Date Day="20" Month="8" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Acknowledge flags renamed to L2R_ACK L2R_ACTIVATE_REQ: Buffer size added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="111" Year="98"/>
+            <Date Day="14" Month="10" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Transmission rate added, Mapping of opcodes changed, L2R_BREAK_CNF: parameters added, MAX, MIN, DEF constants added, New primitives: L2R_ACTIVATE_CNF, L2R_UART_REQ, L2R_UART_IND, L2R_UART_CNF</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="112" Year="98"/>
+            <Date Day="19" Month="10" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_DEACTIVATE_CNF added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="113" Year="98"/>
+            <Date Day="26" Month="10" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_T2_DEF, -MAX changed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="114" Year="98"/>
+            <Date Day="13" Month="11" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Comments in st_flow, st_line.. corrected</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="115" Year="98"/>
+            <Date Day="11" Month="12" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>14.4 kbit/s, L2R_T2_MAX set to 255</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="116" Year="99"/>
+            <Date Day="18" Month="5" Year="1999"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Escape State: Values swapped</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="117" Year="99"/>
+            <Date Day="16" Month="6" Year="1999"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_P0_MAX changed to 0</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="118" Year="99"/>
+            <Date Day="16" Month="7" Year="1999"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_T2_DEF set to 20 for type approval</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="119" Year="99"/>
+            <Date Day="20" Month="10" Year="1999"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_BUFFER_SIZE_DEF set to minimum</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="120" Year="00"/>
+            <Date Day="10" Month="5" Year="2000"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_N2_MIN must not be 0 according to GSM 04.22</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="121" Year="00"/>
+            <Date Day="5" Month="10" Year="2000"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2R_ACTIVATE_REQ: TUI, C_ID and entity name of upper layer entity added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="122" Year="00"/>
+            <Date Day="30" Month="10" Year="2000"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>L2r_DATA_REQ etc. replaced by DTI SAP</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="123" Year="01"/>
+            <Date Day="22" Month="3" Year="2001"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>UART replaced by DTI.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="124" Year="01"/>
+            <Date Day="31" Month="10" Year="2001"/>
+            <Author>TVO</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>adapted for use with DTI2 - TUI, L2R_BREAK_xxx removed, C_ID changed to LINK_ID and ist size to ULONG</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>Rec. T.4 Standardisation of group 3 facsimile apparatus for document transmission;(CCITT-T.4, 1984)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>ITU-T Recommendation T.30; Series T: Terminal equipments and protocols for telematic services;Procedures for document facsimile transmission in the general switchedtelephone network;(ITU-T.30, 1996)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>ITU-T Recommendation T.31; Terminals for telematic services;Asynchronous facsimile DCE control - service class 1(ITU-T.31, 1995)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>ITU-T Recommendation T.32; Terminals for telematic services;Asynchronous facsimile DCE control - service class 2(ITU-T.32, 1995)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>Rec. T.35; Terminal equipment and protocols for telematic services;Procedures for the allocation of CCITT definde codes for non-standard facilities;(CCITT-T.35, 1991)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>ITU-T Recommendation V.25 ter; Series V: data communication over the telephone network;Interfaces and voiceband modems; Serial asynchronous automatic dialling and control(ITU-T V.25 ter, 1997)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>Rec. V.42 bis Data compression procedures for data circuit terminating equipment (DCE) using error correction procedures;(CCITT-V.42 bis, 1990)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>Rec. V.110 (Blue book, Vol. VIII, Fascicle VIII.1) Support of data terminal equipments (DTEs) with V-series type interfaces by an integrated services digital network (ISDN);(CCITT-V.110, 1988)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);GSM Public Land Mobile Network (PLMN) connection types;(GSM 3.10, September 1994, version 4.3.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Technical realisation of facsimile group 3 transparent;(GSM 3.45, September 1995, version 4.5.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Mobile radio interface layer 3 specification;(GSM 4.08, November 1996, version 4.17.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Rate adaptation on the Mobile Station - Base Station System (MS - BSS) Interface;(GSM 4.21, May 1995, version 4.6.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Radio Link Protocol (RLP) for data and telematic services on the Mobile Station - Base Station System (MS - BSS) interface and the Base Station System - Mobile-service Switching Centre (BSS - MSC) interface(GSM 4.22, September 1994, version 4.3.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Radio Link Protocol (RLP) for data and telematic services on the Mobile Station - Base Station System (MS - BSS) interface and the Base Station System - Mobile-service Switching Centre (BSS - MSC) interface(Amendment prA1 for GSM 4.22, version 4.3.0)(GSM 4.22, March 1995, version 4.4.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);General on Terminal Adaptation Functions (TAF) for Mobile Stations (MS);(GSM 7.01, December 1995, version 4.10.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Terminal Adaptation Functions (TAF) for services using asynchronous bearer capabilities;(GSM 7.02, September 1994, version 4.5.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>European digital cellular telecommunications system (Phase 2);Terminal Adaptation Functions (TAF) for services using synchronous bearer capabilities;(GSM 7.03, September 1994, version 4.5.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Use of Data Terminal Equipment - Data Circuit terminating Equipment (DTE - DCE) interface for Short Message Service (SMS) and Cell Broadcast Services (CBS);(GSM 7.05, November 1996, version 4.8.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);AT command set for GSM Mobile Equipment (ME)(GSM 7.07, May 1996, version 4.1.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>Digital cellular telecommunication system (Phase 2);Mobile Station (MS) conformance specification;Part 1: Conformance specification(GSM 11.10-1, November 1996, version 4.17.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Mobile Station (MS) conformance specification;Part 2: Protocol Implementation Conformance Statement (PICS)proforma specification(GSM 11.10-2, May 1996, version 4.15.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>Digital cellular telecommunications system (Phase 2);Mobile Station (MS) conformance specification;Part 3: Layer 3 (L3) Abstract Test Suite (ATS)(GSM 11.10-3, November 1996, version 4.17.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>Proposal for Rate Adaptation implemented on a DSP;(C. Bianconi, Texas Instruments, January 1998, version 1.0)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>MCU-DSP Interfaces for Data Applications;Specification S844(C. Bianconi, Texas Instruments, March 1998, version 0.1)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>Users Guide6147.300.96.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>Service Access Point RA8411.100.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[27]</RefId>
+            <RefTitle>Service Access Point RLP8411.101.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[28]</RefId>
+            <RefTitle>Service Access Point L2R8411.102.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[29]</RefId>
+            <RefTitle>Service Access Point FAD8411.103.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[30]</RefId>
+            <RefTitle>Service Access Point T308411.104.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[31]</RefId>
+            <RefTitle>Service Access Point ACI8411.105.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[32]</RefId>
+            <RefTitle>Message Sequence Charts RLP8411.201.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[33]</RefId>
+            <RefTitle>Message Sequence Charts L2R8411.202.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[34]</RefId>
+            <RefTitle>Message Sequence Charts FAD8411.203.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[35]</RefId>
+            <RefTitle>Message Sequence Charts T308411.204.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[36]</RefId>
+            <RefTitle>Message Sequence Charts ACI8411.205.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[37]</RefId>
+            <RefTitle>Proposal for Fax &amp; Data Integration; March 19988411.300.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[38]</RefId>
+            <RefTitle>Test Specification RLP8411.401.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[39]</RefId>
+            <RefTitle>Test Specification L2R8411.402.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[40]</RefId>
+            <RefTitle>Test Specification FAD8411.403.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[41]</RefId>
+            <RefTitle>Test Specification T308411.404.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[42]</RefId>
+            <RefTitle>Test Specification ACI8411.405.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[43]</RefId>
+            <RefTitle>SDL Specification RLP8411.501.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[44]</RefId>
+            <RefTitle>SDL Specification L2R8411.502.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[45]</RefId>
+            <RefTitle>SDL Specification FAD8411.503.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[46]</RefId>
+            <RefTitle>SDL Specification T308411.504.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[47]</RefId>
+            <RefTitle>SDL Specification ACI8411.505.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[48]</RefId>
+            <RefTitle>Technical Documentation RLP8411.701.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[49]</RefId>
+            <RefTitle>Technical Documentation L2R8411.702.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[50]</RefId>
+            <RefTitle>Technical Documentation FAD8411.703.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[51]</RefId>
+            <RefTitle>Technical Documentation T308411.704.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[52]</RefId>
+            <RefTitle>Technical Documentation ACI8411.705.98.100; Condat GmbH</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the L2R SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>L2R_K_MS_IWF_MIN</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>window size ms->iwf (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_K_MS_IWF_MAX</Alias>
+            <Value ValueType="DEC">61</Value>
+            <Comment>window size ms->iwf (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_K_MS_IWF_DEF</Alias>
+            <Value ValueType="DEC">61</Value>
+            <Comment>window size ms->iwf (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_K_IWF_MS_MIN</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>window size iwf->ms (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_K_IWF_MS_MAX</Alias>
+            <Value ValueType="DEC">61</Value>
+            <Comment>window size iwf->ms (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_K_IWF_MS_DEF</Alias>
+            <Value ValueType="DEC">61</Value>
+            <Comment>window size iwf->ms (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_MIN_FULLRATE_14400</Alias>
+            <Value ValueType="DEC">42</Value>
+            <Comment>acknowledge timer (min at fullrate 14400)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_MIN_FULLRATE_9600</Alias>
+            <Value ValueType="DEC">38</Value>
+            <Comment>acknowledge timer (min at fullrate 9600)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_MIN_FULLRATE_4800</Alias>
+            <Value ValueType="DEC">44</Value>
+            <Comment>acknowledge timer (min at fullrate 4800)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_MIN_HALFRATE_4800</Alias>
+            <Value ValueType="DEC">60</Value>
+            <Comment>acknowledge timer (min at halfrate 4800)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_MIN</Alias>
+            <Value ValueType="DEC">38</Value>
+            <Comment>acknowledge timer ( >>> to be removed !!! &lt;&lt;&lt;)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_MAX</Alias>
+            <Value ValueType="DEC">255</Value>
+            <Comment>acknowledge timer (max at all rates)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_DEF_FULLRATE_14400</Alias>
+            <Value ValueType="DEC">52</Value>
+            <Comment>acknowledge timer (default at fullrate 14400)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_DEF_FULLRATE_9600</Alias>
+            <Value ValueType="DEC">48</Value>
+            <Comment>acknowledge timer (default at fullrate 9600)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_DEF_FULLRATE_4800</Alias>
+            <Value ValueType="DEC">54</Value>
+            <Comment>acknowledge timer (default at fullrate 4800)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_DEF_HALFRATE_4800</Alias>
+            <Value ValueType="DEC">78</Value>
+            <Comment>acknowledge timer (default at halfrate 4800)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T1_DEF</Alias>
+            <Value ValueType="DEC">48</Value>
+            <Comment>acknowledge timer ( >>> to be removed !!! &lt;&lt;&lt;)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T2_MIN</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>reply delay (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T2_MAX</Alias>
+            <Value ValueType="DEC">255</Value>
+            <Comment>reply delay (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_T2_DEF</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>reply delay (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_N2_MIN</Alias>
+            <Value ValueType="DEC">1</Value>
+            <Comment>retransmission attempts (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_N2_MAX</Alias>
+            <Value ValueType="DEC">255</Value>
+            <Comment>retransmission attempts (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_N2_DEF</Alias>
+            <Value ValueType="DEC">6</Value>
+            <Comment>retransmission attempts (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_PT_MIN</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>type of data compression (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_PT_MAX</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>type of data compression (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_PT_DEF</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>type of data compression (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_P0_MIN</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>v.42 bis data compression direction (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_P0_MAX</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>v.42 bis data compression direction (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_P0_DEF</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>v.42 bis data compression direction (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_P1_MIN</Alias>
+            <Value ValueType="DEC">512</Value>
+            <Comment>v.42 bis number of possible codewords (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_P1_MAX</Alias>
+            <Value ValueType="DEC">65535</Value>
+            <Comment>v.42 bis number of possible codewords (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_P1_DEF</Alias>
+            <Value ValueType="DEC">512</Value>
+            <Comment>v.42 bis number of possible codewords (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_P2_MIN</Alias>
+            <Value ValueType="DEC">6</Value>
+            <Comment>v.42 bis maximum encodable data string length (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_P2_MAX</Alias>
+            <Value ValueType="DEC">250</Value>
+            <Comment>v.42 bis maximum encodable data string length (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_P2_DEF</Alias>
+            <Value ValueType="DEC">6</Value>
+            <Comment>v.42 bis maximum encodable data string length (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_BYTES_PER_PRIM_MIN</Alias>
+            <Value ValueType="DEC">25</Value>
+            <Comment>bytes per primitive (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_BYTES_PER_PRIM_MAX</Alias>
+            <Value ValueType="DEC">250</Value>
+            <Comment>bytes per primitive (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_BYTES_PER_PRIM_DEF</Alias>
+            <Value ValueType="DEC">250</Value>
+            <Comment>bytes per primitive (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_BUFFER_SIZE_MIN</Alias>
+            <Value ValueType="DEC">2048</Value>
+            <Comment>receive and transmit buffer size in bytes (min)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_BUFFER_SIZE_MAX</Alias>
+            <Value ValueType="DEC">4096</Value>
+            <Comment>receive and transmit buffer size in bytes (max)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_BUFFER_SIZE_DEF</Alias>
+            <Value ValueType="DEC">2048</Value>
+            <Comment>receive and transmit buffer size in bytes (default)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>L2R_ENTITY_NAME_LEN</Alias>
+            <Value ValueType="DEC">6</Value>
+            <Comment>maximum length of entity name including NULL</Comment>
+        </Constant>
+        <History>
+            <Date Day="23" Month="2" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="27" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>L2R_MAX_FRAMES_PER_PRIM added</Comment>
+        </History>
+        <History>
+            <Date Day="14" Month="10" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>MIN, MAX, DEF values added</Comment>
+        </History>
+        <History>
+            <Date Day="26" Month="10" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>L2R_T2_DEF, -MAX changed</Comment>
+        </History>
+        <History>
+            <Date Day="26" Month="11" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>Frames Per Prim changed to Bytes Per Prim</Comment>
+        </History>
+        <History>
+            <Date Day="16" Month="6" Year="1999"/>
+            <Author>MG</Author>
+            <Comment>L2R_P0_MAX set to 0, since not supported by DSP</Comment>
+        </History>
+        <History>
+            <Date Day="16" Month="7" Year="1999"/>
+            <Author>MG</Author>
+            <Comment>L2R_T2_DEF set to 20 for type approval</Comment>
+        </History>
+        <History>
+            <Date Day="20" Month="10" Year="1999"/>
+            <Author>MG</Author>
+            <Comment>L2R_BUFFER_SIZE_DEF set to minimum</Comment>
+        </History>
+        <History>
+            <Date Day="10" Month="5" Year="2000"/>
+            <Author>MG</Author>
+            <Comment>L2R_N2_MIN must not be 0 according to GSM 04.22</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="18">
+        <Description>
+            <Section>This section contains all primitives that are defined for the L2R SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The L2R_ACTIVATE_REQ is used to initialise the L2R entity. This is the first primitive, which should be passed to L2R after starting the entity. It contains all parameters necessary for initialisation. Those parameters, which belong to the RLP layer are just passed on to the RLP entity. The remaining parameters are related to the data compression, which is a part of the L2R layer. These parameters are passed to the RLP entity as well, because the negotiation of these parameters with the base station is done by the RLP entity. The negotiated parameters are returned to the L2R entity by a RLP_XID_IND.</Section>
+                <Section>L2R in turn passes these Parameters to the upper layer in a L2R_XID_IND. After sending a L2R_ACTIVATE_REQ the upper layer should wait for the L2R_XID_IND, before sending a L2R_CONNECT_REQ, because the negotiation of data compression parameters is only allowed in the disconnected state. It is not required to guard the reception of L2R_XID_IND by a timeout, since the RLP entity has a timeout, which would generate an error indication in case of failure.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_ACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>CTL</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>k_ms_iwf</Name>
+                </ItemLink>
+                <Comment>window size ms->iwf</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>k_iwf_ms</Name>
+                </ItemLink>
+                <Comment>window size iwf->ms</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>t1</Name>
+                </ItemLink>
+                <Comment>acknowledge timer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>t2</Name>
+                </ItemLink>
+                <Comment>reply delay</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>n2</Name>
+                </ItemLink>
+                <Comment>retransmission attempts</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>pt</Name>
+                </ItemLink>
+                <Comment>type of data compression</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>p0</Name>
+                </ItemLink>
+                <Comment>v.42 bis data compression direction</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>p1</Name>
+                </ItemLink>
+                <Comment>v.42 bis number of possible codewords</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>p2</Name>
+                </ItemLink>
+                <Comment>v.42 bis maximum encodable data string length</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>uil2p</Name>
+                </ItemLink>
+                <Comment>user information layer 2 protocol</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>bytes_per_prim</Name>
+                </ItemLink>
+                <Comment>bytes per primitive</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>buffer_size</Name>
+                </ItemLink>
+                <Comment>receive and transmit buffer size in bytes</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Transmission Rate removed</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="4" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>User information layer 2 protocol added</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Window size as USHORT</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>frames per primitive added</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="8" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>buffer size added</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="6" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>tui and dti_used added</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="10" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>upper layer: tui etc added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_ACTIVATE_CNF acknowledges the previous L2R_ACTIVATE_REQ. The acknowledge can be positive (ACK) or negative (NAK). It is negative, when the parameters of the L2R_ACTIVATE_REQ are invalid.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_ACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTRL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>ack_flg</Name>
+                </ItemLink>
+                <Comment>acknowledge flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_DEACTIVATE_REQ is used to deactivate the L2R entity. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_DEACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>CTL</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_DEACTIVATE_CNF acknowledges the previous L2R_DEACTIVATE_REQ. The acknowledge is always positive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_DEACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="19" Month="10" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_CONNECT_REQ is used to connect the L2R entity to its peer entity. This primitive can only be used after L2R has been activated by a L2R_ACTIVATE_REQ. The L2R_CONNECT_REQ has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_CONNECT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>CTL</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_CONNECT_CNF acknowledges the previous L2R_CONNECT_REQ. The acknowledge can be positive (ACK) or negative (NAK) depending on the parameter.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_CONNECT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>ack_flg</Name>
+                </ItemLink>
+                <Comment>acknowledge flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_CONNECT_IND is used to indicate that the peer entity has established the connection of the L2R layer. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_CONNECT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_DISC_REQ is used to disconnect the L2R entity from its peer entity. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_DISC_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>CTL</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_DISC_CNF acknowledges the previous L2R_DISC_REQ. It is always a positive acknowledge, because the L2R_DISC_REQ is always successful.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_DISC_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_DISC_IND is used to indicate that the peer entity has released the connection of the L2R layer. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_DISC_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_XID_IND is used to return the parameters to the upper layer after negotiation.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_XID_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>rlp_vers</Name>
+                </ItemLink>
+                <Comment>RLP version no.</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>k_ms_iwf</Name>
+                </ItemLink>
+                <Comment>window size ms->iwf</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>k_iwf_ms</Name>
+                </ItemLink>
+                <Comment>window size iwf->ms</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>t1</Name>
+                </ItemLink>
+                <Comment>acknowledge timer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>t2</Name>
+                </ItemLink>
+                <Comment>reply delay</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>n2</Name>
+                </ItemLink>
+                <Comment>retransmission attempts</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>pt</Name>
+                </ItemLink>
+                <Comment>type of data compression</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>p0</Name>
+                </ItemLink>
+                <Comment>v.42 bis data compression direction</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>p1</Name>
+                </ItemLink>
+                <Comment>v.42 bis number of possible codewords</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>p2</Name>
+                </ItemLink>
+                <Comment>v.42 bis maximum encodable data string length</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Window size as USHORT</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_ERROR_IND is used to indicate a fatal error condition. A fatal error condition arises if L2R cannot communicate with its peer. Generally this means, that a fatal error condition in RLP has arisen due to missing answers from the peer RLP. The L2R link is disconnected and an L2R_ERROR_IND is generated.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_RESET_IND is used to indicate, that the RLP connection has been reset by the base station. A reset originating from the mobile is not provided.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_RESET_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="15" Month="4" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_STATISTIC_IND provides some statistical information about the quality of the link to the upper layer. It can be used by the upper layer to modify the transmission parameters. E. g. if there is a low quality, the transmission rate might be reduced.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_STATISTIC_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>error_rate</Name>
+                </ItemLink>
+                <Comment>error rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_DTI_REQ is used to connect or disconnect the DTI communication with the upper layer. It is indicated by the parameter dti_conn, if the upper layer wants to connect or disconnect. The same parameter is repeated in the corresponding L2R_DTI_CNF.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_DTI_REQ</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>CTL</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>entity_name</Name>
+                </ItemLink>
+                <Control>[L2R_ENTITY_NAME_LEN]</Control>
+                <Comment>entity name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>dti_direction</Name>
+                </ItemLink>
+                <Comment>DTI direction</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>UART replaced by DTI</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="10" Year="2001"/>
+                <Author>TVO</Author>
+                <Comment>adapted for use with DTI2</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_DTI_CNF is used to acknowledge a previous L2R_DTI_REQ. The parameter value of dti_conn is always the same as in the corresponding L2R_DTI_REQ. The parameter link_id can be used to identify the DTI link.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_DTI_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>dti_conn</Name>
+                </ItemLink>
+                <Comment>DTI connect</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>UART replaced by DTI</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="10" Year="2001"/>
+                <Author>TVO</Author>
+                <Comment>adapted for use with DTI2</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_DTI_IND is used by L2R to pass the control of the DTI back to the upper layer after detecting the escape sequence (standard: '+++'). The parameter link_id can be used to identify the DTI link.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_DTI_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="15"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>CTL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>link_id</Name>
+                </ItemLink>
+                <Comment>link identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>UART replaced by DTI</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The L2R_CHANGE_RATE_REQ is used by the upper layer to inform L2R, that the transmission channel rate has been changed. This primitve must be sent, when the channel coding is changed between the short RLP frame format (4.8 and 9.6 kbit/s) and the long RLP frame format (14.4 kbit/s). When receiveing a L2R_CHANGE_RATE_REQ L2R starts a REMAP procedure in the RLP entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>L2R_CHANGE_RATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>CTL</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">l2r</DocName>
+                    <Name>rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the negotiated version number of the RLP. This is the lower of the version numbers of the two RLP entities. These version numbers are defined:</Section>
+                <Section>RLP version 0: single-link basic version;</Section>
+                <Section>RLP version 1: single-link extended version (V42bis data compression);</Section>
+                <Section>RLP version 2: multi-link version (HSCSD).</Section>
+                <Section>The current implementation is a RLP version 1. Therefore this parameter can be 0 or 1.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rlp_vers</Name>
+                <Type>U8</Type>
+                <Comment>rlp version number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the maximum number (k) of sequentially numbered  I frames that may be outstanding (i.e. unacknowledged) at any given time in the uplink direction. This is a system parameter which will be negotiated with the base station, it can never exceed 61.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>k_ms_iwf</Name>
+                <Type>U16</Type>
+                <Comment>window size ms -> iwf</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Window size as USHORT</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the maximum number (k) of sequentially numbered  I frames that may be outstanding (i.e. unacknowledged) at any given time in the downlink direction. This is a system parameter which will be negotiated with the base station, it can never exceed 61.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>k_iwf_ms</Name>
+                <Type>U16</Type>
+                <Comment>window size iwf -> ms</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Window size as USHORT</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the acknowledge timer t1. If this timer is expired after sending a frame without receiving an acknowledge, the retransmission of the frame will be initiated. The period of the timer starts at the beginning of the transmission of the frame. This is a system parameter, which will be negotiated with the base station. The unit of t1 is 10 ms.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t1</Name>
+                <Type>U8</Type>
+                <Comment>acknowledge timer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the maximum reply delay t2. The L2R entity must acknowledge a frame within this time. t2 is a system parameter, which will be negotiated with the base station. It must be less then t1. The unit of t2 is 10 ms.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t2</Name>
+                <Type>U8</Type>
+                <Comment>reply delay</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a parameter of the RLP layer. It defines the maximum number of retransmission attempts n2 after running out of timer t1. This is a system parameter, which will be negotiated with the base station.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n2</Name>
+                <Type>U8</Type>
+                <Comment>maximum number of retransmission attempts</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the type of data compression. Currently only V.42bis is defined. This parameter is not negotiable.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pt</Name>
+                <Type>U8</Type>
+                <Comment>type of data compression</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">l2r</DocName>
+                <Name>VAL_pt</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Value renamed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies in which direction V.42bis data compression is used.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p0</Name>
+                <Type>U8</Type>
+                <Comment>v.42bis data compression direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">l2r</DocName>
+                <Name>VAL_p0</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="4" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values renamed</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values renamed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the number of possible codewords in the V.42bis algorithm. It can range from 512 to 65535.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p1</Name>
+                <Type>U16</Type>
+                <Comment>v.42bis number of possible codewords</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the maximum encodable data string length in the V.42bis algorithm. It can range from 6 to 250.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p2</Name>
+                <Type>U8</Type>
+                <Comment>v.42bis maximum encodable string length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the user information layer 2 protocol which is used. It corresponds with the respective bearer capability element and selects mainly, whether  flow control is used or not.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>uil2p</Name>
+                <Type>U8</Type>
+                <Comment>user information layer 2 protocol</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">l2r</DocName>
+                <Name>VAL_uil2p</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="4" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values renamed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the number of bytes which can be sent in one primitive. Actually this number is rounded up to the next multiple of the current frame size.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bytes_per_prim</Name>
+                <Type>U16</Type>
+                <Comment>bytes per primitive</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Frames Per Prim changed to Bytes Per Prim</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the size of the L2R receive and transmit buffers in bytes.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buffer_size</Name>
+                <Type>U16</Type>
+                <Comment>buffer size in bytes</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="5" Month="8" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the transmission rate of the traffic chanel. L2R must pass this parameter to RLP, because the frame format and the default values of some negotiable RLP parameters depend on the transmission rate.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rate</Name>
+                <Type>U8</Type>
+                <Comment>transmission rate</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">l2r</DocName>
+                <Name>VAL_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="25" Month="8" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>14.4 kBit/s added, values remapped.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the acknowledge flag in response and confirm primitives.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ack_flg</Name>
+                <Type>U8</Type>
+                <Comment>acknowledge flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">l2r</DocName>
+                <Name>VAL_ack_flg</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values renamed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter could define possible error causes in L2R_ERROR_IND.</Section>
+                <Section>A dummy is used to fulfill the requirements of the converter tool.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">l2r</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values added</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="2001"/>
+                <Author>SBK</Author>
+                <Comment>revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the error rate of the data link.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>error_rate</Name>
+                <Type>U32</Type>
+                <Comment>error_rate</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines, if L2R shall be connected via the DTI to the upper layer or not.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_conn</Name>
+                <Type>U8</Type>
+                <Comment>DTI connect</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">l2r</DocName>
+                <Name>VAL_dti_conn</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a string (zero terminated) which is the name of a neighbour entity, i.e. the entity handling a higher or lower protocol. The parameter is used to open the communication channel to this entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>entity_name</Name>
+                <Type>U8</Type>
+                <Comment>name of an neighbour entity</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="5" Month="10" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to identify the affected channel in case of multiplexing.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>link_id</Name>
+                <Type>U32</Type>
+                <Comment>Link identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">l2r</DocName>
+                <Name>VAL_link_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="5" Month="10" Year="2000"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter controls if L2R uses the DTI in the normal way or if the primitives are inverted. In the normal way data are sent as DTI_DATA_IND and received as DTI_DATA_REQ. In the inverted mode data are send as DTI_DATA_REQ and received as DTI_DATA_IND (relay functionality).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dti_direction</Name>
+                <Type>U8</Type>
+                <Comment>DTI direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">l2r</DocName>
+                <Name>VAL_dti_direction</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="22" Month="3" Year="2001"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the L2R SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pt</Name>
+                <Comment>values for pt</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>L2R_COMPR_TYPE_V42BIS</Alias>
+                <Comment>V.42bis</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_p0</Name>
+                <Comment>values for p0</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>L2R_COMP_DIR_NONE</Alias>
+                <Comment>compress in neither direction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>L2R_COMP_DIR_TRANSMIT</Alias>
+                <Comment>compress in uplink direction only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>L2R_COMP_DIR_RECEIVE</Alias>
+                <Comment>compress in downlink direction only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>L2R_COMP_DIR_BOTH</Alias>
+                <Comment>compress in both directions</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_uil2p</Name>
+                <Comment>values for uil2p</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>L2R_ISO6429</Alias>
+                <Comment>ISO6429, codeset 0, DC1/DC3 (with flow control)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>L2R_COPnoFlCt</Alias>
+                <Comment>Character Oriented Protocol with No Flow Control</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rate</Name>
+                <Comment>values for rate</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>L2R_HALFRATE_4800</Alias>
+                <Comment>halfrate 4,8/6 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>L2R_FULLRATE_4800</Alias>
+                <Comment>fullrate 4,8/6 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>L2R_FULLRATE_9600</Alias>
+                <Comment>fullrate 9,6/12 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>L2R_FULLRATE_14400</Alias>
+                <Comment>fullrate 13,4/14,4 kBit</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ack_flg</Name>
+                <Comment>values for ack_flg</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>L2R_ACK</Alias>
+                <Comment>acknowledged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>L2R_NAK</Alias>
+                <Comment>not acknowledged</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0000</Value>
+                <Alias>CAUSE_DUMMY</Alias>
+                <Comment>The following causes can occur within this primitive: all those possible within the RLP_ERROR_IND primitive of  the RLP SAP</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_conn</Name>
+                <Comment>values for dti_conn</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>L2R_CONNECT_DTI</Alias>
+                <Comment>Connect DTI to L2R</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>L2R_DISCONNECT_DTI</Alias>
+                <Comment>Connect DTI to upper layer</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_link_id</Name>
+                <Comment>values for link_id</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>L2R_LINK_ID_DEFAULT</Alias>
+                <Comment>Default link id</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dti_direction</Name>
+                <Comment>values for dti_direction</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>L2R_DTI_NORMAL</Alias>
+                <Comment>DTI used normally</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>L2R_DTI_INVERTED</Alias>
+                <Comment>DTI is inverted</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

@@ -1,0 +1,880 @@
+;********************************************************************************
+;*** File           : sms.mdf
+;*** Creation       : Thu Jun 19 15:32:13 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : sms
+;*** Document No.   : 6147.607.97.102
+;*** Document Date  : 2001-09-11
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: FK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:21:18 2007"
+PRAGMA 	LAST_MODIFIED 	"2001-09-11"
+PRAGMA 	ID_AND_VERSION 	"6147.607.97.102"
+
+
+
+CONST 	SIM_PDU_BIT_LEN 	1400 	; Bit length of SIM-PDU (record length of EF(SMS) minus Status Byte)
+CONST 	TPDU_BIT_LEN 	1312 	; Bit length of a SMS-TPDU (164 * 8)
+CONST 	MAX_SMS_ADDR_DIG 	20 	; Maximum number of address digits
+CONST 	MAX_SMS_SGL_CHAR 	160 	; Maximum number of characters (septets) in a single Short Message
+CONST 	MAX_SMS_DATA_LEN 	160 	; Maximum length of a data field
+
+
+
+VALTAB 	VAL_cp_cause
+VAL 	17 	SMS_CP_CS_NETWORK_FAILURE 	"Network Failure"
+VAL 	22 	SMS_CP_CS_CONGESTION 	"Congestion"
+VAL 	81 	SMS_CP_CS_INVALID_TI 	"Invalid Transaction Identifier"
+VAL 	95 	SMS_CP_CS_SEM_INC_MSG 	"Semantically incorrect message"
+VAL 	96 	SMS_CP_CS_INV_MAND_INFO 	"Invalid mandatory information"
+VAL 	97 	SMS_CP_CS_MSG_TYPE_NON_EXIST 	"Message type non-existent or not implemented"
+VAL 	98 	SMS_CP_CS_MSG_NOT_COMP 	"Message not compatible with the short message protocol state"
+VAL 	99 	SMS_CP_CS_INFO_NON_EXIST 	"Information element non-existent or not implemented"
+VAL 	111 	SMS_CP_CS_PROTOCOL_ERROR 	"Protocol error, unspecified"
+
+VALTAB 	VAL_rp_mti
+VAL 	0 	RP_DATA_UL 	"RP_DATA message MS to network"
+VAL 	1 	RP_DATA_DL 	"RP_DATA message network to MS"
+VAL 	2 	RP_ACK_UL 	"RP_ACK message MS to network"
+VAL 	3 	RP_ACK_DL 	"RP_ACK message network to MS"
+VAL 	4 	RP_ERROR_UL 	"RP_ERROR message MS to network"
+VAL 	5 	RP_ERROR_DL 	"RP_ERROR message network to MS"
+VAL 	6 	RP_SMMA_UL 	"RP_SMMA message MS to network"
+
+VALTAB 	VAL_npi
+VAL 	DEF 	 	"reserved"
+VAL 	0 	SMS_NPI_UNKNOWN 	"unknown"
+VAL 	1 	SMS_NPI_ISDN 	"ISDN/telephony numbering plan (Rec. E.164/E.163)"
+VAL 	3 	SMS_NPI_X121 	"data numbering plan (Recommendation X.121)"
+VAL 	4 	SMS_NPI_F69 	"telex numbering plan (Recommendation F.69)"
+VAL 	8 	SMS_NPI_NATIONAL 	"national numbering plan"
+VAL 	9 	SMS_NPI_PRIVATE 	"private numbering plan"
+VAL 	10 	SMS_NPI_ERMES 	"ERMES numbering plan (ETSI DE/PS 3 01-3)"
+VAL 	15 	SMS_NPI_EXTENSTION 	"reserved for extension"
+
+VALTAB 	VAL_ton
+VAL 	0 	SMS_TON_UNKNOWN 	"unknown"
+VAL 	1 	SMS_TON_INTERNATIONAL 	"international number"
+VAL 	2 	SMS_TON_NATIONAL 	"national number"
+VAL 	3 	SMS_TON_NETWORK_SPEC 	"network specific number"
+VAL 	4 	SMS_TON_SUBSCRIBER 	"dedicated access, short code"
+VAL 	5 	SMS_TON_ALPHANUMERIC 	"alphanumeric"
+VAL 	6 	SMS_TON_ABBREVIATED 	"abbreviated"
+VAL 	7 	SMS_TON_EXTENSION 	"reserved for extention"
+
+VALTAB 	VAL_rp_cause_value
+VAL 	1 	SMS_RP_CS_UNASSIGNED_NUMBER 	"Unassigned (unallocated) number"
+VAL 	8 	SMS_RP_CS_OPERATOR_DET_BARRED 	"Operator determined barring"
+VAL 	10 	SMS_RP_CS_CALL_BARRED 	"Call barred"
+VAL 	21 	SMS_RP_CS_SM_TRANSFER_REJECTED 	"Short message transfer rejected"
+VAL 	22 	SMS_RP_CS_MEM_CAP_EXCEEDED 	"Memory Capacity exceeded"
+VAL 	27 	SMS_RP_CS_DEST_OUT_OF_ORDER 	"Destination out of order"
+VAL 	28 	SMS_RP_CS_UNIDENT_SUBSCRIBER 	"Unidentified subscriber"
+VAL 	29 	SMS_RP_CS_FACILITY_REJECTED 	"Facility rejected"
+VAL 	30 	SMS_RP_CS_UNKNOWN_SUBSCRIBER 	"Unknown subscriber"
+VAL 	38 	SMS_RP_CS_NET_OUT_OF_ORDER 	"Network out of order"
+VAL 	41 	SMS_RP_CS_TEMP_FAILURE 	"Temporary Failure"
+VAL 	42 	SMS_RP_CS_CONGESTION 	"Congestion"
+VAL 	47 	SMS_RP_CS_NO_RESOURCES 	"Resources unavailable, unspecified"
+VAL 	50 	SMS_RP_CS_FAC_NOT_SUBSCRIBED 	"Requested facility not subscribed"
+VAL 	69 	SMS_RP_CS_FAC_NOT_IMPL 	"Requested facility not implemented"
+VAL 	81 	SMS_RP_CS_INV_SM_TR_REF_VAL 	"Invalid short message transfer reference value"
+VAL 	95 	SMS_RP_CS_SEM_INC_MSG 	"Semantically incorrect message"
+VAL 	96 	SMS_RP_CS_INV_MAND_INFO 	"Invalid mandatory information"
+VAL 	97 	SMS_RP_CS_MSG_NON_EXIST 	"Message type non-existent or not implemented"
+VAL 	98 	SMS_RP_CS_MSG_NOT_COMP 	"Message not compatible with the short message protocol state"
+VAL 	99 	SMS_RP_CS_INFO_NON_EXIST 	"Information element non-existent or not implemented"
+VAL 	111 	SMS_RP_CS_PROTOCOL_ERROR 	"Protocol error, unspecified"
+VAL 	127 	SMS_RP_CS_INTERWORKING 	"Interworking, unspecified"
+
+VALTAB 	VAL_tp_ct
+VAL 	0x00 	SMS_CT_ENQUIRY 	"Enquiry to submitted short message"
+VAL 	0x01 	SMS_CT_CANCEL_REP 	"Cancel status report request"
+VAL 	0x02 	SMS_CT_DELETE 	"Delete short message"
+VAL 	0x03 	SMS_CT_ENABLE 	"Enable status report request"
+
+VALTAB 	VAL_tp_dcs
+VAL 	0x00 	SMS_DCS_GRP_DEF 	"Coding group: uncompressed, no message class"
+VAL 	0x10 	SMS_DCS_GRP_CLASS 	"Coding group: uncompressed, with message class"
+VAL 	0x20 	SMS_DCS_GRP_COMPR 	"Coding group: compressed, no message class"
+VAL 	0x30 	SMS_DCS_GRP_CLASS_COMPR 	"Coding group: compressed, with message class"
+VAL 	0xC0 	SMS_DCS_GRP_MW_DISCD 	"Coding group: message waiting, discard"
+VAL 	0xD0 	SMS_DCS_GRP_MW_STORE 	"Coding group: message waiting, store"
+VAL 	0xE0 	SMS_DCS_GRP_MW_STORE_UCS2 	"Coding group: message waiting, store, UCS2 coded"
+VAL 	0xF0 	SMS_DCS_DATA_CLASS 	"Coding group: data coding, with message class"
+
+VALTAB 	VAL_tp_fcs
+VAL 	0x80 	SMS_FCS_TM_IW_NOT_SUP 	"Telematic interworking not supported (MO)"
+VAL 	0x81 	SMS_FCS_SM_0_NOT_SUP 	"Short Message Type 0 not supported (MO, MT)"
+VAL 	0x82 	SMS_FCS_CANT_REP_SM 	"Cannot replace short message (MO, MT)"
+VAL 	0x8F 	SMS_FCS_TP_PID_UNSPEC 	"Unspecified TP-PID error (MO, MT)"
+VAL 	0x90 	SMS_FCS_DCS_NOT_SUP 	"Data coding scheme (alphabet) not supported (MO)"
+VAL 	0x91 	SMS_FCS_CLASS_NOT_SUP 	"Message class not supported (MT)"
+VAL 	0x9F 	SMS_FCS_TP_DCS_UNSPEC 	"Unspecified TP-DCS error (MO, MT)"
+VAL 	0xA0 	SMS_FCS_CMD_CANT_ACT 	"Command cannot be actioned (MO)"
+VAL 	0xA1 	SMS_FCS_CMD_NOT_SUP 	"Command unsupported (MO)"
+VAL 	0xAF 	SMS_FCS_TP_CMD_UNSPEC 	"Unspecified TP-Command error (MO)"
+VAL 	0xB0 	SMS_FCS_TPDU_NOT_SUP 	"TPDU not supported (MO, MT)"
+VAL 	0xC0 	SMS_FCS_SC_BUSY 	"SC busy (MO)"
+VAL 	0xC1 	SMS_FCS_NO_SC_SUBSCRIPT 	"No SC subscription (MO)"
+VAL 	0xC2 	SMS_FCS_SC_SYS_FAIL 	"SC system failure (MO)"
+VAL 	0xC3 	SMS_FCS_INV_SME_ADDR 	"Invalid SME address (MO)"
+VAL 	0xC4 	SMS_FCS_DEST_SME_BARRED 	"Destination SME barred (MO)"
+VAL 	0xC5 	SMS_FCS_REJ_DUPL_SM 	"SM rejected-duplicate SM (MO)"
+VAL 	0xC6 	SMS_FCS_TPVPF_NOT_SUP 	"Validity Period Format not supported (MO)"
+VAL 	0xC7 	SMS_FCS_TPVP_NOT_SUP 	"Validity Period not supported (MO)"
+VAL 	0xD0 	SMS_FCS_SIM_MEM_FULL 	"SIM SMS storage full (MT)"
+VAL 	0xD1 	SMS_FCS_NO_SMS_MEM_IN_MS 	"No SMS storage capability in SIM (MT)"
+VAL 	0xD2 	SMS_FCS_ERROR_IN_MS 	"Error in MS (MT)"
+VAL 	0xD3 	SMS_FCS_MEM_CAP_EXCEED 	"Memory Capacity exceeded (MO, MT)"
+VAL 	0xD4 	SMS_FCS_SAT_BUSY 	"SIM Application Toolkit busy (MT)"
+VAL 	0xD5 	SMS_FCS_SAT_DNL_ERROR 	"SIM Data Download error (MT)"
+VAL 	0xFF 	SMS_FCS_UNSPECIFIED 	"Unspecified error cause (MO, MT)"
+
+VALTAB 	VAL_tp_mti
+VAL 	0 	SMS_DELIVER 	"SMS deliver (SC to MS)"
+VAL 	0 	SMS_DELIVER_REPORT 	"SMS deliver report (MS to SC)"
+VAL 	2 	SMS_STATUS_REPORT 	"SMS status report (SC to MS)"
+VAL 	2 	SMS_COMMAND 	"SMS command (MS to SC)"
+VAL 	1 	SMS_SUBMIT 	"SMS submit (MS to SC)"
+VAL 	1 	SMS_SUBMIT_REPORT 	"SMS submit report (SC to MS)"
+VAL 	4 	SMS_DELIVER_CONCAT 	"SMS deliver concat (SC to MS)"
+
+VALTAB 	VAL_tp_mms
+VAL 	0 	SMS_MMS_MORE_MESSAGES 	"More messages are waiting for the MS in this SC"
+VAL 	1 	SMS_MMS_NO_MORE_MESSAGES 	"No more messages are waiting for the MS in this SC"
+
+VALTAB 	VAL_tp_pid
+VAL 	0x00 	SMS_PID_DEFAULT 	""
+VAL 	0x40 	SMS_PID_SM_TYPE_0 	"Short Message Type 0"
+VAL 	0x41 	SMS_PID_REP_SM_TYPE_1 	"Replace Short Message Type 1"
+VAL 	0x42 	SMS_PID_REP_SM_TYPE_2 	"Replace Short Message Type 2"
+VAL 	0x43 	SMS_PID_REP_SM_TYPE_3 	"Replace Short Message Type 3"
+VAL 	0x44 	SMS_PID_REP_SM_TYPE_4 	"Replace Short Message Type 4"
+VAL 	0x45 	SMS_PID_REP_SM_TYPE_5 	"Replace Short Message Type 5"
+VAL 	0x46 	SMS_PID_REP_SM_TYPE_6 	"Replace Short Message Type 6"
+VAL 	0x47 	SMS_PID_REP_SM_TYPE_7 	"Replace Short Message Type 7"
+VAL 	0x5F 	SMS_PID_RET_CALL_MSG 	"Return Call Message"
+VAL 	0x7C 	SMS_PID_ANSI_136_R_DATA 	%REL99% 	"ANSI-136 Data"
+VAL 	0x7D 	SMS_PID_ME_DOWNLOAD 	"ME Data Download"
+VAL 	0x7E 	SMS_PID_ME_DEPERSON 	"ME Depersonalization SM"
+VAL 	0x7F 	SMS_PID_SIM_DOWNLOAD 	"SIM Data Download"
+
+VALTAB 	VAL_tp_rd
+VAL 	0 	SMS_RD_ACCEPT 	"Accept duplicated SMS submit"
+VAL 	1 	SMS_RD_REJECT 	"Reject duplicated SMS submit"
+
+VALTAB 	VAL_tp_rp
+VAL 	0 	SMS_RP_NOT_SET 	"TP Reply Path parameter is not set"
+VAL 	1 	SMS_RP_SET 	"TP Reply Path parameter is set"
+
+VALTAB 	VAL_tp_st
+VAL 	0x00 	SMS_ST_SM_REC_BY_SME 	"Short message received by the SME"
+VAL 	0x01 	SMS_ST_SM_FORW_SC 	"Short message forwarded by the SC, not confirmed"
+VAL 	0x02 	SMS_ST_SM_REP_BY_SC 	"Short message replaced by the SC"
+VAL 	0x20 	SMS_ST_CONGESTION 	"Congestion (T)"
+VAL 	0x21 	SMS_ST_SMS_BUSY 	"SME is busy (T)"
+VAL 	0x22 	SMS_ST_NO_RESPONSE 	"No response from the SME (T)"
+VAL 	0x23 	SMS_ST_SERV_REJ 	"Service rejected (T)"
+VAL 	0x24 	SMS_ST_QUAL_NOT_AVAIL 	"Quality of service not available (T)"
+VAL 	0x25 	SMS_ST_ERR_IN_SME 	"Error in SME (T)"
+VAL 	0x40 	SMS_ST_REM_PROC_ERR 	"Remote procedure error (P)"
+VAL 	0x41 	SMS_ST_INCOMP_DEST 	"Incompatible destination (P)"
+VAL 	0x42 	SMS_ST_CON_REJ_BY_SME 	"Connection rejected by SME (P)"
+VAL 	0x43 	SMS_ST_NOT_OBTAINABLE 	"Not obtainable (P)"
+VAL 	0x44 	SMS_ST_QUAL_NOT_AVAIL_P 	"Quality of service not available (P)"
+VAL 	0x45 	SMS_ST_NO_INTERWORK 	"No interworking available (P)"
+VAL 	0x46 	SMS_ST_SM_VP_EXP 	"Short message validity period expired (P)"
+VAL 	0x47 	SMS_ST_SM_DEL_BY_SME 	"Short message deleted by originating SME (P)"
+VAL 	0x48 	SMS_ST_SM_DEL_BY_SC 	"Short message deleted by SC administration (P)"
+VAL 	0x49 	SMS_ST_SM_NOT_EXIST 	"Short message not exists (P)"
+VAL 	0x60 	SMS_ST_CONGESTION2 	"Congestion (P)"
+VAL 	0x61 	SMS_ST_SMS_BUSY2 	"SME is busy (P)"
+VAL 	0x62 	SMS_ST_NO_RESPONSE2 	"No response from the SME (P)"
+VAL 	0x63 	SMS_ST_SERV_REJ2 	"Service rejected (P)"
+VAL 	0x64 	SMS_ST_QUAL_NOT_AVAIL2 	"Quality of service not available (P)"
+VAL 	0x65 	SMS_ST_ERR_IN_SME2 	"Error in SME (P)"
+
+VALTAB 	VAL_tp_sri
+VAL 	0 	SMS_SRI_NO_RETURN 	"A status report will not be returned to the SME"
+VAL 	1 	SMS_SRI_RETURN 	"A status report will be returned to the SME"
+
+VALTAB 	VAL_tp_srr
+VAL 	0 	SMS_SRR_NOT_REQUESTED 	"A status report is not requested"
+VAL 	1 	SMS_SRR_REQUESTED 	"A status report is requested"
+
+VALTAB 	VAL_tp_srq
+VAL 	0 	SMS_SRQ_SUBMIT 	"The SMS status report is the result of a SMS submit"
+VAL 	1 	SMS_SRQ_COMMAND 	"The SMS status report is the result of a SMS command or enquiry"
+
+VALTAB 	VAL_tp_udhi
+VAL 	0 	SMS_UDHI_NOT_INCLUDED 	"No user data header included"
+VAL 	1 	SMS_UDHI_INCLUDED 	"User data header included"
+
+VALTAB 	VAL_tp_vpf
+VAL 	0 	SMS_VPF_NOT_PRESENT 	"TP-VP field not present"
+VAL 	1 	SMS_VPF_ENHANCED 	"TP-VP field present in enhanced format"
+VAL 	2 	SMS_VPF_RELATIVE 	"TP-VP field present and integer represented (relative)"
+VAL 	3 	SMS_VPF_ABSOLUTE 	"TP-VP field present and semi-octet represented (absolute)"
+
+VALTAB 	VAL_tp_udl_p
+VAL 	0 	SMS_UD_NOT_INCLUDED 	"No user data included"
+VAL 	1 	SMS_UD_INCLUDED 	"User data included"
+
+VALTAB 	VAL_tp_dcs_p
+VAL 	0 	SMS_DCS_NOT_INCLUDED 	"No data coding scheme included"
+VAL 	1 	SMS_DCS_INCLUDED 	"Data coding scheme included"
+
+VALTAB 	VAL_tp_pid_p
+VAL 	0 	SMS_PID_NOT_INCLUDED 	"No protocol identifier included"
+VAL 	1 	SMS_PID_INCLUDED 	"Protocol identifier included"
+
+VALTAB 	VAL_tp_vt_mti
+VAL 	0x20 	SMS_VT_DLVR_REP_ACK 	"TP SMS-DELIVER-REPORT in RP_ACK message, MS to network"
+VAL 	0x21 	SMS_VT_SUBMIT 	"TP SMS-SUBMIT in RP_DATA message, MS to network"
+VAL 	0x22 	SMS_VT_COMMAND 	"TP SMS-COMMAND in RP_DATA message, MS to network"
+VAL 	0x24 	SMS_VT_DLVR_REP_ERR 	"TP SMS-DELIVER-REPORT in RP_ERROR message, MS to network"
+VAL 	0x28 	SMS_VT_DELIVER 	"TP SMS-DELIVER in RP_DATA message, network to MS"
+VAL 	0x29 	SMS_VT_SBMT_REP_ACK 	"TP SMS-SUBMIT-REPORT in RP_ACK message, network to MS"
+VAL 	0x2A 	SMS_VT_STATUS 	"TP SMS-STATUS-REPORT in RP-DATA or RP_ACK message, network to MS"
+VAL 	0x2B 	SMS_VT_SBMT_REP_ERR 	"TP SMS-SUBMIT-REPORT in RP_ERROR message, network to MS"
+VAL 	0x30 	SMS_VT_SIM_PDU 	"Virtual message type for SIM-PDU used in SAP MNSMS"
+
+VALTAB 	VAL_tvpf
+VAL 	0 	SMS_TVPF_NOT_PRESENT 	"Enhanced validity period not present"
+VAL 	1 	SMS_TVPF_RELATIVE 	"Enhanced validity period relative as TP-VP (relative)"
+VAL 	2 	SMS_TVPF_SECONDS 	"Enhanced validity period given in seconds 1 .. 255"
+VAL 	3 	SMS_TVPF_HOURS 	"Enhanced validity period given in hours, minutes, seconds"
+
+VALTAB 	VAL_tp_ext
+VAL 	0 	SMS_EXT_NOT_INCLUDED 	"No extension octet following"
+VAL 	1 	SMS_EXT_INCLUDED 	"Extension octet following"
+
+VALTAB 	VAL_tp_ss
+VAL 	0 	SMS_SS_NOT_SET 	"Single Shot bit not set"
+VAL 	1 	SMS_SS_SET 	"Single Shot bit set"
+
+
+
+
+VAR 	cp_cause 	"CP cause" 	
+ 	8
+
+VAL 	@m_sms - VAL_cp_cause@ 	
+
+VAR 	msg_type 	"CP Message Type" 	
+ 	8
+
+
+VAR 	data 	"Data" 	
+ 	8
+
+
+VAR 	diag 	"Diagnostic field" 	
+ 	8
+
+
+VAR 	reference 	"Message Reference" 	
+ 	8
+
+
+VAR 	rp_mti 	"Message Type Indicator" 	
+ 	3
+
+VAL 	@m_sms - VAL_rp_mti@ 	
+
+VAR 	num 	"Number digit" 	
+ 	4
+
+
+VAR 	year 	"" 	
+ 	4
+
+
+VAR 	month 	"" 	
+ 	4
+
+
+VAR 	day 	"" 	
+ 	4
+
+
+VAR 	hour 	"" 	
+ 	4
+
+
+VAR 	minute 	"" 	
+ 	4
+
+
+VAR 	second 	"" 	
+ 	4
+
+
+VAR 	npi 	"Numbering plan identification" 	
+ 	4
+
+VAL 	@m_sms - VAL_npi@ 	
+
+VAR 	ton 	"Type of number" 	
+ 	3
+
+VAL 	@m_sms - VAL_ton@ 	
+
+VAR 	rp_cause_value 	"RP cause" 	
+ 	7
+
+VAL 	@m_sms - VAL_rp_cause_value@ 	
+
+VAR 	tz_lsb 	"Time Zone, LSB" 	
+ 	4
+
+
+VAR 	tz_sign 	"Time Zone, sign" 	
+ 	1
+
+
+VAR 	tz_msb 	"Time Zone, MSB" 	
+ 	3
+
+
+VAR 	tp_ct 	"TP Command Type" 	
+ 	8
+
+VAL 	@m_sms - VAL_tp_ct@ 	
+
+VAR 	tp_dcs 	"TP Data Coding Scheme" 	
+ 	8
+
+VAL 	@m_sms - VAL_tp_dcs@ 	
+
+VAR 	tp_fcs 	"TP Failure Cause" 	
+ 	8
+
+VAL 	@m_sms - VAL_tp_fcs@ 	
+
+VAR 	tp_mn 	"TP Message Number" 	
+ 	8
+
+
+VAR 	tp_mr 	"TP Message Reference" 	
+ 	8
+
+
+VAR 	tp_mti 	"TP Message Type Indicator" 	
+ 	2
+
+VAL 	@m_sms - VAL_tp_mti@ 	
+
+VAR 	tp_mms 	"TP More Messages To Send" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_mms@ 	
+
+VAR 	tp_pid 	"TP Protocol Identifier" 	
+ 	8
+
+VAL 	@m_sms - VAL_tp_pid@ 	
+
+VAR 	tp_rd 	"TP Reject Duplicates" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_rd@ 	
+
+VAR 	tp_rp 	"TP Reply Path" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_rp@ 	
+
+VAR 	tp_st 	"TP Status" 	
+ 	8
+
+VAL 	@m_sms - VAL_tp_st@ 	
+
+VAR 	tp_sri 	"TP Status Report Indication" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_sri@ 	
+
+VAR 	tp_srr 	"TP Status Report Request" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_srr@ 	
+
+VAR 	tp_srq 	"TP Status Report Qualifier" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_srq@ 	
+
+VAR 	tp_udhi 	"TP User Data Header Indicator" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_udhi@ 	
+
+VAR 	tp_vpf 	"TP Validity Period Format" 	
+ 	2
+
+VAL 	@m_sms - VAL_tp_vpf@ 	
+
+VAR 	tp_vp_rel 	"TP Validity Period Relative" 	
+ 	8
+
+
+VAR 	tp_udl_p 	"TP User Data present" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_udl_p@ 	
+
+VAR 	tp_dcs_p 	"TP User Data Header Indicator" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_dcs_p@ 	
+
+VAR 	tp_pid_p 	"TP User Data Header Indicator" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_pid_p@ 	
+
+VAR 	length 	"Length" 	
+ 	8
+
+
+VAR 	digits 	"Digits" 	
+ 	8
+
+
+VAR 	tp_vt_mti 	"Virtual TP Message Type" 	
+ 	8
+
+VAL 	@m_sms - VAL_tp_vt_mti@ 	
+
+VAR 	tpdu 	"TP Data Unit" 	
+ 	TPDU_BIT_LEN
+
+
+VAR 	tvpf 	"Type of Validity Period Format" 	
+ 	3
+
+VAL 	@m_sms - VAL_tvpf@ 	
+
+VAR 	tp_vp_sec 	"Validity period in seconds" 	
+ 	8
+
+
+VAR 	tp_rsrvd 	"Extension Octet" 	
+ 	7
+
+
+VAR 	tp_ext 	"Extension Control Bit" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_ext@ 	
+
+VAR 	tp_ss 	"Single Shot Bit" 	
+ 	1
+
+VAL 	@m_sms - VAL_tp_ss@ 	
+
+
+
+
+COMP 	rp_cause 	"RP Cause"
+{
+ 	+ 	 	rp_cause_value 	 ; cause value
+ 	 	diag 	[0..5] 	 ; diagnostic field
+}
+
+
+
+COMP 	rp_addr 	"RP Service Center Address"
+{
+ 	+ 	 	ton 	 ; Type of number
+ 	* 	 	npi 	 ; Numbering plan identification
+ 	BCDEVEN  	num 	[0..MAX_SMS_ADDR_DIG] 	 ; Number digit
+}
+
+
+
+COMP 	rp_user_data 	"RP-User Data"
+{
+ 	 	tp_mti 	(GETPOS,:,6,+,SETPOS) ; TP Message Type Indicator
+ 	GSM5_V  	tpdu 	(SETPOS) ; TP Data Unit
+}
+
+
+
+COMP 	rp_ack 	"RP-ACK downlink / uplink"
+{
+ 	GSM4_TLV  	rp_user_data 	0x41 	 ; RP Ack Data
+}
+
+
+
+COMP 	rp_error 	"RP-ERROR downlink / uplink"
+{
+ 	GSM4_LV  	rp_cause 	 ; RP Cause
+ 	GSM4_TLV  	rp_user_data 	0x41 	 ; RP Error Data Downlink
+}
+
+
+
+COMP 	rp_data_dl 	"RP Data downlink"
+{
+ 	GSM4_LV  	rp_addr 	 ; RP Originator Address
+ 	.00000000  ; RP Destination Address
+ 	GSM4_LV  	rp_user_data 	 ; RP User Data Downlink
+}
+
+
+
+COMP 	cp_user_data_dl 	"CP User Data downlink"
+{
+ 	.00000  ; spare
+ 	 	rp_mti 	 ; Message Type Indicator
+ 	 	reference 	 ; Message Reference
+ 	< (rp_mti = RP_DATA_DL) 	GSM3_V  	rp_data_dl 	> 	 ; RP-DATA Downlink
+ 	< (rp_mti = RP_ERROR_DL) 	GSM3_V  	rp_error 	> 	 ; RP-ERROR Downlink
+ 	< (rp_mti = RP_ACK_DL) 	GSM3_V  	rp_ack 	> 	 ; RP-ACK-Downlink
+}
+
+
+
+COMP 	rp_data_ul 	"RP Data uplink"
+{
+ 	.00000000  ; RP Originator Address
+ 	GSM4_LV  	rp_addr 	 ; RP Destination Address
+ 	GSM4_LV  	rp_user_data 	 ; RP User Data Uplink
+}
+
+
+
+COMP 	cp_user_data_ul 	"CP User Data Uplink"
+{
+ 	.00000  ; spare
+ 	 	rp_mti 	 ; Message Type Indicator
+ 	 	reference 	 ; Message Reference
+ 	< (rp_mti = RP_DATA_UL) 	GSM3_V  	rp_data_ul 	> 	 ; RP-DATA Uplink
+ 	< (rp_mti = RP_ERROR_UL) 	GSM3_V  	rp_error 	> 	 ; RP-ERROR Uplink
+ 	< (rp_mti = RP_ACK_UL) 	GSM3_V  	rp_ack 	> 	 ; RP-ACK-Uplink
+}
+
+
+
+COMP 	tp_cd 	"TP Command Data"
+{
+ 	 	data 	[0..MAX_SMS_DATA_LEN] 	 ; Data
+}
+TYPEDEF COMP tp_cd 	tp_udh 	"TP User Data Header"
+
+
+
+COMP 	tp_da 	"TP Destination Address"
+{
+ 	 	digits 	 ; Number of digits
+ 	.1  ; spare
+ 	 	ton 	 ; Type of number
+ 	 	npi 	 ; Numbering plan identification
+ 	BCDEVEN  	num 	[digits..MAX_SMS_ADDR_DIG] 	 ; Number digit
+}
+TYPEDEF COMP tp_da 	tp_oa 	"TP Originating Address"
+TYPEDEF COMP tp_da 	tp_ra 	"TP Recipient Address"
+
+
+
+COMP 	tp_vp_abs 	"TP Validity Period (Absolute Format)"
+{
+ 	BCDEVEN  	year 	[2] 	 ; Year
+ 	BCDEVEN  	month 	[2] 	 ; Month
+ 	BCDEVEN  	day 	[2] 	 ; Day
+ 	BCDEVEN  	hour 	[2] 	 ; Hour
+ 	BCDEVEN  	minute 	[2] 	 ; Minute
+ 	BCDEVEN  	second 	[2] 	 ; Second
+ 	 	tz_lsb 	 ; Time Zone, LSB
+ 	 	tz_sign 	 ; Time Zone, sign
+ 	 	tz_msb 	 ; Time Zone, MSB
+}
+TYPEDEF COMP tp_vp_abs 	tp_scts 	"TP Service Centre Time Stamp"
+TYPEDEF COMP tp_vp_abs 	tp_dt 	"TP Discharge Time"
+
+
+
+COMP 	tp_vp_enh 	"TP Validity Period (Enhanced Format)"
+{
+ 	 	tp_ext 	 ; Extension Control Bit
+ 	 	tp_ss 	 ; Single Shot Bit
+ 	.000  ; spare
+ 	 	tvpf 	 ; Type of Validity Period Format
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	.0 > 	 ; spare
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	 	tp_rsrvd 	> 	 ; Extension Octet
+ 	< (tvpf = SMS_TVPF_RELATIVE) 	 	tp_vp_rel 	> 	 ; TP Validity Period Relative
+ 	< (tvpf = SMS_TVPF_SECONDS) 	 	tp_vp_sec 	> 	 ; Validity period in seconds
+ 	< (tvpf = SMS_TVPF_HOURS) 	BCDEVEN  	hour 	[2] 	> 	 ; Hour
+ 	< (tvpf = SMS_TVPF_HOURS) 	BCDEVEN  	minute 	[2] 	> 	 ; Minute
+ 	< (tvpf = SMS_TVPF_HOURS) 	BCDEVEN  	second 	[2] 	> 	 ; Second
+ 	< (tp_ext = SMS_EXT_NOT_INCLUDED) 	.00000000 > 	 ; spare
+ 	< (tvpf = SMS_TVPF_RELATIVE OR tvpf = SMS_TVPF_SECONDS) 	.00000000 > 	 ; spare
+ 	< (tvpf = SMS_TVPF_RELATIVE OR tvpf = SMS_TVPF_SECONDS) 	.00000000 > 	 ; spare
+ 	.00000000  ; spare
+ 	.00000000  ; spare
+}
+
+
+
+COMP 	tp_ud 	"TP User Data"
+{
+ 	 	length 	 ; Length
+ 	 	data 	[0..MAX_SMS_DATA_LEN] 	 ; Data
+}
+
+
+
+COMP 	tp_udh_inc 	"TP User Data with Header"
+{
+ 	 	length 	 ; Length
+ 	GSM4_LV  	tp_udh 	 ; TP User Data Header
+ 	 	data 	[0..MAX_SMS_DATA_LEN] 	 ; Data
+}
+
+
+
+COMP 	tp_cdh_inc 	"TP Command Data with Header"
+{
+ 	GSM4_LV  	tp_udh 	 ; TP User Data Header
+ 	 	data 	[0..MAX_SMS_DATA_LEN] 	 ; Data
+}
+
+
+
+
+
+
+MSG 	b_cp_ack 	both 	0b00000100 ; CP Ack
+{
+ 	GSM3_V  	msg_type 	 ; CP Message Type
+}
+
+
+
+MSG 	d_cp_data 	downlink 	0b00000001 ; CP Data Downlink
+{
+ 	GSM3_V  	msg_type 	 ; CP Message Type
+ 	GSM4_LV  	cp_user_data_dl 	 ; CP User Data downlink
+}
+
+
+
+MSG 	u_cp_data 	uplink 	0b00000001 ; CP Data Uplink
+{
+ 	GSM3_V  	msg_type 	 ; CP Message Type
+ 	GSM4_LV  	cp_user_data_ul 	 ; CP User Data uplink
+}
+
+
+
+MSG 	b_cp_error 	both 	0b00010000 ; CP Error
+{
+ 	GSM3_V  	msg_type 	 ; CP Message Type
+ 	GSM3_V  	cp_cause 	 ; CP Cause
+}
+
+
+
+MSG 	tp_deliver 	downlink 	SMS_VT_DELIVER ; TP SMS-DELIVER
+{
+ 	GSM3_V  	tp_vt_mti 	 ; Virtual Message Type
+ 	 	tp_rp 	 ; TP Reply Path
+ 	 	tp_udhi 	 ; TP User Data Header Indicator
+ 	 	tp_sri 	 ; TP Status Report Indication
+ 	.00  ; spare
+ 	 	tp_mms 	 ; TP More Message To Send
+ 	 	tp_mti 	 ; TP Message Type Indicator
+ 	GSM3_V  	tp_oa 	 ; TP Origination Address
+ 	 	tp_pid 	 ; TP Protocol Identifier
+ 	 	tp_dcs 	 ; TP Data Coding Scheme
+ 	GSM3_V  	tp_scts 	 ; TP Service Center Time Stamp
+ 	< (tp_udhi = SMS_UDHI_NOT_INCLUDED) 	GSM3_V  	tp_ud 	> 	 ; TP User Data
+ 	< (tp_udhi = SMS_UDHI_INCLUDED) 	GSM3_V  	tp_udh_inc 	> 	 ; TP User Data with Header included
+}
+
+
+
+MSG 	tp_dlvr_rep_err 	uplink 	SMS_VT_DLVR_REP_ERR ; TP SMS-DELIVER-REPORT (RP-ERROR)
+{
+ 	GSM3_V  	tp_vt_mti 	 ; Virtual Message Type
+ 	.0  ; spare
+ 	 	tp_udhi 	 ; TP User Data Header Indicator
+ 	.0000  ; spare
+ 	 	tp_mti 	 ; TP Message Type Indicator
+ 	 	tp_fcs 	 ; TP Failure Cause
+ 	 	tp_ext 	 ; Extension Control Bit
+ 	.0000  ; spare
+ 	 	tp_udl_p 	 ; TP User Data present
+ 	 	tp_dcs_p 	 ; TP Data Coding Scheme present
+ 	 	tp_pid_p 	 ; TP Protocol Identifier present
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	.0 > 	 ; spare
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	 	tp_rsrvd 	> 	 ; Extension Octet
+ 	< (tp_pid_p = SMS_PID_INCLUDED) 	 	tp_pid 	> 	 ; TP Protocol Identifier
+ 	< (tp_dcs_p = SMS_DCS_INCLUDED) 	 	tp_dcs 	> 	 ; TP Data Coding Scheme
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_NOT_INCLUDED) 	GSM3_V  	tp_ud 	> 	 ; TP User Data
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_INCLUDED) 	GSM3_V  	tp_udh_inc 	> 	 ; TP User Data with Header included
+}
+
+
+
+MSG 	tp_dlvr_rep_ack 	uplink 	SMS_VT_DLVR_REP_ACK ; TP SMS-DELIVER-REPORT (RP-ACK)
+{
+ 	GSM3_V  	tp_vt_mti 	 ; Virtual Message Type
+ 	.0  ; spare
+ 	 	tp_udhi 	 ; TP User Data Header Indicator
+ 	.0000  ; spare
+ 	 	tp_mti 	 ; TP Message Type Indicator
+ 	 	tp_ext 	 ; Extension Control Bit
+ 	.0000  ; spare
+ 	 	tp_udl_p 	 ; TP User Data present
+ 	 	tp_dcs_p 	 ; TP Data Coding Scheme present
+ 	 	tp_pid_p 	 ; TP Protocol Identifier present
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	.0 > 	 ; spare
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	 	tp_rsrvd 	> 	 ; Extension Octet
+ 	< (tp_pid_p = SMS_PID_INCLUDED) 	 	tp_pid 	> 	 ; TP Protocol Identifier
+ 	< (tp_dcs_p = SMS_DCS_INCLUDED) 	 	tp_dcs 	> 	 ; TP Data Coding Scheme
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_NOT_INCLUDED) 	GSM3_V  	tp_ud 	> 	 ; TP User Data
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_INCLUDED) 	GSM3_V  	tp_udh_inc 	> 	 ; TP User Data with Header included
+}
+
+
+
+MSG 	tp_submit 	uplink 	SMS_VT_SUBMIT ; TP SMS-SUBMIT
+{
+ 	GSM3_V  	tp_vt_mti 	 ; Virtual Message Type
+ 	 	tp_rp 	 ; TP Reply Path
+ 	 	tp_udhi 	 ; TP User Data Header Indicator
+ 	 	tp_srr 	 ; TP Status Report Request
+ 	 	tp_vpf 	 ; TP Validity Period Format
+ 	 	tp_rd 	 ; TP Reject Duplicates
+ 	 	tp_mti 	 ; TP Message Type Indicator
+ 	 	tp_mr 	 ; TP Message Reference
+ 	GSM3_V  	tp_da 	 ; TP Destination Address
+ 	 	tp_pid 	 ; TP Protocol Identifier
+ 	 	tp_dcs 	 ; TP Data Coding Scheme
+ 	< (tp_vpf = SMS_VPF_ENHANCED) 	GSM3_V  	tp_vp_enh 	> 	 ; TP Validity Period (enhanced format)
+ 	< (tp_vpf = SMS_VPF_RELATIVE) 	 	tp_vp_rel 	> 	 ; TP relative Validity Period
+ 	< (tp_vpf = SMS_VPF_ABSOLUTE) 	GSM3_V  	tp_vp_abs 	> 	 ; TP absolute Validity Period
+ 	< (tp_udhi = SMS_UDHI_NOT_INCLUDED) 	GSM3_V  	tp_ud 	> 	 ; TP User Data
+ 	< (tp_udhi = SMS_UDHI_INCLUDED) 	GSM3_V  	tp_udh_inc 	> 	 ; TP User Data with Header included
+}
+
+
+
+MSG 	tp_sbmt_rep_err 	downlink 	SMS_VT_SBMT_REP_ERR ; TP SMS-SUBMIT-REPORT (RP-ERROR)
+{
+ 	GSM3_V  	tp_vt_mti 	 ; Virtual Message Type
+ 	.0  ; spare
+ 	 	tp_udhi 	 ; TP User Data Header Indicator
+ 	.0000  ; spare
+ 	 	tp_mti 	 ; TP Message Type Indicator
+ 	 	tp_fcs 	 ; TP Failure Cause
+ 	 	tp_ext 	 ; Extension Control Bit
+ 	.0000  ; spare
+ 	 	tp_udl_p 	 ; TP User Data present
+ 	 	tp_dcs_p 	 ; TP Data Coding Scheme present
+ 	 	tp_pid_p 	 ; TP Protocol Identifier present
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	.0 > 	 ; spare
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	 	tp_rsrvd 	> 	 ; Extension Octet
+ 	GSM3_V  	tp_scts 	 ; TP Service Centre Time Stamp
+ 	< (tp_pid_p = SMS_PID_INCLUDED) 	 	tp_pid 	> 	 ; TP Protocol Identifier
+ 	< (tp_dcs_p = SMS_DCS_INCLUDED) 	 	tp_dcs 	> 	 ; TP Data Coding Scheme
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_NOT_INCLUDED) 	GSM3_V  	tp_ud 	> 	 ; TP User Data
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_INCLUDED) 	GSM3_V  	tp_udh_inc 	> 	 ; TP User Data with Header included
+}
+
+
+
+MSG 	tp_sbmt_rep_ack 	downlink 	SMS_VT_SBMT_REP_ACK ; TP SMS-SUBMIT-REPORT (RP-ACK)
+{
+ 	GSM3_V  	tp_vt_mti 	 ; Virtual Message Type
+ 	.0  ; spare
+ 	 	tp_udhi 	 ; TP User Data Header Indicator
+ 	.0000  ; spare
+ 	 	tp_mti 	 ; TP Message Type Indicator
+ 	 	tp_ext 	 ; Extension Control Bit
+ 	.0000  ; spare
+ 	 	tp_udl_p 	 ; TP User Data present
+ 	 	tp_dcs_p 	 ; TP Data Coding Scheme present
+ 	 	tp_pid_p 	 ; TP Protocol Identifier present
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	.0 > 	 ; spare
+ 	< (tp_ext = SMS_EXT_INCLUDED) 	 	tp_rsrvd 	> 	 ; Extension Octet
+ 	GSM3_V  	tp_scts 	 ; TP Service Centre Time Stamp
+ 	< (tp_pid_p = SMS_PID_INCLUDED) 	 	tp_pid 	> 	 ; TP Protocol Identifier
+ 	< (tp_dcs_p = SMS_DCS_INCLUDED) 	 	tp_dcs 	> 	 ; TP Data Coding Scheme
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_NOT_INCLUDED) 	GSM3_V  	tp_ud 	> 	 ; TP User Data
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_INCLUDED) 	GSM3_V  	tp_udh_inc 	> 	 ; TP User Data with Header included
+}
+
+
+
+MSG 	tp_status 	downlink 	SMS_VT_STATUS ; TP SMS-STATUS-REPORT
+{
+ 	GSM3_V  	tp_vt_mti 	 ; Virtual Message Type
+ 	.0  ; spare
+ 	 	tp_udhi 	 ; TP User Data Header Indicator
+ 	 	tp_srq 	 ; TP Status Report Qualifier
+ 	.00  ; spare
+ 	 	tp_mms 	 ; TP More Message To Send
+ 	 	tp_mti 	 ; TP Message Type Indicator
+ 	 	tp_mr 	 ; TP Message Reference
+ 	GSM3_V  	tp_ra 	 ; TP Recipient Address
+ 	GSM3_V  	tp_scts 	 ; TP Service Centre Time Stamp
+ 	GSM3_V  	tp_dt 	 ; TP Discharge Time
+ 	 	tp_st 	 ; TP Status
+ 	+ 	.0000  ; spare
+ 	 	tp_udl_p 	 ; TP User Data present
+ 	 	tp_dcs_p 	 ; TP Data Coding Scheme present
+ 	- 	 	tp_pid_p 	 ; TP Protocol Identifier present
+ 	* 	 	tp_rsrvd 	 ; Extension Octet
+ 	< (tp_pid_p = SMS_PID_INCLUDED) 	 	tp_pid 	> 	 ; TP Protocol Identifier
+ 	< (tp_dcs_p = SMS_DCS_INCLUDED) 	 	tp_dcs 	> 	 ; TP Data Coding Scheme
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_NOT_INCLUDED) 	GSM3_V  	tp_ud 	> 	 ; TP User Data
+ 	< (tp_udl_p = SMS_UD_INCLUDED AND tp_udhi = SMS_UDHI_INCLUDED) 	GSM3_V  	tp_udh_inc 	> 	 ; TP User Data with Header included
+}
+
+
+
+MSG 	tp_command 	uplink 	SMS_VT_COMMAND ; TP SMS-COMMAND
+{
+ 	GSM3_V  	tp_vt_mti 	 ; Virtual Message Type
+ 	.0  ; spare
+ 	 	tp_udhi 	 ; TP User Data Header Indicator
+ 	 	tp_srr 	 ; TP Status Report Request
+ 	.000  ; spare
+ 	 	tp_mti 	 ; TP Message Type Indicator
+ 	 	tp_mr 	 ; TP Message Reference
+ 	 	tp_pid 	 ; TP Protocol Identifier
+ 	 	tp_ct 	 ; TP Command Type
+ 	 	tp_mn 	 ; TP Message Number
+ 	GSM3_V  	tp_da 	 ; TP Destination Address
+ 	< (tp_udhi = SMS_UDHI_NOT_INCLUDED) 	GSM4_LV  	tp_cd 	> 	 ; TP Command Data
+ 	< (tp_udhi = SMS_UDHI_INCLUDED) 	GSM4_LV  	tp_cdh_inc 	> 	 ; TP Command Data with Header included
+}
+
+
+
+MSG 	sim_pdu 	both 	SMS_VT_SIM_PDU ; SMS SIM-PDU
+{
+ 	GSM3_V  	tp_vt_mti 	 ; Virtual Message Type
+ 	GSM4_LV  	rp_addr 	 ; RP Service Center Address
+ 	 	tp_mti 	(GETPOS,:,6,+,SETPOS) ; TP Message Type Indicator
+ 	GSM5_V  	tpdu 	(SETPOS) ; TP Data Unit
+}
+
+
+
+
+
+

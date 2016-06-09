@@ -1,0 +1,574 @@
+;********************************************************************************
+;*** File           : dl.pdf
+;*** Creation       : Wed Mar 11 09:57:57 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : dl
+;*** Document No.   : 8010.100.02.010
+;*** Document Date  : 2004-04-28
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: MSB
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:40:06 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-04-28"
+PRAGMA 	ID_AND_VERSION 	"8010.100.02.010"
+PRAGMA 	PREFIX 	DL 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Adds enumerations in the .val file.
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+CONST 	MAX_SDU_LEN 	1 	; Maximum number of bytes in an SDU (dummy value)
+CONST 	N201_SACCH_A_B 	18 	; Maximum number of octets for the information field for frames of format A and B (SACCH)
+CONST 	N201_DCCH_A_B 	20 	; Maximum number of octets for the information field for frames of format A and B (SDCCH, FACCH)
+CONST 	N201_Bbis 	23 	; Maximum number of octets for the information field for frames of format Bbis (BCCH,AGCH,NCH,PCH)
+CONST 	N201_SACCH_Bter 	21 	; Maximum number of octets for the information field for frames of format Bter (SACCH)
+CONST 	N201_DCCH_Bter 	23 	; Maximum number of octets for the information field for frames of format Bter (FACCH,SDCCH)
+EXTERN CONST 	@p_mphc - MAX_L2_FRAME_SIZE@ 	MAX_L2_FRAME_SIZE 	; Maximum number of octets for layer 2 frames of all formats
+CONST 	SPD_PID 	16 	; Defines the Primitive number for DL_SHORTUNIT_DATA_REQ/IND
+
+
+
+VALTAB 	VAL_l2_channel 	%!TI_DUAL_MODE%
+VAL 	1 	L2_CHANNEL_SACCH 	"SACCH block"
+VAL 	2 	L2_CHANNEL_SDCCH 	"SDCCH block"
+VAL 	3 	L2_CHANNEL_FACCH_H 	"FACCH halfrate block"
+VAL 	4 	L2_CHANNEL_FACCH_F 	"FACCH fullrate block"
+VAL 	5 	L2_CHANNEL_CCCH 	"CCCH block"
+VAL 	6 	L2_CHANNEL_NBCCH 	"normal BCCH block"
+VAL 	7 	L2_CHANNEL_PCH 	"PCH block"
+VAL 	8 	L2_CHANNEL_EPCH 	"extended PCH block"
+VAL 	9 	L2_CHANNEL_CBCH 	"CBCH block"
+VAL 	10 	L2_CHANNEL_EBCCH 	"extended BCCH"
+
+VALTAB 	VAL_sapi
+VAL 	0 	SAPI_0 	%!TI_DUAL_MODE% 	"SAPI 0"
+VAL 	3 	SAPI_3 	%!TI_DUAL_MODE% 	"SAPI 3"
+
+VALTAB 	VAL_indication
+VAL 	0 	ALL_DONE 	"no unacknowledges or unserved data requests"
+VAL 	1 	UNSERVED 	"unserved data requests"
+
+VALTAB 	VAL_mode
+VAL 	0 	NORMAL_RELEASE 	"normal release procedure"
+VAL 	1 	LOCAL_END_RELEASE 	"local end release procedure"
+
+VALTAB 	VAL_cnf
+VAL 	0 	NO_CONFIRMATION 	"no confimation necessary"
+
+VALTAB 	VAL_cs
+VAL 	0 	INFO_FIELD_MISMATCH 	%!TI_DUAL_MODE% 	"different information fields"
+
+
+
+
+VAR 	l2_channel 	%!TI_DUAL_MODE% 	"Layer 2 channel-type" 	B
+
+VAL 	@p_mphc - VAL_l2_channel@ 	
+
+VAR 	indication 	"Indication for unserved data requests" 	B
+
+VAL 	@p_dl - VAL_indication@ 	
+
+VAR 	mode 	"release mode" 	B
+
+VAL 	@p_dl - VAL_mode@ 	
+
+VAR 	sapi 	%!TI_DUAL_MODE% 	"service access point identifier" 	B
+
+VAL 	@p_dl - VAL_sapi@ 	
+
+VAR 	cnf 	"Confimation demand" 	B
+
+VAL 	@p_dl - VAL_cnf@ 	
+
+VAR 	l_buf 	%!TI_DUAL_MODE% 	"Length in bits" 	S
+
+
+VAR 	o_buf 	%!TI_DUAL_MODE% 	"Offset in bits" 	S
+
+
+VAR 	buf 	%!TI_DUAL_MODE% 	"Message content" 	B
+
+
+VAR 	cs 	%!TI_DUAL_MODE% 	"error cause" 	B
+
+VAL 	@p_dl - VAL_cs@ 	
+
+VAR 	error_flag 	"error cause" 	B
+
+VAL 	@p_mphc - VAL_error_flag@ 	
+
+VAR 	pwr_lev 	"Ordered mobile power level" 	B
+
+
+VAR 	ta 	"Timing advance" 	B
+
+
+VAR 	signal_data 	"Pointer to signal data" 	L
+
+
+VAR 	fn 	"Frame number" 	L
+
+
+
+
+
+COMP 	sdu 	 	%!TI_DUAL_MODE% "Container for a message"
+{
+ 	l_buf 	 ; Length in bits
+ 	o_buf 	 ; Offset in bits
+ 	buf 	[MAX_SDU_LEN] 	 ; Message content
+}
+
+
+
+
+
+
+; DL_ESTABLISH_REQ 	0x80000003
+; DL_ESTABLISH_CNF 	0x80014003
+; DL_ESTABLISH_IND 	0x80004003
+; DL_RELEASE_REQ 	0x80020003
+; DL_RELEASE_CNF 	0x80034003
+; DL_RELEASE_IND 	0x80024003
+; DL_DATA_REQ 	0x80040003
+; DL_DATA_CNF 	0x80050003
+; DL_DATA_IND 	0x80044003
+; DL_UNITDATA_REQ 	0x80060003
+; DL_UNITDATA_IND 	0x80064003
+; DL_SHORT_UNITDATA_REQ 	0x80100003
+; DL_SHORT_UNITDATA_IND 	0x80104003
+; DL_SUSPEND_REQ 	0x80080003
+; DL_RESUME_REQ 	0x800A0003
+; DL_RECONNECT_REQ 	0x800C0003
+; DL_TRACE_REQ 	0x800E0003
+; DL_SIGNAL_ESTABLISH_IND 	0x80124003
+; DL_SIGNAL_ESTABLISH_CNF 	0x80134003
+; DL_SIGNAL_DATA_IND 	0x80144003
+; DL_SIGNAL_DATA_CNF 	0x80154003
+; DL_SIGNAL_UNITDATA_IND 	0x80164003
+; DL_SIGNAL_SHORT_UNITDATA_IND 	0x80184003
+; DL_SIGNAL_RELEASE_IND 	0x801A4003
+; DL_SIGNAL_RELEASE_CNF 	0x801B4003
+; DL_SIGNAL_ERROR_IND 	0x801C4003
+; DL_SIGNAL_FREE_POINTER 	0x801D4003
+; DL_SIGNAL_CONCATENATE 	0x801E4003
+; DL_SIGNAL_L2TRACE 	0x801F4003
+; DL_SIGNAL_L3TRACE 	0x80204003
+; DL_SIGNAL_EM_IND 	0x80214003
+; DL_SIGNAL_EM_WRITE 	0x80224003
+; DL_SIGNAL_EM_READ 	0x80234003
+
+
+
+PRIM 	DL_ESTABLISH_REQ 	0x80000003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 	%TI_DUAL_MODE% ; Service data unit
+ 	sdu 	 	%!TI_DUAL_MODE% ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	DL_ESTABLISH_CNF 	0x80014003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	indication 	 ; Indication of outstanding acknowledgements or unserved DL-DATA-REQUEST primitives
+}
+
+
+
+
+
+
+PRIM 	DL_ESTABLISH_IND 	0x80004003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	indication 	 ; Indication of outstanding acknowledgements or unserved DL-DATA-REQUEST primitives
+}
+
+
+
+
+
+
+PRIM 	DL_RELEASE_REQ 	0x80020003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	mode 	 ; Release mode
+}
+
+
+
+
+
+
+PRIM 	DL_RELEASE_CNF 	0x80034003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	indication 	 ; Indication of outstanding acknowledgements or unserved DL-DATA-REQUEST primitives
+}
+
+
+
+
+
+
+PRIM 	DL_RELEASE_IND 	0x80024003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	EXTERN @p_8010_153_cause_include - ps_cause@ 	ps_cause 	 	%TI_DUAL_MODE% ; Error cause
+ 	cs 	 	%!TI_DUAL_MODE% ; Error cause
+}
+
+
+
+
+
+
+PRIM 	DL_DATA_REQ 	0x80040003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	cnf 	 ; confirmation demand
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 	%TI_DUAL_MODE% ; Service data unit
+ 	sdu 	 	%!TI_DUAL_MODE% ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	DL_DATA_CNF 	0x80050003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	cnf 	 ; confirmation demand
+}
+
+
+
+
+
+
+PRIM 	DL_DATA_IND 	0x80044003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	EXTERN @p_8010_147_l1_include - fn@ 	fn 	 	%TI_DUAL_MODE% ; Frame number
+ 	fn 	 	%!TI_DUAL_MODE% ; Frame number
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 	%TI_DUAL_MODE% ; Service data unit
+ 	sdu 	 	%!TI_DUAL_MODE% ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	DL_UNITDATA_REQ 	0x80060003
+{
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 	%TI_DUAL_MODE% ; Service data unit
+ 	sdu 	 	%!TI_DUAL_MODE% ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	DL_UNITDATA_IND 	0x80064003
+{
+ 	error_flag 	 ; Indicates if l2_frame data is invalid
+ 	pwr_lev 	 ; Ordered mobile power level
+ 	ta 	 ; Timing advance
+ 	EXTERN @p_8010_147_l1_include - fn@ 	fn 	 	%TI_DUAL_MODE% ; Frame number
+ 	fn 	 	%!TI_DUAL_MODE% ; Frame number
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 	%TI_DUAL_MODE% ; Service data unit
+ 	sdu 	 	%!TI_DUAL_MODE% ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	DL_SHORT_UNITDATA_REQ 	0x80100003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 	%TI_DUAL_MODE% ; Service data unit
+ 	sdu 	 	%!TI_DUAL_MODE% ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	DL_SHORT_UNITDATA_IND 	0x80104003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	error_flag 	 ; Indicates if l2_frame data is invalid
+ 	pwr_lev 	 ; Ordered mobile power level
+ 	ta 	 ; Timing advance
+ 	EXTERN @p_8010_147_l1_include - fn@ 	fn 	 	%TI_DUAL_MODE% ; Frame number
+ 	fn 	 	%!TI_DUAL_MODE% ; Frame number
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 	%TI_DUAL_MODE% ; Service data unit
+ 	sdu 	 	%!TI_DUAL_MODE% ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	DL_SUSPEND_REQ 	0x80080003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+}
+
+
+
+
+
+
+PRIM 	DL_RESUME_REQ 	0x800A0003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 	%TI_DUAL_MODE% ; Service data unit
+ 	sdu 	 	%!TI_DUAL_MODE% ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	DL_RECONNECT_REQ 	0x800C0003
+{
+ 	EXTERN @p_8010_147_l1_include - l2_channel@ 	l2_channel AS ch_type 	 	%TI_DUAL_MODE% ; Channel type
+ 	l2_channel AS ch_type 	 	%!TI_DUAL_MODE% ; Channel type
+ 	EXTERN @p_8010_152_ps_include - sapi@ 	sapi 	 	%TI_DUAL_MODE% ; Service access point identifier
+ 	sapi 	 	%!TI_DUAL_MODE% ; Service access point identifier
+ 	EXTERN @p_8010_152_ps_include - sdu@ 	sdu 	 	%TI_DUAL_MODE% ; Service data unit
+ 	sdu 	 	%!TI_DUAL_MODE% ; Service data unit
+}
+
+
+
+
+
+
+PRIM 	DL_TRACE_REQ 	0x800E0003
+{
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_ESTABLISH_IND 	0x80124003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_ESTABLISH_CNF 	0x80134003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_DATA_IND 	0x80144003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_DATA_CNF 	0x80154003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_UNITDATA_IND 	0x80164003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_SHORT_UNITDATA_IND 	0x80184003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_RELEASE_IND 	0x801A4003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_RELEASE_CNF 	0x801B4003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_ERROR_IND 	0x801C4003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_FREE_POINTER 	0x801D4003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_CONCATENATE 	0x801E4003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_L2TRACE 	0x801F4003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_L3TRACE 	0x80204003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_EM_IND 	0x80214003
+{
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_EM_WRITE 	0x80224003
+{
+ 	signal_data AS signal_data 	 ; Pointer
+}
+
+
+
+
+
+
+PRIM 	DL_SIGNAL_EM_READ 	0x80234003
+{
+}
+
+
+
+
+
+
+
+
+

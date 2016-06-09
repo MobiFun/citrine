@@ -1,0 +1,2783 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">DIO</DocName>
+        <DocNum Number="" Project=""/>
+        <Description>
+            <Section>This SAP document describes the Driver Interface DIO - Data I/O. It is used to handle serial and packet data of several drivers in an unified way. The document contains the needed functions and structures which have to been supported by the drivers. The basis of this SAP is "Driver Interface DIO - DATA I/O", 1400.201.02, vers. 006.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="" Year=""/>
+            <Date Day="19" Month="03" Year="2004"/>
+            <Author>RM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <FunctionsSection>
+        <Description>
+            <Section/>
+        </Description>
+        <Function>
+            <Description>
+                <Section>The function initializes the DIO interface layer and all DIO drivers. The function returns DRV_INITIALIZED if the interface has already been initialized and is ready to be used or is already in use. In case of an initialization failure, which means the DIO interface can not be used, the function returns DRV_INITFAILURE.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_init</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>Function return value</Comment>
+            </FuncRet>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>The function sets the signal_callback function of devices of the DIO user. It also informs the driver that the user is now ready to receive signals from the driver. The function returns DRV_NOTCONFIGURED if dio_init() has not been called yet. In this case the user can not use the interface yet. The user should recall the function after dio_init() has been called. The function returns DRV_INVALID_PARAMS if the given user_name is not known to the DIO inter-face layer.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_user_init</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>user_name</Name>
+                </ItemLink>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>drv_handle</Name>
+                </ItemLink>
+                <Comment>Unique handle for this callback function</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ExtType>
+                    <Type>T_DRV_CB_FUNC signal_callback</Type>
+                    <ExtSource>gdi.h</ExtSource>
+                </ExtType>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>The function is called when the DIO interface functionality is no longer required by a user. That means the signal_callback function of the user will not be call any more. All devices of the user need to be closed before the function can be called. The function returns DRV_OK if it was able to terminate the user operation successfully. In case the specified user_name is not known to the DIO interface layer the function also returns DRV_OK. If there is still a device of the user open then the function returns DRV_INVALID_PARAMS. In this case the signal_callback function of the user may still be called. The user should call dio_close_device() in order to close the devices. After that the function may be called again.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_user_exit</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>user_name</Name>
+                </ItemLink>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>The function is called when the DIO interface functionality is no longer required. The function “de-allocates᾿ the resources (interrupts, buffers, etc.). The DIO drivers terminate regardless of any out-standing data to be sent.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_exit</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function provides a receive buffer to the driver. The driver should use this buffer to store the re-ceived data of the specified device. The function should always return immediately after overtaking the buffer, without waiting for data. To avoid reception gaps more than one receive buffer should be provided to the driver via several calls of this function. The provided buffers should be used in the order they were provided. If the driver is not able to take over the provided buffer (e.g. because its internal data buffer queue is full) the func-tion returns DRV_BUFFER_FULL. The driver uses the DRV_SIGTYPE_READ signal when data is received.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_set_rx_buffer</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>dio_buffer</Name>
+                </ItemLink>
+                <Alias>buffer</Alias>
+                <Control>PTR</Control>
+                <Comment>pointer to provided segmented buffer </Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function returns a receive buffer and control information.  The returned buffer is not in control of the driver any more.  If there is no receive buffer in control of the driver any more then buffer is set to NULL. In this case only control information is delivered.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_read</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CTRL</Name>
+                </ItemLink>
+                <Alias>control_info</Alias>
+                <Control>PTR</Control>
+                <Comment>device control information, provided for device information</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>dio_buffer</Name>
+                </ItemLink>
+                <Alias>buffer</Alias>
+                <Control>PTR PTR</Control>
+                <Comment>return: data buffer description</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function provides a send buffer to the driver which contains data to send.  If the driver is not able to take over the provided buffer (e.g. because its internal buffer queue is full) the function returns DRV_BUFFER_FULL. If buffer is set to NULL then the driver only copies the provided control information. The driver uses the DRV_SIGTYPE_WRITE signal when the data of the buffer is sent.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_write</Name>
+                <FuncUsage>
+                    <Caller>DIO user </Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CTRL</Name>
+                </ItemLink>
+                <Alias>control_info</Alias>
+                <Control>PTR</Control>
+                <Comment>device control information of the peer</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>dio_buffer</Name>
+                </ItemLink>
+                <Alias>buffer</Alias>
+                <Control>PTR</Control>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function returns a send buffer provided via dio_write().  The returned send buffer is not in control of the driver any more. If there is no send buffer in control of the driver any more then buffer is set to NULL.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_get_tx_buffer</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>dio_buffer</Name>
+                </ItemLink>
+                <Alias>buffer</Alias>
+                <Control>PTR PTR</Control>
+                <Comment>return: data buffer description</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function is used to clear the hardware send buffer.  If the driver could not clear the hardware send buffer at once the function returns DRV_INPROCESS. In this case the driver will send the signal DRV_SIGTYPE_CLEAR to the protocol stack when the hardware send buffer is cleared completely. If the driver was able to clear the hardware send buffer at once the function returns DRV_OK. In this case the signal DRV_SIGTYPE_CLEAR is not sent to the protocol stack.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_clear</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>With this function the driver is requested to inform the protocol stack, when data of the hardware send buffer have been written successfully. That means the hardware send buffer is empty. If the driver could not complete flushing the buffer at once the function returns DRV_INPROCESS. In this case the driver will send the signal DRV_SIGTYPE_FLUSH to the protocol stack when the buffer is flushed completely. If the hardware send buffer is already empty then the function returns DRV_OK. In this case the signal DRV_SIGTYPE_FLUSH is not sent to the protocol stack.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_flush</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function is used to retrieve the capabilities of a device. The driver returns a pointer to a static struct of constant values. </Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_get_capabilities</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_CAP</Name>
+                </ItemLink>
+                <Alias>capabilities</Alias>
+                <Control>PTR PTR</Control>
+                <Comment>return: pointer to the device capabilities</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function is used to configure a device (transmission rate, flow control, etc).  If any value of the configuration is out of range, not supported or invalid in combination with any other value of the configuration, the function returns DRV_INVALID_PARAMS. Each device needs to be configured after the reception of a DRV_SIGTYPE_CONNECT signal. Only dio_get_capabilities(), dio_set_config() and dio_close_device() can be called while the device is not configured. All other device-specific functions return DRV_NOTCONFIGURED.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_set_config</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_DCB</Name>
+                </ItemLink>
+                <Alias>dcb</Alias>
+                <Control>PTR</Control>
+                <Comment>Pointer to a Device Control Block</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function is used to retrieve the configuration of a device. The driver copies the configuration into the Device Control Block provided with dcb.</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_get_config</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>DIO_DCB</Name>
+                </ItemLink>
+                <Alias>dcb</Alias>
+                <Control>PTR</Control>
+                <Comment>Pointer to a Device Control Block</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function is used to close a device. The driver returns DRV_OK if it was able to close the device successfully. In case the specified device does not exist the driver also returns DRV_OK. If the driver still controls a protocol stack buffer for this device then it returns DRV_INVALID_PARAMS. In this case the device is not closed. In order to get the remaining buffers the protocol stack needs to call the functions dio_read() and dio_get_tx_buffer().</Section>
+            </Description>
+            <FuncDef>
+                <Name>dio_close_device</Name>
+                <FuncUsage>
+                    <Caller>DIO user</Caller>
+                    <Callee>DIO</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>return_val</Name>
+                </ItemLink>
+                <Comment>return values are defined in gdi.h</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Function>
+    </FunctionsSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section/>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for T_DIO_DCB_SER containing all of serial  driver configuration parameter.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_DCB_SER</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_type</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>sleep_mode</Name>
+                </ItemLink>
+                <Comment>power saving mechanism mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>baudrate</Name>
+                </ItemLink>
+                <Comment>transmission data rate</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>char_frame</Name>
+                </ItemLink>
+                <Comment>character framing mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>flow_control</Name>
+                </ItemLink>
+                <Comment>flow control mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>xon</Name>
+                </ItemLink>
+                <Comment>inband flow control mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>xoff</Name>
+                </ItemLink>
+                <Comment>inband flow control mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>esc_char</Name>
+                </ItemLink>
+                <Comment>ASCII character of escape sequence</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>guard_period</Name>
+                </ItemLink>
+                <Comment>minimal duration before first and after last esc_char</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for T_DIO_DCB_SER_MUX containing all of multiplexer driver configuration parameter. </Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_DCB_SER_MUX</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_type</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>sleep_mode</Name>
+                </ItemLink>
+                <Comment>power saving mechanism mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>baudrate</Name>
+                </ItemLink>
+                <Comment>transmission data rate</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>char_frame</Name>
+                </ItemLink>
+                <Comment>character framing mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>flow_control</Name>
+                </ItemLink>
+                <Comment>flow control mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>xon</Name>
+                </ItemLink>
+                <Comment>inband flow control mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>xoff</Name>
+                </ItemLink>
+                <Comment>inband flow control mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>esc_char</Name>
+                </ItemLink>
+                <Comment>ASCII character of escape sequence</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>guard_period</Name>
+                </ItemLink>
+                <Comment>minimal duration before first and after last esc_char</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_mode</Name>
+                </ItemLink>
+                <Comment>device work mode: serial or mux</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mux_mode</Name>
+                </ItemLink>
+                <Comment>multiplexer mode of 27.010</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>n1</Name>
+                </ItemLink>
+                <Comment>max frame size of mux frame</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>n2</Name>
+                </ItemLink>
+                <Comment>max number of retransmissions</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>t1</Name>
+                </ItemLink>
+                <Comment>acknowledgement timer</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>t2</Name>
+                </ItemLink>
+                <Comment>response timer of mux control channel</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>t3</Name>
+                </ItemLink>
+                <Comment>wake up response timer</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>k</Name>
+                </ItemLink>
+                <Comment>windows size for advanced option with error recovery</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for T_DIO_DCB_PKT containing all of packet driver configuration parameter.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_DCB_PKT</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_type</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>sleep_mode</Name>
+                </ItemLink>
+                <Comment>power saving mechanism mode</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for DIO_CAP_SER containing all of serial driver capability parameter.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_CAP_SER</Name>
+                <Comment>serial device capabiliity structures</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_type</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_flags</Name>
+                </ItemLink>
+                <Comment>general additional capabilities</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mtu_control</Name>
+                </ItemLink>
+                <Comment>max number of bytes driver copies</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mtu_data</Name>
+                </ItemLink>
+                <Comment>max size of packet driver transfers</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>driver_name</Name>
+                </ItemLink>
+                <Comment>pointer to zero terminated string with driver name</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>baudrate_auto</Name>
+                </ItemLink>
+                <Comment>transmission rate automatically detected</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>baudrate_fixed</Name>
+                </ItemLink>
+                <Comment>transmission rate can be only set</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>char_frame</Name>
+                </ItemLink>
+                <Comment>supported character frame modes</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>flow_control</Name>
+                </ItemLink>
+                <Comment>supported flow control modes</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>ser_flags</Name>
+                </ItemLink>
+                <Comment>supported serial device capabilites</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="05" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for DIO_CAP_SER_MUX containing all of serial mux driver capability parameter.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_CAP_SER_MUX</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_type</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_flags</Name>
+                </ItemLink>
+                <Comment>general additional capabilities</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mtu_control</Name>
+                </ItemLink>
+                <Comment>max number of bytes driver copies</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mtu_data</Name>
+                </ItemLink>
+                <Comment>max size of packet driver transfers</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>driver_name</Name>
+                </ItemLink>
+                <Comment>pointer to zero terminated string with driver name</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>baudrate_auto</Name>
+                </ItemLink>
+                <Comment>transmission rate automatically detected</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>baudrate_fixed</Name>
+                </ItemLink>
+                <Comment>transmission rate can be only set</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>char_frame</Name>
+                </ItemLink>
+                <Comment>supported character frame modes</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>flow_control</Name>
+                </ItemLink>
+                <Comment>supported flow control modes</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>ser_flags</Name>
+                </ItemLink>
+                <Comment>supported serial device capabilites</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mux_mode</Name>
+                </ItemLink>
+                <Comment>supported mux mode of 27.010</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="05" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for DIO_CAP_PKT containing all of packet driver capability parameter.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_CAP_PKT</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_type</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_flags</Name>
+                </ItemLink>
+                <Comment>general additional capabilities</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mtu_control</Name>
+                </ItemLink>
+                <Comment>max number of bytes driver copies</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mtu_data</Name>
+                </ItemLink>
+                <Comment>max size of packet driver transfers</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>driver_name</Name>
+                </ItemLink>
+                <Comment>pointer to zero terminated string with driver name</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="05" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for T_DIO_CAP containing all of driver capability parameter. </Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_CAP</Name>
+                <Comment>device capabiliity structures</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_type</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_flags</Name>
+                </ItemLink>
+                <Comment>general additional capabilities</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mtu_control</Name>
+                </ItemLink>
+                <Comment>max number of bytes driver copies</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>mtu_data</Name>
+                </ItemLink>
+                <Comment>max size of packet driver transfers</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>driver_name</Name>
+                </ItemLink>
+                <Comment>pointer to zero terminated string with driver name</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="05" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for T_DIO_DCB containing all of driver configuration parameter. </Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_DCB</Name>
+                <Comment>all elements of driver configuration parameter </Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>device_type</Name>
+                </ItemLink>
+                <Comment>device identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>sleep_mode</Name>
+                </ItemLink>
+                <Comment>power saving mechanism mode</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="05" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This type describes a data buffer segment. The data buffers provided via dio_set_rx_buffer() and dio_write() are segmented. The type describes one segment of a data buffer.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>dio_segment</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>data</Name>
+                </ItemLink>
+                <Control>PTR [0..65335]</Control>
+                <Comment> pointer to the first byte of the data buffer segment</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="24" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This type describes a data buffer. Data buffers are segmented. The structure  contains information which is necessary to get access to the segments.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>dio_buffer</Name>
+                <Comment>data buffer</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>length</Name>
+                </ItemLink>
+                <Comment>number of data bytes (writable or provided)</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>dio_segment</Name>
+                </ItemLink>
+                <Control>PTR [0..255]</Control>
+                <Comment>pointer to array of segments</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for DIO_CTRL containing control information of transfered data.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_CTRL</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>control_type</Name>
+                </ItemLink>
+                <Comment>identifier of control info structure</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>length</Name>
+                </ItemLink>
+                <Comment>length of whole control info structure</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="05" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for DIO_CTRL_LINES containing control information of transfered serial data.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_CTRL_LINES</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>control_type</Name>
+                </ItemLink>
+                <Comment>control type of serial line states</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>length</Name>
+                </ItemLink>
+                <Comment>length of control info structure</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>state</Name>
+                </ItemLink>
+                <Comment>set/hold serial line states</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="05" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the  structure for DIO_CTRL_MUX containing control information of transfered serial multiplex data.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>DIO_CTRL_MUX</Name>
+                <Comment>Structured Element</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>control_type</Name>
+                </ItemLink>
+                <Comment>control type of mux line states</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>length</Name>
+                </ItemLink>
+                <Comment>length of control info structure</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">DIO</DocName>
+                    <Name>state</Name>
+                </ItemLink>
+                <Comment>set/hold mux line states</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="05" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Update comments</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section/>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices serves to set a certain baudrate. A device accepts only transmission rates which are specified either with baudrate_auto or baudrate_fixed of the capabilities. The user can enable automatic detection of transmission rate and character framing (DIO4_BAUD_AUTO).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>baudrate</Name>
+                <Type>U32</Type>
+                <Comment>user set baudrate</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_baud_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of serial and mux devices contains the driver baudrates which can be detected automatically. If a transmission rate can be automatically detected by the driver the appropriate bit is set to 1. Any other bit is set to 0.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>baudrate_auto</Name>
+                <Type>U32</Type>
+                <Comment>automatically detected driver baudrates</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_baud_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of serial and mux devices contains the driver baudrates which cannot be detected automatically.If a transmission rate is supported but it can not be automatically detected by the driver the appropriate bit is set to 1. Any other bit is set to 0.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>baudrate_fixed</Name>
+                <Type>U32</Type>
+                <Comment>driver baudrates which cannot be detected automatically</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_baud_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes the supported character framing of device</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>char_frame</Name>
+                <Type>U32</Type>
+                <Comment>supported character framing</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_char_frame</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section> This parameter of devices is used to identify the data control struct</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>control_type</Name>
+                <Type>U16</Type>
+                <Comment>data types</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_contr_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter provides flags for driver features.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>device_flags</Name>
+                <Type>U32</Type>
+                <Comment>driver features like power saving state</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_dev_flag</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices can be used to configure the work mode of device: serial or multiplex</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>device_mode</Name>
+                <Type>U32</Type>
+                <Comment>work mode of device</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_dev_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains information about the general driver capability and an identifier to separate different capabilities structures  with the same bit combination</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>device_type</Name>
+                <Type>U32</Type>
+                <Comment>device identifier with general capability information</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_dev_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the driver name.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>driver_name</Name>
+                <Type>U32</Type>
+                <Comment>pointer to driver name</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices can be used to configure the escape sequence detection</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>esc_char</Name>
+                <Type>U8</Type>
+                <Comment>ASCII character which is used in an escape sequence</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_esc_char</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter describes the supported modes of flow control of device</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>flow_control</Name>
+                <Type>U32</Type>
+                <Comment>supported modes of flow control</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_flow_control</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section> This parameter of devices can be used to define the minimal duration of the rest before the first and after the last character of the escape sequence and the maximal receiving duration of the whole escape string. The unit should be milliseconds. The user can switch off the escape sequence detection by set DIO_ESC_OFF.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>guard_period</Name>
+                <Type>U16</Type>
+                <Comment>duration value for escape sequence</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_guard_per</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices can be used to configure the multiplexer: windows size for advanced option with error recovery, range of 1-7</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>k</Name>
+                <Type>U8</Type>
+                <Comment>windows size </Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_k</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section> This parameter of devices is used to hold the length of data control struct</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>length</Name>
+                <Type>U16</Type>
+                <Comment>len of dio_ctrl</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter line_state contains information both about set/reset of serial line states and about the escape sequence detection.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>line_state</Name>
+                <Type>U16</Type>
+                <Comment>line state information</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_line_states</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the max number of control information bytes which the driver will copy if the functions dio_read() or dio_write() is called.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mtu_control</Name>
+                <Type>U16</Type>
+                <Comment>max length of copied control information bytes by the driver</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section> This parameter provides the max size of packet data the device can transfer. It is used if the functions dio_set_rx_buffer() or dio_write() are called.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mtu_data</Name>
+                <Type>U16</Type>
+                <Comment>max size of packet data which the driver can transfer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of mux devices contains the supported multiplexer modes</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mux_mode</Name>
+                <Type>U32</Type>
+                <Comment>supported multiplexer modes</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_mux_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section> This parameter of devices can be used to configure the multiplexer: max frame size of a mux frame, range of 1-32768</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n1</Name>
+                <Type>U16</Type>
+                <Comment>max frame size of mux frame</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_n1</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices can be used to configure the multiplexe:  max number of retransmissions, range of 0-100</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n2</Name>
+                <Type>U8</Type>
+                <Comment>max number of retransmissions</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_n2</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of serial and mux devices contains additional supported features</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ser_flags</Name>
+                <Type>U32</Type>
+                <Comment>additional supported features of serial/mux devices</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_ser_flags</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices describe the capability to provide a power saving mechanism</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sleep_mode</Name>
+                <Type>U8</Type>
+                <Comment>enter sleep mode is possible or not</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_sleep_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices is used to set/hold the serial line states</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>state</Name>
+                <Type>U32</Type>
+                <Comment>line states</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_cb_line_state</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices can be used to configure the multiplexer: acknowledgement timer, units in 10 milliseconds, range of 1-255</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t1</Name>
+                <Type>U8</Type>
+                <Comment>acknowledgement timer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_t1</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices can be used to configure the multiplexer: the response timer for multiplexer control channel, units in ten milliseconds, range of 2-255</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t2</Name>
+                <Type>U8</Type>
+                <Comment>response timer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_t2</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section> This parameter of devices can be used to configure the multiplexer: the wake up response timer, units in seconds, range of 1-255</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t3</Name>
+                <Type>U8</Type>
+                <Comment>wake up response timer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">DIO</DocName>
+                <Name>VAL_t3</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices can be used for the XON/XOFF flow control.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>xoff</Name>
+                <Type>U8</Type>
+                <Comment>set/reset XOFF for flow control</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter of devices can be used for the XON/XOFF flow control.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>xon</Name>
+                <Type>U8</Type>
+                <Comment>set/reset XON for flow control</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is the return parameter of the DIO functions.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>return_val</Name>
+                <Type>U16</Type>
+                <Comment>return values are defined in gdi.h</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>this parameter holds the size of the data buffer segment in byte</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_data</Name>
+                <Type>U16</Type>
+                <Comment>the size of the data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>this parameter holds a pointer to the first byte of the data buffer segment</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data</Name>
+                <Type>U8</Type>
+                <Comment> pointer to the first byte of the data buffer segment</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>this parameter holds the number of segments comprising the data buffer</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>c_dio_segment</Name>
+                <Type>U8</Type>
+                <Comment>the number of segments</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter ist the device identifier</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>device</Name>
+                <Type>U32</Type>
+                <Comment>Data device number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a pointer to a zero terminated string which represents the name of the user of the DIO interface. User names usually have 3 to 6 characters and they do not contain space characters.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>user_name</Name>
+                <Type>U32</Type>
+                <Comment>Basic Element</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Unique handle for this callback function</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>drv_handle</Name>
+                <Type>U16</Type>
+                <Comment>Basic Element</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="24" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section/>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This section contains baud rate values for serial devices which can be automatically detected (appropriated  bit is set to 1 ) resp. set by user (only the appropriated bit can be set to 1)</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_baud_rate</Name>
+                <Comment>baudrate values detected automatically resp.set by user</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>DIO4_BAUD_RESERVED</Alias>
+                <Comment>reserved value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000001</Value>
+                <Alias>DIO4_BAUD_AUTO</Alias>
+                <Comment>Automatic detected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000002</Value>
+                <Alias>DIO4_BAUD_75</Alias>
+                <Comment>Transmission rate of 75 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000004</Value>
+                <Alias>DIO4_BAUD_110</Alias>
+                <Comment>Transmission rate of 110 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000008</Value>
+                <Alias>DIO4_BAUD_150</Alias>
+                <Comment>Transmission rate of 150 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000010</Value>
+                <Alias>DIO4_BAUD_300</Alias>
+                <Comment>Transmission rate of 300 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000020</Value>
+                <Alias>DIO4_BAUD_600</Alias>
+                <Comment>Transmission rate of 600 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000040</Value>
+                <Alias>DIO4_BAUD_1200</Alias>
+                <Comment>Transmission rate of 1200 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000080</Value>
+                <Alias>DIO4_BAUD_2400</Alias>
+                <Comment>Transmission rate of 2400 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000100</Value>
+                <Alias>DIO4_BAUD_4800</Alias>
+                <Comment>Transmission rate of 4800 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000200</Value>
+                <Alias>DIO4_BAUD_7200</Alias>
+                <Comment>Transmission rate of 7200 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000400</Value>
+                <Alias>DIO4_BAUD_9600</Alias>
+                <Comment>Transmission rate of 9600 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000800</Value>
+                <Alias>DIO4_BAUD_14400</Alias>
+                <Comment>Transmission rate of 14400 bits/sec</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00001000</Value>
+                <Alias>DIO4_BAUD_19200</Alias>
+                <Comment>Transmission rate of 19200 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00002000</Value>
+                <Alias>DIO4_BAUD_28800</Alias>
+                <Comment>Transmission rate of 28800 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00004000</Value>
+                <Alias>DIO4_BAUD_33900</Alias>
+                <Comment>Transmission rate of 33900 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00008000</Value>
+                <Alias>DIO4_BAUD_38400</Alias>
+                <Comment>Transmission rate of 38400 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00010000</Value>
+                <Alias>DIO4_BAUD_57600</Alias>
+                <Comment>Transmission rate of 57600 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00020000</Value>
+                <Alias>DIO4_BAUD_115200</Alias>
+                <Comment>Transmission rate of 115200 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00040000</Value>
+                <Alias>DIO4_BAUD_203125</Alias>
+                <Comment>Transmission rate of 203125 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00080000</Value>
+                <Alias>DIO4_BAUD_230400</Alias>
+                <Comment>Transmission rate of 230400 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00100000</Value>
+                <Alias>DIO4_BAUD_406250</Alias>
+                <Comment>Transmission rate of 406250 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00200000</Value>
+                <Alias>DIO4_BAUD_460800</Alias>
+                <Comment>Transmission rate of460800 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00400000</Value>
+                <Alias>DIO4_BAUD_812500</Alias>
+                <Comment>Transmission rate of 812500 bits/se</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00800000</Value>
+                <Alias>DIO4_BAUD_921600</Alias>
+                <Comment>Transmission rate of 921600 bits/se</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of device types. The parameter is a combination of an identifier ( bit 8-15) and some flags which describe general device capabilities.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dev_type</Name>
+                <Comment>device types</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00200000</Value>
+                <Alias>DIO_DATA_MUX</Alias>
+                <Comment>device can start a multiplexer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00400000</Value>
+                <Alias>DIO_DATA_PKT</Alias>
+                <Comment>device can contain packet data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00800000</Value>
+                <Alias>DIO_DATA_SER</Alias>
+                <Comment>device can contain serial data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00A0000</Value>
+                <Alias>DIO_DATA_SER_MUX</Alias>
+                <Comment>serial device which can start a multiplexer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0000ff00</Value>
+                <Alias>DIO_TYPE_ID_MASK</Alias>
+                <Comment>mask for dio identifier to separate different capability structs with the same combination</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00ff0000</Value>
+                <Alias>DIO_TYPE_DAT_MASK</Alias>
+                <Comment>mask for dio identifier to separate kind of data support</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00800100</Value>
+                <Alias>DIO_TYPE_SER</Alias>
+                <Comment>Type for serial devices like UART</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00A00100</Value>
+                <Alias>DIO_TYPE_SER_MUX</Alias>
+                <Comment>Type for serial devices like UART. It is possible to start a 27.010 multiplexer on devices of this type</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00400100</Value>
+                <Alias>DIO_TYPE_PKT</Alias>
+                <Comment>Type for packet devices</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of supported character framing (appropriated bit is set to 1).</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_char_frame</Name>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000001</Value>
+                <Alias>DIO_CF_8N2</Alias>
+                <Comment>8 data bits; no parity bit; 2 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000002</Value>
+                <Alias>DIO_CF_8O1</Alias>
+                <Comment>8 data bits; odd parity bit; 1 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000004</Value>
+                <Alias>DIO_CF_8E1</Alias>
+                <Comment>8 data bits; even parity bit; 1 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000008</Value>
+                <Alias>DIO_CF_8M1</Alias>
+                <Comment>8 data bits; mark parity bit; 1 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000010</Value>
+                <Alias>DIO_CF_8S1</Alias>
+                <Comment>8 data bits; space parity bit; 1 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000020</Value>
+                <Alias>DIO_CF_8N1</Alias>
+                <Comment>8 data bits; no parity bit; 1 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000040</Value>
+                <Alias>DIO_CF_7N2</Alias>
+                <Comment>7 data bits; no parity bit; 2 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000080</Value>
+                <Alias>DIO_CF_7O1</Alias>
+                <Comment>7 data bits; odd parity bit; 1 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000100</Value>
+                <Alias>DIO_CF_7E1</Alias>
+                <Comment>7 data bits; even parity bit; 1 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000200</Value>
+                <Alias>DIO_CF_7M1</Alias>
+                <Comment>7 data bits; mark parity bit; 1 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000400</Value>
+                <Alias>DIO_CF_7S1</Alias>
+                <Comment>7 data bits; space  parity bit;1 stop bits</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000800</Value>
+                <Alias>DIO_CF_7N1</Alias>
+                <Comment>7 data bits; no parity bit; 1 stop bits</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of supported modes of flow control  (appropriated bit is set  to 1). </Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_flow_control</Name>
+                <Comment>supported flow control modes of device</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000001</Value>
+                <Alias>DIO_FLOW_NONE</Alias>
+                <Comment>Data transmit: None   Data receive: None</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000002</Value>
+                <Alias>DIO_FLOW_NO_XOFF</Alias>
+                <Comment>Data transmit: None    Data receive: XON/XOFF</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000004</Value>
+                <Alias>DIO_FLOW_NO_CTS</Alias>
+                <Comment>Data transmit: None   Data receive: CTS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000008</Value>
+                <Alias>DIO_FLOW_XON_NO</Alias>
+                <Comment>Data transmit:  local XON/XOFF Data receive: None</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000010</Value>
+                <Alias>DIO_FLOW_XON_XOFF</Alias>
+                <Comment>Data transmit:  local XON/XOFF Data receive: XON/XOFF</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000020</Value>
+                <Alias>DIO_FLOW_XON_CTS</Alias>
+                <Comment>Data transmit:  local XON/XOFF Data receive:CTS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000040</Value>
+                <Alias>DIO_FLOW_RTS_NO</Alias>
+                <Comment>Data transmit: RTS  Data receive: None</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000080</Value>
+                <Alias>DIO_FLOW_RTS_XOFF</Alias>
+                <Comment>Data transmit: RTS  Data receive: XON/XOFF</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000100</Value>
+                <Alias>DIO_FLOW_RTS_CTS</Alias>
+                <Comment>Data transmit: RTS  Data receive: CTS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000200</Value>
+                <Alias>DIO_FLOW_XTR_NO</Alias>
+                <Comment>Data transmit: transparent XON/XOFF  Data receive: None</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000400</Value>
+                <Alias>DIO_FLOW_XTR_XOFF</Alias>
+                <Comment>Data transmit: transparent XON/XOFF Data receive: CTS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000800</Value>
+                <Alias>DIO_FLOW_XTR_CTS</Alias>
+                <Comment>Data transmit: transparent XON/XOFF Data receive: CTS</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains all sets of values that are defined for the PSI DIO</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_line_states</Name>
+                <Comment>line state values of serial devices</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>LINE_STD_DCD_ON</Alias>
+                <Comment>b00000001 set line DCD on</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>LINE_STD_DCD_OFF</Alias>
+                <Comment>b00000010 set line DCD off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04</Value>
+                <Alias>LINE_STD_RING_ON</Alias>
+                <Comment>b00000100 set line RING on</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">08</Value>
+                <Alias>LINE_STD_RING_OFF</Alias>
+                <Comment>b00001000 set line RING off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">10</Value>
+                <Alias>LINE_STD_ESCD_IND</Alias>
+                <Comment>b00010000 escape sequence indication</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">20</Value>
+                <Alias>LINE_STD_DTR_LDR</Alias>
+                <Comment>b00100000 DTR line drop indication</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of additional supported capabilities of serial devices  (appropriated bit is set on 1). </Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ser_flags</Name>
+                <Comment>supported capabilities of serial devices</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">80000000</Value>
+                <Alias>DIO_FLAG_SER_ESC</Alias>
+                <Comment>device supports escape sequence detection</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of device numbers. The parameter is a combination of an driver identifier ( bit 24-31), type of device (bit 8-23) and the actual number of devices (bit 0-7). The part " type of device" is the same as described for parameter device_type </Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_device</Name>
+                <Comment>device number</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">ff000000</Value>
+                <Alias>DIO_DRV_MASK</Alias>
+                <Comment>mask for driver number to identify the driver</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00ffff00</Value>
+                <Alias>DIO_TYPE_MASK</Alias>
+                <Comment>mask for device type</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000000ff</Value>
+                <Alias>DIO_DEVICE_MASK</Alias>
+                <Comment>mask for actual device number chosen by the driver</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>DIO_DRV_UART</Alias>
+                <Comment>UART driver</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01000000</Value>
+                <Alias>DIO_DRV_USB</Alias>
+                <Comment>USB driver</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02000000</Value>
+                <Alias>DIO_DRV_MUX</Alias>
+                <Comment>27.010 multiplexer driver</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">03000000</Value>
+                <Alias>DIO_DRV_PKT</Alias>
+                <Comment>packet driver</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04000000</Value>
+                <Alias> DIO_DRV_MCBSP</Alias>
+                <Comment>McBSP driver</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">05000000</Value>
+                <Alias> DIO_DRV_APP</Alias>
+                <Comment>Application adapter</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">06000000</Value>
+                <Alias> DIO_DRV_BAT</Alias>
+                <Comment>Binary Interface Adapter</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of general device capabilities. To enable/disable this feature the parameter sleep_mode of the dio_conf is used.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dev_flag</Name>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">80000000</Value>
+                <Alias>DIO_FLAG_SLEEP</Alias>
+                <Comment>device provides the feature power saving state</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of the supported multiplexer mode of the 27.010 multiplexer. The parameter is a bitfield, the appropriat bit is set to 1. </Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mux_mode</Name>
+                <Comment>mux mode values for mux devices</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000001</Value>
+                <Alias>DIO_MUX_BASIC</Alias>
+                <Comment>mux supports Basic option</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000002</Value>
+                <Alias>DIO_MUX_UIH</Alias>
+                <Comment>mux supports Advanced option with UIH frames</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000004</Value>
+                <Alias>DIO_MUX_UI</Alias>
+                <Comment>mux supports Advanced option with UI frames</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000008</Value>
+                <Alias>DIO_MUX_I</Alias>
+                <Comment>mux supports Advanced option with I frames (error recovery)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of data control structs.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_contr_type</Name>
+                <Comment>identifier of data control structs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0001</Value>
+                <Alias>DIO4_CTRL_LINES</Alias>
+                <Comment>control struct contains serial line states</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0002</Value>
+                <Alias>DIO4_CTRL_MUX</Alias>
+                <Comment>control struct contains mux control parameter</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of device work mode. This parameter is a bitfield. To select a work mode (one at one time ) the appropriat bit is set to 1.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dev_mode</Name>
+                <Comment>device work mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000001</Value>
+                <Alias>DIO_MODE_SER</Alias>
+                <Comment>device acts as serial  device</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000002</Value>
+                <Alias>DIO_MODE_MUX</Alias>
+                <Comment>device acts as 27.010 mux device</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of escape character values</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_esc_char</Name>
+                <Comment>escape character values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">2b</Value>
+                <Alias>ESC_CHAR_DEFAULT</Alias>
+                <Comment>default escape character ("+")</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of guarding periods for escape sequence detection </Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_guard_per</Name>
+                <Comment>guarding periods values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>DIO_ESC_OFF</Alias>
+                <Comment>turn escape sequence detection off</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">3E8</Value>
+                <Alias>DIO_GUARD_PER_DEFAULT</Alias>
+                <Comment>default value 1000ms</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of supported multiplexer:  windows size for advanced option with error recoveryr</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_k</Name>
+                <Comment>windows size value for mux</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>K_DEFAULT</Alias>
+                <Comment>k default value</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of supported multiplexer max frame size</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_n1</Name>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">1f</Value>
+                <Alias>MUX_N1_BASIC_DEFAULT</Alias>
+                <Comment>default value for the basic option</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">40</Value>
+                <Alias>MUX_N1_ADVANCED_DEFAULT</Alias>
+                <Comment>default value for the advanced option</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of supported multiplexer: max number of retransmission</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_n2</Name>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">03</Value>
+                <Alias>MUX_N2_DEFAULT</Alias>
+                <Comment>default number of retransmission</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains information about sleep mode support of device. </Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sleep_mode</Name>
+                <Comment>sleep mode support</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DIO_SLEEP_ENABLE</Alias>
+                <Comment>enter sleep mode if possible</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02</Value>
+                <Alias>DIO_SLEEP_DISABLE</Alias>
+                <Comment>do not enter sleep mode</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of set/holds serial line states of the control block struct.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cb_line_state</Name>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">80000000</Value>
+                <Alias>DIO_SA</Alias>
+                <Comment>read/write: device ready</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">40000000</Value>
+                <Alias>DIO_SB</Alias>
+                <Comment>read/write: data valid</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">20000000</Value>
+                <Alias>DIO_X</Alias>
+                <Comment>read/write: flow control</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">10000000</Value>
+                <Alias>DIO_RING</Alias>
+                <Comment>write: RING indicator</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">08000000</Value>
+                <Alias>DIO_ESC</Alias>
+                <Comment>read: escape seqence detected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">04000000</Value>
+                <Alias>DIO_MUX_STOPPED</Alias>
+                <Comment>multiplexer stopped</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">02000000</Value>
+                <Alias>DIO_BRK</Alias>
+                <Comment>read/write: break received/to be send</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">000000ff</Value>
+                <Alias>DIO_BRKLEN_MASK</Alias>
+                <Comment>read/write: length of break signal in character; only valid if DIO_BREAK bit is set to 1</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of supported multiplexer:  acknowledgement timer</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_t1</Name>
+                <Comment>values for acknowledgement timer</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0a</Value>
+                <Alias>MUX_T1_DEFAULT</Alias>
+                <Comment>default acknowledgement  timer (100ms)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of supported multiplexer:  response timer</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_t2</Name>
+                <Comment>values for response timer</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">1e</Value>
+                <Alias>MUX_T2_DEFAULT</Alias>
+                <Comment>default response timer</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of supported multiplexer:  wake up response timer</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_t3</Name>
+                <Comment>values for wake up response timer</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0a</Value>
+                <Alias>MUX_T3_DEFAULT</Alias>
+                <Comment>default wake up response timer (100ms)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of xoff(flow control mode)</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_xoff</Name>
+                <Comment>xoff values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">13</Value>
+                <Alias>XOFF_DEFAULT</Alias>
+                <Comment>xoff default value</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of xon (flow control mode)</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_xon</Name>
+                <Comment>xon values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">11</Value>
+                <Alias>XON_DEFAULT</Alias>
+                <Comment>xon default value</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="19" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This section contains values of start_mux</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_start_mux</Name>
+                <Comment>Values</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>DIO_MUX_DYNAMIC</Alias>
+                <Comment>Do not start the 27.010 multiplexer immediately. The multi-plexer may be started dynamically on runtime</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>DIO_MUX_START</Alias>
+                <Comment>Starts the 27.010 multiplexer permanently. The multiplexer can not be turned off during runtime</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="22" Month="03" Year="2004"/>
+                <Author>RM</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

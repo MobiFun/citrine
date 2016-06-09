@@ -1,0 +1,187 @@
+;********************************************************************************
+;*** File           : mmsms.pdf
+;*** Creation       : Wed Mar 11 09:58:22 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mmsms
+;*** Document No.   : 6147.106.97.102
+;*** Document Date  : 2002-07-19
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:47:08 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-07-19"
+PRAGMA 	ID_AND_VERSION 	"6147.106.97.102"
+
+
+
+CONST 	MAX_SDU_LEN 	1 	; maximum service data unit length
+
+
+
+VALTAB 	VAL_ti
+VAL 	0 - 6 	"ms originated transaction"
+VAL 	8 - 14 	"ms originated transaction"
+VAL 	7 	TI_RES_MO 	"reserved"
+VAL 	15 	TI_RES_MT 	"reserved"
+
+
+
+
+VAR 	cause 	"MM cause" 	S
+
+
+VAR 	l_buf 	"length in bits" 	S
+
+
+VAR 	o_buf 	"offset in bits" 	S
+
+
+VAR 	buf 	"bit buffer" 	B
+
+
+VAR 	ti 	"transaction identifier" 	B
+
+VAL 	@p_mmsms - VAL_ti@ 	
+
+VAR 	d1 	"dummy, not used" 	B
+
+
+VAR 	d2 	"dummy, not used" 	B
+
+
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length in bits
+ 	o_buf 	 ; offset in bits
+ 	buf 	[MAX_SDU_LEN] 	 ; bit buffer
+}
+
+
+
+
+
+
+; MMSMS_ESTABLISH_REQ 	0x80000009
+; MMSMS_RELEASE_REQ 	0x80010009
+; MMSMS_DATA_REQ 	0x80020009
+; MMSMS_DATA_IND 	0x80004009
+; MMSMS_ERROR_IND 	0x80014009
+; MMSMS_ESTABLISH_CNF 	0x80024009
+; MMSMS_ESTABLISH_IND 	0x80034009
+; MMSMS_RELEASE_IND 	0x80044009
+; MMSMS_UNITDATA_IND 	0x80054009
+
+
+
+PRIM 	MMSMS_ESTABLISH_REQ 	0x80000009
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMSMS_RELEASE_REQ 	0x80010009
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMSMS_DATA_REQ 	0x80020009
+{
+ 	d1 	 ; dummy
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMSMS_DATA_IND 	0x80004009
+{
+ 	d1 	 ; dummy
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMSMS_ERROR_IND 	0x80014009
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	MMSMS_ESTABLISH_CNF 	0x80024009
+{
+ 	ti 	 ; transaction identifier
+}
+
+
+
+
+
+
+PRIM 	MMSMS_ESTABLISH_IND 	0x80034009
+{
+ 	d1 	 ; dummy
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	MMSMS_RELEASE_IND 	0x80044009
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; release cause
+}
+
+
+
+
+
+
+PRIM 	MMSMS_UNITDATA_IND 	0x80054009
+{
+ 	d1 	 ; dummy
+ 	d2 	 ; dummy
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+
+
+

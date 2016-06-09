@@ -1,0 +1,58 @@
+;********************************************************************************
+;*** File           : app.pdf
+;*** Creation       : Wed Mar 11 09:58:43 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : app
+;*** Document No.   : NA.NA.00.2005
+;*** Document Date  : 2005-05-12
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: Liyi
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:30:08 2007"
+PRAGMA 	LAST_MODIFIED 	"2005-05-12"
+PRAGMA 	ID_AND_VERSION 	"NA.NA.00.2005"
+
+
+
+
+
+
+
+
+
+VAR 	test_rslt 	"test result" 	B
+
+
+VAR 	additional_info 	"additional info" 	L
+
+
+
+
+
+
+
+
+; APP_BAT_TEST_RSLT 	0x8000401E
+
+
+
+PRIM 	APP_BAT_TEST_RSLT 	0x8000401E
+{
+ 	test_rslt 	 ; Primitive Item
+ 	additional_info 	 ; Primitive Item
+}
+
+
+
+
+
+
+
+
+

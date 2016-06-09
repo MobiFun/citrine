@@ -1,0 +1,473 @@
+;********************************************************************************
+;*** File           : DIO.pdf
+;*** Creation       : Wed Mar 11 09:57:46 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : DIO
+;*** Document No.   : ...
+;*** Document Date  : 2004-03-19
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: RM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:39:48 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-03-19"
+PRAGMA 	ID_AND_VERSION 	"..."
+
+
+
+
+
+
+VALTAB 	VAL_baud_rate
+VAL 	0x00000000 	DIO4_BAUD_RESERVED 	"reserved value"
+VAL 	0x00000001 	DIO4_BAUD_AUTO 	"Automatic detected"
+VAL 	0x00000002 	DIO4_BAUD_75 	"Transmission rate of 75 bits/sec"
+VAL 	0x00000004 	DIO4_BAUD_110 	"Transmission rate of 110 bits/sec"
+VAL 	0x00000008 	DIO4_BAUD_150 	"Transmission rate of 150 bits/sec"
+VAL 	0x00000010 	DIO4_BAUD_300 	"Transmission rate of 300 bits/sec"
+VAL 	0x00000020 	DIO4_BAUD_600 	"Transmission rate of 600 bits/sec"
+VAL 	0x00000040 	DIO4_BAUD_1200 	"Transmission rate of 1200 bits/sec"
+VAL 	0x00000080 	DIO4_BAUD_2400 	"Transmission rate of 2400 bits/sec"
+VAL 	0x00000100 	DIO4_BAUD_4800 	"Transmission rate of 4800 bits/sec"
+VAL 	0x00000200 	DIO4_BAUD_7200 	"Transmission rate of 7200 bits/sec"
+VAL 	0x00000400 	DIO4_BAUD_9600 	"Transmission rate of 9600 bits/sec"
+VAL 	0x00000800 	DIO4_BAUD_14400 	"Transmission rate of 14400 bits/sec"
+VAL 	0x00001000 	DIO4_BAUD_19200 	"Transmission rate of 19200 bits/se"
+VAL 	0x00002000 	DIO4_BAUD_28800 	"Transmission rate of 28800 bits/se"
+VAL 	0x00004000 	DIO4_BAUD_33900 	"Transmission rate of 33900 bits/se"
+VAL 	0x00008000 	DIO4_BAUD_38400 	"Transmission rate of 38400 bits/se"
+VAL 	0x00010000 	DIO4_BAUD_57600 	"Transmission rate of 57600 bits/se"
+VAL 	0x00020000 	DIO4_BAUD_115200 	"Transmission rate of 115200 bits/se"
+VAL 	0x00040000 	DIO4_BAUD_203125 	"Transmission rate of 203125 bits/se"
+VAL 	0x00080000 	DIO4_BAUD_230400 	"Transmission rate of 230400 bits/se"
+VAL 	0x00100000 	DIO4_BAUD_406250 	"Transmission rate of 406250 bits/se"
+VAL 	0x00200000 	DIO4_BAUD_460800 	"Transmission rate of460800 bits/se"
+VAL 	0x00400000 	DIO4_BAUD_812500 	"Transmission rate of 812500 bits/se"
+VAL 	0x00800000 	DIO4_BAUD_921600 	"Transmission rate of 921600 bits/se"
+
+VALTAB 	VAL_dev_type
+VAL 	0x00200000 	DIO_DATA_MUX 	"device can start a multiplexer"
+VAL 	0x00400000 	DIO_DATA_PKT 	"device can contain packet data"
+VAL 	0x00800000 	DIO_DATA_SER 	"device can contain serial data"
+VAL 	0x00A0000 	DIO_DATA_SER_MUX 	"serial device which can start a multiplexer"
+VAL 	0x0000ff00 	DIO_TYPE_ID_MASK 	"mask for dio identifier to separate different capability structs with the same combination"
+VAL 	0x00ff0000 	DIO_TYPE_DAT_MASK 	"mask for dio identifier to separate kind of data support"
+VAL 	0x00800100 	DIO_TYPE_SER 	"Type for serial devices like UART"
+VAL 	0x00A00100 	DIO_TYPE_SER_MUX 	"Type for serial devices like UART. It is possible to start a 27.010 multiplexer on devices of this type"
+VAL 	0x00400100 	DIO_TYPE_PKT 	"Type for packet devices"
+
+VALTAB 	VAL_char_frame
+VAL 	0x00000001 	DIO_CF_8N2 	"8 data bits; no parity bit; 2 stop bits"
+VAL 	0x00000002 	DIO_CF_8O1 	"8 data bits; odd parity bit; 1 stop bits"
+VAL 	0x00000004 	DIO_CF_8E1 	"8 data bits; even parity bit; 1 stop bits"
+VAL 	0x00000008 	DIO_CF_8M1 	"8 data bits; mark parity bit; 1 stop bits"
+VAL 	0x00000010 	DIO_CF_8S1 	"8 data bits; space parity bit; 1 stop bits"
+VAL 	0x00000020 	DIO_CF_8N1 	"8 data bits; no parity bit; 1 stop bits"
+VAL 	0x00000040 	DIO_CF_7N2 	"7 data bits; no parity bit; 2 stop bits"
+VAL 	0x00000080 	DIO_CF_7O1 	"7 data bits; odd parity bit; 1 stop bits"
+VAL 	0x00000100 	DIO_CF_7E1 	"7 data bits; even parity bit; 1 stop bits"
+VAL 	0x00000200 	DIO_CF_7M1 	"7 data bits; mark parity bit; 1 stop bits"
+VAL 	0x00000400 	DIO_CF_7S1 	"7 data bits; space  parity bit;1 stop bits"
+VAL 	0x00000800 	DIO_CF_7N1 	"7 data bits; no parity bit; 1 stop bits"
+
+VALTAB 	VAL_flow_control
+VAL 	0x00000001 	DIO_FLOW_NONE 	"Data transmit: None   Data receive: None"
+VAL 	0x00000002 	DIO_FLOW_NO_XOFF 	"Data transmit: None    Data receive: XON/XOFF"
+VAL 	0x00000004 	DIO_FLOW_NO_CTS 	"Data transmit: None   Data receive: CTS"
+VAL 	0x00000008 	DIO_FLOW_XON_NO 	"Data transmit:  local XON/XOFF Data receive: None"
+VAL 	0x00000010 	DIO_FLOW_XON_XOFF 	"Data transmit:  local XON/XOFF Data receive: XON/XOFF"
+VAL 	0x00000020 	DIO_FLOW_XON_CTS 	"Data transmit:  local XON/XOFF Data receive:CTS"
+VAL 	0x00000040 	DIO_FLOW_RTS_NO 	"Data transmit: RTS  Data receive: None"
+VAL 	0x00000080 	DIO_FLOW_RTS_XOFF 	"Data transmit: RTS  Data receive: XON/XOFF"
+VAL 	0x00000100 	DIO_FLOW_RTS_CTS 	"Data transmit: RTS  Data receive: CTS"
+VAL 	0x00000200 	DIO_FLOW_XTR_NO 	"Data transmit: transparent XON/XOFF  Data receive: None"
+VAL 	0x00000400 	DIO_FLOW_XTR_XOFF 	"Data transmit: transparent XON/XOFF Data receive: CTS"
+VAL 	0x00000800 	DIO_FLOW_XTR_CTS 	"Data transmit: transparent XON/XOFF Data receive: CTS"
+
+VALTAB 	VAL_line_states
+VAL 	0x01 	LINE_STD_DCD_ON 	"b00000001 set line DCD on"
+VAL 	0x02 	LINE_STD_DCD_OFF 	"b00000010 set line DCD off"
+VAL 	0x04 	LINE_STD_RING_ON 	"b00000100 set line RING on"
+VAL 	0x08 	LINE_STD_RING_OFF 	"b00001000 set line RING off"
+VAL 	0x10 	LINE_STD_ESCD_IND 	"b00010000 escape sequence indication"
+VAL 	0x20 	LINE_STD_DTR_LDR 	"b00100000 DTR line drop indication"
+
+VALTAB 	VAL_ser_flags
+VAL 	0x80000000 	DIO_FLAG_SER_ESC 	"device supports escape sequence detection"
+
+VALTAB 	VAL_device
+VAL 	0xff000000 	DIO_DRV_MASK 	"mask for driver number to identify the driver"
+VAL 	0x00ffff00 	DIO_TYPE_MASK 	"mask for device type"
+VAL 	0x000000ff 	DIO_DEVICE_MASK 	"mask for actual device number chosen by the driver"
+VAL 	0x00000000 	DIO_DRV_UART 	"UART driver"
+VAL 	0x01000000 	DIO_DRV_USB 	"USB driver"
+VAL 	0x02000000 	DIO_DRV_MUX 	"27.010 multiplexer driver"
+VAL 	0x03000000 	DIO_DRV_PKT 	"packet driver"
+VAL 	0x04000000 	 DIO_DRV_MCBSP 	"McBSP driver"
+VAL 	0x05000000 	 DIO_DRV_APP 	"Application adapter"
+VAL 	0x06000000 	 DIO_DRV_BAT 	"Binary Interface Adapter"
+
+VALTAB 	VAL_dev_flag
+VAL 	0x80000000 	DIO_FLAG_SLEEP 	"device provides the feature power saving state"
+
+VALTAB 	VAL_mux_mode
+VAL 	0x00000001 	DIO_MUX_BASIC 	"mux supports Basic option"
+VAL 	0x00000002 	DIO_MUX_UIH 	"mux supports Advanced option with UIH frames"
+VAL 	0x00000004 	DIO_MUX_UI 	"mux supports Advanced option with UI frames"
+VAL 	0x00000008 	DIO_MUX_I 	"mux supports Advanced option with I frames (error recovery)"
+
+VALTAB 	VAL_contr_type
+VAL 	0x0001 	DIO4_CTRL_LINES 	"control struct contains serial line states"
+VAL 	0x0002 	DIO4_CTRL_MUX 	"control struct contains mux control parameter"
+
+VALTAB 	VAL_dev_mode
+VAL 	0x00000001 	DIO_MODE_SER 	"device acts as serial  device"
+VAL 	0x00000002 	DIO_MODE_MUX 	"device acts as 27.010 mux device"
+
+VALTAB 	VAL_esc_char
+VAL 	0x2b 	ESC_CHAR_DEFAULT 	"default escape character ('+')"
+
+VALTAB 	VAL_guard_per
+VAL 	0x00 	DIO_ESC_OFF 	"turn escape sequence detection off"
+VAL 	0x3E8 	DIO_GUARD_PER_DEFAULT 	"default value 1000ms"
+
+VALTAB 	VAL_k
+VAL 	0x02 	K_DEFAULT 	"k default value"
+
+VALTAB 	VAL_n1
+VAL 	0x1f 	MUX_N1_BASIC_DEFAULT 	"default value for the basic option"
+VAL 	0x40 	MUX_N1_ADVANCED_DEFAULT 	"default value for the advanced option"
+
+VALTAB 	VAL_n2
+VAL 	0x03 	MUX_N2_DEFAULT 	"default number of retransmission"
+
+VALTAB 	VAL_sleep_mode
+VAL 	0x01 	DIO_SLEEP_ENABLE 	"enter sleep mode if possible"
+VAL 	0x02 	DIO_SLEEP_DISABLE 	"do not enter sleep mode"
+
+VALTAB 	VAL_cb_line_state
+VAL 	0x80000000 	DIO_SA 	"read/write: device ready"
+VAL 	0x40000000 	DIO_SB 	"read/write: data valid"
+VAL 	0x20000000 	DIO_X 	"read/write: flow control"
+VAL 	0x10000000 	DIO_RING 	"write: RING indicator"
+VAL 	0x08000000 	DIO_ESC 	"read: escape seqence detected"
+VAL 	0x04000000 	DIO_MUX_STOPPED 	"multiplexer stopped"
+VAL 	0x02000000 	DIO_BRK 	"read/write: break received/to be send"
+VAL 	0x000000ff 	DIO_BRKLEN_MASK 	"read/write: length of break signal in character; only valid if DIO_BREAK bit is set to 1"
+
+VALTAB 	VAL_t1
+VAL 	0x0a 	MUX_T1_DEFAULT 	"default acknowledgement  timer (100ms)"
+
+VALTAB 	VAL_t2
+VAL 	0x1e 	MUX_T2_DEFAULT 	"default response timer"
+
+VALTAB 	VAL_t3
+VAL 	0x0a 	MUX_T3_DEFAULT 	"default wake up response timer (100ms)"
+
+VALTAB 	VAL_xoff
+VAL 	0x13 	XOFF_DEFAULT 	"xoff default value"
+
+VALTAB 	VAL_xon
+VAL 	0x11 	XON_DEFAULT 	"xon default value"
+
+VALTAB 	VAL_start_mux
+VAL 	0x00 	DIO_MUX_DYNAMIC 	"Do not start the 27.010 multiplexer immediately. The multi-plexer may be started dynamically on runtime"
+VAL 	0x01 	DIO_MUX_START 	"Starts the 27.010 multiplexer permanently. The multiplexer can not be turned off during runtime"
+
+
+
+
+VAR 	baudrate 	"user set baudrate" 	L
+
+VAL 	@p_DIO - VAL_baud_rate@ 	
+
+VAR 	baudrate_auto 	"automatically detected driver baudrates" 	L
+
+VAL 	@p_DIO - VAL_baud_rate@ 	
+
+VAR 	baudrate_fixed 	"driver baudrates which cannot be detected automatically" 	L
+
+VAL 	@p_DIO - VAL_baud_rate@ 	
+
+VAR 	char_frame 	"supported character framing" 	L
+
+VAL 	@p_DIO - VAL_char_frame@ 	
+
+VAR 	control_type 	"data types" 	S
+
+VAL 	@p_DIO - VAL_contr_type@ 	
+
+VAR 	device_flags 	"driver features like power saving state" 	L
+
+VAL 	@p_DIO - VAL_dev_flag@ 	
+
+VAR 	device_mode 	"work mode of device" 	L
+
+VAL 	@p_DIO - VAL_dev_mode@ 	
+
+VAR 	device_type 	"device identifier with general capability information" 	L
+
+VAL 	@p_DIO - VAL_dev_type@ 	
+
+VAR 	driver_name 	"pointer to driver name" 	L
+
+
+VAR 	esc_char 	"ASCII character which is used in an escape sequence" 	B
+
+VAL 	@p_DIO - VAL_esc_char@ 	
+
+VAR 	flow_control 	"supported modes of flow control" 	L
+
+VAL 	@p_DIO - VAL_flow_control@ 	
+
+VAR 	guard_period 	"duration value for escape sequence" 	S
+
+VAL 	@p_DIO - VAL_guard_per@ 	
+
+VAR 	k 	"windows size " 	B
+
+VAL 	@p_DIO - VAL_k@ 	
+
+VAR 	length 	"len of dio_ctrl" 	S
+
+
+VAR 	line_state 	"line state information" 	S
+
+VAL 	@p_DIO - VAL_line_states@ 	
+
+VAR 	mtu_control 	"max length of copied control information bytes by the driver" 	S
+
+
+VAR 	mtu_data 	"max size of packet data which the driver can transfer" 	S
+
+
+VAR 	mux_mode 	"supported multiplexer modes" 	L
+
+VAL 	@p_DIO - VAL_mux_mode@ 	
+
+VAR 	n1 	"max frame size of mux frame" 	S
+
+VAL 	@p_DIO - VAL_n1@ 	
+
+VAR 	n2 	"max number of retransmissions" 	B
+
+VAL 	@p_DIO - VAL_n2@ 	
+
+VAR 	ser_flags 	"additional supported features of serial/mux devices" 	L
+
+VAL 	@p_DIO - VAL_ser_flags@ 	
+
+VAR 	sleep_mode 	"enter sleep mode is possible or not" 	B
+
+VAL 	@p_DIO - VAL_sleep_mode@ 	
+
+VAR 	state 	"line states" 	L
+
+VAL 	@p_DIO - VAL_cb_line_state@ 	
+
+VAR 	t1 	"acknowledgement timer" 	B
+
+VAL 	@p_DIO - VAL_t1@ 	
+
+VAR 	t2 	"response timer" 	B
+
+VAL 	@p_DIO - VAL_t2@ 	
+
+VAR 	t3 	"wake up response timer" 	B
+
+VAL 	@p_DIO - VAL_t3@ 	
+
+VAR 	xoff 	"set/reset XOFF for flow control" 	B
+
+
+VAR 	xon 	"set/reset XON for flow control" 	B
+
+
+VAR 	return_val 	"return values are defined in gdi.h" 	S
+
+
+VAR 	c_data 	"the size of the data" 	S
+
+
+VAR 	data 	" pointer to the first byte of the data buffer segment" 	B
+
+
+VAR 	c_dio_segment 	"the number of segments" 	B
+
+
+VAR 	device 	"Data device number" 	L
+
+
+VAR 	user_name 	"Basic Element" 	L
+
+
+VAR 	drv_handle 	"Basic Element" 	S
+
+
+
+
+
+COMP 	DIO_DCB_SER 	 "Structured Element"
+{
+ 	device_type 	 ; device identifier
+ 	sleep_mode 	 ; power saving mechanism mode
+ 	baudrate 	 ; transmission data rate
+ 	char_frame 	 ; character framing mode
+ 	flow_control 	 ; flow control mode
+ 	xon 	 ; inband flow control mode
+ 	xoff 	 ; inband flow control mode
+ 	esc_char 	 ; ASCII character of escape sequence
+ 	guard_period 	 ; minimal duration before first and after last esc_char
+}
+
+
+
+COMP 	DIO_DCB_SER_MUX 	 "Structured Element"
+{
+ 	device_type 	 ; device identifier
+ 	sleep_mode 	 ; power saving mechanism mode
+ 	baudrate 	 ; transmission data rate
+ 	char_frame 	 ; character framing mode
+ 	flow_control 	 ; flow control mode
+ 	xon 	 ; inband flow control mode
+ 	xoff 	 ; inband flow control mode
+ 	esc_char 	 ; ASCII character of escape sequence
+ 	guard_period 	 ; minimal duration before first and after last esc_char
+ 	device_mode 	 ; device work mode: serial or mux
+ 	mux_mode 	 ; multiplexer mode of 27.010
+ 	n1 	 ; max frame size of mux frame
+ 	n2 	 ; max number of retransmissions
+ 	t1 	 ; acknowledgement timer
+ 	t2 	 ; response timer of mux control channel
+ 	t3 	 ; wake up response timer
+ 	k 	 ; windows size for advanced option with error recovery
+}
+
+
+
+COMP 	DIO_DCB_PKT 	 "Structured Element"
+{
+ 	device_type 	 ; device identifier
+ 	sleep_mode 	 ; power saving mechanism mode
+}
+
+
+
+COMP 	DIO_CAP_SER 	 "serial device capabiliity structures"
+{
+ 	device_type 	 ; device identifier
+ 	device_flags 	 ; general additional capabilities
+ 	mtu_control 	 ; max number of bytes driver copies
+ 	mtu_data 	 ; max size of packet driver transfers
+ 	driver_name 	 ; pointer to zero terminated string with driver name
+ 	baudrate_auto 	 ; transmission rate automatically detected
+ 	baudrate_fixed 	 ; transmission rate can be only set
+ 	char_frame 	 ; supported character frame modes
+ 	flow_control 	 ; supported flow control modes
+ 	ser_flags 	 ; supported serial device capabilites
+}
+
+
+
+COMP 	DIO_CAP_SER_MUX 	 "Structured Element"
+{
+ 	device_type 	 ; device identifier
+ 	device_flags 	 ; general additional capabilities
+ 	mtu_control 	 ; max number of bytes driver copies
+ 	mtu_data 	 ; max size of packet driver transfers
+ 	driver_name 	 ; pointer to zero terminated string with driver name
+ 	baudrate_auto 	 ; transmission rate automatically detected
+ 	baudrate_fixed 	 ; transmission rate can be only set
+ 	char_frame 	 ; supported character frame modes
+ 	flow_control 	 ; supported flow control modes
+ 	ser_flags 	 ; supported serial device capabilites
+ 	mux_mode 	 ; supported mux mode of 27.010
+}
+
+
+
+COMP 	DIO_CAP_PKT 	 "Structured Element"
+{
+ 	device_type 	 ; device identifier
+ 	device_flags 	 ; general additional capabilities
+ 	mtu_control 	 ; max number of bytes driver copies
+ 	mtu_data 	 ; max size of packet driver transfers
+ 	driver_name 	 ; pointer to zero terminated string with driver name
+}
+
+
+
+COMP 	DIO_CAP 	 "device capabiliity structures"
+{
+ 	device_type 	 ; device identifier
+ 	device_flags 	 ; general additional capabilities
+ 	mtu_control 	 ; max number of bytes driver copies
+ 	mtu_data 	 ; max size of packet driver transfers
+ 	driver_name 	 ; pointer to zero terminated string with driver name
+}
+
+
+
+COMP 	DIO_DCB 	 "all elements of driver configuration parameter "
+{
+ 	device_type 	 ; device identifier
+ 	sleep_mode 	 ; power saving mechanism mode
+}
+
+
+
+COMP 	dio_segment 	 "Structured Element"
+{
+ 	data 	PTR [0..65335] 	 ;  pointer to the first byte of the data buffer segment
+}
+
+
+
+COMP 	dio_buffer 	 "data buffer"
+{
+ 	length 	 ; number of data bytes (writable or provided)
+ 	dio_segment 	PTR [0..255] 	 ; pointer to array of segments
+}
+
+
+
+COMP 	DIO_CTRL 	 "Structured Element"
+{
+ 	control_type 	 ; identifier of control info structure
+ 	length 	 ; length of whole control info structure
+}
+
+
+
+COMP 	DIO_CTRL_LINES 	 "Structured Element"
+{
+ 	control_type 	 ; control type of serial line states
+ 	length 	 ; length of control info structure
+ 	state 	 ; set/hold serial line states
+}
+
+
+
+COMP 	DIO_CTRL_MUX 	 "Structured Element"
+{
+ 	control_type 	 ; control type of mux line states
+ 	length 	 ; length of control info structure
+ 	state 	 ; set/hold mux line states
+}
+
+
+
+
+
+
+
+
+
+
+
+

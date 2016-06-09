@@ -1,0 +1,2418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">gmmrr</DocName>
+        <DocNum Number="101" Project="8441"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for GPRS consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity.</Section>
+            <Section>Figure 1-1: Architecture of the GSM/GPRS protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the GPRS protocol stack are:</Section>
+            <Section>1.1 GRR (RLC/MAC) - Radio Link Control/Medium Access Control</Section>
+            <Section>This layer contains two functions: The Radio Link Control function provides a radio-solution-dependent reliable link. The Medium Access Control function controls the access signalling (request and grant) procedures for the radio channel, and the mapping of LLC frames onto the GSM physical channel.</Section>
+            <Section>1.2 LLC - Logical Link Control</Section>
+            <Section>The LLC entity provides multiple highly reliable logical links for asynchronous data transfer between the MS and the network. It supports variable-length information frames, acknowledged and unacknowledged data transfer, flow and sequence control, error detection and recovery, notification of unrecoverable errors, user identity confidentiality, and ciphering of user and signaling data.</Section>
+            <Section>1.3 GMM - GPRS Mobility Management</Section>
+            <Section>The GMM entity provides procedures for the mobility of the MS, such as informing the network of its present location, and user identity confidentiality. It manages the GMM context (attach, detach, routing area updating), supports security functions such as authentication of user and MS, controls ciphering of data, and initiates the response to paging messages.</Section>
+            <Section>1.4 SM - Session Management</Section>
+            <Section>The main function of the session management (SM) is to support PDP context handling of the user terminal. Session Management activates, modifies and deletes the contexts for packet data protocols (PDP). Session Management services are provided at the SMREG-SAP and the SNSM-SAP for anonymous and non-anonymous access. The non-anonymous and anonymous access procedures for PDP context activation and PDP context deactivation are available at the SMREG-SAP. In addition there exists a PDP context modification for non-anonymous PDP contexts.</Section>
+            <Section>1.5 SNDCP - Subnetwork Dependant Convergence Protocol</Section>
+            <Section>SNDCP carries out all functions related to transfer of Network layer Protocol Data Units (N-PDUs) over GPRS in a transparent way. SNDCP helps to improve channel efficiency by means of compression techniques. The set of protocol entities above SNDCP consists of commonly used network protocols. They all use the same SNDCP entity, which then performs multiplexing of data coming from different sources to be sent using the service provided by the LLC layer.</Section>
+            <Section>1.6 GACI - GPRS Application Control Interface</Section>
+            <Section>The GACI is the GPRS extension of the ACI. It is specified in GSM 07.07 and 07.60. It is responsible for processing of the GPRS related AT Commands to setup, activate and deactivate the PDP context parameter. It also provides functionality for the interworking between GMM/SM/SNDCP and a packet oriented protocol like PPP.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the GPRS. The driver has to be able to perform flow control.</Section>
+            <Section>1.8 TOM - Tunnelling of Messages</Section>
+            <Section>The TOM entity is present if and only if HS136 is supported (the feature flag FF_HS136 is enabled).</Section>
+            <Section>The main function of TOM is to tunnel non-GSM signalling messages between the MS and the SGSN. The only non-GSM signalling which is currently supported by TOM is for the EGPRS-136 system (according to TIA/EIA-136-376). Data transfer in both uplink and downlink direction is possible. Two different priorities (high, low) of signalling data transfer are supported. TOM uses the unacknowledged mode of LLC and the acknowledged mode of GRR (RLC/MAC).</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="99"/>
+            <Date Day="18" Month="3" Year="1999"/>
+            <Author>CAN</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>CAN, Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="99"/>
+            <Date Day="21" Month="5" Year="1999"/>
+            <Author>SL</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Minor changes for compilation</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="99"/>
+            <Date Day="11" Month="6" Year="1999"/>
+            <Author>ID</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>New document header added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="99"/>
+            <Date Day="23" Month="6" Year="1999"/>
+            <Author>ID</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>PTMSI added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="99"/>
+            <Date Day="7" Month="10" Year="1999"/>
+            <Author>ID</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Emergency call allowed/not allowed added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="99"/>
+            <Date Day="21" Month="10" Year="1999"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>SUSPEND and SC-PAGE added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="99"/>
+            <Date Day="20" Month="4" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Mobile classes added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="99"/>
+            <Date Day="25" Month="4" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Access control classes added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="99"/>
+            <Date Day="9" Month="10" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>IMSI element changed.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="99"/>
+            <Date Day="14" Month="11" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>TEST_MODE and STATUS added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="99"/>
+            <Date Day="7" Month="12" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>TEST_END.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="012" Year="99"/>
+            <Date Day="24" Month="4" Year="2001"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>ATTACH_STARTED/FINISHED added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="013" Year="99"/>
+            <Date Day="17" Month="5" Year="2001"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>multislot class added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="014" Year="99"/>
+            <Date Day="2" Month="7" Year="2001"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>CELL_IND and updated/non-DRX param added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="015" Year="99"/>
+            <Date Day="29" Month="11" Year="2001"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>class B added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="016" Year="99"/>
+            <Date Day="14" Month="12" Year="2001"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Direction of GPRS suspension exchagend</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="017" Year="99"/>
+            <Date Day="28" Month="3" Year="2002"/>
+            <Author>SAB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Add indicator for split paging cycle support on CCCH.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="018" Year="99"/>
+            <Date Day="11" Month="4" Year="2002"/>
+            <Author>SAB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Add information regarding the current location of the mobile equipment to the parameter cell information</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="019" Year="99"/>
+            <Date Day="23" Month="4" Year="2002"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>rai in GMMRR_ASSIGN_REQ added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="020" Year="99"/>
+            <Date Day="6" Month="5" Year="2002"/>
+            <Author>SAB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Remove multislot class from SAP GMMRR</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="021" Year="03"/>
+            <Date Day="9" Month="1" Year="2003"/>
+            <Author>SAB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Remove several unused primitives and update remaining primitive OP codes</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="022" Year="03"/>
+            <Date Day="5" Month="3" Year="2003"/>
+            <Author>SAB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Update structure cell_info</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="023" Year="03"/>
+            <Date Day="21" Month="3" Year="2003"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>old and new TLLI and PTMSI as parameter in GMMRR_ASSIGN_REQ introduced.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="024" Year="03"/>
+            <Date Day="26" Month="8" Year="2003"/>
+            <Author>SAB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Update cell information structure.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="025" Year="03"/>
+            <Date Day="2" Month="9" Year="2003"/>
+            <Author>SAB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Remove GMMRR_NO_CELL_IND, update cell information structure.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 05.02 version 8.0.0 Release 1999Digital cellular telecommunications system (Phase 2+);Multiplexing and multiple access on the radio path</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 04.60 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station (MS) - Base Station System (BSS) interface;Radio Link Control/ Medium Access Control (RLC/MAC) protocol</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 04.08 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface layer 3 specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 03.64 version 6.1.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Overall description of the GPRS radio interface; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 03.60 version 6.3.1 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Service description; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 04.07 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface signalling layer 3; General aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 04.64 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station - Serving GPRS Support Node (MS-SGSN)Logical Link Control (LLC) layer specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 05.08 version 6.4.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem link control</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 05.10 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem synchronization</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 03.20 TS 100 929: July 1998 (GSM 03.20 version 6.0.1)Security related network functions, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Draft GSM 03.22: August 1998 (GSM 03.22 version 6.1.0)Functions related to Mobile Station (MS) in idle mode and group receive mode, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 04.65 V6.3.0: Subnetwork Dependant Convergence Protocol ETSI, March 1999</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>ITU-T V42bis ITU-T, Recommendation V.42 bis 1990</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 09.60 GPRS Tunneling Protocol (GTP) across the Gn and Gp Interface</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>RFC 1661 IETF STD 51 July 1994The Point-to-Point Protocol (PPP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>RFC 1662 IETF STD 51 July 1994PPP in HDLC-like Framing</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>RFC 1570 January 1994PPP LCP Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>RFC 1989 August 1996PPP Link Quality Monitoring</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>RFC 1332 May 1992The PPP Internet Protocol Control Protocol (IPCP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>RFC 1877 December 1995PPP IPCP Extensions for Name Server Addresses</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>RFC 2153 May 1997PPP Vendor Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>RFC 1334 October 1992PPP Authentication Protocols (for Password Authentication Protocol only)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>RFC 1994 August 1996PPP Challenge Handshake Authentication Protocol (CHAP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>TIA/EIA-136-370Packet-Data Services - Enhanced General Packet Radio for TIA/EIA-136 (EGPRS-136) - Overview, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>TIA/EIA-136-376Packet-Data Services - EGPRS-136 Mobility Management, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>TIA/EIA-136-972Packet-Data Services - Stage 2 Description, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the GMMRR SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>MAX_DIGITS</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment/>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_MCC</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment>maximum number of BCD digits of the mobile country code</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIZE_MNC</Alias>
+            <Value ValueType="DEC">3</Value>
+            <Comment>maximum number of BCD digits of the mobile network code</Comment>
+        </Constant>
+        <History>
+            <Date Day="26" Month="2" Year="1999"/>
+            <Author>CAN</Author>
+            <Comment>ID Initial</Comment>
+        </History>
+        <History>
+            <Date Day="21" Month="5" Year="1999"/>
+            <Author>SL</Author>
+            <Comment>empty rows for compilation removed</Comment>
+        </History>
+        <History>
+            <Date Day="23" Month="2" Year="2000"/>
+            <Author>ANS</Author>
+            <Comment>MAX_DIGITS included</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="4" Year="2002"/>
+            <Author>SAB</Author>
+            <Comment>SIZE_MCC and SIZE_MNC included</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="31">
+        <Description>
+            <Section>This section contains all primitives that are defined for the GMMRR SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>A new TLLI is assigned to the RR sublayer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_ASSIGN_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>old_tlli</Name>
+                </ItemLink>
+                <Comment>Old temporary logical link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>new_tlli</Name>
+                </ItemLink>
+                <Comment>New temporary logical link identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>old_ptmsi</Name>
+                </ItemLink>
+                <Comment>Old Packet Temporary MS Identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>new_ptmsi</Name>
+                </ItemLink>
+                <Comment>New Packet Temporary MS Identity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>imsi</Name>
+                </ItemLink>
+                <Comment>IMSI</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>rai</Name>
+                </ItemLink>
+                <Comment>Routing area identifier assinged by the network</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="3" Year="1999"/>
+                <Author>CAN</Author>
+                <Comment>ID Initial</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="9" Year="1999"/>
+                <Author>ID</Author>
+                <Comment>ptmsi added</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="2" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>imsi added</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="4" Year="2002"/>
+                <Author>ANS</Author>
+                <Comment>rai added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="3" Year="2003"/>
+                <Author>ANS</Author>
+                <Comment>old and new TLLI and PTMSI added.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The GPRS capability in the MS is enabled.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_ENABLE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>mobile_class</Name>
+                </ItemLink>
+                <Comment>Mobile Class</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>acc_contr_class</Name>
+                </ItemLink>
+                <Comment>Access control class</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>split_pg_cycle</Name>
+                </ItemLink>
+                <Comment>Split paging cycle</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>spgc_ccch_supp</Name>
+                </ItemLink>
+                <Comment>Split paging cycle support on CCCH</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>gmmrr_non_drx_timer</Name>
+                </ItemLink>
+                <Comment>non_DRX timer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="6" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>mobile class added.</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Access control class added.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="6" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Split paging cycle added.</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="7" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>non-DRX parameter added.</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="3" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Spgc_ccch_supp added</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="5" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>multislot class removed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The GPRS capability in the MS is disabled.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_DISABLE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="28" Month="6" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GRR indicates GMM, that the cell which has been found by MM supports or not supports GPRS.</Section>
+                <Section>Requirements: &lt;R.GMM.DSUBPWRN.M.002&gt;, &lt;R.GMM.DSUBPWRN.M.003&gt;, &lt;R.GMM.DSUBPWRN.M.004&gt;, &lt;R.GMM.DSUBPWRN.M.005&gt;, &lt;R.GMM.DSUBPWRN.M.006&gt;, &lt;R.GMM.DSUBPWRN.M.007&gt;, &lt;R.GMM.DDLIMITD.M.001&gt;, &lt;R.GMM.DDATTNEE.M.001&gt;, &lt;R.GMM.DDATMATT.M.003&gt;, &lt;R.GMM.DDATMATT.M.004&gt;, &lt;R.GMM.ODNORMAL.M.004&gt;, &lt;R.GMM.ODNORMAL.M.005&gt;, &lt;R.GMM.ORLIMITD.M.002&gt;, &lt;R.GMM.RAU.M.011&gt;, &lt;R.GMM.AGABNORM.M.010&gt;, &lt;R.GMM.DMABNORM.M.017&gt;, &lt;R.GMM.RNABNORM.M.011&gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_CELL_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>GRR</Sender>
+                    <Receiver>GMM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>cell_info</Name>
+                </ItemLink>
+                <Comment>Cell information</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="2" Month="6" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="6" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Elements added.</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="6" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>renamed from MM to GRR</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="6" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>access_barred included.</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="7" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Cell information included</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GMM enters state READY.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_READY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="15" Month="7" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="0" Month="10" Year="2024"/>
+                <Author>ANS</Author>
+                <Comment>name changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GMM enters state STANDBY because of timeout of READY timer T3314, i.e. no more LLC pdu was sent, No cell updating procedure has to be performed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_STANDBY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>standby_cause</Name>
+                </ItemLink>
+                <Comment>standby cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="15" Month="7" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="0" Month="10" Year="2024"/>
+                <Author>ANS</Author>
+                <Comment>name changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>A RR-paging message has been received by the RR sublayer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_PAGE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>GRR</Sender>
+                    <Receiver>GMM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>page_id</Name>
+                </ItemLink>
+                <Comment>page ID</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="3" Year="1999"/>
+                <Author>CAN</Author>
+                <Comment>ID Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Remove several unused primitives and update remaining primitive OP codes</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GRR informs GMM that the MS was paged for non-GPRS service.</Section>
+                <Section>Requirements: &lt;R.GMM.ORSUSPND.M.001&gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_CS_PAGE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>GRR</Sender>
+                    <Receiver>GMM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="18" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Remove several unused primitives and update remaining primitive OP codes</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GMM rejects the pageing request.</Section>
+                <Section>Requirements: &lt; - &gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_CS_PAGE_RES</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GRR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>response</Name>
+                </ItemLink>
+                <Comment>response</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>susp_gprs</Name>
+                </ItemLink>
+                <Comment>Suspend GPRS</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GMM informs GRR that a circuit switched call has to be started or GMM enters substate SUSPENDED, because of entering dedicated mode.</Section>
+                <Section>Requirements: &lt;R.GMM.ORSUSPND.M.001&gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_SUSPEND_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GRR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>susp_gprs</Name>
+                </ItemLink>
+                <Comment>Suspend GPRS</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>gmmrr_susp_cause</Name>
+                </ItemLink>
+                <Comment>Suspension Cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>cause added.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>cause removed.</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="11" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>susp_cause added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GRR confirms that GRR is successful suspended and RR is activated.</Section>
+                <Section>Requirements: &lt;-&gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_SUSPEND_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GRR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="21" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Remove several unused primitives and update remaining primitive OP codes</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GMM informs GRR that suspension was resumed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_RESUME_REQ</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GRR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="2" Month="5" Year="2000"/>
+                <Author>ID</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GMMRR_ATTACH_STARTED_REQ is used to inform GRR that routing area upodate or attach procedure is started. This time span is closed with GMMRR_ATTACH_FINISHED_REQ</Section>
+                <Section>GSM 04.60, ch. 5.5.1.5 Discontinuous reception (DRX):</Section>
+                <Section>"When initiating the MM procedures for GPRS attach and routeing area update defined in 3GPP TS 04.08, the mobile station shall enter the MM non- DRX mode period. This period ends when either of  the messages GPRS ATTACH ACCEPT, GPRS ATTACH REJECT, ROUTING AREA UPDATE ACCEPT or ROUTING AREA UPDATE REJECT is received by the mobile station. This period also ends after timeout waiting for any of these messages.GMM when an lower layer error has occurred."</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_ATTACH_STARTED_REQ</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GRR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="24" Month="4" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GMMRR_ATTACH_FINISHED_REQ is used to inform GRR that routing area upodate or attach procedure is finished.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_ATTACH_FINISHED_REQ</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GRR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="24" Month="4" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GMMRR_CELL_RES is used to inform GRR that routing area upodate, attach procedure or cell update is finished. This is needed to be sure that RAU_REQUEST is the first message in the new RAU. GRR is not allowed to transmit data after cell reselection until GMMRR_CELL_RES is received.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_CELL_RES</Name>
+                <PrimID Direction="UPLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>GMM</Sender>
+                    <Receiver>GRR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>cu_cause</Name>
+                </ItemLink>
+                <Comment>Cell Update Cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="18" Month="1" Year="2002"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="5" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>add cause</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>GMMRR_CR_IND is used to inform GMM when RR/GRR is starting cell reselection. GMM will in state RAU_INITIATED and in state REG_INITIATED wait until cell is selected.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GMMRR_CR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>GRR</Sender>
+                    <Receiver>GMM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="8" Month="11" Year="2002"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="1" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>Remove several unused primitives and update remaining primitive OP codes</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This information element describes the cell capability.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>cell_info</Name>
+                <Comment>Cell information</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>cell_env</Name>
+                </ItemLink>
+                <Comment>Cell Environment</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>service_state</Name>
+                </ItemLink>
+                <Comment>Service state</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>net_mode</Name>
+                </ItemLink>
+                <Comment>Network operation mode</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>rt</Name>
+                </ItemLink>
+                <Comment>RAT supported in cell</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="12" Month="7" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="9" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>net_mode from primitive moved to cell_info struct</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>emrgency call included and some N/A included</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>la and plmn from mmgmm included</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>gprs supported removed (see no_cell_ind)</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="6" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>lac and rac and cell_changed added.</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>remove parameter rac and lac, add parameter cell environment</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="3" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>remove parameter emergency_call and cell_changed</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="8" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>replace access_barred, la_forbidden and plmn_forbidden by service_state</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>add c-macro value</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF. The Packet Temporary Mobile Station Identity (PTMSI) is defined in GSM 03.03. This field is encoded as a binary number. Range 0 to 4294967295</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>imsi</Name>
+                <Comment>mobile identity</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>v_mid</Name>
+                </ItemLink>
+                <Comment>valid flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>id_type</Name>
+                </ItemLink>
+                <Comment>type of identity</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>id</Name>
+                </ItemLink>
+                <Control>[MAX_DIGITS]</Control>
+                <Comment>IMSI digits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>tmsi_dig</Name>
+                </ItemLink>
+                <Comment>TMSI digits</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="2" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from RR</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field changed.</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="10" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field rechanged.</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter indicates the current location of the mobile equipment on a cell base.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>cell_env</Name>
+                <Comment>current location of the mobile equipment</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>rai</Name>
+                </ItemLink>
+                <Comment>Routing Area Identifier</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>cid</Name>
+                </ItemLink>
+                <Comment>Cell Identification</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="11" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter defines the PLMN identification.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>plmn</Name>
+                <Comment>PLMN identification</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>v_plmn</Name>
+                </ItemLink>
+                <Comment>Valid Flag</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>mcc</Name>
+                </ItemLink>
+                <Control>[SIZE_MCC]</Control>
+                <Comment>Mobile Country Code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>mnc</Name>
+                </ItemLink>
+                <Control>[SIZE_MNC]</Control>
+                <Comment>Mobile Network Code</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="11" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter identifies the Routing Area</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>rai</Name>
+                <Comment>routing area identifier</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>plmn</Name>
+                </ItemLink>
+                <Comment>PLMN</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>lac</Name>
+                </ItemLink>
+                <Comment>Location Area Code</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gmmrr</DocName>
+                    <Name>rac</Name>
+                </ItemLink>
+                <Comment>Routing Area Code</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the MS. Within the SGSN it is used to distinguish between the different LLC entities. LLC is able to handle a maximum of two TLLIs, both for receiving frames and one of them for transmitting frames. Therefore this parameter is also useful on the side of the MS to distinguish between the two possible receiving TLLIs.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>old_tlli</Name>
+                <Type>U32</Type>
+                <Comment>old temporary logical link identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_old_tlli</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="3" Year="1999"/>
+                <Author>CAN</Author>
+                <Comment>ID Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the MS. Within the SGSN it is used to distinguish between the different LLC entities. LLC is able to handle a maximum of two TLLIs, both for receiving frames and one of them for transmitting frames. Therefore this parameter is also useful on the side of the MS to distinguish between the two possible receiving TLLIs.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>new_tlli</Name>
+                <Type>U32</Type>
+                <Comment>new temporary logical link identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_old_tlli</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="3" Year="1999"/>
+                <Author>CAN</Author>
+                <Comment>ID Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This information element describes the cell capability.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>service_state</Name>
+                <Type>U8</Type>
+                <Comment>Service state</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_service_state</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="12" Month="7" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="9" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>net_mode from primitive moved to cell_info struct</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>emrgency call included and some N/A included</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>la and plmn from mmgmm included</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>gprs supported removed (see no_cell_ind)</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="6" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>lac and rac and cell_changed added.</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>remove parameter rac and lac, add parameter cell environment</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="3" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>remove parameter emergency_call and cell_changed</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="8" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>replace access_barred, la_forbidden and plmn_forbidden by service_state</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="9" Year="2003"/>
+                <Author>SAB</Author>
+                <Comment>add c-macro value</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>A GPRS MS operating in mode A or B in network that operates in mode I, uses the combined GMM specific procedures in place of the MM specific procedures, so all conditions describing when to trigger a MM specific procedure (see [GSM 04.08, sections 4.3 and 4.4]) shall not apply.</Section>
+                <Section>A GPRS MS operating in mode A or B in a network that operates in mode I should not use any MM timers relting to MM specific procedures, (e.g. T3210, T3211, T3212, T3213) expect in some error and abnormal cases.</Section>
+                <Section>If the network operates in mode II or III, GPRS MSs that operate in mode A or B and wish to be or are simultaneously IMSI attached for GPRS and non-GPRS services, shall use the MM specific procedures listed in [GSM 04.08, sections 4.3 and 4.4] and the GMM specific procedures listed in [GSM 04.08, sections 4.7.3, 4.7.4 and 4.7.5].</Section>
+                <Section>Requirements: &lt;R.GMM.MMGMMONE.M.002&gt;,  &lt;R.GMM.MMGMMONE.M.003&gt;, &lt;R.GMM.MMGMMTWO.M.001&gt;</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>net_mode</Name>
+                <Type>U8</Type>
+                <Comment>Network operation mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_net_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="6" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="1" Year="2000"/>
+                <Author>ID</Author>
+                <Comment>Values changed according to 04.60</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This paramtere indicates the reason, why GMM enters state STANDBY.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>standby_cause</Name>
+                <Type>U8</Type>
+                <Comment>standby cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_standby_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="19" Month="7" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="7" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>GMMRR_SUSPENDED included.</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="9" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>GMM_RESET_OF_T3314 included.</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="1" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>GMMRR_SUSPENDED removed (see suspend_req).</Comment>
+            </History>
+            <History>
+                <Date Day="0" Month="10" Year="2024"/>
+                <Author>ANS</Author>
+                <Comment>name changed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The Temporary Mobile Station Identity (TMSI) is defined in GSM 03.03. This field is encoded as a binary number. Range 0 to 4294967295.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>old_ptmsi</Name>
+                <Type>U32</Type>
+                <Comment>old ptmsi</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_old_ptmsi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The Temporary Mobile Station Identity (TMSI) is defined in GSM 03.03. This field is encoded as a binary number. Range 0 to 4294967295.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>new_ptmsi</Name>
+                <Type>U32</Type>
+                <Comment>new ptmsi</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_old_ptmsi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF. The Packet Temporary Mobile Station Identity (PTMSI) is defined in GSM 03.03. This field is encoded as a binary number. Range 0 to 4294967295</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_mid</Name>
+                <Type>U8</Type>
+                <Comment>valid flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_v_mid</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="2" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from RR</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field changed.</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="10" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field rechanged.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF. The Packet Temporary Mobile Station Identity (PTMSI) is defined in GSM 03.03. This field is encoded as a binary number. Range 0 to 4294967295</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>id_type</Name>
+                <Type>U8</Type>
+                <Comment>type of identity</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_id_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="2" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from RR</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field changed.</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="10" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field rechanged.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF. The Packet Temporary Mobile Station Identity (PTMSI) is defined in GSM 03.03. This field is encoded as a binary number. Range 0 to 4294967295</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>id</Name>
+                <Type>U8</Type>
+                <Comment>IMSI digits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="2" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from RR</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field changed.</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="10" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field rechanged.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a mobile identity. The IMSI / IMEI digits are coded as BCD digits. One digit per Byte. The delimiter is 0xF. The Packet Temporary Mobile Station Identity (PTMSI) is defined in GSM 03.03. This field is encoded as a binary number. Range 0 to 4294967295</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tmsi_dig</Name>
+                <Type>U32</Type>
+                <Comment>TMSI digits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="6" Year="1997"/>
+                <Author>VK</Author>
+                <Comment>rename 'type' to 'id_type'</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="7" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>IMEI removed</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="2" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from RR</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field changed.</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="10" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>array ctrl field rechanged.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is perhaps for further use.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>response</Name>
+                <Type>U8</Type>
+                <Comment>CS Paging respnonse</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_response</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="21" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is perhaps for further use.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>page_id</Name>
+                <Type>U8</Type>
+                <Comment>Page ID</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_page_id</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="22" Month="10" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The current operating class of the mobile, see GSM 07.60 10.2.10.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mobile_class</Name>
+                <Type>U8</Type>
+                <Comment>Mobile Class</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_mobile_class</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>copied from GMMREG</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>class B added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Access Control Class N (bit 1-16) (see octet 3 and 4 of the RACH Control Parameters IE in GSM 04.08) . For a mobile station with Access Control Class =N access is not barred if the Access Control Class N bit is coded with a '0'; N = 0, 1,....9,11,...,15. Bit 11= the EC bit is the Emergency Call Allowed coded as specified in GSM 04.08. (see GSM 04.60 and GSM 2.11)</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>acc_contr_class</Name>
+                <Type>U16</Type>
+                <Comment>Access Control Class</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>GRR is requested to suspend GPRS or not.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>susp_gprs</Name>
+                <Type>U8</Type>
+                <Comment>suspend GPRS</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_susp_gprs</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="5" Month="5" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="12" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>NOT and not NOT exchanged</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The SPLIT PG CYCLE value is derived from the SPLIT PG CYCLE CODE and has values between 1 to 352, the value 704 is equivalent to no DRX mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>split_pg_cycle</Name>
+                <Type>U16</Type>
+                <Comment>Split paging cycle (the value, NOT the code)</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_split_pg_cycle</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="15" Month="6" Year="2000"/>
+                <Author>ID</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="10" Year="2000"/>
+                <Author>ID</Author>
+                <Comment>Add values</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the location area code.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>lac</Name>
+                <Type>U16</Type>
+                <Comment>location area code</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_lac</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="5" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="6" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>copied from MMREG</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the routing area code.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rac</Name>
+                <Type>U8</Type>
+                <Comment>routing area code</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_rac</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="18" Month="6" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="19" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Add c-macro value</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Reference : [1] section 10.5.5.6 (DRX Parameter)</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gmmrr_non_drx_timer</Name>
+                <Type>U8</Type>
+                <Comment>non-DRX timer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_gmmrr_non_drx_timer</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="4" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="7" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>copied from GMM.air</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This cause informs GRR how to suspend.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gmmrr_susp_cause</Name>
+                <Type>U8</Type>
+                <Comment>suspension cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_gmmrr_susp_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="2" Year="2002"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates whether split paging cycle on CCCH is supported by the mobile station or not.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>spgc_ccch_supp</Name>
+                <Type>U8</Type>
+                <Comment>Split paging cycle support on CCCH</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_spgc_ccch_supp</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="3" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the cell identification.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cid</Name>
+                <Type>U16</Type>
+                <Comment>cell identification</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the PLMN identification.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>v_plmn</Name>
+                <Type>U8</Type>
+                <Comment>Valid Flag</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the PLMN identification.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mcc</Name>
+                <Type>U8</Type>
+                <Comment>Mobile Country Code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the PLMN identification.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mnc</Name>
+                <Type>U8</Type>
+                <Comment>Mobile Network Code</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="11" Month="4" Year="2002"/>
+                <Author>SAB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This cause informs GRR how to suspend.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cu_cause</Name>
+                <Type>U8</Type>
+                <Comment>Cell Update Cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_cu_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="5" Month="5" Year="2003"/>
+                <Author>CAN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section/>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rt</Name>
+                <Type>U8</Type>
+                <Comment>This parameter indicates the radio access technology available in the cell. </Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gmmrr</DocName>
+                <Name>VAL_rt</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="06" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the GMMRR SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_old_tlli</Name>
+                <Comment>values for old_tlli</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FFFFFFFF</Value>
+                <Alias>GMMRR_TLLI_INVALID</Alias>
+                <Comment>TLLI invalid (see GSM 3.03)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_service_state</Name>
+                <Comment>values for service_state</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GMMRR_SERVICE_NONE</Alias>
+                <Comment>No service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_SERVICE_LIMITED</Alias>
+                <Comment>Limited service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GMMRR_SERVICE_FULL</Alias>
+                <Comment>Full service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>GMMRR_SERVICE_UNKNOWN</Alias>
+                <Comment>Service unknown</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="8" Year="2004"/>
+                <Author>GP</Author>
+                <Comment>added new value UNKNOWN</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_net_mode</Name>
+                <Comment>values for net_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GMMRR_NET_MODE_I</Alias>
+                <Comment>Network operation mode I, only one Paging channel for both: PCCCH or  CCCH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_NET_MODE_II</Alias>
+                <Comment>Network operation mode II, Paging only on CCCH</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GMMRR_NET_MODE_III</Alias>
+                <Comment>Network operation mode III, Paging on CCCH for CS and either on CCCH or on PCCCH for GPRS, if PCCH allocated in the cell</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_standby_cause</Name>
+                <Comment>values for standby_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_TIMEOUT_OF_T3314</Alias>
+                <Comment>GMM enters state STANDBY because of timeout of READY timer T3314</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GMMRR_RESET_OF_T3314</Alias>
+                <Comment>GMM enters state STANDBY because GMM receives a message witrh timer_value 0</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>GMMRR_FORCE_TO_STANDBY</Alias>
+                <Comment>GMM receives a message indicating FORCE TO STANDBY</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_old_ptmsi</Name>
+                <Comment>values for old_ptmsi</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FFFFFFFF</Value>
+                <Alias>GMMRR_TMSI_INVALID</Alias>
+                <Comment>P-TMSI or TMSI invalid (see GSM 3.03)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_v_mid</Name>
+                <Comment>values for v_mid</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>V_MID_NOT_PRES</Alias>
+                <Comment>not present</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>V_MID_PRES</Alias>
+                <Comment>present</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_id_type</Name>
+                <Comment>values for id_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TYPE_NO_ID</Alias>
+                <Comment>no identity</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TYPE_IMSI</Alias>
+                <Comment>IMSI</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TYPE_TMSI</Alias>
+                <Comment>TMSI</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_response</Name>
+                <Comment>values for response</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GMMRR_CS_PAGE_REJ</Alias>
+                <Comment>The call is rejected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_CS_PAGE_CNF</Alias>
+                <Comment>The call is confirmed</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>The call is confirmed</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_page_id</Name>
+                <Comment>values for page_id</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GMMRR_IMSI</Alias>
+                <Comment>IMSI</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_PTMSI</Alias>
+                <Comment>P-TMSI</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>P-TMSI</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mobile_class</Name>
+                <Comment>values for mobile_class</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_CLASS_A</Alias>
+                <Comment>Combined GPRS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GMMRR_CLASS_B</Alias>
+                <Comment>GPRS and GSM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>GMMRR_CLASS_BC</Alias>
+                <Comment>Combined GPRS if possible, otherwise GSM only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>GMMRR_CLASS_BG</Alias>
+                <Comment>Combined GPRS if possible, otherwise GPRS only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>GMMRR_CLASS_CC</Alias>
+                <Comment>reserved. (GSM-only)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>GMMRR_CLASS_CG</Alias>
+                <Comment>GPRS-only</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Combined GPRS attach</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_susp_gprs</Name>
+                <Comment>values for susp_gprs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GMMRR_NOT_SUSP_GPRS</Alias>
+                <Comment>Do not suspend GPRS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_SUSP_GPRS</Alias>
+                <Comment>Suspend GPRS</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Suspend GPRS</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_split_pg_cycle</Name>
+                <Comment>values for split_pg_cycle</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">704</Value>
+                <Alias>GMMRR_NO_DRX</Alias>
+                <Comment>Non DRX mode</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_lac</Name>
+                <Comment>values for lac</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FFFE</Value>
+                <Alias>GMMRR_LA_INVALID</Alias>
+                <Comment>la invalid</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>lac</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rac</Name>
+                <Comment>values for rac</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>GMMRR_RAC_INVALID</Alias>
+                <Comment>routing area code invalid</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_gmmrr_non_drx_timer</Name>
+                <Comment>values for gmmrr_non_drx_timer</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DRX_NO</Alias>
+                <Comment>no non-DRX mode after transfer state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DRX_1_SEC</Alias>
+                <Comment>max. 1 sec non-DRX mode after transfer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DRX_2_SEC</Alias>
+                <Comment>max. 2 sec non-DRX mode after transfer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>DRX_4_SEC</Alias>
+                <Comment>max. 4 sec non-DRX mode after transfer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>DRX_8_SEC</Alias>
+                <Comment>max. 8 sec non-DRX mode after transfer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>DRX_16_SEC</Alias>
+                <Comment>max. 16 sec non-DRX mode after transfer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>DRX_32_SEC</Alias>
+                <Comment>max. 32 sec non-DRX mode after transfer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>DRX_64_SEC</Alias>
+                <Comment>max. 64 sec non-DRX mode after transfer</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_gmmrr_susp_cause</Name>
+                <Comment>values for gmmrr_susp_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GMMRR_ABNORMAL_RELEASE</Alias>
+                <Comment>GRR should release immediately the running TBF</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_NORMAL_RELEASE</Alias>
+                <Comment>GRR should wait until TBF is released</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_spgc_ccch_supp</Name>
+                <Comment>values for spgc_ccch_supp</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GMMRR_SPGC_CCCH_SUPP_NO</Alias>
+                <Comment>Split paging cycle on CCCH is not supported by the mobile station</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_SPGC_CCCH_SUPP_YES</Alias>
+                <Comment>Split paging cycle on CCCH is supported by the mobile station</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cu_cause</Name>
+                <Comment>values for cu_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GMMRR_RA_DEFAULT</Alias>
+                <Comment>GRR should not perform Cell Update Access</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GMMRR_RA_CU</Alias>
+                <Comment>GRR should perforn Random Access with cause Cell Update</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="5" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section/>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rt</Name>
+                <Comment>Indicates the RAT available in the cell.</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RT_GSM</Alias>
+                <Comment>GSM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RT_GPRS</Alias>
+                <Comment>GSM/GPRS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>RT_EDGE</Alias>
+                <Comment>GSM/GPRS/EDGE</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>RT_UMTS_FDD</Alias>
+                <Comment>UMTS FDD</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="06" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

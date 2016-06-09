@@ -1,0 +1,1720 @@
+;********************************************************************************
+;*** File           : sim.pdf
+;*** Creation       : Wed Mar 11 09:58:49 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : sim
+;*** Document No.   : 6147.108.99.113
+;*** Document Date  : 2003-01-24
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: FK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Fri Jul 4 11:26:04 2008"
+PRAGMA 	LAST_MODIFIED 	"2003-01-24"
+PRAGMA 	ID_AND_VERSION 	"6147.108.99.113"
+
+
+
+CONST 	MAX_STK_CMD 	256 	; Maximum length of SIM Toolkit data
+CONST 	MAX_SIM_CMD 	256 	; Maximum length of other SIM data
+CONST 	MAX_SIM_TRANSP 	262 	; Maximum length of transparent SIM command
+CONST 	MAX_SIM_ATR 	33 	; Maximum length of Answer to Reset
+CONST 	MAX_PIN_LEN 	8 	; Maximum length of a PIN string
+CONST 	MAX_FILE_ID 	64 	; Maximum possible number of IDs due to the coding scheme (1/4 of MAX_SIM_CMD!)
+CONST 	MAX_STK_PRF 	20 	; Number of bytes in Terminal Profile
+CONST 	MAX_SRV_TBL 	16 	; Number of bytes in SIM Service Table
+CONST 	MAX_LNG_PREF 	5 	; Number of bytes to be read from EF(LP)
+CONST 	MAX_ECC 	15 	; Number of bytes to be read from EF(ECC)
+CONST 	MAX_PREF_PLMN 	240 	; Number of bytes to be read from EF(PLMNsel)
+CONST 	MAX_IMSI 	9 	; Number of bytes to be read from EF(IMSI)
+CONST 	MAX_KC 	8 	; Number of bytes of Cipherinh key KC and KCGPRS
+CONST 	MAX_LOCIGSM 	11 	; Number of bytes to be read from EF(LOCI)
+CONST 	MAX_LOCIGPRS 	14 	; Number of bytes to be read from EF(LOCIGPRS)
+CONST 	MAX_RAND 	16 	; Number of bytes to be read rand
+CONST 	MAX_SRES 	4 	; Number of bytes to be read sres
+CONST 	MAX_SIM_PLMN_SIZE 	3 	; Number of bytes to be read for a single PLMN in SIM
+CONST 	MAX_AD 	4 	; Number of bytes to be read from Administrative Data
+CONST 	MAX_TRMST 	8 	; Number of bytes to be written to TRMST EF
+CONST 	SIM_CLASS_E_BUFFER_SIZE 	1400 	; Size of the send buffer in SAT class e
+EXTERN CONST 	@p_gsmcom - SIM_ORIGINATING_ENTITY@ 	SIM_ORIGINATING_ENTITY 	; mask for indicating the originating entity of a cause is SIM
+CONST 	MAX_CBMID_REC 	255 	; Number of bytes to be read from EF(CBMID)
+
+
+
+VALTAB 	VAL_datafield
+VAL 	0x3F00 	SIM_MF 	"main file directory (M)"
+VAL 	0x2FE2 	SIM_ICCID 	"ICC identification (M)"
+VAL 	0x2F05 	SIM_ELP 	"extended language preference"
+VAL 	0x6F3A 	SIM_ADN 	"abbreviated dialling numbers"
+VAL 	0x6F3B 	SIM_FDN 	"fixed dialling numbers"
+VAL 	0x6F3C 	SIM_SMS 	"short messages"
+VAL 	0x6F3D 	SIM_CCP 	"capability configuration parameters"
+VAL 	0x6F40 	SIM_MSISDN 	"MSISDN"
+VAL 	0x6F42 	SIM_SMSP 	"short message service parameters"
+VAL 	0x6F43 	SIM_SMSS 	"short message status"
+VAL 	0x6F44 	SIM_LND 	"last number dialled"
+VAL 	0x6F47 	SIM_SMSR 	"short message status reports"
+VAL 	0x6F49 	SIM_SDN 	"service dialling numbers"
+VAL 	0x6F4A 	SIM_EXT1 	"extension 1"
+VAL 	0x6F4B 	SIM_EXT2 	"extension 2"
+VAL 	0x6F4C 	SIM_EXT3 	"extension 3"
+VAL 	0x6F4D 	SIM_BDN 	"barred dialling numbers"
+VAL 	0x6F4E 	SIM_EXT4 	"extension 4"
+VAL 	0x6F92 	SIM_ORANGE_DYN2_FLAG 	"Orange Proprietary"
+VAL 	0x6F98 	SIM_ORANGE_CSP2 	"Orange Proprietary"
+VAL 	0x6F9C 	SIM_ORANGE_ACM2 	"Orange Proprietary"
+VAL 	0x6F9F 	SIM_ORANGE_DYN_FLAGS 	"Orange Proprietary"
+VAL 	0x7F40 	SIM_DF_ORANGE 	"Orange Proprietary"
+VAL 	0x4F20 	SIM_IMG 	"icon images"
+VAL 	0x6F05 	SIM_LP 	"language preference (M)"
+VAL 	0x6F60 	SIM_VI_HZ_PARAM 	"Viag home zone parameters"
+VAL 	0x6F61 	SIM_VI_HZ_CACHE_1 	"Viag home zone Cache 1"
+VAL 	0x6F62 	SIM_VI_HZ_CACHE_2 	"Viag home zone Cache 2"
+VAL 	0x6F63 	SIM_VI_HZ_CACHE_3 	"Viag home zone Cache 3"
+VAL 	0x6F64 	SIM_VI_HZ_CACHE_4 	"Viag home zone Cache 4"
+VAL 	0x6F07 	SIM_IMSI 	"international mobile subscriber identity (M)"
+VAL 	0x6F20 	SIM_KC 	"ciphering key Kc (M)"
+VAL 	0x6F2C 	SIM_DCK 	"De-personalization Control Keys"
+VAL 	0x6F30 	SIM_PLMNSEL 	"preferred PLMN selector"
+VAL 	0x6F31 	SIM_HPLMN 	"HPLMN search period (M)"
+VAL 	0x6F32 	SIM_CNL 	"Co-operative Network List"
+VAL 	0x6F37 	SIM_ACMMAX 	"ACM maximum value"
+VAL 	0x6F38 	SIM_SST 	"SIM service table (M)"
+VAL 	0x6F39 	SIM_ACM 	"accumulated call meter"
+VAL 	0x6F3E 	SIM_GID1 	"group identifier level 1"
+VAL 	0x6F3F 	SIM_GID2 	"group identifier level 2"
+VAL 	0x6F41 	SIM_PUCT 	"price per unit and currency"
+VAL 	0x6F45 	SIM_CBMI 	"cell broadcast message identifier selection"
+VAL 	0x6F46 	SIM_SPN 	"service provider name"
+VAL 	0x6F48 	SIM_CBMID 	"cell broadcast message identifier for data download"
+VAL 	0x6F4F 	SIM_ECCP 	"Extended capability configuration parameters"
+VAL 	0x6F58 	SIM_CMI 	"Comparison Method Information"
+VAL 	0x6F74 	SIM_BCCH 	"broadcast control channels (M)"
+VAL 	0x6F78 	SIM_ACC 	"access control classes (M)"
+VAL 	0x6F7B 	SIM_FPLMN 	"forbidden PLMNs (M)"
+VAL 	0x6F7E 	SIM_LOCI 	"location information (M)"
+VAL 	0x6FAD 	SIM_AD 	"administrative data (M)"
+VAL 	0x6FAE 	SIM_PHASE 	"phase identification (M)"
+VAL 	0x6FB1 	SIM_VGCS 	"voice group call service"
+VAL 	0x6FB2 	SIM_VGCSS 	"voice group call service status"
+VAL 	0x6FB3 	SIM_VBS 	"voice broadcast service"
+VAL 	0x6FB4 	SIM_VBSS 	"voice broadcast service status"
+VAL 	0x6FB5 	SIM_EMLPP 	"enhanced multi level pre-emption and priority"
+VAL 	0x6FB6 	SIM_AAEM 	"automatic answer for eMLPP service"
+VAL 	0x6FB7 	SIM_ECC 	"emergency call codes"
+VAL 	0x6F50 	SIM_CBMIR 	"cell broadcast message identifier range selection"
+VAL 	0x6F51 	SIM_NIA 	"network's indication of alerting"
+VAL 	0x6F52 	SIM_KCGPRS 	"ciphering key (GPRS)"
+VAL 	0x6F53 	SIM_LOCGPRS 	"location information (GPRS)"
+VAL 	0x6F54 	SIM_SUME 	"setup menu elements"
+VAL 	0x6FC5 	SIM_PNN 	"PLMN network name (3GPP release 4)"
+VAL 	0x6FC6 	SIM_OPL 	"operator PLMN list (3GPP release 4)"
+VAL 	0x6F11 	SIM_CPHS_VMW 	"voice message waiting (CPHS)"
+VAL 	0x6F12 	SIM_CPHS_SST 	"service string table (CPHS)"
+VAL 	0x6F13 	SIM_CPHS_CFF 	"call forwarding flags (CPHS)"
+VAL 	0x6F14 	SIM_CPHS_ONSTR 	"operator string name (CPHS)"
+VAL 	0x6F15 	SIM_CPHS_CSP 	"customer service profile (CPHS)"
+VAL 	0x6F16 	SIM_CPHS_CINF 	"CPHS information (CPHS)"
+VAL 	0x6F17 	SIM_CPHS_MBXN 	"mailbox numbers (CPHS)"
+VAL 	0x6F18 	SIM_CPHS_ONSHF 	"operator name shortform (CPHS)"
+VAL 	0x6F19 	SIM_CPHS_INFN 	"information numbers (CPHS)"
+VAL 	0x4F30 	SIM_SAI 	"SoLSA access indicator"
+VAL 	0x4F31 	SIM_SLL 	"SoLSA LSA list"
+VAL 	0xEA01 	SIM_CPHS_INFN2 	"information numbers (CPHS) 2 (old SIMs)"
+VAL 	0x7F66 	SIM_DF_CING 	"1st level Directory(CINGULAR specific)"
+VAL 	0x5F30 	SIM_DF2_CING 	"2nd level Directory(CINGULAR specific)"
+VAL 	0x4F34 	SIM_CING_AHPLMN 	"Acting Home PLMN(CINGULAR specific)"
+VAL 	0x6FD2 	SIM_CING_TRMST 	"terminal support table "
+VAL 	0x4F40 	SIM_MEXE_ST 	"MExE Service table"
+VAL 	0x4F41 	SIM_ORPK 	"Operator Root Public Key"
+VAL 	0x4F42 	SIM_ARPK 	"Administrator Root Public Key"
+VAL 	0x4F43 	SIM_TPRPK 	"Third Party Root Public key"
+VAL 	0x6F60 	SIM_UCPS_ACTEC 	%REL99% 	"User controlled PLMN Selector with Access Technology"
+VAL 	0x6F61 	SIM_OCPS_ACTEC 	%REL99% 	"Operator controlled PLMN Selector with Access Technology"
+VAL 	0x6F62 	SIM_HPLMN_ACT 	%REL99% 	"HPLMN Selector with Access Technology"
+VAL 	0x6F63 	SIM_CPBCCH 	%REL99% 	"CPBCCH Information"
+VAL 	0x6F64 	SIM_INV_SCAN 	%REL99% 	"Investigation Scan"
+VAL 	0x6F65 	SIM_RPLMN_ACT 	%REL99% 	"RPLMN Last used Access Technology"
+VAL 	0x6FCB 	SIM_CFIS 	"Call Forwarding Indication Status"
+VAL 	0x6FC7 	SIM_MBDN 	"Mailbox Dialling Numbers "
+VAL 	0x6FCA 	SIM_MWIS 	"Message Waiting Indication Status"
+VAL 	0x6FC9 	SIM_MBI 	"Mailbox Identifier"
+
+VALTAB 	VAL_cause
+VAL 	0b1000000011111111 	SIM_NO_ERROR 	"No error (Status Code 9000, 91XX, 9FXX, 920X; USIM 63CX)"
+VAL 	0b0000000000000001 	SIM_CAUSE_NO_SELECT 	"No EF selected (SC 9400; USIM 6986)"
+VAL 	0b0000000000000010 	SIM_CAUSE_UNKN_FILE_ID 	"file id not found (SC 9404; USIM 6A82)"
+VAL 	0b0000000000000011 	SIM_CAUSE_EF_INVALID 	"EF invalidated (SC 9810; USIM 6283, 6984)"
+VAL 	0b0000000000000100 	SIM_CAUSE_ADDR_WRONG 	"Address of data invalid (SC 9402; USIM 6A83)"
+VAL 	0b0000000000000101 	SIM_CAUSE_CMD_INCONSIST 	"Command inconsistent with file type (SC 9408; USIM 6981)"
+VAL 	0b0000000000000110 	SIM_CAUSE_MAX_INCREASE 	"Increase: maximum reached (SC 9850)"
+VAL 	0b0000000000000111 	SIM_CAUSE_MEM_PROBLEM 	%REL99% 	"Sim memory problem when updating EF LOCI with data containing the TMSI value"
+VAL 	0b0000000000001000 	SIM_CAUSE_CLA_WRONG 	"Wrong class parameter (SC 6EXX)"
+VAL 	0b0000000000001001 	SIM_CAUSE_INS_WRONG 	"Unknown instruction code (SC 6DXX; USIM 6A81)"
+VAL 	0b0000000000001010 	SIM_CAUSE_P1P2_WRONG 	"Incorrect parameter P1, P2 (SC 6BXX; USIM 6A86. 6A88)"
+VAL 	0b0000000000001011 	SIM_CAUSE_P3_WRONG 	"Incorrect parameter P3 (SC 67XX; USIM 6282, 6A87)"
+VAL 	0b0000000000001100 	SIM_CAUSE_CHV_NOTSET 	"No CHV active (SC 9802; USIM 6982)"
+VAL 	0b0000000000001101 	SIM_CAUSE_CHV_VALIDATED 	"CHV already validated (SC 9808; USIM 6982)"
+VAL 	0b0000000000001110 	SIM_CAUSE_ACCESS_PROHIBIT 	"Access conditions not fulfilled (SC 9804; USIM 6985)"
+VAL 	0b0000000000001111 	SIM_CAUSE_OTHER_ERROR 	"Any other SIM error"
+VAL 	0b0000000000010000 	SIM_CAUSE_PUK1_BLOCKED 	"PUK1 blocked (SC 9840; USIM 63C0)"
+VAL 	0b0000000000010001 	SIM_CAUSE_PUK1_REMAIN1 	"Wrong PUK1, 1 attempt left (SC 9804; USIM 63C1)"
+VAL 	0b0000000000010010 	SIM_CAUSE_PUK1_REMAIN2 	"Wrong PUK1, 2 attempts left (USIM 63C2)"
+VAL 	0b0000000000010011 	SIM_CAUSE_PUK1_REMAIN3 	"Wrong PUK1, 3 attempts left (USIM 63C3)"
+VAL 	0b0000000000010100 	SIM_CAUSE_PUK1_REMAIN4 	"Wrong PUK1, 4 attempts left (USIM 63C4)"
+VAL 	0b0000000000010101 	SIM_CAUSE_PUK1_REMAIN5 	"Wrong PUK1, 5 attempts left (USIM 63C5)"
+VAL 	0b0000000000010110 	SIM_CAUSE_PUK1_REMAIN6 	"Wrong PUK1, 6 attempts left (USIM 63C6)"
+VAL 	0b0000000000010111 	SIM_CAUSE_PUK1_REMAIN7 	"Wrong PUK1, 7 attempts left (USIM 63C7)"
+VAL 	0b0000000000011000 	SIM_CAUSE_PUK1_REMAIN8 	"Wrong PUK1, 8 attempts left (USIM 63C8)"
+VAL 	0b0000000000011001 	SIM_CAUSE_PUK1_REMAIN9 	"Wrong PUK1, 9 attempts left (USIM 63C9)"
+VAL 	0b0000000000011010 	SIM_CAUSE_PUK1_EXPECT 	"PUK1 required (SC 9804, 9808; USIM 6982, 6985)"
+VAL 	0b0000000000011100 	SIM_CAUSE_PIN1_BLOCKED 	"PIN1 blocked (SC 9840; USIM 63C0, 6983)"
+VAL 	0b0000000000011101 	SIM_CAUSE_PIN1_REMAIN1 	"Wrong PIN1, 1 attempt left (USIM 63C1)"
+VAL 	0b0000000000011110 	SIM_CAUSE_PIN1_REMAIN2 	"Wrong PIN1, 2 attempts left (USIM 63C2)"
+VAL 	0b0000000000011111 	SIM_CAUSE_PIN1_EXPECT 	"PIN1 required (SC 9804, 9808; USIM 6982, 6985)"
+VAL 	0b0000000000100000 	SIM_CAUSE_PUK2_BLOCKED 	"PUK2 blocked (SC 9840; USIM 63C0)"
+VAL 	0b0000000000100001 	SIM_CAUSE_PUK2_REMAIN1 	"Wrong PUK2, 1 attempt left (USIM 63C1)"
+VAL 	0b0000000000100010 	SIM_CAUSE_PUK2_REMAIN2 	"Wrong PUK2, 2 attempts left (USIM 63C2)"
+VAL 	0b0000000000100011 	SIM_CAUSE_PUK2_REMAIN3 	"Wrong PUK2, 3 attempts left (USIM 63C3)"
+VAL 	0b0000000000100100 	SIM_CAUSE_PUK2_REMAIN4 	"Wrong PUK2, 4 attempts left (USIM 63C4)"
+VAL 	0b0000000000100101 	SIM_CAUSE_PUK2_REMAIN5 	"Wrong PUK2, 5 attempts left (USIM 63C5)"
+VAL 	0b0000000000100110 	SIM_CAUSE_PUK2_REMAIN6 	"Wrong PUK2, 6 attempts left (USIM 63C6)"
+VAL 	0b0000000000100111 	SIM_CAUSE_PUK2_REMAIN7 	"Wrong PUK2, 7 attempts left (USIM 63C7)"
+VAL 	0b0000000000101000 	SIM_CAUSE_PUK2_REMAIN8 	"Wrong PUK2, 8 attempts left (USIM 63C8)"
+VAL 	0b0000000000101001 	SIM_CAUSE_PUK2_REMAIN9 	"Wrong PUK2, 9 attempts left (USIM 63C9)"
+VAL 	0b0000000000101010 	SIM_CAUSE_PUK2_EXPECT 	"PUK2 required (SC 9804, 9808; USIM 6982, 6985)"
+VAL 	0b0000000000101100 	SIM_CAUSE_PIN2_BLOCKED 	"PIN2 blocked (SC 9840; USIM 63C0, 6983)"
+VAL 	0b0000000000101101 	SIM_CAUSE_PIN2_REMAIN1 	"Wrong PIN2, 1 attempt left (USIM 63C1)"
+VAL 	0b0000000000101110 	SIM_CAUSE_PIN2_REMAIN2 	"Wrong PIN2, 2 attempts left (USIM 63C2)"
+VAL 	0b0000000000101111 	SIM_CAUSE_PIN2_EXPECT 	"PIN1 required (SC 9804, 9808; USIM 6982, 6985)"
+VAL 	0b0000000000110001 	SIM_CAUSE_SAT_BUSY 	"SIM Application Toolkit busy (SC 9300)"
+VAL 	0b0000000000110010 	SIM_CAUSE_DNL_ERROR 	"SAT download error (SC 9EXX; USIM 62XX, 63XX)"
+VAL 	0b0000000011110000 	SIM_NO_ERR_FILE_ALREADY_SELECTED 	"No error File Already selected (Internal success indication)"
+VAL 	0b1000000000000000 	SIM_CAUSE_CARD_REMOVED 	"SIM card removed or exchanged"
+VAL 	0b1100000000000000 	SIM_CAUSE_PARAM_WRONG 	"Wrong parameter in primitive"
+VAL 	0b1100000000000001 	SIM_CAUSE_DRV_NOCARD 	"SIM driver error: no card detected"
+VAL 	0b1100000000000010 	SIM_CAUSE_DRV_NOINT 	"SIM driver error: no interrupt"
+VAL 	0b1100000000000011 	SIM_CAUSE_DRV_NOATR 	"SIM driver error: no answer to reset"
+VAL 	0b1100000000000100 	SIM_CAUSE_DRV_READ 	"SIM driver error: invalid response"
+VAL 	0b1100000000000101 	SIM_CAUSE_DRV_XMIT 	"SIM driver error: unsuccessful transmission"
+VAL 	0b1100000000000110 	SIM_CAUSE_DRV_OVF 	"SIM driver error: interrupt overflow"
+VAL 	0b1100000000000111 	SIM_CAUSE_DRV_LEN 	"SIM driver error: incorrect size of response"
+VAL 	0b1100000000001000 	SIM_CAUSE_DRV_CARDREJ 	"SIM driver error: card rejected (invalid properties)"
+VAL 	0b1100000000001001 	SIM_CAUSE_DRV_WAIT 	"SIM driver error: timeout"
+VAL 	0b1100000000001010 	SIM_CAUSE_DRV_ABNCASE1 	"SIM driver error: abnormal case 1"
+VAL 	0b1100000000001011 	SIM_CAUSE_DRV_ABNCASE2 	"SIM driver error: abnormal case 2"
+VAL 	0b1100000000001100 	SIM_CAUSE_DRV_RCVOVFL 	"SIM driver error: more than 256 bytes received"
+VAL 	0b1100000000001101 	SIM_CAUSE_DRV_HWFAIL 	"SIM driver error: hardware failure"
+VAL 	0b1100000000001110 	SIM_CAUSE_DRV_TEMPFAIL 	"SIM driver error: temprary failure, SIM reset required"
+VAL 	0b1100000000001111 	SIM_CAUSE_SIM_REINSERTED 	"SIM card reinserted"
+
+VALTAB 	VAL_op_mode
+VAL 	0 	OP_NORMAL_SIM 	"normal SIM card"
+VAL 	1 	OP_TEST_SIM 	"test SIM card"
+
+VALTAB 	VAL_pin_cnt
+VAL 	0 	CARD_BLOCKED 	"SIM card is blocked"
+
+VALTAB 	VAL_phase
+VAL 	0 	PHASE_2_AS_1_SIM 	"phase 2 card configured as phase 1 card"
+VAL 	1 	PHASE_1_SIM 	"phase 1 card"
+VAL 	2 	PHASE_2_SIM 	"phase 2 card"
+VAL 	3 	PHASE_2PLUS_SIM 	"phase 2+ card, TP download required"
+
+VALTAB 	VAL_hplmn
+VAL 	10 	HPLMN_DEF 	"default time period for home PLMN search"
+
+VALTAB 	VAL_pin_id
+VAL 	1 	PHASE_2_PIN_1 	"phase 2 card, PIN 1"
+VAL 	2 	PHASE_2_PIN_2 	"phase 2 card, PIN 2"
+VAL 	3 	PHASE_2_PUK_1 	"phase 2 card, PUK 1"
+VAL 	4 	PHASE_2_PUK_2 	"phase 2 card, PUK 2"
+
+VALTAB 	VAL_source
+VAL 	0 	SRC_MMI 	"from man machine interface"
+VAL 	1 	SRC_MM 	"from mobility management"
+VAL 	2 	SRC_SMS 	"from short message service"
+VAL 	3 	SRC_GMM 	"from GPRS mobile management"
+VAL 	4 	SRC_RR 	"from radio resource management"
+
+VALTAB 	VAL_mem_cap_avail
+VAL 	0x00 	SIM_SMS_MEM_FULL 	"SMS storage on SIM execeeded"
+VAL 	0x01 	SIM_SMS_MEM_AVAIL 	"SMS storage on SIM available"
+VAL 	0xFF 	SIM_SMS_NO_MEM 	"SMS storage on SIM not present"
+
+VALTAB 	VAL_stk_pro_file
+VAL 	0x01 	SAT_TP1_PRF_DNL 	"Profile download (redundant definition)"
+VAL 	0x02 	SAT_TP1_SMS_DNL 	"SMS-PP data download"
+VAL 	0x04 	SAT_TP1_CB_DNL 	"Cell Broadcast data download"
+VAL 	0x08 	SAT_TP1_MENU_SEL 	"Menu selection"
+VAL 	0x10 	SAT_TP1_9E_XX 	"'9E XX' response code for SIM data download error"
+VAL 	0x20 	SAT_TP1_TIMER_EXP 	"Timer expiration (Class 3)"
+VAL 	0x40 	SAT_TP1_CC_USSD 	"USSD string data object supported in Call Control"
+VAL 	0x80 	SAT_TP1_CC_ON_REDIAL 	"Call Control by SIM always performed on automatic redial"
+VAL 	0x01 	SAT_TP2_CMD_RES 	"Command result (generic)"
+VAL 	0x02 	SAT_TP2_CC 	"Call Control by SIM"
+VAL 	0x04 	SAT_TP2_CC_CELL_ID 	"Cell Identity included in Call Control by SIM"
+VAL 	0x08 	SAT_TP2_MOSMC 	"MO SM Control by SIM (Class 3)"
+VAL 	0x10 	SAT_TP2_ALPHA_ID 	"Alpha identifier according to clause 9"
+VAL 	0x20 	SAT_TP2_UCS2_ENTRY 	"UCS2 entry supported"
+VAL 	0x40 	SAT_TP2_UCS2_DSPL 	"UCS2 display supported"
+VAL 	0x80 	SAT_TP2_DSPL_EXT 	"extended display length supported (Class 3)"
+VAL 	0x01 	SAT_TP3_DSPL_TXT 	"Proactive SIM: Display Text"
+VAL 	0x02 	SAT_TP3_GET_INKEY 	"Proactive SIM: Get Inkey"
+VAL 	0x04 	SAT_TP3_GET_INPUT 	"Proactive SIM: Get Input"
+VAL 	0x08 	SAT_TP3_MORE_TIME 	"Proactive SIM: More Time"
+VAL 	0x10 	SAT_TP3_PLAY_TONE 	"Proactive SIM: Play Tone"
+VAL 	0x20 	SAT_TP3_POLL_ITV 	"Proactive SIM: Poll Interval"
+VAL 	0x40 	SAT_TP3_POLL_OFF 	"Proactive SIM: Polling Off"
+VAL 	0x80 	SAT_TP3_REFRESH 	"Proactive SIM: Refresh"
+VAL 	0x01 	SAT_TP4_SEL_ITEM 	"Proactive SIM: Select Item"
+VAL 	0x02 	SAT_TP4_SEND_SMS 	"Proactive SIM: Send SM"
+VAL 	0x04 	SAT_TP4_SEND_SS 	"Proactive SIM: Send SS"
+VAL 	0x08 	SAT_TP4_SEND_USSD 	"Proactive SIM: Send USSD (Class 3)"
+VAL 	0x10 	SAT_TP4_SETUP_CALL 	"Proactive SIM: Set up Call"
+VAL 	0x20 	SAT_TP4_SETUP_MENU 	"Proactive SIM: Set up Menu"
+VAL 	0x40 	SAT_TP4_PLI_PLMN_IMEI 	"Proactive SIM: Provide Local Informaton (PLMN, Cell ID, IMEI)"
+VAL 	0x80 	SAT_TP4_PLI_NMR 	"Proactive SIM: Provide Local Informaton (NMR)"
+VAL 	0x01 	SAT_TP5_EVENT_LIST 	"Proactive SIM: Set up Event List (Class 3)"
+VAL 	0x02 	SAT_TP5_MT_CALL 	"Event: Moblile Terminated Call (Class 3)"
+VAL 	0x04 	SAT_TP5_CALL_CONN 	"Event: Call connected (Class 3)"
+VAL 	0x08 	SAT_TP5_CALL_DISC 	"Event: Call disconnected (Class 3)"
+VAL 	0x10 	SAT_TP5_LOC_STATUS 	"Event: Location status (Class 3)"
+VAL 	0x20 	SAT_TP5_USER_ACT 	"Event: User activity (Class 3)"
+VAL 	0x40 	SAT_TP5_SCR_AVAIL 	"Event: Idle screen available (Class 3)"
+VAL 	0x80 	SAT_TP5_CDR_STATUS 	"Event: Card reader status (Class a)"
+VAL 	0x01 	SAT_TP6_LANG_SEL 	"Event: Language Selection (Class 3)"
+VAL 	0x02 	SAT_TP6_BROWS_TERM 	"Event: Browser Termination (Class c)"
+VAL 	0x04 	SAT_TP6_DATA_AVAIL 	"Event: Data available (Class e)"
+VAL 	0x08 	SAT_TP6_CHANNEL_STAT 	"Event: Channel status (Class e)"
+VAL 	0x01 	SAT_TP7_PW_ON_CD 	"Proactive SIM: Power on Card (Class a)"
+VAL 	0x02 	SAT_TP7_PW_OFF_CD 	"Proactive SIM: Power off Card (Class a)"
+VAL 	0x04 	SAT_TP7_PF_CD_ADPU 	"Proactive SIM: Perform Card ADPU (Class a)"
+VAL 	0x08 	SAT_TP7_GET_CDR_STATUS 	"Proactive SIM: Get Card Reader Status (Class a)"
+VAL 	0x10 	SAT_TP7_GET_CDR_IDENT 	"Proactive SIM: Get Card Reader Identifier (Class a)"
+VAL 	0x01 	SAT_TP8_TMNG_ST 	"Proactive SIM: Timer Management (start, stop) (Class 3)"
+VAL 	0x02 	SAT_TP8_TMNG_VAL 	"Proactive SIM: Timer Management (get current value) (Class 3)"
+VAL 	0x04 	SAT_TP8_PLI_DTT 	"Proactive SIM: Provide Local Information (date, time, tz) (Class 3)"
+VAL 	0x08 	SAT_TP8_BIN_GET_INKEY 	"Binary choice in Get Inkey (Class 3)"
+VAL 	0x10 	SAT_TP8_IDLE_TXT 	"Proactive SIM: Set up Idle Mode Text (Class 3)"
+VAL 	0x20 	SAT_TP8_AT_CMD 	"Proactive SIM: Run AT command (Class b)"
+VAL 	0x40 	SAT_TP8_AI2_SETUP_CALL 	"2nd alpha identifier in Set up Call (Class 3)"
+VAL 	0x80 	SAT_TP8_CCP2_CC 	"2nd capability configuration parameter with Call Control (Class 3)"
+VAL 	0x01 	SAT_TP9_SUST_DSPL_TXT 	"Sustained Display Text (Class 3)"
+VAL 	0x02 	SAT_TP9_DTMF_CMD 	"Send DTMF Command (Class 3)"
+VAL 	0x04 	SAT_TP9_BCCH_COD 	"BCCH coding according to subclause 12.19 (Class 3)"
+VAL 	0x08 	SAT_TP9_PLI_LANG 	"Proactive SIM: Provide Local Information (Language) (Rel. 99)"
+VAL 	0x10 	SAT_TP9_PLI_TIMING_ADV 	"Proactive SIM: Provide Local Information (Timing Adv ance) (Rel. 99)"
+VAL 	0x20 	SAT_TP9_LANG_NOTIFY 	"Proactive SIM: Language Notification (Class 3)"
+VAL 	0x40 	SAT_TP9_LAUNCH_BROWSER 	"Proactive SIM: Launch Browser (Class c)"
+VAL 	0x01 	SAT_TP10_SFTKEY_SEL_ITEM 	"Soft key support for SELECT ITEM"
+VAL 	0x02 	SAT_TP10_SFTKEY_SETUP_MENU 	"Soft key support for SET UP MENU"
+VAL 	0xFF 	SAT_TP11_MAX_NR_SFTKEY 	"Maximum number of soft keys available"
+VAL 	0x01 	SAT_TP12_OPEN_CHANNEL 	"Proactive SIM: OPEN CHANNEL (Class e)"
+VAL 	0x02 	SAT_TP12_CLOSE_CHANNEL 	"Proactive SIM: CLOSE CHANNEL (Class e)"
+VAL 	0x04 	SAT_TP12_RECEIVE_DATA 	"Proactive SIM: RECEIVE DATA (Class e)"
+VAL 	0x08 	SAT_TP12_SEND_DATA 	"Proactive SIM: SEND DATA (Class e)"
+VAL 	0x10 	SAT_TP12_GET_CHANNEL_STAT 	"Proactive SIM: GET CHANNEL STATUS (Class e)"
+VAL 	0x01 	SAT_TP13_CSD_SUPP_BY_ME 	"CSD supported by ME (Class e)"
+VAL 	0x02 	SAT_TP13_GPRS_SUPP_BY_ME 	"GPRS supported by ME (Class e)"
+VAL 	0xE0 	SAT_TP13_NR_OF_CHAN_SUPP 	"Number of channels supported by ME (Class e)"
+VAL 	0x1F 	SAT_TP14_NR_OF_CHAR_DSPL_DWN 	"Number of characters supported down the ME display"
+VAL 	0x80 	SAT_TP14_SCRN_SIZE_PARAM 	"Screen sizing parameters supported by ME"
+VAL 	0x7F 	SAT_TP15_NR_OF_CHAR_DSPL_ACRS 	"Number of characters supported across the ME display"
+VAL 	0x80 	SAT_TP15_VAR_SIZE_FONT 	"Variable size fonts supported"
+VAL 	0x01 	SAT_TP16_DSPL_RESIZE 	"Display can be resized"
+VAL 	0x02 	SAT_TP16_TEXT_WRAP 	"Text wrapping supported"
+VAL 	0x04 	SAT_TP16_TEXT_SCROLL 	"Text scrolling supported"
+VAL 	0xE0 	SAT_TP16_WIDTH_RDCT_MENU 	"Width reduction when in Menu"
+VAL 	0x01 	SAT_TP17_BEARER_IND_SUPP_TCP 	"Bearer independent protocol supported TCP (Class e)"
+VAL 	0x02 	SAT_TP17_BEARER_IND_SUPP_UDP 	"Bearer independent protocol supported UPD (Class e)"
+VAL 	0x0F 	SAT_TP19_PROT_VERS 	"Protocol version coded as TIA/EIA 136-123"
+
+VALTAB 	VAL_proc
+VAL 	0x00 	SIM_INITIALISATION 	"initialisation"
+VAL 	0x01 	SIM_FDN_ENABLE 	"FDN enabling"
+VAL 	0x02 	SIM_FDN_DISABLE 	"FDN disabling"
+VAL 	0x03 	SIM_SELECT 	"SIM selection"
+
+VALTAB 	VAL_func
+VAL 	0x00 	SIM_NO_OPERATION 	"card is invalid"
+VAL 	0x01 	SIM_ADN_ENABLED 	"normal GSM operation, ADN enabled"
+VAL 	0x02 	SIM_FDN_ENABLED 	"restricted GSM operation, FDN enabled"
+VAL 	0x05 	SIM_ADN_BDN_ENABLED 	"normal GSM operation, ADN and BDN enabled"
+VAL 	0x06 	SIM_FDN_BDN_ENABLED 	"restricted GSM operation, FDN and BDN enabled"
+
+VALTAB 	VAL_download_sms
+VAL 	0 	DOWNLOAD_SMS_NO 	"No support of download SMS"
+VAL 	1 	DOWNLOAD_SMS_YES 	"Support of download SMS"
+
+VALTAB 	VAL_access_acm
+VAL 	0 	ACCESS_ALWAYS 	"No PIN is needed"
+VAL 	1 	ACCESS_PIN_1 	"PIN 1 is needed"
+VAL 	2 	ACCESS_PIN_2 	"PIN 2 is needed"
+
+VALTAB 	VAL_mmi_pro_file
+VAL 	0x80 	SIM_MMI_ADN 	"MMI ADN support, if set"
+VAL 	0x40 	SIM_MMI_FDN 	"MMI FDN support, if set"
+VAL 	0x20 	SIM_MMI_BDN 	"MMI BDN support, if set"
+
+VALTAB 	VAL_synccs
+VAL 	1 	SYNC_START_CALL 	"Start present checks if needed during calls"
+VAL 	2 	SYNC_STOP_CALL 	"Stop present checks if running"
+VAL 	3 	SYNC_DEACTIVATE 	"Deactivate SIM card"
+VAL 	4 	SYNC_MM_FINISHED_READING 	"MM has finished reading of the EFs"
+VAL 	5 	SYNC_MMI_FINISHED_READING 	"MMI has finished reading of the EFs"
+
+VALTAB 	VAL_sim_command
+VAL 	0 	SIM_TRANSP_CMD 	"Transparent SIM Command"
+VAL 	1 	SIM_READ_BINARY 	"Read Binary Command"
+VAL 	2 	SIM_READ_RECORD 	"Read Record Command"
+VAL 	3 	SIM_UPDATE_BINARY 	"Update Binary Command"
+VAL 	4 	SIM_UPDATE_RECORD 	"Update Record Command"
+VAL 	5 	SIM_STATUS 	"Status Command"
+VAL 	6 	SIM_GET_RESPONSE 	"Get Response Command"
+
+VALTAB 	VAL_sw1
+VAL 	0x90 	SW1_SUCCESS 	"normal ending of the command: SW2 = '00'"
+VAL 	0x91 	SW1_SUCCESS_EXTRA_INF 	"ditto, with extra data from proactiv SIM for ME: SW2 = lgth"
+VAL 	0x9E 	SW1_DATA_LGTH_BY_ERR 	"SW2 gives the length of respose in case of SIM downl. error"
+VAL 	0x9F 	SW1_SUCCESS_DATA_AVAIL 	"SW2 gives the length of (SIM) response data"
+VAL 	0x93 	SW1_SAT_BUSY 	"no command execution now, further normal commands allowed"
+VAL 	0x92 	SW1_MEMORY_MANAGEMENT 	"two cases possible depending on SW2"
+VAL 	0x94 	SW1_REFRNCG_MANAGEMENT 	"four cases possible depending on SW2"
+VAL 	0x98 	SW1_SECURTY_MANAGEMENT 	"six cases possible depending on SW2"
+VAL 	0x67 	SW1_ERR_INCORRECT_P3 	"incorrect parameter P3"
+VAL 	0x6B 	SW1_ERR_INCOR_P1_OR_P2 	"incorrect parameter P1 or P2"
+VAL 	0x6D 	SW1_ERR_UNKNOWN_INSTR 	"unknown instruction code given in the command"
+VAL 	0x6E 	SW1_ERR_INSTR_CLA 	"wrong instruction class given in the command"
+VAL 	0x6F 	SW1_ERR_DIAG_OR_AUTHEN 	"technical problem with no diagnostic given"
+VAL 	0x00 	SW2_NORMAL 	"normal ending of the command (SW1 = '00')"
+VAL 	0x00 	SW2_256_BYTES_LGTH 	"SW2 gives the lengths of 256 bytes of information"
+VAL 	0x40 	SW2_MEMORY_PROBLEM 	"memory problem: in connection with SW1 = '92'"
+VAL 	0x02 	SW2_NO_EF_SELECTED 	"no elementary file selected: in connection with SW1 = '94'"
+VAL 	0x02 	SW2_OUT_OF_RANGE 	"invalid adress: in connection with SW1 = '94'"
+VAL 	0x04 	SW2_FILE_ID_PATT_NFOUND 	"file ID or pattern not found: in connection with SW1 = '94'"
+VAL 	0x08 	SW2_FILE_INCON_WTH_CMD 	"file inconsistent with cmd: in connection with SW1 = '94'"
+VAL 	0x02 	SW2_NO_CHV_INIT 	"no CHV initialized: in connection with SW1 = '98'"
+VAL 	0x04 	SW2_ACC_FAIL 	"in connection with SW1 = '98': (1) acces condition not fullfilled; (2) CHV verify unsuccessful, at least one attempt left; (3) UNBLOCK CHV verify unsuccessful, at least one attempt left; (4) authentication failed"
+VAL 	0x08 	SW2_CNTR_TO_CHV_STAT 	"in contradiction with CHV status: in conn. with SW1 = '98'"
+VAL 	0x10 	SW2_CNTR_TO_INVALID_STAT 	"in contradiction with invalidation status: in conn. with SW1 = '98'"
+VAL 	0x40 	SW2_ACC_FAIL_NO_ATTEMTP 	"in connection with SW1 = '98': (1) CHV verify unsuccessful, no attempt left; (2) UNBLOCK CHV verify unsuccessful, no attempt left; (3) CHV blocked; (4) UNBLOCK CHV blocked"
+VAL 	0x50 	SW2_NO_INCREASE_PERF 	"increase cannot be performed, Max value reached: in conn. with SW1 = '98'"
+
+VALTAB 	VAL_smsr_mem_cap
+VAL 	0 	SIM_SMSR_DISABLE 	"EF(SMSR) disabled on SIM"
+VAL 	1 	SIM_SMSR_ENABLE 	"EF(SMSR) enabled on SIM"
+
+VALTAB 	VAL_fu_rsc
+VAL 	0 	SIM_FU_ERROR 	"ME is unable to perform the command (SAT result = 20)"
+VAL 	1 	SIM_FU_SUCCESS 	"file update is performed successfully (SAT result = 0)"
+VAL 	2 	SIM_FU_SUCC_ADD 	"file update is performed with additional files read (SAT result = 3)"
+
+VALTAB 	VAL_dti_conn
+VAL 	0 	SIM_DTI_UNKNOWN 	"Unknown DTI link status"
+VAL 	1 	SIM_DTI_CONNECT 	"Connect DTI link to SIM"
+VAL 	2 	SIM_DTI_DISCONNECT 	"Disconnect DTI link from SIM"
+
+VALTAB 	VAL_con_type
+VAL 	1 	SIM_CON_TYPE_UDP 	"send and expect UDP datagrams"
+VAL 	2 	SIM_CON_TYPE_IP 	"send and expect IP packets"
+VAL 	3 	SIM_CON_TYPE_SERIAL 	"send and expect serial data"
+
+VALTAB 	VAL_local_ip
+VAL 	0x00000000 	SIM_IP_LOCAL_DYNAMIC 	"SIM requests IP address from UDP"
+
+VALTAB 	VAL_event_data_avail
+VAL 	0 	SIM_EVENT_DISABLE 	"do not use this event"
+VAL 	1 	SIM_EVENT_ENABLE 	"use this event"
+VAL 	0xFF 	SIM_KEEP_ALIVE 	"reserved"
+
+VALTAB 	VAL_release_time
+VAL 	0 	SIM_NO_AUTO_RELEASE 	"do not use release timer"
+
+VALTAB 	VAL_cla
+VAL 	0xA0 	GSM_CLASS 	"GSM instruction class"
+
+VALTAB 	VAL_ins_code
+VAL 	0xA4 	SIM_INS_SELECT 	"Select Instruction"
+VAL 	0xF2 	SIM_INS_STATUS 	"Status Instruction"
+VAL 	0xB0 	SIM_INS_READ_BINARY 	"Read Binary Instruction"
+VAL 	0xD6 	SIM_INS_UPDATE_BINARY 	"Update Binary Instruction"
+VAL 	0xB2 	SIM_INS_READ_RECORD 	"Read Record Instruction"
+VAL 	0xDC 	SIM_INS_UPDATE_RECORD 	"Update Record Instruction"
+VAL 	0xA2 	SIM_INS_SEEK 	"Seek Instruction"
+VAL 	0x32 	SIM_INS_INCREASE 	"Increase Instruction"
+VAL 	0x20 	SIM_INS_VERIFY_CHV 	"Verify Chv Instruction"
+VAL 	0x24 	SIM_INS_CHANGE_CHV 	"Change Chv Instruction"
+VAL 	0x26 	SIM_INS_DISABLE_CHV 	"Disable Chv Instruction"
+VAL 	0x28 	SIM_INS_ENABLE_CHV 	"Ensable Chv Instruction"
+VAL 	0x2C 	SIM_INS_UNBLOCK_CHV 	"Unblock Chv Instruction"
+VAL 	0x04 	SIM_INS_INVALIDATE 	"Invalidate Instruction"
+VAL 	0x44 	SIM_INS_REHABILITATE 	"Rehabilitate Instruction"
+VAL 	0x88 	SIM_INS_RUN_GSM_ALGTH 	"Run GSM Algorithm Instruczion"
+VAL 	0xC0 	SIM_INS_GET_RESPONSE 	"Get Response Instruction"
+VAL 	0x10 	SIM_INS_TERMINAL_PROFILE 	"Terminal Profile Instruction"
+VAL 	0xC2 	SIM_INS_ENVELOPE 	"Envelope Instruction"
+VAL 	0x12 	SIM_INS_FETCH 	"Fetch Instruction"
+VAL 	0x14 	SIM_INS_TERMINAL_RESPONSE 	"Terminal Response Instruction"
+
+VALTAB 	VAL_bip_conn
+VAL 	0 	SIM_BIP_UNKNOWN 	"unknown BIP channel status"
+VAL 	1 	SIM_BIP_OPEN_CHANNEL 	"Open bearer independent protocol channel"
+VAL 	2 	SIM_BIP_CLOSE_CHANNEL 	"Close bearer independent protocol channel"
+VAL 	4 	SIM_BIP_CHANNEL_RESUMED 	"BIP channel is resumed"
+VAL 	8 	SIM_BIP_CHANNEL_SUSPENDED 	"BIP channel is suspended"
+
+VALTAB 	VAL_dti_direction
+VAL 	0 	SIM_DTI_NORMAL 	"DTI used normally"
+VAL 	1 	SIM_DTI_INVERTED 	"DTI is inverted"
+
+VALTAB 	VAL_cust_mode
+VAL 	0 	SIM_CUST_MODE_NORM 	"Normal Behaviour"
+VAL 	1 	SIM_CUST_MODE_1 	"Customisation Value 1"
+
+VALTAB 	VAL_user_accepts
+VAL 	0 	SIM_USER_REJECTS 	"User Rejected"
+VAL 	1 	SIM_USER_ACCEPTS 	"User Accepted"
+
+VALTAB 	VAL_sim_num
+VAL 	0 	SIM_NUM_0 	"Auto Select"
+VAL 	1 	SIM_NUM_1 	"Select SIM 1"
+VAL 	2 	SIM_NUM_2 	"Select SIM 2"
+
+VALTAB 	VAL_df_level2
+VAL 	0x5F3C 	SIM_DF_MEXE 	"DF for MEXE  (subdirectory of 'gsm')"
+VAL 	0x5F50 	SIM_DF_GRAPHICS 	"icon graphics directory (subdirectory of 'telecom')"
+VAL 	0x5F70 	SIM_DF_SOLSA 	"SoLSA directory (subdirectory of 'gsm')"
+
+VALTAB 	VAL_df_level1
+VAL 	0x7F10 	SIM_DF_TELECOM 	"telecom directory"
+VAL 	0x7F20 	SIM_DF_GSM 	"gsm directory (M)"
+VAL 	0x7F21 	SIM_DF_1800 	"dcs 1800 directory"
+VAL 	0x7F43 	SIM_DF_VI 	"Viag directory"
+
+
+
+
+VAR 	datafield 	"data field identification" 	S
+
+VAL 	@p_sim - VAL_datafield@ 	
+
+VAR 	cause 	"error code" 	S
+
+VAL 	@p_sim - VAL_cause@ 	
+
+VAR 	length 	"length of data field" 	B
+
+
+VAR 	max_length 	"Maximum of length" 	B
+
+
+VAR 	offset 	"offset of data field" 	S
+
+
+VAR 	pin 	"personal identification number" 	B
+
+
+VAR 	old_pin 	"personal identification number" 	B
+
+
+VAR 	new_pin 	"personal identification number" 	B
+
+
+VAR 	record 	"record number" 	B
+
+
+VAR 	max_record 	"Maximum record number" 	B
+
+
+VAR 	unblock_key 	"unblocking key" 	B
+
+
+VAR 	rand 	"authentication parameter rand" 	B
+
+
+VAR 	cksn 	"ciphering key sequence number" 	B
+
+
+VAR 	sres 	"authentication parameter Sres" 	B
+
+
+VAR 	kc 	"authentication parameter Kc" 	B
+
+
+VAR 	op_mode 	"operation mode" 	B
+
+VAL 	@p_sim - VAL_op_mode@ 	
+
+VAR 	c_field 	"length of imsi" 	B
+
+
+VAR 	field 	"imsi" 	B
+
+
+VAR 	c_acc 	"length of access control classes" 	B
+
+
+VAR 	acc 	"access control classes" 	B
+
+
+VAR 	c_bcch 	"Length of bcch information" 	B
+
+
+VAR 	bcch 	"bcch information" 	B
+
+
+VAR 	c_kc 	"Length of data field" 	B
+
+
+VAR 	c_forb 	"length of forbidden PLMN list" 	B
+
+
+VAR 	forb 	"Forbidden PLMN list" 	B
+
+
+VAR 	pin_cnt 	"PIN counter" 	B
+
+VAL 	@p_sim - VAL_pin_cnt@ 	
+
+VAR 	pin2_cnt 	"PIN 2 counter" 	B
+
+VAL 	@p_sim - VAL_pin_cnt@ 	
+
+VAR 	puk_cnt 	"PUK counter" 	B
+
+VAL 	@p_sim - VAL_pin_cnt@ 	
+
+VAR 	puk2_cnt 	"PUK 2 counter" 	B
+
+VAL 	@p_sim - VAL_pin_cnt@ 	
+
+VAR 	phase 	"phase  of SIM card" 	B
+
+VAL 	@p_sim - VAL_phase@ 	
+
+VAR 	hplmn 	"HPLMN search period" 	B
+
+VAL 	@p_sim - VAL_hplmn@ 	
+
+VAR 	pin_id 	"PIN identification" 	B
+
+VAL 	@p_sim - VAL_pin_id@ 	
+
+VAR 	source 	"source process" 	S
+
+VAL 	@p_sim - VAL_source@ 	
+
+VAR 	req_id 	"used to uniquely identify requests to SIM" 	B
+
+
+VAR 	tp_mr 	"message reference" 	B
+
+
+VAR 	mem_cap_avail 	"memory capacity available flag" 	B
+
+VAL 	@p_sim - VAL_mem_cap_avail@ 	
+
+VAR 	c_loc 	"Length of Location Information" 	B
+
+
+VAR 	stk_pro_file 	"SIM toolkit profile" 	B
+
+VAL 	@p_sim - VAL_stk_pro_file@ 	
+
+VAR 	ec_code 	"Emergency call codes" 	B
+
+
+VAR 	pref_lang 	"preferred languages" 	B
+
+
+VAR 	l_cmd 	"command length" 	S
+
+
+VAR 	o_cmd 	"command offset" 	S
+
+
+VAR 	cmd 	"command data" 	B
+
+
+VAR 	proc 	"procedure type" 	B
+
+VAL 	@p_sim - VAL_proc@ 	
+
+VAR 	func 	"SIM card functionality" 	B
+
+VAL 	@p_sim - VAL_func@ 	
+
+VAR 	sim_serv 	"SIM service table" 	B
+
+
+VAR 	cell_identity 	"cell identity" 	S
+
+
+VAR 	download_sms 	"Download SMS Flag" 	B
+
+VAL 	@p_sim - VAL_download_sms@ 	
+
+VAR 	access_acm 	"Access ACM" 	B
+
+VAL 	@p_sim - VAL_access_acm@ 	
+
+VAR 	access_acmmax 	"Access ACMMAX" 	B
+
+VAL 	@p_sim - VAL_access_acm@ 	
+
+VAR 	access_puct 	"Access PUCT" 	B
+
+VAL 	@p_sim - VAL_access_acm@ 	
+
+VAR 	trans_data 	"Transparent data content" 	B
+
+
+VAR 	linear_data 	"Linear fixed data content" 	B
+
+
+VAR 	mmi_pro_file 	"MMI profile" 	B
+
+VAL 	@p_sim - VAL_mmi_pro_file@ 	
+
+VAR 	synccs 	"Synchronisation Cause" 	B
+
+VAL 	@p_sim - VAL_synccs@ 	
+
+VAR 	sim_command 	"SIM Command" 	B
+
+VAL 	@p_sim - VAL_sim_command@ 	
+
+VAR 	p1 	"P1 Parameter" 	B
+
+
+VAR 	p2 	"P2 Parameter" 	B
+
+
+VAR 	p3 	"P3 Parameter" 	B
+
+
+VAR 	sw1 	"SW1 Parameter" 	B
+
+VAL 	@p_sim - VAL_sw1@ 	
+
+VAR 	sw2 	"SW2 Parameter" 	B
+
+VAL 	@p_sim - VAL_sw1@ 	
+
+VAR 	smsr_mem_cap 	"Indicator for short message status report storage" 	B
+
+VAL 	@p_sim - VAL_smsr_mem_cap@ 	
+
+VAR 	val_nr 	"valid entries of a file ID list" 	S
+
+
+VAR 	fu_rsc 	"result code for SIM_FILE_UPDATE_IND" 	S
+
+VAL 	@p_sim - VAL_fu_rsc@ 	
+
+VAR 	att_status 	"GPRS IMSI attach status" 	B
+
+
+VAR 	loc 	"Location Information" 	B
+
+
+VAR 	dti_conn 	"connection qualifier" 	B
+
+VAL 	@p_sim - VAL_dti_conn@ 	
+
+VAR 	dti_direction 	"DTI direction" 	B
+
+VAL 	@p_sim - VAL_dti_direction@ 	
+
+VAR 	entity_name 	"DTI entity name" 	L
+
+
+VAR 	link_id 	"DTI link identifier" 	L
+
+
+VAR 	con_type 	"connection type" 	B
+
+VAL 	@p_sim - VAL_con_type@ 	
+
+VAR 	local_ip 	"local IP address" 	L
+
+VAL 	@p_sim - VAL_local_ip@ 	
+
+VAR 	destination_ip 	"destination IP address" 	L
+
+
+VAR 	bip_ch_id 	"BIP channel identifier" 	B
+
+
+VAR 	event_data_avail 	"data available event" 	B
+
+VAL 	@p_sim - VAL_event_data_avail@ 	
+
+VAR 	release_time 	"link release timeout" 	L
+
+VAL 	@p_sim - VAL_release_time@ 	
+
+VAR 	destination_port 	"destination port number" 	S
+
+
+VAR 	general_result 	"general result code" 	B
+
+
+VAR 	add_info_result 	"additional information on result code" 	B
+
+
+VAR 	cla 	"class of instruction" 	B
+
+VAL 	@p_sim - VAL_cla@ 	
+
+VAR 	ins_code 	"instruction code" 	B
+
+VAL 	@p_sim - VAL_ins_code@ 	
+
+VAR 	le 	"length of response" 	B
+
+
+VAR 	atr 	"Answer to Reset" 	B
+
+
+VAR 	bip_conn 	"bip connection qualifier" 	B
+
+VAL 	@p_sim - VAL_bip_conn@ 	
+
+VAR 	act_hplmn 	"Acting HPLMN" 	B
+
+
+VAR 	ad 	"Contents of Administrative Data file" 	B
+
+
+VAR 	trmst_file 	"Terminal Support Table EF" 	B
+
+
+VAR 	cust_mode 	"Customisation Mode" 	B
+
+VAL 	@p_sim - VAL_cust_mode@ 	
+
+VAR 	user_accepts 	"User Response" 	B
+
+VAL 	@p_sim - VAL_user_accepts@ 	
+
+VAR 	sim_num 	"SIM Interface Identifier" 	B
+
+VAL 	@p_sim - VAL_sim_num@ 	
+
+VAR 	c_rec 	"Length of records in EF(CBMID)" 	B
+
+
+VAR 	rec 	"Records in the EF(CBMID)" 	B
+
+
+VAR 	pref_plmn_list_sz 	"List size of the preferred PLMN. Size =0 means that preferred PLMN does not present." 	S
+
+
+VAR 	u_ctl_plmn_sel_actech_list_sz 	%REL99% 	"Size of the PLMN list 'User controlled PLMN Selector with Access Technology'. Size =0 means that plmn list is not present." 	S
+
+
+VAR 	o_ctl_plmn_sel_actech_list_sz 	%REL99% 	"Size of the PLMN list 'Operator controlled PLMN Selector with Access Technology'. Size =0 means that plmn list is not present." 	S
+
+
+VAR 	df_level1 	"First level directory" 	S
+
+VAL 	@p_sim - VAL_df_level1@ 	
+
+VAR 	df_level2 	"Second level directory" 	S
+
+VAL 	@p_sim - VAL_df_level2@ 	
+
+VAR 	v_df_level2 	"valid flag" 	B
+
+
+VAR 	ef_indicator 	"EF Indicator" 	B
+
+
+
+
+
+COMP 	imsi_field 	 "international mobile subscriber identity"
+{
+ 	c_field 	 ; length of imsi
+ 	field 	[MAX_IMSI] 	 ; imsi
+}
+
+
+
+COMP 	loc_info 	 "location information"
+{
+ 	c_loc 	 ; length of location information
+ 	loc 	[MAX_LOCIGSM] 	 ; location information
+}
+
+
+
+COMP 	acc_ctrl 	 "access control classes"
+{
+ 	c_acc 	 ; length of access control classes
+ 	acc 	[2] 	 ; access control classes
+}
+
+
+
+COMP 	bcch_inf 	 "BCCH information"
+{
+ 	c_bcch 	 ; Length of bcch information
+ 	bcch 	[16] 	 ; bcch information
+}
+
+
+
+COMP 	kc_n 	 "Kc and cipher key sequence number"
+{
+ 	c_kc 	 ; Length of data field
+ 	kc 	[MAX_KC+1] 	 ; Kc and ciphering key sequence number
+}
+
+
+
+COMP 	forb_plmn 	 "Forbidden PLMN list"
+{
+ 	c_forb 	 ; length of forbidden PLMN list
+ 	forb 	[12] 	 ; Forbidden PLMN list
+}
+
+
+
+COMP 	stk_cmd 	 "SIM toolkit command"
+{
+ 	l_cmd 	 ; command length
+ 	o_cmd 	 ; command offset
+ 	cmd 	[MAX_STK_CMD] 	 ; command data
+}
+
+
+
+COMP 	gprs_loc_info 	 "location information"
+{
+ 	c_loc 	 ; length of location information
+ 	loc 	[MAX_LOCIGPRS] 	 ; location information
+}
+
+
+
+COMP 	cbmid_rec 	 "This structure contains the CBMID records"
+{
+ 	rec 	[1..MAX_CBMID_REC] 	 ; Primitive structure element item
+}
+
+
+
+COMP 	path_info 	 "Path information"
+{
+ 	df_level1 	 ; Primitive structure element item
+ 	< () 	df_level2 	> 	 ; Primitive structure element item
+}
+
+
+
+COMP 	file_info 	 "File Information for FILE UPDATE"
+{
+ 	datafield 	 ; Primitive structure element item
+ 	< () 	path_info 	> 	 ; Primitive structure element item
+}
+
+
+
+
+
+
+; SIM_READ_REQ 	0x80004005
+; SIM_READ_CNF 	0x80000005
+; SIM_UPDATE_REQ 	0x80014005
+; SIM_UPDATE_CNF 	0x80010005
+; SIM_READ_RECORD_REQ 	0x80024005
+; SIM_READ_RECORD_CNF 	0x80020005
+; SIM_UPDATE_RECORD_REQ 	0x80044005
+; SIM_UPDATE_RECORD_CNF 	0x80040005
+; SIM_INCREMENT_REQ 	0x80084005
+; SIM_INCREMENT_CNF 	0x80080005
+; SIM_VERIFY_PIN_REQ 	0x80094005
+; SIM_VERIFY_PIN_CNF 	0x80090005
+; SIM_CHANGE_PIN_REQ 	0x800A4005
+; SIM_CHANGE_PIN_CNF 	0x800A0005
+; SIM_DISABLE_PIN_REQ 	0x800B4005
+; SIM_DISABLE_PIN_CNF 	0x800B0005
+; SIM_ENABLE_PIN_REQ 	0x800C4005
+; SIM_ENABLE_PIN_CNF 	0x800C0005
+; SIM_UNBLOCK_REQ 	0x800D4005
+; SIM_UNBLOCK_CNF 	0x800D0005
+; SIM_AUTHENTICATION_REQ 	0x800E4005
+; SIM_AUTHENTICATION_CNF 	0x800E0005
+; SIM_MMI_INSERT_IND 	0x800F0005
+; SIM_MM_INSERT_IND 	0x80100005
+; SIM_REMOVE_IND 	0x80110005
+; SIM_MM_UPDATE_REQ 	0x800F4005
+; SIM_SYNC_REQ 	0x80104005
+; SIM_SYNC_CNF 	0x80120005
+; SIM_ACTIVATE_REQ 	0x80114005
+; SIM_ACTIVATE_CNF 	0x80130005
+; SIM_SMS_INSERT_IND 	0x80140005
+; SIM_TOOLKIT_REQ 	0x80124005
+; SIM_TOOLKIT_RES 	0x80134005
+; SIM_TOOLKIT_IND 	0x80150005
+; SIM_TOOLKIT_CNF 	0x80160005
+; SIM_ACTIVATE_IND 	0x80170005
+; SIM_MM_INFO_IND 	0x80180005
+; SIM_ACCESS_REQ 	0x80144005
+; SIM_ACCESS_CNF 	0x80190005
+; SIM_FILE_UPDATE_IND 	0x801A0005
+; SIM_FILE_UPDATE_RES 	0x80154005
+; SIM_GMM_INSERT_IND 	0x801B0005
+; SIM_GMM_UPDATE_REQ 	0x80164005
+; SIM_DTI_REQ 	0x80174005
+; SIM_DTI_CNF 	0x801C0005
+; SIM_BIP_REQ 	0x80184005
+; SIM_BIP_CNF 	0x801D0005
+; SIM_BIP_CONFIG_REQ 	0x80194005
+; SIM_BIP_CONFIG_CNF 	0x801E0005
+; SIM_DTI_BIP_IND 	0x801F0005
+; SIM_EVENTLIST_REQ 	0x801A4005
+; SIM_EVENTLIST_CNF 	0x80200005
+; SIM_TEST_REQ 	0x80210005
+; SIM_TEST_CNF 	0x801B4005
+; SIM_REFRESH_USER_RES 	0x80074005
+
+
+
+PRIM 	SIM_READ_REQ 	0x80004005
+{
+ 	source 	 ; source
+ 	offset 	 ; offset
+ 	datafield 	 ; data field
+ 	req_id 	 ; request identifier
+ 	length 	 ; length
+ 	max_length 	 ; Max length
+ 	< () 	path_info 	> 	 ; Path Information
+}
+
+
+
+
+
+
+PRIM 	SIM_READ_CNF 	0x80000005
+{
+ 	cause 	 ; error code
+ 	req_id 	 ; request identifier
+ 	length 	 ; Data
+ 	trans_data 	[MAX_SIM_CMD] 	 ; Received data
+}
+
+
+
+
+
+
+PRIM 	SIM_UPDATE_REQ 	0x80014005
+{
+ 	source 	 ; source
+ 	offset 	 ; offset
+ 	datafield 	 ; data field
+ 	req_id 	 ; request identifier
+ 	< () 	path_info 	> 	 ; Path Information
+ 	length 	 ; Data
+ 	trans_data 	[MAX_SIM_CMD] 	 ; send data
+}
+
+
+
+
+
+
+PRIM 	SIM_UPDATE_CNF 	0x80010005
+{
+ 	cause 	 ; error code
+ 	req_id 	 ; request identifier
+}
+
+
+
+
+
+
+PRIM 	SIM_READ_RECORD_REQ 	0x80024005
+{
+ 	source 	 ; source
+ 	record 	 ; record number
+ 	length 	 ; length
+ 	datafield 	 ; data field
+ 	req_id 	 ; request identifier
+ 	< () 	path_info 	> 	 ; Path Information
+}
+
+
+
+
+
+
+PRIM 	SIM_READ_RECORD_CNF 	0x80020005
+{
+ 	cause 	 ; error code
+ 	req_id 	 ; request identifier
+ 	max_record 	 ; max record number
+ 	length 	 ; Data
+ 	linear_data 	[MAX_SIM_CMD] 	 ; send data
+}
+
+
+
+
+
+
+PRIM 	SIM_UPDATE_RECORD_REQ 	0x80044005
+{
+ 	source 	 ; source
+ 	record 	 ; record
+ 	req_id 	 ; request identifier
+ 	datafield 	 ; data field
+ 	length 	 ; Data
+ 	< () 	path_info 	> 	 ; Path Information
+ 	linear_data 	[MAX_SIM_CMD] 	 ; send data
+}
+
+
+
+
+
+
+PRIM 	SIM_UPDATE_RECORD_CNF 	0x80040005
+{
+ 	cause 	 ; error code
+ 	req_id 	 ; request identifier
+}
+
+
+
+
+
+
+PRIM 	SIM_INCREMENT_REQ 	0x80084005
+{
+ 	source 	 ; source
+ 	datafield 	 ; data field
+ 	req_id 	 ; request identifier
+ 	length 	 ; Data
+ 	< () 	path_info 	> 	 ; Path information
+ 	linear_data 	[MAX_SIM_CMD] 	 ; send data
+}
+
+
+
+
+
+
+PRIM 	SIM_INCREMENT_CNF 	0x80080005
+{
+ 	cause 	 ; error code
+ 	req_id 	 ; request identifier
+ 	length 	 ; Data
+ 	linear_data 	[MAX_SIM_CMD] 	 ; send data
+}
+
+
+
+
+
+
+PRIM 	SIM_VERIFY_PIN_REQ 	0x80094005
+{
+ 	source 	 ; source
+ 	pin 	[MAX_PIN_LEN] 	 ; personal identity number
+ 	pin_id 	 ; pin identification
+}
+
+
+
+
+
+
+PRIM 	SIM_VERIFY_PIN_CNF 	0x80090005
+{
+ 	cause 	 ; error code
+ 	pin_id 	 ; pin identification
+ 	pin_cnt 	 ; pin count
+ 	puk_cnt 	 ; puk count
+ 	pin2_cnt 	 ; pin 2 count
+ 	puk2_cnt 	 ; puk 2 count
+}
+
+
+
+
+
+
+PRIM 	SIM_CHANGE_PIN_REQ 	0x800A4005
+{
+ 	source 	 ; source
+ 	old_pin 	[MAX_PIN_LEN] 	 ; old personal identity number
+ 	new_pin 	[MAX_PIN_LEN] 	 ; new personal identity number
+ 	pin_id 	 ; pin identification
+}
+
+
+
+
+
+
+PRIM 	SIM_CHANGE_PIN_CNF 	0x800A0005
+{
+ 	cause 	 ; error code
+ 	pin_id 	 ; pin identification
+ 	pin_cnt 	 ; pin count
+ 	puk_cnt 	 ; puk count
+ 	pin2_cnt 	 ; pin 2 count
+ 	puk2_cnt 	 ; puk 2 count
+}
+
+
+
+
+
+
+PRIM 	SIM_DISABLE_PIN_REQ 	0x800B4005
+{
+ 	source 	 ; source
+ 	pin 	[MAX_PIN_LEN] 	 ; personal identity number
+}
+
+
+
+
+
+
+PRIM 	SIM_DISABLE_PIN_CNF 	0x800B0005
+{
+ 	cause 	 ; error code
+ 	pin_cnt 	 ; pin count
+ 	puk_cnt 	 ; puk count
+ 	pin2_cnt 	 ; pin 2 count
+ 	puk2_cnt 	 ; puk 2 count
+}
+
+
+
+
+
+
+PRIM 	SIM_ENABLE_PIN_REQ 	0x800C4005
+{
+ 	source 	 ; source
+ 	pin 	[MAX_PIN_LEN] 	 ; personal identity number
+}
+
+
+
+
+
+
+PRIM 	SIM_ENABLE_PIN_CNF 	0x800C0005
+{
+ 	cause 	 ; error code
+ 	pin_cnt 	 ; pin count
+ 	puk_cnt 	 ; puk count
+ 	pin2_cnt 	 ; pin 2 count
+ 	puk2_cnt 	 ; puk 2 count
+}
+
+
+
+
+
+
+PRIM 	SIM_UNBLOCK_REQ 	0x800D4005
+{
+ 	source 	 ; source
+ 	unblock_key 	[MAX_PIN_LEN] 	 ; unkblocking key
+ 	pin 	[MAX_PIN_LEN] 	 ; personal identity number
+ 	pin_id 	 ; personal identity number identification
+}
+
+
+
+
+
+
+PRIM 	SIM_UNBLOCK_CNF 	0x800D0005
+{
+ 	cause 	 ; error code
+ 	pin_id 	 ; personal identity number identification
+ 	pin_cnt 	 ; pin count
+ 	puk_cnt 	 ; puk count
+ 	pin2_cnt 	 ; pin 2 count
+ 	puk2_cnt 	 ; puk 2 count
+}
+
+
+
+
+
+
+PRIM 	SIM_AUTHENTICATION_REQ 	0x800E4005
+{
+ 	source 	 ; source
+ 	req_id 	 ; request identifier
+ 	cksn 	 ; ciphering key sequence number
+ 	rand 	[MAX_RAND] 	 ; Random number
+}
+
+
+
+
+
+
+PRIM 	SIM_AUTHENTICATION_CNF 	0x800E0005
+{
+ 	req_id 	 ; request identifier
+ 	sres 	[MAX_SRES] 	 ; Sres
+ 	kc 	[MAX_KC] 	 ; Kc
+}
+
+
+
+
+
+
+PRIM 	SIM_MMI_INSERT_IND 	0x800F0005
+{
+ 	func 	 ; sim card functionality
+ 	sim_serv 	[MAX_SRV_TBL] 	 ; sim service table
+ 	imsi_field 	 ; international mobile subscriber identity
+ 	phase 	 ; phase
+ 	access_acm 	 ; access conditions ACM
+ 	access_acmmax 	 ; access conditions ACMMAX
+ 	access_puct 	 ; access conditions PUCT
+ 	cbmid_rec 	 ; cbmid
+ 	ad 	[1..MAX_AD] 	 ; administrative data
+}
+
+
+
+
+
+
+PRIM 	SIM_MM_INSERT_IND 	0x80100005
+{
+ 	ad 	[1..MAX_AD] 	 ; administrative data
+ 	imsi_field 	 ; international mobile subscriber identity
+ 	loc_info 	 ; location info
+ 	acc_ctrl 	 ; access control
+ 	bcch_inf 	 ; bcch information
+ 	kc_n 	 ; last Kc value
+ 	forb_plmn 	 ; forbidden plmns
+ 	phase 	 ; phase
+ 	hplmn 	 ; hplmn time
+ 	< () 	act_hplmn 	[MAX_SIM_PLMN_SIZE] 	> 	 ; acting hplmn
+ 	pref_plmn_list_sz 	 ; size of the preferred plmn list
+ 	u_ctl_plmn_sel_actech_list_sz 	 	%REL99% ; Size of the PLMN list 'User controlled PLMN Selector with Access Technology'.
+ 	o_ctl_plmn_sel_actech_list_sz 	 	%REL99% ; Size of the PLMN list 'Operator controlled PLMN Selector with Access Technology'.
+}
+
+
+
+
+
+
+PRIM 	SIM_REMOVE_IND 	0x80110005
+{
+ 	cause 	 ; Error code
+}
+
+
+
+
+
+
+PRIM 	SIM_MM_UPDATE_REQ 	0x800F4005
+{
+ 	loc_info 	 ; location info
+ 	bcch_inf 	 ; bcch information
+ 	forb_plmn 	 ; forbidden plmns
+ 	cksn 	 ; ciphering key sequence number
+ 	kc 	[MAX_KC] 	 ; Kc
+ 	cell_identity 	 ; cell identity
+ 	ef_indicator 	 ; EF indicator
+}
+
+
+
+
+
+
+PRIM 	SIM_SYNC_REQ 	0x80104005
+{
+ 	synccs 	 ; Sync cause
+}
+
+
+
+
+
+
+PRIM 	SIM_SYNC_CNF 	0x80120005
+{
+ 	cause 	 ; Error code
+}
+
+
+
+
+
+
+PRIM 	SIM_ACTIVATE_REQ 	0x80114005
+{
+ 	proc 	 ; Procedure
+ 	mmi_pro_file 	 ; Mmi profile
+ 	stk_pro_file 	[MAX_STK_PRF] 	 ; SIM Toolkit Profile
+ 	cust_mode 	 ; Customisation Mode
+ 	sim_num 	 ; SIM Interface Identifier
+ 	< () 	trmst_file 	[MAX_TRMST] 	> 	 ; Terminal Support Table
+}
+
+
+
+
+
+
+PRIM 	SIM_ACTIVATE_CNF 	0x80130005
+{
+ 	cause 	 ; error code
+ 	pin_cnt 	 ; pin count
+ 	puk_cnt 	 ; puk count
+ 	pin2_cnt 	 ; pin 2 count
+ 	puk2_cnt 	 ; puk 2 count
+ 	ec_code 	[MAX_ECC] 	 ; emergency call codes
+ 	pref_lang 	[MAX_LNG_PREF] 	 ; preferred language
+ 	sim_num 	 ; SIM Number
+ 	atr 	[1..MAX_SIM_ATR] 	 ; ATR data
+}
+
+
+
+
+
+
+PRIM 	SIM_SMS_INSERT_IND 	0x80140005
+{
+ 	phase 	 ; Phase
+ 	tp_mr 	 ; Message reference
+ 	mem_cap_avail 	 ; Memory capacity available flag
+ 	download_sms 	 ; Download SMS flag
+ 	smsr_mem_cap 	 ; Status report storage capability
+}
+
+
+
+
+
+
+PRIM 	SIM_TOOLKIT_REQ 	0x80124005
+{
+ 	source 	 ; source
+ 	req_id 	 ; request identifier
+ 	stk_cmd 	 ; sim toolkit command
+}
+
+
+
+
+
+
+PRIM 	SIM_TOOLKIT_RES 	0x80134005
+{
+ 	stk_cmd 	 ; sim toolkit command
+}
+
+
+
+
+
+
+PRIM 	SIM_TOOLKIT_IND 	0x80150005
+{
+ 	stk_cmd 	 ; sim toolkit command
+}
+
+
+
+
+
+
+PRIM 	SIM_TOOLKIT_CNF 	0x80160005
+{
+ 	cause 	 ; error code
+ 	req_id 	 ; request identifier
+ 	stk_cmd 	 ; sim toolkit command
+}
+
+
+
+
+
+
+PRIM 	SIM_ACTIVATE_IND 	0x80170005
+{
+ 	cause 	 ; error code
+ 	pin_cnt 	 ; pin count
+ 	puk_cnt 	 ; puk count
+ 	pin2_cnt 	 ; pin 2 count
+ 	puk2_cnt 	 ; puk 2 count
+ 	ec_code 	[MAX_ECC] 	 ; Emergency call codes
+ 	pref_lang 	[MAX_LNG_PREF] 	 ; Preferred language
+ 	atr 	[1..MAX_SIM_ATR] 	 ; ATR data
+}
+
+
+
+
+
+
+PRIM 	SIM_MM_INFO_IND 	0x80180005
+{
+ 	datafield 	 ; Changed EF name
+}
+
+
+
+
+
+
+PRIM 	SIM_ACCESS_REQ 	0x80144005
+{
+ 	source 	 ; source
+ 	datafield 	 ; datafield
+ 	req_id 	 ; request identifier
+ 	sim_command 	 ; sim command
+ 	p1 	 ; P1
+ 	p2 	 ; P2
+ 	p3 	 ; P3
+ 	trans_data 	[0..MAX_SIM_TRANSP] 	 ; Transparent data
+}
+
+
+
+
+
+
+PRIM 	SIM_ACCESS_CNF 	0x80190005
+{
+ 	cause 	 ; error
+ 	req_id 	 ; request identifier
+ 	sw1 	 ; sw1
+ 	sw2 	 ; sw2
+ 	trans_data 	[0..MAX_SIM_CMD] 	 ; Transparent data
+}
+
+
+
+
+
+
+PRIM 	SIM_FILE_UPDATE_IND 	0x801A0005
+{
+ 	val_nr 	 ; Number of file IDs
+ 	file_info 	[MAX_FILE_ID] 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	SIM_FILE_UPDATE_RES 	0x80154005
+{
+ 	source 	 ; Source
+ 	fu_rsc 	 ; Result Code
+}
+
+
+
+
+
+
+PRIM 	SIM_GMM_INSERT_IND 	0x801B0005
+{
+ 	op_mode 	 ; operation mode
+ 	imsi_field 	 ; international mobile subscriber identity
+ 	loc_info 	 ; location info
+ 	gprs_loc_info 	 ; gprs location info
+ 	acc_ctrl 	 ; access control
+ 	kc_n 	 ; last GPRS Kc value
+ 	phase 	 ; phase
+}
+
+
+
+
+
+
+PRIM 	SIM_GMM_UPDATE_REQ 	0x80164005
+{
+ 	gprs_loc_info 	 ; GPRS location info
+ 	cksn 	 ; ciphering key sequence number
+ 	kc 	[MAX_KC] 	 ; Kc
+ 	att_status 	 ; IMSI attach status
+}
+
+
+
+
+
+
+PRIM 	SIM_DTI_REQ 	0x80174005
+{
+ 	link_id 	 ; DTI link identifier
+ 	dti_conn 	 ; connection qualifier
+ 	dti_direction 	 ; DTI direction
+ 	entity_name 	 ; DTI entity name
+}
+
+
+
+
+
+
+PRIM 	SIM_DTI_CNF 	0x801C0005
+{
+ 	link_id 	 ; DTI link identifier
+ 	dti_conn 	 ; connection qualifier
+}
+
+
+
+
+
+
+PRIM 	SIM_BIP_REQ 	0x80184005
+{
+ 	bip_ch_id 	 ; Primitive Item
+ 	bip_conn 	 ; Primitive Item
+ 	release_time 	 ; Primitive Item
+ 	add_info_result 	 ; Primitive Item
+ 	general_result 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	SIM_BIP_CNF 	0x801D0005
+{
+ 	bip_ch_id 	 ; Primitive Item
+ 	bip_conn 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	SIM_BIP_CONFIG_REQ 	0x80194005
+{
+ 	local_ip 	 ; Primitive Item
+ 	destination_ip 	 ; Primitive Item
+ 	destination_port 	 ; Primitive Item
+ 	con_type 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	SIM_BIP_CONFIG_CNF 	0x801E0005
+{
+}
+
+
+
+
+
+
+PRIM 	SIM_DTI_BIP_IND 	0x801F0005
+{
+ 	link_id 	 ; Primitive Item
+ 	dti_conn 	 ; Primitive Item
+ 	bip_ch_id 	 ; Primitive Item
+ 	bip_conn 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	SIM_EVENTLIST_REQ 	0x801A4005
+{
+ 	event_data_avail 	 ; data available event
+}
+
+
+
+
+
+
+PRIM 	SIM_EVENTLIST_CNF 	0x80200005
+{
+ 	event_data_avail 	 ; data available event
+}
+
+
+
+
+
+
+PRIM 	SIM_TEST_REQ 	0x80210005
+{
+ 	cla 	 ; class of instruction
+ 	ins_code 	 ; instruction code
+ 	p1 	 ; Parameter P1
+ 	p2 	 ; Parameter P2
+ 	le 	 ; length of response
+ 	stk_cmd 	 ; test data
+}
+
+
+
+
+
+
+PRIM 	SIM_TEST_CNF 	0x801B4005
+{
+ 	sw1 	 ; status byte 1
+ 	sw2 	 ; status byte 2
+ 	stk_cmd 	 ; test data
+}
+
+
+
+
+
+
+PRIM 	SIM_REFRESH_USER_RES 	0x80074005
+{
+ 	user_accepts 	 ; Primitive Item
+ 	stk_cmd 	 ; Primitive Item
+}
+
+
+
+
+
+
+
+
+

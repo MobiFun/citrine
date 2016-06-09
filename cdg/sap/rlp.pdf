@@ -1,0 +1,450 @@
+;********************************************************************************
+;*** File           : rlp.pdf
+;*** Creation       : Wed Mar 11 09:58:42 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : rlp
+;*** Document No.   : 8411.101.98.115
+;*** Document Date  : 2002-04-22
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: slo
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:51:48 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-04-22"
+PRAGMA 	ID_AND_VERSION 	"8411.101.98.115"
+
+
+
+CONST 	RLP_HEADER_LEN 	16 	; Length of RLP header in bits
+CONST 	RLP_TRAILER_LEN 	0 	; Length of RLP trailer in bits
+
+
+
+VALTAB 	VAL_pt
+VAL 	0 	RLP_COMPR_TYPE_V42BIS 	"V.42bis"
+
+VALTAB 	VAL_p0
+VAL 	0 	RLP_COMP_DIR_NONE 	"compress in neither direction"
+VAL 	1 	RLP_COMP_DIR_TRANSMIT 	"compress in uplink direction only"
+VAL 	2 	RLP_COMP_DIR_RECEIVE 	"compress in downlink direction only"
+VAL 	3 	RLP_COMP_DIR_BOTH 	"compress in both directions"
+
+VALTAB 	VAL_rate
+VAL 	0 	RLP_HALFRATE_4800 	"halfrate 4,8/6 kBit"
+VAL 	1 	RLP_FULLRATE_4800 	"fullrate 4,8/6 kBit"
+VAL 	2 	RLP_FULLRATE_9600 	"fullrate 9,6/12 kBit"
+VAL 	3 	RLP_FULLRATE_14400 	"fullrate 13,4/14,4 kBit"
+
+VALTAB 	VAL_ack_flg
+VAL 	0 	RLP_ACK 	"acknowledged"
+VAL 	1 	RLP_NAK 	"not acknowledged"
+
+VALTAB 	VAL_cause
+VAL 	0xC200 	RLP_ERR_PF_RETRANS 	"Max Retransmissions of Poll reached"
+VAL 	0xC201 	RLP_ERR_XID_RETRANS 	"Max Retransmissions of XID reached"
+VAL 	0xC202 	RLP_ERR_SABM_RETRANS 	"Max Retransmissions of SABM reached"
+VAL 	0xC203 	RLP_ERR_DISC_RETRANS 	"Max Retransmissions of DISC reached"
+VAL 	0xC204 	RLP_ERR_REMAP_RETRANS 	"Max Retransmissions of REMAP reached"
+VAL 	0xC210 	RLP_ERR_SDU_TO_SMALL 	"Received SDU is to small"
+VAL 	0xC220 	RLP_ERR_INTERNAL 	"Internal error"
+
+
+
+
+VAR 	rlp_vers 	"rlp version number" 	B
+
+
+VAR 	k_ms_iwf 	"window size ms -> iwf" 	S
+
+
+VAR 	k_iwf_ms 	"window size iwf -> ms" 	S
+
+
+VAR 	t1 	"acknowledge timer" 	B
+
+
+VAR 	t2 	"reply delay" 	B
+
+
+VAR 	n2 	"maximum numer of retransmission attempts" 	B
+
+
+VAR 	pt 	"type of data compression" 	B
+
+VAL 	@p_rlp - VAL_pt@ 	
+
+VAR 	p0 	"v.42bis data compression direction" 	B
+
+VAL 	@p_rlp - VAL_p0@ 	
+
+VAR 	p1 	"v.42 bis number of possible codewords" 	S
+
+
+VAR 	p2 	"v.42 bis maximum encodable string length" 	B
+
+
+VAR 	bytes_per_prim 	"bytes per primitive" 	S
+
+
+VAR 	rate 	"transmission rate" 	B
+
+VAL 	@p_rlp - VAL_rate@ 	
+
+VAR 	ack_flg 	"acknowledge flag" 	B
+
+VAL 	@p_rlp - VAL_ack_flg@ 	
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"buffer content" 	B
+
+
+VAR 	cause 	"cause" 	S
+
+VAL 	@p_rlp - VAL_cause@ 	
+
+VAR 	error_rate 	"error_rate" 	L
+
+
+VAR 	reserved 	"Reserved" 	B
+
+
+VAR 	data_size 	"data size" 	S
+
+
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[1] 	 ; buffer content
+}
+
+
+
+
+
+
+; RLP_ATTACH_REQ 	0x80000011
+; RLP_DETACH_REQ 	0x80010011
+; RLP_DETACH_CNF 	0x80004011
+; RLP_CONNECT_REQ 	0x80020011
+; RLP_CONNECT_IND 	0x80014011
+; RLP_CONNECT_RES 	0x80030011
+; RLP_CONNECT_CNF 	0x80024011
+; RLP_DISC_REQ 	0x80040011
+; RLP_DISC_IND 	0x80034011
+; RLP_DISC_CNF 	0x80044011
+; RLP_RESET_REQ 	0x80050011
+; RLP_RESET_IND 	0x80054011
+; RLP_RESET_RES 	0x80060011
+; RLP_RESET_CNF 	0x80064011
+; RLP_READY_IND 	0x80074011
+; RLP_DATA_REQ 	0x80070011
+; RLP_GETDATA_REQ 	0x80080011
+; RLP_DATA_IND 	0x80084011
+; RLP_UI_REQ 	0x80090011
+; RLP_UI_IND 	0x80094011
+; RLP_XID_IND 	0x800A4011
+; RLP_ERROR_IND 	0x800B4011
+; RLP_STATISTIC_IND 	0x800C4011
+; RLP_REMAP_REQ 	0x800A0011
+; RLP_REMAP_CNF 	0x800D4011
+; RLP_REMAP_DATA_IND 	0x800E4011
+; RLP_REMAP_DATA_RES 	0x800B0011
+
+
+
+PRIM 	RLP_ATTACH_REQ 	0x80000011
+{
+ 	k_ms_iwf 	 ; window size ms->iwf
+ 	k_iwf_ms 	 ; window size iwf->ms
+ 	t1 	 ; acknowledge timer
+ 	t2 	 ; reply delay
+ 	n2 	 ; retransmission attempts
+ 	pt 	 ; type of data compression
+ 	p0 	 ; v.42 bis data compression request
+ 	p1 	 ; v.42 bis number of possible codewords
+ 	p2 	 ; v.42 bis maximum encodable data string length
+ 	bytes_per_prim 	 ; bytes per primitive
+ 	rate 	 ; transmission rate
+}
+
+
+
+
+
+
+PRIM 	RLP_DETACH_REQ 	0x80010011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_DETACH_CNF 	0x80004011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_CONNECT_REQ 	0x80020011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_CONNECT_IND 	0x80014011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_CONNECT_RES 	0x80030011
+{
+ 	ack_flg 	 ; acknowledge flag
+}
+
+
+
+
+
+
+PRIM 	RLP_CONNECT_CNF 	0x80024011
+{
+ 	ack_flg 	 ; acknowledge flag
+}
+
+
+
+
+
+
+PRIM 	RLP_DISC_REQ 	0x80040011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_DISC_IND 	0x80034011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_DISC_CNF 	0x80044011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_RESET_REQ 	0x80050011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_RESET_IND 	0x80054011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_RESET_RES 	0x80060011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_RESET_CNF 	0x80064011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_READY_IND 	0x80074011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_DATA_REQ 	0x80070011
+{
+ 	reserved 	[4] 	 ; reserved
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	RLP_GETDATA_REQ 	0x80080011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_DATA_IND 	0x80084011
+{
+ 	data_size 	 ; data size
+ 	reserved 	[2] 	 ; reserved
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	RLP_UI_REQ 	0x80090011
+{
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	RLP_UI_IND 	0x80094011
+{
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	RLP_XID_IND 	0x800A4011
+{
+ 	rlp_vers 	 ; RLP version no.
+ 	k_ms_iwf 	 ; window size ms->iwf
+ 	k_iwf_ms 	 ; window size iwf->ms
+ 	t1 	 ; acknowledge timer
+ 	t2 	 ; reply delay
+ 	n2 	 ; retransmission attempts
+ 	pt 	 ; type of data compression
+ 	p0 	 ; v.42 bis data compression request
+ 	p1 	 ; v.42 bis number of possible codewords
+ 	p2 	 ; v.42 bis maximum encodable data string length
+}
+
+
+
+
+
+
+PRIM 	RLP_ERROR_IND 	0x800B4011
+{
+ 	cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	RLP_STATISTIC_IND 	0x800C4011
+{
+ 	error_rate 	 ; error rate
+}
+
+
+
+
+
+
+PRIM 	RLP_REMAP_REQ 	0x800A0011
+{
+ 	rate 	 ; transmission rate
+}
+
+
+
+
+
+
+PRIM 	RLP_REMAP_CNF 	0x800D4011
+{
+}
+
+
+
+
+
+
+PRIM 	RLP_REMAP_DATA_IND 	0x800E4011
+{
+ 	data_size 	 ; data size
+ 	reserved 	[2] 	 ; reserved
+ 	sdu 	 ; service data unit
+}
+
+
+
+
+
+
+PRIM 	RLP_REMAP_DATA_RES 	0x800B0011
+{
+}
+
+
+
+
+
+
+
+
+

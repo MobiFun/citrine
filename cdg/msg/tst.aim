@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<AIM xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="aim.xsd">
+    <DocInfoSection>
+        <DocName DocType="AIM">tst</DocName>
+        <DocNum Number="603" Project="8441"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for GPRS consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity.</Section>
+            <Section>Figure 1-1: Architecture of the GSM/GPRS protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the GPRS protocol stack are:</Section>
+            <Section>1.1 GRR (RLC/MAC) - Radio Link Control/Medium Access Control</Section>
+            <Section>This layer contains two functions: The Radio Link Control function provides a radio-solution-dependent reliable link. The Medium Access Control function controls the access signalling (request and grant) procedures for the radio channel, and the mapping of LLC frames onto the GSM physical channel.</Section>
+            <Section>1.2 LLC - Logical Link Control</Section>
+            <Section>The LLC entity provides multiple highly reliable logical links for asynchronous data transfer between the MS and the network. It supports variable-length information frames, acknowledged and unacknowledged data transfer, flow and sequence control, error detection and recovery, notification of unrecoverable errors, user identity confidentiality, and ciphering of user and signaling data.</Section>
+            <Section>1.3 GMM - GPRS Mobility Management</Section>
+            <Section>The GMM entity provides procedures for the mobility of the MS, such as informing the network of its present location, and user identity confidentiality. It manages the GMM context (attach, detach, routing area updating), supports security functions such as authentication of user and MS, controls ciphering of data, and initiates the response to paging messages.</Section>
+            <Section>1.4 SM - Session Management</Section>
+            <Section>The main function of the session management (SM) is to support PDP context handling of the user terminal. Session Management activates, modifies and deletes the contexts for packet data protocols (PDP). Session Management services are provided at the SMREG-SAP and the SNSM-SAP for anonymous and non-anonymous access. The non-anonymous and anonymous access procedures for PDP context activation and PDP context deactivation are available at the SMREG-SAP. In addition there exists a PDP context modification for non-anonymous PDP contexts.</Section>
+            <Section>1.5 SNDCP - Subnetwork Dependant Convergence Protocol</Section>
+            <Section>SNDCP carries out all functions related to transfer of Network layer Protocol Data Units (N-PDUs) over GPRS in a transparent way. SNDCP helps to improve channel efficiency by means of compression techniques. The set of protocol entities above SNDCP consists of commonly used network protocols. They all use the same SNDCP entity, which then performs multiplexing of data coming from different sources to be sent using the service provided by the LLC layer.</Section>
+            <Section>1.6 GACI - GPRS Application Control Interface</Section>
+            <Section>The GACI is the GPRS extension of the ACI. It is specified in GSM 07.07 and 07.60. It is responsible for processing of the GPRS related AT Commands to setup, activate and deactivate the PDP context parameter. It also provides functionality for the interworking between GMM/SM/SNDCP and a packet oriented protocol like PPP.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the GPRS. The driver has to be able to perform flow control.</Section>
+            <Section>1.8 TOM - Tunnelling of Messages</Section>
+            <Section>The TOM entity is present if and only if HS136 is supported (the feature flag FF_HS136 is enabled).</Section>
+            <Section>The main function of TOM is to tunnel non-GSM signalling messages between the MS and the SGSN. The only non-GSM signalling which is currently supported by TOM is for the EGPRS-136 system (according to TIA/EIA-136-376). Data transfer in both uplink and downlink direction is possible. Two different priorities (high, low) of signalling data transfer are supported. TOM uses the unacknowledged mode of LLC and the acknowledged mode of GRR (RLC/MAC).</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="99"/>
+            <Date Day="16" Month="7" Year="1999"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>ANS, Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="001" Year="99"/>
+            <Date Day="22" Month="6" Year="1999"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changes due to GSM 04.08 V6.4.0</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="001" Year="99"/>
+            <Date Day="29" Month="7" Year="1999"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>&quot;Access capability Length&quot; in field &quot;MS RA capability value part&quot; removed and type BL7V included</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="99"/>
+            <Date Day="10" Month="3" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changes due to GSM 04.08 V6.7.0 TMSI status added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="99"/>
+            <Date Day="2" Month="6" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changed definition of S_PADDING</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="99"/>
+            <Date Day="15" Month="9" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>GSM7_LV added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="99"/>
+            <Date Day="23" Month="10" Year="2000"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>update result values changed</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 05.02 version 8.0.0 Release 1999Digital cellular telecommunications system (Phase 2+);Multiplexing and multiple access on the radio path</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 04.60 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station (MS) - Base Station System (BSS) interface;Radio Link Control/ Medium Access Control (RLC/MAC) protocol</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 04.08 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface layer 3 specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 03.64 version 6.1.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Overall description of the GPRS radio interface; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 03.60 version 6.3.1 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Service description; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 04.07 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface signalling layer 3; General aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 04.64 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station - Serving GPRS Support Node (MS-SGSN)Logical Link Control (LLC) layer specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 05.08 version 6.4.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem link control</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 05.10 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem synchronization</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 03.20 TS 100 929: July 1998 (GSM 03.20 version 6.0.1)Security related network functions, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Draft GSM 03.22: August 1998 (GSM 03.22 version 6.1.0)Functions related to Mobile Station (MS) in idle mode and group receive mode, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 04.65 V6.3.0: Subnetwork Dependant Convergence Protocol ETSI, March 1999</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>ITU-T V42bis ITU-T, Recommendation V.42 bis 1990</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 09.60 GPRS Tunneling Protocol (GTP) across the Gn and Gp Interface</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>RFC 1661 IETF STD 51 July 1994The Point-to-Point Protocol (PPP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>RFC 1662 IETF STD 51 July 1994PPP in HDLC-like Framing</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>RFC 1570 January 1994PPP LCP Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>RFC 1989 August 1996PPP Link Quality Monitoring</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>RFC 1332 May 1992The PPP Internet Protocol Control Protocol (IPCP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>RFC 1877 December 1995PPP IPCP Extensions for Name Server Addresses</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>RFC 2153 May 1997PPP Vendor Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>RFC 1334 October 1992PPP Authentication Protocols (for Password Authentication Protocol only)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>RFC 1994 August 1996PPP Challenge Handshake Authentication Protocol (CHAP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>TIA/EIA-136-370Packet-Data Services - Enhanced General Packet Radio for TIA/EIA-136 (EGPRS-136) - Overview, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>TIA/EIA-136-376Packet-Data Services - EGPRS-136 Mobility Management, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>TIA/EIA-136-972Packet-Data Services - Stage 2 Description, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the TST AIM</Section>
+        </Description>
+        <Constant>
+            <Alias>L3MAX</Alias>
+            <Value ValueType="DEC">251</Value>
+            <Comment>maximum size of a L3 buffer</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_N_PDU_NUMBER_LIST</Alias>
+            <Value ValueType="DEC">11</Value>
+            <Comment>maximum size of N-PDU number list</Comment>
+        </Constant>
+        <History>
+            <Date Day="1" Month="1" Year="2000"/>
+            <Author>VK</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <MessagesSection>
+        <Description>
+            <Section>This section contains all messages that are defined for the TST AIM</Section>
+        </Description>
+        <Message>
+            <Description>
+                <Section>This message is sent by the network to the MS in order to start GPRS test mode.</Section>
+                <Section>Reference : GSM 04.14 section 8.13</Section>
+            </Description>
+            <MsgDef>
+                <Name>gprs_test_mode_cmd</Name>
+                <MsgID Direction="DOWNLINK" IDType="DEC">36</MsgID>
+                <Comment>gprs_test_mode_cmd</Comment>
+            </MsgDef>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">tst</DocName>
+                    <Name>msg_type</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>10.4.</SpecRef>
+                <Comment>Message Type</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">tst</DocName>
+                    <Name>pdu_description_ie</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>GSM 04.14 8.13</SpecRef>
+                <Comment>PDU description</Comment>
+            </MsgItem>
+            <MsgItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">tst</DocName>
+                    <Name>mode_flag</Name>
+                </ItemLink>
+                <Type>GSM3_V</Type>
+                <SpecRef>GSM 04.14 8.13</SpecRef>
+                <Comment>Mode Flag</Comment>
+            </MsgItem>
+            <History>
+                <Date Day="13" Month="11" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Message>
+    </MessagesSection>
+    <MsgStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the TST AIM</Section>
+        </Description>
+        <MsgStructElem>
+            <Description>
+                <Section>PDU Description only applies if the MS is in test mode a). The PDU consists of rhe pseudorandom data sequence only, ie, it shall not contain any header information or FCS field.</Section>
+                <Section>Reference : GSM 04.14 section 8.13</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>pdu_description_ie</Name>
+                <Comment>PDU Description IE</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">tst</DocName>
+                    <Name>pdu_description</Name>
+                </ItemLink>
+                <Type>CSN1_S1</Type>
+                <SpecRef>-</SpecRef>
+                <Comment>PDU Description</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="13" Month="11" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>PDU Description only applies if the MS is in test mode a). The PDU consists of rhe pseudorandom data sequence only, ie, it shall not contain any header information or FCS field.</Section>
+                <Section>Reference : GSM 04.14 section 8.13</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>pdu_description</Name>
+                <Comment>PDU Description</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>000</Pattern>
+                    <BitLen>3</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">tst</DocName>
+                    <Name>no_of_pdus</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Number</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="13" Month="11" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+        <MsgStructElem>
+            <Description>
+                <Section>PDU Description only applies if the MS is in test mode a). The PDU consists of rhe pseudorandom data sequence only, ie, it shall not contain any header information or FCS field.</Section>
+                <Section>Reference : GSM 04.14 section 8.13</Section>
+            </Description>
+            <MsgStructElemDef Type="STRUCT">
+                <Name>mode_flag</Name>
+                <Comment>Mode Flag</Comment>
+            </MsgStructElemDef>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <Spare>
+                    <Pattern>0000</Pattern>
+                    <BitLen>4</BitLen>
+                </Spare>
+                <SpecRef>-</SpecRef>
+                <Comment>spare</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">tst</DocName>
+                    <Name>dl_timeslot_offset</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Downlink Timeslot Offset</Comment>
+            </MsgStructElemItem>
+            <MsgStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">tst</DocName>
+                    <Name>mode_flag_val</Name>
+                </ItemLink>
+                <SpecRef>-</SpecRef>
+                <Comment>Mode Flag Value</Comment>
+            </MsgStructElemItem>
+            <History>
+                <Date Day="14" Month="11" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgStructElem>
+    </MsgStructElementsSection>
+    <MsgBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the TST AIM</Section>
+        </Description>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : [1] section 10.4</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>msg_type</Name>
+                <BitLen>8</BitLen>
+                <Comment>Message Type</Comment>
+            </MsgBasicElemDef>
+            <History>
+                <Date Day="1" Month="1" Year="2000"/>
+                <Author>VK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : GSM 04.14 section 8.13</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>no_of_pdus</Name>
+                <BitLen>12</BitLen>
+                <Comment>Number of PDUs</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">tst</DocName>
+                <Name>VAL_no_of_pdus</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="11" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : GSM 04.14 section 8.13</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>dl_timeslot_offset</Name>
+                <BitLen>3</BitLen>
+                <Comment>Downlink Timeslot Offset</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">tst</DocName>
+                <Name>VAL_dl_timeslot_offset</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="11" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+        <MsgBasicElem>
+            <Description>
+                <Section>Reference : GSM 04.14 section 8.13</Section>
+            </Description>
+            <MsgBasicElemDef>
+                <Name>mode_flag_val</Name>
+                <BitLen>1</BitLen>
+                <Comment>Mode Flag Value</Comment>
+            </MsgBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="AIM">tst</DocName>
+                <Name>VAL_mode_flag_val</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="14" Month="11" Year="2000"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </MsgBasicElem>
+    </MsgBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the TST AIM</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_no_of_pdus</Name>
+                <Comment>values for no_of_pdus</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TEST_INFINITIVE_NO</Alias>
+                <Comment>ciphering not used</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>Number of PDUs to transmit</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dl_timeslot_offset</Name>
+                <Comment>values for dl_timeslot_offset</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TEST_TN0</Alias>
+                <Comment>downlink timeslot offsett 0</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TEST_TN1</Alias>
+                <Comment>downlink timeslot offsett 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>TEST_TN2</Alias>
+                <Comment>downlink timeslot offsett 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>TEST_TN3</Alias>
+                <Comment>downlink timeslot offsett 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>TEST_TN4</Alias>
+                <Comment>downlink timeslot offsett 4</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>TEST_TN5</Alias>
+                <Comment>downlink timeslot offsett 5</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>TEST_TN6</Alias>
+                <Comment>downlink timeslot offsett 6</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>TEST_TN7</Alias>
+                <Comment>downlink timeslot offsett 7</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mode_flag_val</Name>
+                <Comment>values for mode_flag_val</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>TEST_RANDOM</Alias>
+                <Comment>pseudorandom data</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>TEST_LOOP</Alias>
+                <Comment>loop back</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</AIM>

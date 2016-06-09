@@ -1,0 +1,975 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">llgmm</DocName>
+        <DocNum Number="103" Project="8441"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for GPRS consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity.</Section>
+            <Section>Figure 1-1: Architecture of the GSM/GPRS protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the GPRS protocol stack are:</Section>
+            <Section>1.1 GRR (RLC/MAC) - Radio Link Control/Medium Access Control</Section>
+            <Section>This layer contains two functions: The Radio Link Control function provides a radio-solution-dependent reliable link. The Medium Access Control function controls the access signalling (request and grant) procedures for the radio channel, and the mapping of LLC frames onto the GSM physical channel.</Section>
+            <Section>1.2 LLC - Logical Link Control</Section>
+            <Section>The LLC entity provides multiple highly reliable logical links for asynchronous data transfer between the MS and the network. It supports variable-length information frames, acknowledged and unacknowledged data transfer, flow and sequence control, error detection and recovery, notification of unrecoverable errors, user identity confidentiality, and ciphering of user and signaling data.</Section>
+            <Section>1.3 GMM - GPRS Mobility Management</Section>
+            <Section>The GMM entity provides procedures for the mobility of the MS, such as informing the network of its present location, and user identity confidentiality. It manages the GMM context (attach, detach, routing area updating), supports security functions such as authentication of user and MS, controls ciphering of data, and initiates the response to paging messages.</Section>
+            <Section>1.4 SM - Session Management</Section>
+            <Section>The main function of the session management (SM) is to support PDP context handling of the user terminal. Session Management activates, modifies and deletes the contexts for packet data protocols (PDP). Session Management services are provided at the SMREG-SAP and the SNSM-SAP for anonymous and non-anonymous access. The non-anonymous and anonymous access procedures for PDP context activation and PDP context deactivation are available at the SMREG-SAP. In addition there exists a PDP context modification for non-anonymous PDP contexts.</Section>
+            <Section>1.5 SNDCP - Subnetwork Dependant Convergence Protocol</Section>
+            <Section>SNDCP carries out all functions related to transfer of Network layer Protocol Data Units (N-PDUs) over GPRS in a transparent way. SNDCP helps to improve channel efficiency by means of compression techniques. The set of protocol entities above SNDCP consists of commonly used network protocols. They all use the same SNDCP entity, which then performs multiplexing of data coming from different sources to be sent using the service provided by the LLC layer.</Section>
+            <Section>1.6 GACI - GPRS Application Control Interface</Section>
+            <Section>The GACI is the GPRS extension of the ACI. It is specified in GSM 07.07 and 07.60. It is responsible for processing of the GPRS related AT Commands to setup, activate and deactivate the PDP context parameter. It also provides functionality for the interworking between GMM/SM/SNDCP and a packet oriented protocol like PPP.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the GPRS. The driver has to be able to perform flow control.</Section>
+            <Section>1.8 TOM - Tunnelling of Messages</Section>
+            <Section>The TOM entity is present if and only if HS136 is supported (the feature flag FF_HS136 is enabled).</Section>
+            <Section>The main function of TOM is to tunnel non-GSM signalling messages between the MS and the SGSN. The only non-GSM signalling which is currently supported by TOM is for the EGPRS-136 system (according to TIA/EIA-136-376). Data transfer in both uplink and downlink direction is possible. Two different priorities (high, low) of signalling data transfer are supported. TOM uses the unacknowledged mode of LLC and the acknowledged mode of GRR (RLC/MAC).</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="99"/>
+            <Date Day="25" Month="6" Year="1999"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="99"/>
+            <Date Day="6" Month="7" Year="1999"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Macro names changed ("LLGMM_*"), some variable names changed ("llgmm_*")</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="99"/>
+            <Date Day="9" Month="8" Year="1999"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Included changes due to GSM 04.64 Version 6.4.0 (removed WINDOW-REQ, WINDOW-CNF, List of LLC state variables)</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="99"/>
+            <Date Day="14" Month="10" Year="1999"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Corrected opcodes of primitives</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="99"/>
+            <Date Day="7" Month="1" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Removed parameter "assign" in LLGMM_ASSIGN_REQ</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="99"/>
+            <Date Day="26" Month="1" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changed LLC error cause values to take GRR error causes into account</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="99"/>
+            <Date Day="24" Month="2" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Removed error cause FRMR_RECEIVED_REEST</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="99"/>
+            <Date Day="23" Month="3" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Trigger Cause values set according to GRR_DATA_REQ cause values</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="99"/>
+            <Date Day="26" Month="5" Year="2000"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Ciphering Algorithm values adapted to air interface messages</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="99"/>
+            <Date Day="26" Month="9" Year="2001"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>llgmm_suspend_req enhanced</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="99"/>
+            <Date Day="28" Month="2" Year="2002"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>llgmm_suspend_req enhanced</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="012" Year="99"/>
+            <Date Day="13" Month="3" Year="2002"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>llgmm_suspend_req enhanced</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="013" Year="99"/>
+            <Date Day="11" Month="11" Year="2002"/>
+            <Author>UT</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>remove llgmm_trigger_ind</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="014" Year="99"/>
+            <Date Day="21" Month="3" Year="2003"/>
+            <Author>ANS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>llgmm_tlli_ind</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 05.02 version 8.0.0 Release 1999Digital cellular telecommunications system (Phase 2+);Multiplexing and multiple access on the radio path</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 04.60 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station (MS) - Base Station System (BSS) interface;Radio Link Control/ Medium Access Control (RLC/MAC) protocol</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 04.08 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface layer 3 specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 03.64 version 6.1.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Overall description of the GPRS radio interface; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 03.60 version 6.3.1 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Service description; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 04.07 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface signalling layer 3; General aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 04.64 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station - Serving GPRS Support Node (MS-SGSN)Logical Link Control (LLC) layer specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 05.08 version 6.4.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem link control</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 05.10 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem synchronization</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 03.20 TS 100 929: July 1998 (GSM 03.20 version 6.0.1)Security related network functions, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Draft GSM 03.22: August 1998 (GSM 03.22 version 6.1.0)Functions related to Mobile Station (MS) in idle mode and group receive mode, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 04.65 V6.3.0: Subnetwork Dependant Convergence Protocol ETSI, March 1999</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>ITU-T V42bis ITU-T, Recommendation V.42 bis 1990</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 09.60 GPRS Tunneling Protocol (GTP) across the Gn and Gp Interface</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>RFC 1661 IETF STD 51 July 1994The Point-to-Point Protocol (PPP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>RFC 1662 IETF STD 51 July 1994PPP in HDLC-like Framing</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>RFC 1570 January 1994PPP LCP Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>RFC 1989 August 1996PPP Link Quality Monitoring</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>RFC 1332 May 1992The PPP Internet Protocol Control Protocol (IPCP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>RFC 1877 December 1995PPP IPCP Extensions for Name Server Addresses</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>RFC 2153 May 1997PPP Vendor Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>RFC 1334 October 1992PPP Authentication Protocols (for Password Authentication Protocol only)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>RFC 1994 August 1996PPP Challenge Handshake Authentication Protocol (CHAP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>TIA/EIA-136-370Packet-Data Services - Enhanced General Packet Radio for TIA/EIA-136 (EGPRS-136) - Overview, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>TIA/EIA-136-376Packet-Data Services - EGPRS-136 Mobility Management, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>TIA/EIA-136-972Packet-Data Services - Stage 2 Description, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the LLGMM SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>LLGMM_MAX_SEQ_NR</Alias>
+            <Value ValueType="DEC">511</Value>
+            <Comment>maximum sequence number value</Comment>
+        </Constant>
+        <Constant>
+            <Alias>LLGMM_NUM_SAPIS</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment>number of SAPIs (not all are available)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>LLGMM_TLLI_INVALID</Alias>
+            <Value ValueType="HEX">FFFFFFFF</Value>
+            <Comment>invalid TLLI value</Comment>
+        </Constant>
+        <History>
+            <Date Day="21" Month="6" Year="1999"/>
+            <Author>DB</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="14" Month="9" Year="1999"/>
+            <Author>DB</Author>
+            <Comment>Included LLGMM_TLLI_INVALID</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="33">
+        <Description>
+            <Section>This section contains all primitives that are defined for the LLGMM SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>LLGMM_ASSIGN_REQ is used by GMM to assign the TLLI, the ciphering key and the ciphering algorithm within LLC. The TLLI is required for transmitting and receiving frames.</Section>
+                <Section>The parameters old_tlli and new_tlli indicate if a TLLI is assigned, changed, or removed.</Section>
+                <Section>The parameters llgmm_kc and ciphering_algorithm are necessary for the ciphering of user data. If ciphering_algorithm indicates no ciphering, then the ciphering function is disabled.</Section>
+                <Section>Otherwise, the ciphering function is enabled. If a ciphering algorithm was already in use, then the new llgmm_kc replaces the previous llgmm_kc, and the new ciphering_algorithm replaces the previous algorithm selection. All I frames, and UI frames with the E bit set to 1, use the new llgmm_kc and ciphering_algorithm for ciphering. All unacknowledged I frames are ciphered using the new llgmm_kc and ciphering_algorithm before retransmission.</Section>
+                <Section>Requirements:</Section>
+                <Section>&lt;R.LLC.M_ASSIGN.A.001&gt;, &lt;R.LLC.M_ASSIGN.A.002&gt;, &lt;R.LLC.TLLI_ASS.A.003&gt;, &lt;R.LLC.TLLI_ASS.A.004&gt;, &lt;R.LLC.TLLI_CHA.A.002&gt;, &lt;R.LLC.TLLI_CHA.A.003&gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>LLGMM_ASSIGN_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>L3</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">llgmm</DocName>
+                    <Name>old_tlli</Name>
+                </ItemLink>
+                <Comment>old temporary logical link entity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">llgmm</DocName>
+                    <Name>new_tlli</Name>
+                </ItemLink>
+                <Comment>new temporary logical link entity</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">llgmm</DocName>
+                    <Name>llgmm_kc</Name>
+                </ItemLink>
+                <Comment>ciphering key</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">llgmm</DocName>
+                    <Name>ciphering_algorithm</Name>
+                </ItemLink>
+                <Comment>ciphering algorithm</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="24" Month="3" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Changed variable kc to llgmm_kc</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="9" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>Old and new TLLI included</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="1" Year="2000"/>
+                <Author>DB</Author>
+                <Comment>Removed parameter "assign"</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>LLGMM_TRIGGER_REQ is used by GMM in the MS to order LLC to transmit any single frame. If there is a frame waiting to be transmitted in the MS, this frame is transmitted. Otherwise, and if the LLE is in state 'ABM', an S frame is transmitted (according to &lt;R.LLC.SFRM_SEL&gt;). If LLE is in state 'ADM' a UI frame with no information field is transmitted. There is only need to transmit a frame on one SAPI. Therefore always the lowest available SAPI is chosen if no frame is waiting to be transmitted.</Section>
+                <Section>LGMM_TRIGGER_REQ is normally used for cell updates or for page responses, and the reason is indicated in the cause parameter. If cause indicates page response, then the GRR_DATA_REQ cause parameter does also indicate page response.</Section>
+                <Section>Requirements:</Section>
+                <Section>&lt;R.LLC.M_TRIGGER.M.001&gt;, &lt;R.LLC.M_TRIGGER.M.002&gt;, &lt;R.LLC.M_TRIGGER.M.003&gt;, &lt;R.LLC.M_TRIGGER.M.004&gt;, &lt;R.LLC.M_TRIGGER.M.005&gt;, &lt;R.LLC.M_TRIGGER.M.006&gt;, &lt;R.LLC.M_TRIGGER.M.007&gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>LLGMM_TRIGGER_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>L3</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">llgmm</DocName>
+                    <Name>trigger_cause</Name>
+                </ItemLink>
+                <Comment>trigger cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="24" Month="3" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>LLGMM_SUSPEND_REQ is used by GMM to order LLC to suspend operation for an MS until LLGMM_RESUME_REQ is received.</Section>
+                <Section>While suspended:</Section>
+                <Section>- LLC saves L3-PDUs if any are buffered.</Section>
+                <Section>- LLC saves unacknowledged I frames.</Section>
+                <Section>- LLC saves the state of the state variables (e.g., the transmit and receive counters).</Section>
+                <Section>- LLC resets timer T200.</Section>
+                <Section>- LLC stops frame transmission.</Section>
+                <Section>Frame reception is still possible. For SAPI = 1, ADM procedures including UI frame transmission is still possible.</Section>
+                <Section>Requirements:</Section>
+                <Section>&lt;R.LLC.M_SUSPND.A.001&gt;, &lt;R.LLC.M_SUSPND.A.002&gt;, &lt;R.LLC.M_SUSPND.A.003&gt;, &lt;R.LLC.M_SUSPND.A.004&gt;, &lt;R.LLC.M_SUSPND.A.005&gt;, &lt;R.LLC.M_SUSPND.A.006&gt;, &lt;R.LLC.M_SUSPND.A.007&gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>LLGMM_SUSPEND_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>L3</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">llgmm</DocName>
+                    <Name>susp_cause</Name>
+                </ItemLink>
+                <Comment>suspension cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="24" Month="3" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="9" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>cause added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>LLGMM_RESUME_REQ is used by GMM to order LLC to resume a suspended operation for an MS without loss of the L3-PDUs or I frames that were saved when LLGMM_SUSPEND_REQ was received. If timer T200 was reset upon reception of LLGMM_SUSPEND_REQ then timer T200 is set.</Section>
+                <Section>Requirements:</Section>
+                <Section>&lt;R.LLC.M_RESUME.A.001&gt;, &lt;R.LLC.M_RESUME.A.002&gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>LLGMM_RESUME_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>L3</Sender>
+                    <Receiver>LLC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="24" Month="3" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>LLGMM_STATUS_IND is used to inform GMM when an LLC error that cannot be corrected by the LLC layer has occurred, or when LLC cannot continue its operation due to errors at the RLC/MAC or BSSGP layers as indicated with GRR_STATUS_IND or BSSGP_STATUS_IND.</Section>
+                <Section>The parameter cause contains the error that LLC wants to report. The error causes 0-99 are reserved for GRR error causes that are forwarded to GMM by LLC.</Section>
+                <Section>Requirements:</Section>
+                <Section>&lt;R.LLC.M_STATUS.A.001&gt;, &lt;R.LLC.M_STATUS.M.002&gt;, &lt;R.LLC.ABMEST_R.A.014&gt;, &lt;R.LLC.ABMEST_R.A.021&gt;, &lt;R.LLC.ABMEST_R.A.029&gt;, &lt;R.LLC.ABMTER_R.A.020&gt;, &lt;R.LLC.XIDNEG_O.A.015&gt;, &lt;R.LLC.XIDNEG_O.A.021&gt;, &lt;R.LLC.ADMSTATE.A.009&gt;, &lt;R.LLC.PEERBUSY.A.010&gt;, &lt;R.LLC.REESTPRO.A.001&gt;, &lt;R.LLC.XCEPTION.A.003&gt;, &lt;R.LLC.XCEPTION.A.005&gt;, &lt;R.LLC.XCEPTION.A.006&gt;, &lt;R.LLC.XCEPTION.A.007&gt;</Section>
+            </Description>
+            <PrimDef>
+                <Name>LLGMM_STATUS_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>LLC</Sender>
+                    <Receiver>L3</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">llgmm</DocName>
+                    <Name>error_cause</Name>
+                </ItemLink>
+                <Comment>error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="4" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="3" Year="2002"/>
+                <Author>UT</Author>
+                <Comment>type modified to USHORT</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>LLGMM_TLLI_IND is used to inform GMM when the MS has received the first time a data package with the new assigned TLLI. The TLLI must be assigned before by GMM to LLC with LLGMM_ASSIGN_REQ.</Section>
+                <Section>Upon receiving the primitive LLGMM_TLLI_IND GMM will inform GRR that the old PTMSI and old TLLI is no longer valid. LLC should declare the old TLLI as invalid together with sending LLMM_TLLI_IND.</Section>
+            </Description>
+            <PrimDef>
+                <Name>LLGMM_TLLI_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>LLC</Sender>
+                    <Receiver>GMM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">llgmm</DocName>
+                    <Name>new_tlli</Name>
+                </ItemLink>
+                <Comment>Newly received TLLI</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="21" Month="3" Year="2003"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and, if applied, the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter defines the key that is used for ciphering of LLC layer I or UI frames. It is received from GMM with the primitive LLGMM_ASSIGN_REQ.</Section>
+                <Section>The ciphering key is associated with the TLLI of LLC. There is only one ciphering key throughout LLC.</Section>
+                <Section>Requirements:</Section>
+                <Section>&lt;R.LLC.M_ASSIGN.A.001&gt;, &lt;R.LLC.M_ASSIGN.A.002&gt;</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>llgmm_kc</Name>
+                <Comment>GPRS ciphering key</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">llgmm</DocName>
+                    <Name>key</Name>
+                </ItemLink>
+                <Control>[8]</Control>
+                <Comment>ciphering key content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="17" Month="3" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Changed type from UBYTE[8] to STRUCT for better SDL handling</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and, if applied, the parameters shall contain the values specified here. These values are selected to correspond to element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the MS. Within the SGSN it is used to distinguish between the different LLC entities. On the side of the MS this parameter is required for the support of anonymous access. An anonymous PDP context has always a different TLLI than the normal PDP context of the MS.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>old_tlli</Name>
+                <Type>U32</Type>
+                <Comment>old temporary logical link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="6" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial in LL</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Added LL_TLLI_INVALID in LL</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="9" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>copied from LL</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="9" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Removed LLGMM_TLLI_INVALID</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the MS. Within the SGSN it is used to distinguish between the different LLC entities. On the side of the MS this parameter is required for the support of anonymous access. An anonymous PDP context has always a different TLLI than the normal PDP context of the MS.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>new_tlli</Name>
+                <Type>U32</Type>
+                <Comment>new temporary logical link identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="6" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial in LL</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Added LL_TLLI_INVALID in LL</Comment>
+            </History>
+            <History>
+                <Date Day="9" Month="9" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>copied from LL</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="9" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Removed LLGMM_TLLI_INVALID</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the key that is used for ciphering of LLC layer I or UI frames. It is received from GMM with the primitive LLGMM_ASSIGN_REQ.</Section>
+                <Section>The ciphering key is associated with the TLLI of LLC. There is only one ciphering key throughout LLC.</Section>
+                <Section>Requirements:</Section>
+                <Section>&amp;lt;R.LLC.M_ASSIGN.A.001&amp;gt;, &amp;lt;R.LLC.M_ASSIGN.A.002&amp;gt;</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>key</Name>
+                <Type>U8</Type>
+                <Comment>ciphering key content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="3" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Changed type from UBYTE[8] to STRUCT for better SDL handling</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the algorithm that is used for ciphering of LLC layer I or UI frames. It is received from GMM with the primitive LLGMM_ASSIGN_REQ.</Section>
+                <Section>The ciphering algorithm is associated with the TLLI of LLC. There is only one ciphering algorithm throughout LLC.</Section>
+                <Section>If ciphering algorithm indicates no ciphering, then the ciphering function is disabled. Otherwise, the ciphering function is enabled. All I frames, and UI frames with the E bit set to 1, use the ciphering key (Kc) and ciphering algorithm for ciphering. All unacknowledged I frames are ciphered using the ciphering key and algorithm before retransmission.</Section>
+                <Section>The value CHIPHER_NA indicates, that in the primitive TLLI_ASSIGN no cipering algorithm is passed. This is in case TLLI unassign.</Section>
+                <Section>NOTE: The values of this parameter must be the same as for CCI_(DE)CIPHER_REQ-&gt;ciphering_algorithm.</Section>
+                <Section>Requirements:</Section>
+                <Section>&lt;R.LLC.M_ASSIGN.A.001&gt;, &lt;R.LLC.M_ASSIGN.A.002&gt;, &lt;R.LLC.TLLI_ASS.A.003&gt;, &lt;R.LLC. TLLI_ASS.A.004&gt;, &lt;R.LLC.TLLI_CHA.A.002&gt;, &lt;R.LLC. TLLI_CHA.A.003&gt;</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ciphering_algorithm</Name>
+                <Type>U8</Type>
+                <Comment>ciphering algorithm</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">llgmm</DocName>
+                <Name>VAL_ciphering_algorithm</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="3" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="6" Year="1999"/>
+                <Author>ANS</Author>
+                <Comment>CIPHER_NA added</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Macro names changed ("LLGMM_*")</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="5" Year="2000"/>
+                <Author>DB</Author>
+                <Comment>Adapted values to air interface messages</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the cause of the primitive LLGMM_TRIGGER_REQ, received from GMM. This primitive is normally used for cell updates or for page responses, i.e. if cause indicates page response, then the primitive was sent due to a paging message from the SGSN and the parameter cause within the primitive GRR_DATA_REQ is also set to page response.</Section>
+                <Section>NOTE: The values of trigger_cause are chosen corresponding to the values of GRR_DATA_REQ cause.</Section>
+                <Section>Requirements:</Section>
+                <Section>&lt;R.LLC.M_TRIGGER.M.003&gt;, &lt;R.LLC.M_TRIGGER.M.004&gt;</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>trigger_cause</Name>
+                <Type>U8</Type>
+                <Comment>cause of the trigger primitive</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">llgmm</DocName>
+                <Name>VAL_trigger_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="3" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Macro names changed ("LLGMM_*")</Comment>
+            </History>
+            <History>
+                <Date Day="23" Month="3" Year="2000"/>
+                <Author>DB</Author>
+                <Comment>Values set according to GRR_DATA_REQ cause values</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="9" Year="2003"/>
+                <Author>RPK</Author>
+                <Comment>Added cause for cell notification.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the cause of an error that is indicated to GMM. This indication is sent whenever an error has occurred that cannot be corrected by the LLC layer, or when LLC cannot continue its operation due to errors at the RLC/MAC layer. The error causes 0-99 are reserved for GRR error causes that are forwarded to GMM by LLC.</Section>
+                <Section>Requirements:</Section>
+                <Section>&lt;R.LLC.M_STATUS.A.001&gt;, &lt;R.LLC.M_STATUS.M.002&gt;</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>error_cause</Name>
+                <Type>U16</Type>
+                <Comment>error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">llgmm</DocName>
+                <Name>VAL_error_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="12" Month="4" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="6" Month="7" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Macro names changed ("LLGMM_*")</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="8" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Inserted LLGMM_ERRCS_FRMR_COND, LLGMM_ERRCS_FRMR_RECEIVED</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="1" Year="2000"/>
+                <Author>DB</Author>
+                <Comment>Changed values of LLC error causes to take GRR errors into account</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="2" Year="2000"/>
+                <Author>DB</Author>
+                <Comment>Removed FRMR_RECEIVED_REEST (condition removed by ETSI)</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>UT</Author>
+                <Comment>Cause Concept</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the cause of suspension. Cause LLGMM_RAU and only this cause should trigger suspending GRR.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>susp_cause</Name>
+                <Type>U8</Type>
+                <Comment>suspension cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">llgmm</DocName>
+                <Name>VAL_susp_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="26" Month="9" Year="2001"/>
+                <Author>ANS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="2" Year="2002"/>
+                <Author>ANS</Author>
+                <Comment>limited cause added.</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="3" Year="2002"/>
+                <Author>ANS</Author>
+                <Comment>peridic cause added.</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the LLGMM SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ciphering_algorithm</Name>
+                <Comment>values for ciphering_algorithm</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>LLGMM_CIPHER_NO_ALGORITHM</Alias>
+                <Comment>no ciphering algorithm</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LLGMM_CIPHER_GPRS_A5_1</Alias>
+                <Comment>GPRS A5/1 ciphering algorithm</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>LLGMM_CIPHER_GPRS_A5_2</Alias>
+                <Comment>GPRS A5/2 ciphering algorithm</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">255</Value>
+                <Alias>LLGMM_CIPHER_NA</Alias>
+                <Comment>value n/a</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_trigger_cause</Name>
+                <Comment>values for trigger_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LLGMM_TRICS_PAGE_RESPONSE</Alias>
+                <Comment>trigger was sent due to a received paging message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>LLGMM_TRICS_CELL_UPDATE</Alias>
+                <Comment>trigger was sent because of a cell update</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>LLGMM_TRICS_CELL_UPDATE_NULL_FRAME</Alias>
+                <Version>REL99</Version>
+                <Comment>LLC can use NULL frame for cell updates</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="12" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_error_cause</Name>
+                <Comment>values for error_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001100100</Value>
+                <Alias>LLGMM_ERRCS_INVALID_UA</Alias>
+                <Comment>invalid UA response</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001100101</Value>
+                <Alias>LLGMM_ERRCS_SABM_INVALID_XID</Alias>
+                <Comment>invalid XID response during connection establishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001100110</Value>
+                <Alias>LLGMM_ERRCS_SABM_NO_PEER_RES</Alias>
+                <Comment>no peer response during connection establishment</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001100111</Value>
+                <Alias>LLGMM_ERRCS_XID_INVALID_XID</Alias>
+                <Comment>invalid XID response during parameter negotiation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001101000</Value>
+                <Alias>LLGMM_ERRCS_XID_NO_PEER_RES</Alias>
+                <Comment>no peer response during parameter negotiation</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001101001</Value>
+                <Alias>LLGMM_ERRCS_DISC_NO_PEER_RES</Alias>
+                <Comment>no peer response during release of connection</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001101010</Value>
+                <Alias>LLGMM_ERRCS_MULT_ASS_TLLI</Alias>
+                <Comment>possible multiple assignment of a TLLI value</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001101011</Value>
+                <Alias>LLGMM_ERRCS_DM1_RECEIVED</Alias>
+                <Comment>unsolicited DM response with F bit 1 in state ABM</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001101100</Value>
+                <Alias>LLGMM_ERRCS_DM1_RECEIVED_REEST</Alias>
+                <Comment>unsolicited DM response with F bit 1 in state Timer Recovery; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001101101</Value>
+                <Alias>LLGMM_ERRCS_ACK_NO_PEER_RES_REEST</Alias>
+                <Comment>no peer response during waiting for acknowledgement; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001101110</Value>
+                <Alias>LLGMM_ERRCS_PEER_BUSY_REEST</Alias>
+                <Comment>peer receiver busy condition; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001101111</Value>
+                <Alias>LLGMM_ERRCS_FRMR_COND</Alias>
+                <Comment>frame rejection condition; frame discarded</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001110000</Value>
+                <Alias>LLGMM_ERRCS_FRMR_COND_REEST</Alias>
+                <Comment>frame rejection condition; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001110001</Value>
+                <Alias>LLGMM_ERRCS_FRMR_RECEIVED</Alias>
+                <Comment>FRMR response received; frame discarded</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001110010</Value>
+                <Alias>LLGMM_ERRCS_L3_REEST</Alias>
+                <Comment>layer 3 initiated re-establishment procedure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001110011</Value>
+                <Alias>LLGMM_ERRCS_PEER_REEST</Alias>
+                <Comment>peer initiated re-establishment procedure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1101000001110100</Value>
+                <Alias>LLGMM_ERRCS_DM0_RECEIVED_REEST</Alias>
+                <Comment>unsolicited DM response with F bit 0; re-establishment procedure initiated</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>99</MaxValue>
+                <Comment>reserved for GRR error causes</Comment>
+            </ValuesRange>
+            <ValuesDefault>
+                <Comment>invalid error cause</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_susp_cause</Name>
+                <Comment>values for susp_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>LLGMM_RAU</Alias>
+                <Comment>suspension because of Attach or RAU, GRR has to be suspended</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LLGMM_CALL</Alias>
+                <Comment>suspension because of GSM establishment request</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>LLGMM_LIMITED</Alias>
+                <Comment>suspension because of limited service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>LLGMM_PERIODIC_RAU</Alias>
+                <Comment>suspension because of periodic RAU</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>LLGMM_NO_GPRS_SERVICE</Alias>
+                <Comment>suspension because of no service or no GPRS supported</Comment>
+            </ValuesItem>
+            <ValuesDefault>
+                <Comment>suspension because of Attach or RAU</Comment>
+            </ValuesDefault>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

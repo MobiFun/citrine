@@ -1,0 +1,679 @@
+;********************************************************************************
+;*** File           : 8010_153_cause_include.pdf
+;*** Creation       : Wed Mar 11 09:57:55 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_153_cause_include
+;*** Document No.   : 8010.153.04.032
+;*** Document Date  : 2004-11-30
+;*** Document Status: SUBMITTED
+;*** Document Author: JOJ
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:29:16 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-11-30"
+PRAGMA 	ID_AND_VERSION 	"8010.153.04.032"
+PRAGMA 	PREFIX 	CAUSE 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Disable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+
+
+
+VALTAB 	VAL_cc_cause
+VAL 	0x001D 	CC_FACILITY_REJECT 	"facility rejected (originated by MS)"
+VAL 	0x0041 	CC_BEARER_NOT_IMPLEM 	"bearer service not implemented (originated by MS)"
+VAL 	0x0051 	CC_INVALID_TI 	"invalid transaction identifier value (originated by MS)"
+VAL 	0x0058 	CC_INCOMPAT_DEST 	"incompatible destination (originated by MS)"
+VAL 	0x0060 	CC_INVALID_MAND_INFO 	"invalid mandatory information (originated by MS)"
+VAL 	0x0065 	CC_MESSAGE_INCOMPAT 	"message not compatible with protocol state (originated by MS)"
+VAL 	0x0066 	CC_TIMER 	"recovery on timer expiry (originated by MS)"
+VAL 	0x0001 	CC_MODIFY_SUCCESS 	"in-call modification successfully performed, MODIFY COMPLETE message received"
+VAL 	0x0002 	CC_HOLD_SUCCESS 	"hold successfully performed, HOLD ACKNOWLEDGE message received"
+VAL 	0x0003 	CC_RETRIEVE_SUCCESS 	"retrieve successfully performed, RETRIEVE ACKNOWLEDGE message received"
+VAL 	0x0004 	CC_DTMF_START_SUCCESS 	"start of DTMF successfully performed, START DTMF ACKNOWLEDGE message received"
+VAL 	0x0005 	CC_NO_NET_CAUSE 	"network initiated without cause"
+VAL 	0x0006 	CC_SUCCESS 	"operation successfully performed (e.g. a call establishment); this cause is used only if no more specific cause applies"
+VAL 	0x0007 	CC_DTMF_NOT_ALLOWED 	"DTMF is currently not allowed (no speech TCH)"
+VAL 	0x0008 	CC_DTMF_BUFFER_FULL 	"DTMF storage buffer overflow"
+VAL 	0x0009 	CC_DTMF_ABORTED 	"DTMF was aborted (e.g. due to state change)"
+VAL 	0x0010 	CC_MAX_NO_CALLS_REACHED 	"maximum number of calls was reached"
+VAL 	0x0011 	CC_MAX_NO_RECALLS_REACHED 	"maximum number of recalls (CCBS) was reached"
+VAL 	0x0012 	CC_CHANNEL_SYNC 	"channel mode or type information (changed)"
+VAL 	0x0013 	CC_REEST_STARTED 	"call re-establishment started"
+VAL 	0x0014 	CC_REEST_FINISHED 	"call re-establishment is finished"
+VAL 	0x0015 	CC_DTMF_STOP_SUCCESS 	"stop of DTMF successfully performed, STOP DTMF ACKNOWLEDGE message received"
+VAL 	0x00FF 	CC_NO_ERROR 	"Equal to NOT_PRESENT_8BIT"
+
+VALTAB 	VAL_nwcc_cause
+VAL 	0x0001 	NWCC_UNASSIGN 	"unassigned (unallocated) number"
+VAL 	0x0003 	NWCC_NO_ROUTE 	"no route to destination"
+VAL 	0x0006 	NWCC_CHAN_UNACCEPT 	"channel unacceptable"
+VAL 	0x0008 	NWCC_BARRED 	"operator determined barring"
+VAL 	0x0010 	NWCC_CALL_CLEAR 	"normal call clearing"
+VAL 	0x0011 	NWCC_USER_BUSY 	"user busy"
+VAL 	0x0012 	NWCC_NO_RESPONSE 	"no user responding"
+VAL 	0x0013 	NWCC_ALERT_NO_ANSWER 	"user alerting, no answer"
+VAL 	0x0015 	NWCC_CALL_REJECT 	"call rejected"
+VAL 	0x0016 	NWCC_NUM_CHANGED 	"number changed"
+VAL 	0x0019 	NWCC_PREEMPTION 	"pre-emption"
+VAL 	0x001A 	NWCC_USER_CLEAR 	"non selected user clearing"
+VAL 	0x001B 	NWCC_DEST_ORDER 	"destination out of order"
+VAL 	0x001C 	NWCC_NUM_FORMAT 	"invalid number format (incomplete number)"
+VAL 	0x001D 	NWCC_FACILITY_REJECT 	"facility rejected"
+VAL 	0x001E 	NWCC_STATUS_ENQUIRY 	"response to status enquiry"
+VAL 	0x001F 	NWCC_UNSPECIFIED 	"normal, unspecified"
+VAL 	0x0022 	NWCC_NO_CHAN_AVAIL 	"no circuit / channel available"
+VAL 	0x0026 	NWCC_NETWORK_ORDER 	"network out of order"
+VAL 	0x0029 	NWCC_TEMP_FAIL 	"temporary failure"
+VAL 	0x002A 	NWCC_SWITCH_CONGEST 	"switching equipment congestion"
+VAL 	0x002B 	NWCC_INFO_DISCARD 	"access information discarded"
+VAL 	0x002C 	NWCC_REQ_CHAN_UNAVAIL 	"requested circuit / channel not available"
+VAL 	0x002F 	NWCC_RESOURCE_UNAVAIL 	"resources unavailable, unspecified"
+VAL 	0x0031 	NWCC_QOS_UNAVAIL 	"quality of service unavailable"
+VAL 	0x0032 	NWCC_FACILITY_UNSUBSCRIB 	"requested facility not subscribed"
+VAL 	0x0037 	NWCC_BARRED_IN_CUG 	"incoming calls barred within the CUG"
+VAL 	0x0039 	NWCC_BEARER_CAP_AUTHORIZ 	"bearer capability not authorized"
+VAL 	0x003A 	NWCC_BEARER_CAP_UNAVAIL 	"bearer capability not presently available"
+VAL 	0x003F 	NWCC_SERVICE_UNAVAIL 	"service or option not available, unspecified"
+VAL 	0x0041 	NWCC_BEARER_NOT_IMPLEM 	"bearer service not implemented"
+VAL 	0x0044 	NWCC_ACM_MAX 	"ACM equal or greater than ACMmax"
+VAL 	0x0045 	NWCC_FACILITY_NOT_IMPLEM 	"requested facility not implemented"
+VAL 	0x0046 	NWCC_RESTICT_BEARER_CAP 	"only restricted digital information bearer capability is available"
+VAL 	0x004F 	NWCC_SERVICE_NOT_IMPLEM 	"service or option not implemented, unspecified"
+VAL 	0x0051 	NWCC_INVALID_TI 	"invalid transaction identifier value"
+VAL 	0x0057 	NWCC_USER_NOT_IN_CUG 	"user not member of CUG"
+VAL 	0x0058 	NWCC_INCOMPAT_DEST 	"incompatible destination"
+VAL 	0x005B 	NWCC_INVALID_TRANS_NET 	"invalid transit network selection"
+VAL 	0x005F 	NWCC_INCORRECT_MESSAGE 	"semantically incorrect message"
+VAL 	0x0060 	NWCC_INVALID_MAND_INFO 	"invalid mandatory information"
+VAL 	0x0061 	NWCC_MESSAGE_TYPE_NOT_IMPLEM 	"message type non-existent or not implemented"
+VAL 	0x0062 	NWCC_MESSAGE_TYPE_INCOMPAT 	"message type not compatible with protocol state"
+VAL 	0x0063 	NWCC_INFO_ELEM_NOT_IMPLEM 	"information element non-existent or not implemented"
+VAL 	0x0064 	NWCC_COND_INFO_ELEM 	"conditional information element error"
+VAL 	0x0065 	NWCC_MESSAGE_INCOMPAT 	"message not compatible with protocol state"
+VAL 	0x0066 	NWCC_TIMER 	"recovery on timer expiry"
+VAL 	0x006F 	NWCC_PROTOCOL 	"protocol error, unspecified"
+VAL 	0x007F 	NWCC_INTERWORKING 	"interworking, unspecified"
+VAL 	0x00FF 	NWCC_NO_NET_CAUSE 	"Network initiated without cause"
+
+VALTAB 	VAL_dl_cause
+VAL 	0x0000 	DL_INFO_FIELD_MISMATCH 	"Different information fields"
+VAL 	0x00FF 	DL_NO_ERROR 	"Equal to NOT_PRESENT_8BIT"
+
+VALTAB 	VAL_l2r_cause
+VAL 	0x0001 	L2R_ERR_INTERNAL 	"L2R internal error"
+
+VALTAB 	VAL_llc_cause
+VAL 	0x0000 	LLC_NORMAL_REL 	"Normal release"
+VAL 	0x0001 	LLC_INVALID_XID 	"Invalid XID response"
+VAL 	0x0002 	LLC_DM_RECEIVED 	"DM received"
+VAL 	0x0003 	LLC_NO_PEER_RES 	"No peer response"
+VAL 	0x0004 	LLC_INVALID_UA 	"Invalid UA response"
+VAL 	0x0005 	LLC_SABM_INVALID_XID 	"Invalid XID response during connection establishment"
+VAL 	0x0006 	LLC_SABM_NO_PEER_RES 	"No peer response during connection establishment"
+VAL 	0x0007 	LLC_XID_INVALID_XID 	"Invalid XID response during parameter negotiation"
+VAL 	0x0008 	LLC_XID_NO_PEER_RES 	"No peer response during parameter negotiation"
+VAL 	0x0009 	LLC_DISC_NO_PEER_RES 	"No peer response during release of connection"
+VAL 	0x000A 	LLC_MULT_ASS_TLLI 	"Possible multiple assignment of a TLLI value"
+VAL 	0x000B 	LLC_DM1_RECEIVED 	"Unsolicited DM response with F bit 1 in state ABM"
+VAL 	0x000C 	LLC_DM1_RECEIVED_REEST 	"Unsolicited DM response with F bit 1 in state Timer Recovery; re-establishment procedure initiated"
+VAL 	0x000D 	LLC_ACK_NO_PEER_RES_REEST 	"No peer response during waiting for acknowledgement; re-establishment procedure initiated"
+VAL 	0x000E 	LLC_PEER_BUSY_REEST 	"Peer receiver busy condition; re-establishment procedure initiated"
+VAL 	0x000F 	LLC_FRMR_COND 	"Frame rejection condition; frame discarded"
+VAL 	0x0010 	LLC_FRMR_COND_REEST 	"Frame rejection condition; re-establishment procedure initiated"
+VAL 	0x0011 	LLC_FRMR_RECEIVED 	"FRMR response received; frame discarded"
+VAL 	0x0012 	LLC_L3_REEST 	"Layer 3 initiated re-establishment procedure"
+VAL 	0x0013 	LLC_PEER_REEST 	"Peer initiated re-establishment procedure"
+VAL 	0x0014 	LLC_DM0_RECEIVED_REEST 	"Unsolicited DM response with F bit 0; re-establishment procedure initiated"
+
+VALTAB 	VAL_mm_cause
+VAL 	0x0000 	MM_SUCCESS 	"No error, successful operation (MM)"
+VAL 	0x0080 	MM_NO_REGISTRATION 	"MS is not registered"
+VAL 	0x0081 	MM_TIMER_RECOVERY 	"Time-out in MM during establishment"
+VAL 	0x0082 	MM_NO_REESTABLISH 	"Cell does not support call reestablish"
+VAL 	0x0083 	MM_INT_PREEM 	"Preemptive release, e.g. MO/MT clash in MM"
+VAL 	0x0084 	MM_PLMN_NOT_IDLE_MODE 	"Reject (not in idle mode)"
+VAL 	0x0088 	MM_AUTHENTICATION_REJECTED 	"Authentication failure"
+VAL 	0x0089 	MM_SIM_REMOVED 	"SIM card removed"
+VAL 	0x008A 	MM_POWER_OFF 	"UE Power Off"
+VAL 	0x008B 	MM_NO_SERVICE 	"No service"
+VAL 	0x008C 	MM_LIMITED_SERVICE 	"Only limited service available"
+VAL 	0x0090 	MM_PROTOCOL_ERROR 	"Protocol error, unspecified"
+VAL 	0x0091 	MM_DEDICATED_MODE 	"PS service suspended while in dedicated mode"
+VAL 	0x0092 	MM_TRY_TO_UPDATE 	"MM is attempting to update registration"
+VAL 	0x0093 	MM_SOFT_OFF 	"Disabled RF RX/TX mode"
+VAL 	0x00A0 	MM_DETACH_WITH_REATTACH 	"Detach with reattach required"
+VAL 	0x00FF 	MM_NO_ERROR 	"NO ERROR CAUSE"
+
+VALTAB 	VAL_nwmm_cause
+VAL 	2 	NWMM_IMSI_UNKNOWN_IN_HLR 	"IMSI unknown in HLR"
+VAL 	3 	NWMM_ILLEGAL_MS 	"Illegal MS"
+VAL 	4 	NWMM_IMSI_UNKNOWN_IN_VLR 	"IMSI unknown in VLR"
+VAL 	5 	NWMM_IMEI_NOT_ACCEPTED 	"IMEI not accepted"
+VAL 	6 	NWMM_ILLEGAL_ME 	"Illegal ME"
+VAL 	7 	NWMM_GPRS_NOT_ALLOWED 	"GPRS services not allowed"
+VAL 	8 	NWMM_GSM_GPRS_NOT_ALLOWED 	"GPRS services and non-GPRS services not allowed"
+VAL 	9 	NWMM_NO_MS_ID 	"MS identity cannot be derived by the network"
+VAL 	10 	NWMM_IMPLICIT_DETACHED 	"Implicitly detached"
+VAL 	11 	NWMM_PLMN_NOT_ALLOWED 	"PLMN not allowed"
+VAL 	12 	NWMM_LA_NOT_ALLOWED 	"Location Area not allowed"
+VAL 	13 	NWMM_ROAMING_NOT_ALLOWED 	"Roaming not allowed in this location area"
+VAL 	14 	NWMM_GPRS_NOT_ALLOWED_IN_PLMN 	"GPRS service not allowed in this PLMN"
+VAL 	15 	NWMM_NO_SUITABLE_CELL_IN_LA 	"Find another allowed location area in the same PLMN"
+VAL 	16 	NWMM_MSC_TEMP_NOT_REACHABLE 	"MSC temporarily not reachable"
+VAL 	17 	NWMM_NETWORK_FAILURE 	"Network failure"
+VAL 	20 	NWMM_MAC_FAILURE 	"MAC failure"
+VAL 	21 	NWMM_SYNCH_FAILURE 	"Synch failure"
+VAL 	22 	NWMM_CONGESTION 	"Congestion"
+VAL 	23 	NWMM_GSM_AUTH_UNACCEPTABLE 	"No AUTN IE present when MS supports the UMTS authentication algorithm"
+VAL 	32 	NWMM_SERVICE_NOT_SUPPORTED 	"MS requests a service/facility which is not sup-ported by the PLMN."
+VAL 	33 	NWMM_SERVICE_NOT_SUBSCRIBED 	"Requested service option not subscribed"
+VAL 	34 	NWMM_SERVICE_OUT_OF_ORDER 	"Service option temporary out of order in the MSC"
+VAL 	38 	NWMM_CALL_NOT_IDENTIFIED 	"Call is not identified"
+VAL 	40 	NWMM_NO_PDP_CONTEXT_ACTIVATED 	"No PDP context activated"
+VAL 	95 	NWMM_SEMANTIC_INCORRECT_MSG 	"Semantically incorrect message"
+VAL 	96 	NWMM_INVALID_M_INFO 	"Invalid mandatory information"
+VAL 	97 	NWMM_MSG_TYPE_NOT_IMPLEMENTED 	"Message type non-existent or not implemented"
+VAL 	98 	NWMM_MSG_TYPE_INCOMPATIBLE_WITH_STATE 	"Message type not compatible with the protocol state"
+VAL 	99 	NWMM_IE_NOT_IMPLEMENTED 	"Information element non-existent or not implemented"
+VAL 	100 	NWMM_CONDITIONAL_IE_ERROR 	"Conditional IE error"
+VAL 	101 	NWMM_MSG_INCOMPATIBLE_WITH_STATE 	"Message not compatible with the protocol state"
+VAL 	111 	NWMM_PROTOCOL_ERROR_UNSPECIFIED 	"Unspecified protocol error"
+
+VALTAB 	VAL_ppp_cause
+VAL 	0x0001 	PPP_TERM_OK_MMI 	"successful terminated (MMI initiated)"
+VAL 	0x0002 	PPP_TERM_OK_PEER 	"successful terminated (PPP peer initiated)"
+VAL 	0x0003 	PPP_TERM_NO_RESPONSE 	"no response from the PPP peer"
+VAL 	0x0004 	PPP_TERM_LOOP_BACK 	"looped-back link detected"
+VAL 	0x0005 	PPP_TERM_LCP_NOT_CONVERGE 	"LCP configuration is not converging"
+VAL 	0x0006 	PPP_TERM_IPCP_NOT_CONVERGE 	"IPCP configuration is not converging"
+VAL 	0x0007 	PPP_TERM_IPCP_NOT_STARTED 	"PPP peer did not start IPCP configuration"
+VAL 	0x0008 	PPP_TERM_NO_CHANNEL 	"can not open communication channels"
+VAL 	0x0009 	PPP_TERM_PROT_REJ_UNEXPECTED 	"unexpected Protocol Rejection from PPP peer"
+VAL 	0x000A 	PPP_TERM_USE_AUTHED_FAILED 	"user authentication failed"
+VAL 	0x000B 	PPP_TERM_PROT_ERROR_UNSPEC 	"unspecified protocol error"
+
+VALTAB 	VAL_rcm_cause
+VAL 	0x0000 	RCM_OK 	"Operation or configuration completed successfully."
+VAL 	0x0010 	RCM_ABORT_NW_NOT_FOUND 	"Indicates that the selected network was not found."
+VAL 	0x0011 	RCM_ABORT_NO_NW_FOUND 	"Indicates that no network was found."
+VAL 	0x0012 	RCM_ABORT_NO_NW_SEARCHING 	"Indicates that RCM has no candidates for cell reselection and cell reselection measurements are started on all neighbour cells."
+VAL 	0x0020 	RCM_ERROR_NO_CELL_SELECTED 	"RCM has failed to reactivate as requested and is no longer camped on a cell."
+VAL 	0x0021 	RCM_ERROR_PREVIOUS_CELL_SELECTED 	"RCM failed to reactivate as requested but the previously selected cell remains valid."
+VAL 	0x0030 	RCM_MEAS_SETUP_INCOMPLETE_CONFIG 	"A received measurement configuration is incomplete."
+VAL 	0x0031 	RCM_MEAS_SETUP_INVALID_CONFIG 	"A received measurement configuration is invalid."
+VAL 	0x0032 	RCM_MEAS_SETUP_UNSUPPORTED_MEAS 	"A received measurement type is not supported."
+VAL 	0x1000 	RCM_IRAT_CR_TARGET_BARRED 	"Inter RAT cell reselection target cell is barred."
+VAL 	0x1001 	RCM_IRAT_CR_TARGET_RESERVED 	"Inter RAT cell reselection target cell is reserved for operator use, and UE does not fulfil access requirements."
+VAL 	0x1002 	RCM_IRAT_CR_TARGET_NOT_FOUND 	"Inter RAT cell reselection target cell was not found."
+VAL 	0x1003 	RCM_IRAT_CR_FAILURE_UNSPECIFIED 	"Inter RAT cell reselection failed without specification of failure cause."
+
+VALTAB 	VAL_rr_cause
+VAL 	0x0000 	RR_OK 	"Operation or configuration completed successfully."
+VAL 	0x0020 	RR_NW_SCAN_REJECTED_CONNECTION_STATE 	"A network scan could not be carried out due to the current connection state of RR."
+VAL 	0x0030 	RR_SYNC_RESOURCE_ASSIGNED 	"Traffic channel resource assigned"
+VAL 	0x0031 	RR_SYNC_CHANNEL_MODE_MODIFIED 	"Channel mode modified"
+VAL 	0x0032 	RR_SYNC_DRX_CYCLE_LENGTH_UPDATED 	"The DRX cycle length has been modified"
+VAL 	0x0040 	RR_RADIO_LINK_FAILURE 	"Radio link failure occurred"
+VAL 	0x0041 	RR_DATA_LINK_FAILURE 	"Data link failure occurred"
+VAL 	0x0042 	RR_RANDOM_ACCESS_FAILURE 	"Random access failed"
+VAL 	0x0043 	RR_DL_ESTABLISHMENT_FAILURE 	"DL establishment failure"
+VAL 	0x0044 	RR_ESTABLISH_REJECT 	"Rejecting establishment due to wrong state in RR"
+VAL 	0x0050 	RR_RELEASE_ABNORMAL_UNSPECIFIED 	"Abnormal release, unspecified"
+VAL 	0x0051 	RR_RELEASE_INTERNAL_UNSPECIFIED 	"Internal release, unspecified"
+VAL 	0x0060 	RR_ACCESS_BARRED 	"Access barred because of access class control"
+VAL 	0x0061 	RR_T3122_RUNNING 	"T3122 running, emergency calls only until expiry"
+VAL 	0x0062 	RR_ACCESS_DELAYED 	"Access delayed because of immediate assignment reject and followed by timeout"
+VAL 	0x1000 	RR_IRAT_CR_FAILURE_UNSPECIFIED 	"Indicates that reselection to the specified target cell was not successful."
+VAL 	0x1010 	RR_IRAT_HO_MESSAGE_FAILURE 	"Indicates that a check of a handover message to GSM failed."
+VAL 	0x1020 	RR_IRAT_HO_FAILURE_UNSPECIFIED 	"Inter RAT handover failed without specification of failure cause."
+VAL 	0x1021 	RR_IRAT_HO_ARFCN_NOT_SUPPORTED 	"Inter RAT handover failed because the frequency of the target cell was not supported."
+VAL 	0x1030 	RR_IRAT_CC_FAILURE_UNSPECIFIED 	"Inter RAT cell change from UMTS to GSM failed without a specific cause."
+
+VALTAB 	VAL_nwrr_cause
+VAL 	0x0000 	NWRR_RELEASE_NORMAL_EVENT 	"RR connection released normally"
+VAL 	0x0001 	NWRR_RELEASE_UNSPECIFIED 	"RR connection released for unspecified reason"
+VAL 	0x0002 	NWRR_RELEASE_CH_UNACCEPTABLE 	"RR connection released due to unacceptable channel"
+VAL 	0x0003 	NWRR_RELEASE_TIMER_EXPIRED 	"RR connection released due to timer expirery"
+VAL 	0x0004 	NWRR_RELEASE_NO_RADIO_ACTIVITY 	"RR connection released due to no activity on the radio path"
+VAL 	0x0005 	NWRR_RELEASE_PREEMPTIVE 	"RR connection released pre-emptively"
+VAL 	0x0006 	NWRR_UTRAN_CONF_UNKNOWN 	"UTRAN configuration unknown"
+VAL 	0x0008 	NWRR_HANDOVER_IMPOSSIBLE 	"Handover impossible, timing advance out of range"
+VAL 	0x0009 	NWRR_CH_MODE_UNACCEPTABLE 	"Channel mode unacceptable"
+VAL 	0x000A 	NWRR_FREQ_NOT_IMPLEMENTED 	"Frequency not implemented"
+VAL 	0x000C 	NWRR_LOWER_LAYER_FAILURE 	"Lower layer failure"
+VAL 	0x0041 	NWRR_CALL_ALREADY_CLEARED 	"Call already cleared"
+VAL 	0x005F 	NWRR_INCORRECT_MESSAGE 	"Semantically incorrect message"
+VAL 	0x0060 	NWRR_INVALID_MANDATORY_INFO 	"Invalid mandatory information"
+VAL 	0x0061 	NWRR_MESS_NOT_IMPLEMENTED 	"Message type non-existent or not implemented"
+VAL 	0x0062 	NWRR_MESS_NOT_COMPATIBLE 	"Message type not compatible with protocol state"
+VAL 	0x0064 	NWRR_CONDITIONAL_IE_ERROR 	"Conditional IE error"
+VAL 	0x0065 	NWRR_NO_CELL_ALLOCATION 	"No cell allocation available"
+VAL 	0x006F 	NWRR_PROTOCOL_ERROR_UNSPECIFIED 	"Protocol error unspecified"
+
+VALTAB 	VAL_rlp_cause
+VAL 	0x0000 	ERR_BASE 	"RLP base error number"
+VAL 	0x0000 	ERR_PF_RETRANS 	"Max Retransmissions of Poll reached"
+VAL 	0x0001 	ERR_XID_RETRANS 	"Max Retransmissions of XID reached"
+VAL 	0x0002 	ERR_SABM_RETRANS 	"Max Retransmissions of SABM reached"
+VAL 	0x0003 	ERR_DISC_RETRANS 	"Max Retransmissions of DISC reached"
+VAL 	0x0004 	ERR_REMAP_RETRANS 	"Max Retransmissions of REMAP reached"
+VAL 	0x0010 	ERR_SDU_TO_SMALL 	"Received SDU is to small"
+VAL 	0x0020 	ERR_INTERNAL 	"Internal error"
+
+VALTAB 	VAL_rrc_cause
+VAL 	0x0000 	RRC_OK 	"Operation or configuration completed successfully."
+VAL 	0x0001 	RRC_ABORT_UNSPECIFIED 	"Abort for unspecified reason"
+VAL 	0x0010 	RRC_PHY_CAPABILITY_CHECK_FAILURE 	"Indicates that a check of PHY capabilities against requirements for a requested cell selection has failed causing RRC to refuse to start cell selection."
+VAL 	0x0020 	RRC_NW_SCAN_REJECTED_CONNECTION_STATE 	"A network scan could not be carried out due to the current connection state of RRC."
+VAL 	0x0030 	RRC_SYNC_RESOURCE_ASSIGNED 	"Traffic channel resource assigned"
+VAL 	0x0031 	RRC_SYNC_CHANNEL_MODE_MODIFIED 	"Channel mode modified"
+VAL 	0x0032 	RRC_SYNC_DRX_CYCLE_LENGTH_UPDATED 	"The DRX cycle length has been modified"
+VAL 	0x0040 	RRC_START_UPDATE_IDLE_MODE_ENTERED 	"Update of START values on entering idle mode"
+VAL 	0x0041 	RRC_START_UPDATE_THRESHOLD_REACHED 	"Update of START values because threshold has been reached."
+VAL 	0x0042 	RRC_START_UPDATE_CONNECTION_ESTABLISHED 	"Update of START values on connection establishment."
+VAL 	0x1000 	RRC_IRAT_HO_MESSAGE_FAILURE 	"Indicates that a check of a handover message to UTRAN failed."
+VAL 	0x1020 	RRC_IRAT_HO_FAILURE_UNSPECIFIED 	"Inter RAT handover failed without specification of failure cause."
+VAL 	0x1030 	RRC_IRAT_CC_FAILURE_UNSPECIFIED 	"Inter RAT cell change from GSM to UMTS failed without a specific cause."
+
+VALTAB 	VAL_nwrrc_cause
+VAL 	0x0000 	NWRRC_PAGING_MT_CONVERSATION 	"Mobile terminated conversational call"
+VAL 	0x0001 	NWRRC_PAGING_MT_STREAM 	"Mobile terminated streaming call"
+VAL 	0x0002 	NWRRC_PAGING_MT_INTERACTIVE 	"Mobile terminated interactive call"
+VAL 	0x0003 	NWRRC_PAGING_MT_BACKGROUND 	"Mobile terminated background call"
+VAL 	0x0004 	NWRRC_PAGING_MT_HIGH_PRIO_SIGNAL 	"Mobile terminated high priority signalling"
+VAL 	0x0005 	NWRRC_PAGING_MT_LOW_PRIO_SIGNAL 	"Mobile terminated low priority signalling"
+VAL 	0x0006 	NWRRC_PAGING_MT_UNKNOWN 	"Mobile terminated call - unknown cause"
+VAL 	0x0010 	NWRRC_RELEASE_NORMAL_EVENT 	"RRC connection released normally"
+VAL 	0x0011 	NWRRC_RELEASE_UNSPECIFIED 	"RRC connection released for unspecified reason"
+VAL 	0x0012 	NWRRC_RELEASE_PREEMPTIVE 	"RRC connection released pre-emptively"
+VAL 	0x0013 	NWRRC_RELEASE_CONGESTION 	"RRC connection released due to congestion"
+VAL 	0x0014 	NWRRC_RELEASE_REESTABLISH_REJECT 	"RRC connection released due to rejection of connection reestablishment"
+VAL 	0x0015 	NWRRC_RELEASE_DIR_SIGNAL_REESTAB 	"RRC connection released due to directed signalling reestablishment"
+VAL 	0x0016 	NWRRC_RELEASE_USER_INACTIVITY 	"RRC connection released due to user inactivity"
+
+VALTAB 	VAL_sim_cause
+VAL 	0x00FF 	SIM_NO_ERROR 	"No error (Status Code 9000, 91XX, 9FXX, 920X; USIM 63CX)"
+VAL 	0x0001 	SIM_NO_SELECT 	"No EF selected (SC 9400; USIM 6986)"
+VAL 	0x0002 	SIM_UNKN_FILE_ID 	"file id not found (SC 9404; USIM 6A82)"
+VAL 	0x0003 	SIM_EF_INVALID 	"EF invalidated (SC 9810; USIM 6283, 6984)"
+VAL 	0x0004 	SIM_ADDR_WRONG 	"Address of data invalid (SC 9402; USIM 6A83)"
+VAL 	0x0005 	SIM_CMD_INCONSIST 	"Command inconsistent with file type (SC 9408; USIM 6981)"
+VAL 	0x0006 	SIM_MAX_INCREASE 	"Increase: maximum reached (SC 9850)"
+VAL 	0x0007 	SIM_CLA_WRONG 	"Wrong class parameter (SC 6EXX)"
+VAL 	0x0008 	SIM_INS_WRONG 	"Unknown instruction code (SC 6DXX; USIM 6A81)"
+VAL 	0x0009 	SIM_P1P2_WRONG 	"Incorrect parameter P1, P2 (SC 6BXX; USIM 6A86. 6A88)"
+VAL 	0x000A 	SIM_P3_WRONG 	"Incorrect parameter P3 (SC 67XX; USIM 6282, 6A87)"
+VAL 	0x000B 	SIM_CHV_NOTSET 	"No CHV active (SC 9802; USIM 6982)"
+VAL 	0x000C 	SIM_CHV_VALIDATED 	"CHV already validated (SC 9808; USIM 6982)"
+VAL 	0x000D 	SIM_ACCESS_PROHIBIT 	"Access conditions not fulfilled (SC 9804; USIM 6985)"
+VAL 	0x000E 	SIM_OTHER_ERROR 	"Any other SIM error"
+VAL 	0x000F 	SIM_PUK1_BLOCKED 	"PUK1 blocked (SC 9840; USIM 63C0)"
+VAL 	0x0010 	SIM_PUK1_REMAIN1 	"Wrong PUK1, 1 attempt left (SC 9804; USIM 63C1)"
+VAL 	0x0011 	SIM_PUK1_REMAIN2 	"Wrong PUK1, 2 attempts left (USIM 63C2)"
+VAL 	0x0012 	SIM_PUK1_REMAIN3 	"Wrong PUK1, 3 attempts left (USIM 63C3)"
+VAL 	0x0013 	SIM_PUK1_REMAIN4 	"Wrong PUK1, 4 attempts left (USIM 63C4)"
+VAL 	0x0014 	SIM_PUK1_REMAIN5 	"Wrong PUK1, 5 attempts left (USIM 63C5)"
+VAL 	0x0015 	SIM_PUK1_REMAIN6 	"Wrong PUK1, 6 attempts left (USIM 63C6)"
+VAL 	0x0016 	SIM_PUK1_REMAIN7 	"Wrong PUK1, 7 attempts left (USIM 63C7)"
+VAL 	0x0017 	SIM_PUK1_REMAIN8 	"Wrong PUK1, 8 attempts left (USIM 63C8)"
+VAL 	0x0018 	SIM_PUK1_REMAIN9 	"Wrong PUK1, 9 attempts left (USIM 63C9)"
+VAL 	0x0019 	SIM_PUK1_EXPECT 	"PUK1 required (SC 9804, 9808; USIM 6982, 6985)"
+VAL 	0x001A 	SIM_PIN1_BLOCKED 	"PIN1 blocked (SC 9840; USIM 63C0, 6983)"
+VAL 	0x001B 	SIM_PIN1_REMAIN1 	"Wrong PIN1, 1 attempt left (USIM 63C1)"
+VAL 	0x001C 	SIM_PIN1_REMAIN2 	"Wrong PIN1, 2 attempts left (USIM 63C2)"
+VAL 	0x001D 	SIM_PIN1_EXPECT 	"PIN1 required (SC 9804, 9808; USIM 6982, 6985)"
+VAL 	0x001E 	SIM_PUK2_BLOCKED 	"PUK2 blocked (SC 9840; USIM 63C0)"
+VAL 	0x001F 	SIM_PUK2_REMAIN1 	"Wrong PUK2, 1 attempt left (USIM 63C1)"
+VAL 	0x0020 	SIM_PUK2_REMAIN2 	"Wrong PUK2, 2 attempts left (USIM 63C2)"
+VAL 	0x0021 	SIM_PUK2_REMAIN3 	"Wrong PUK2, 3 attempts left (USIM 63C3)"
+VAL 	0x0022 	SIM_PUK2_REMAIN4 	"Wrong PUK2, 4 attempts left (USIM 63C4)"
+VAL 	0x0023 	SIM_PUK2_REMAIN5 	"Wrong PUK2, 5 attempts left (USIM 63C5)"
+VAL 	0x0024 	SIM_PUK2_REMAIN6 	"Wrong PUK2, 6 attempts left (USIM 63C6)"
+VAL 	0x0025 	SIM_PUK2_REMAIN7 	"Wrong PUK2, 7 attempts left (USIM 63C7)"
+VAL 	0x0026 	SIM_PUK2_REMAIN8 	"Wrong PUK2, 8 attempts left (USIM 63C8)"
+VAL 	0x0027 	SIM_PUK2_REMAIN9 	"Wrong PUK2, 9 attempts left (USIM 63C9)"
+VAL 	0x0028 	SIM_PUK2_EXPECT 	"PUK2 required (SC 9804, 9808; USIM 6982, 6985)"
+VAL 	0x0029 	SIM_PIN2_BLOCKED 	"PIN2 blocked (SC 9840; USIM 63C0, 6983)"
+VAL 	0x002A 	SIM_PIN2_REMAIN1 	"Wrong PIN2, 1 attempt left (USIM 63C1)"
+VAL 	0x002B 	SIM_PIN2_REMAIN2 	"Wrong PIN2, 2 attempts left (USIM 63C2)"
+VAL 	0x002C 	SIM_PIN2_EXPECT 	"PIN1 required (SC 9804, 9808; USIM 6982, 6985)"
+VAL 	0x002D 	SIM_SAT_BUSY 	"SIM Application Toolkit busy (SC 9300)"
+VAL 	0x002E 	SIM_DNL_ERROR 	"SAT download error (SC 9EXX; USIM 62XX, 63XX)"
+VAL 	0x002F 	SIM_CARD_REMOVED 	"SIM card removed or exchanged"
+VAL 	0x0030 	SIM_PARAM_WRONG 	"Wrong parameter in primitive"
+VAL 	0x0031 	SIM_DRV_NOCARD 	"SIM driver error: no card detected"
+VAL 	0x0032 	SIM_DRV_NOINT 	"SIM driver error: no interrupt"
+VAL 	0x0033 	SIM_DRV_NOATR 	"SIM driver error: no answer to reset"
+VAL 	0x0034 	SIM_DRV_READ 	"SIM driver error: invalid response"
+VAL 	0x0035 	SIM_DRV_XMIT 	"SIM driver error: unsuccessful transmission"
+VAL 	0x0036 	SIM_DRV_OVF 	"SIM driver error: interrupt overflow"
+VAL 	0x0037 	SIM_DRV_LEN 	"SIM driver error: incorrect size of response"
+VAL 	0x0038 	SIM_DRV_CARDREJ 	"SIM driver error: card rejected (invalid properties)"
+VAL 	0x0039 	SIM_DRV_WAIT 	"SIM driver error: timeout"
+VAL 	0x003A 	SIM_DRV_ABNCASE1 	"SIM driver error: abnormal case 1"
+VAL 	0x003B 	SIM_DRV_ABNCASE2 	"SIM driver error: abnormal case 2"
+VAL 	0x003C 	SIM_DRV_RCVOVFL 	"SIM driver error: more than 256 bytes received"
+VAL 	0x003F 	SIM_DRV_TEMPFAIL 	"SIM driver error: temprary failure, SIM reset required"
+VAL 	0x0040 	SIM_UMTS_AUTH_SQN_ERROR 	"UMTS authentication failed due to Sequence Number error (erroneous AUTN)"
+VAL 	0x0041 	SIM_UMTS_AUTH_MAC_ERROR 	"UMTS authentication failed due to MAC error (erroneous AUTN)"
+
+VALTAB 	VAL_sm_cause
+VAL 	0x0001 	SM_MODIFY_COLLISION 	"Collision between MO and MT modify. MT wins."
+VAL 	0x0002 	SM_INVALID_NSAPI 	"Attempted procedure on non-existing context/NSAPI"
+VAL 	0x0003 	SM_R99_PROCEDURE_REJECTED_IN_R97 	"R99 Procedure rejected: Currently active in R97 network"
+VAL 	0x0004 	SM_PRE_R99_NETWORK_ENTERED 	"Context deactivation due to entering pre-R99 network"
+VAL 	0x0005 	SM_ACTIVATION_OVERRIDE 	"Context deactivation due to activation override"
+
+VALTAB 	VAL_nwsm_cause
+VAL 	0x0019 	NWSM_LLC_OR_SNDCP_FAILURE 	"LLC or SNDCP failure"
+VAL 	0x001A 	NWSM_INSUFFICIENT_RESOURCES 	"Insufficient resources"
+VAL 	0x001B 	NWSM_MISSING_OR_UNKNOWN_APN 	"Missing or unknown APN"
+VAL 	0x001C 	NWSM_UNKNOWN_PDP_ADDR_OR_TYPE 	"Unknown PDP address or PDP type"
+VAL 	0x001D 	NWSM_USER_AUTH_FAILED 	"User Aauthentication failed"
+VAL 	0x001E 	NWSM_ACTIVATE_REJECTED_BY_GGSN 	"Activation rejected by GGSN"
+VAL 	0x001F 	NWSM_ACTIVATE_REJECTED_UNSPECIFIED 	"Activation rejected, unspecified"
+VAL 	0x0020 	NWSM_SERVICE_NOT_SUPPORTED 	"Service option not supported"
+VAL 	0x0021 	NWSM_SERVICE_NOT_SUBSCRIBED 	"Requested service option not subscribed"
+VAL 	0x0022 	NWSM_SERVICE_TEMP_OUT_OF_ORDER 	"Service option temporarily out of order"
+VAL 	0x0023 	NWSM_NSAPI_IN_USE 	"NSAPI already used (pre-R99 only)"
+VAL 	0x0024 	NWSM_REGULAR_DEACTIVATION 	"Regular deactivation"
+VAL 	0x0025 	NWSM_QOS_NOT_ACCEPTED 	"QoS not accepted"
+VAL 	0x0026 	NWSM_NETWORK_FAILURE 	"Network failure"
+VAL 	0x0027 	NWSM_REACTIVATION_REQUESTED 	"Reactivation requested"
+VAL 	0x0028 	NWSM_FEATURE_NOT_SUPPORTED 	"Feature not supported (context activation)"
+VAL 	0x0029 	NWSM_SEMANTIC_TFT_ERROR 	"Semantic error in TFT operation"
+VAL 	0x002A 	NWSM_SYNTACTIC_TFT_ERROR 	"Syntactical error in TFT operation"
+VAL 	0x002B 	NWSM_UNKNOWN_LINKED_TI 	"Unknown PDP context (identified by linked TI)"
+VAL 	0x002C 	NWSM_SEMANTIC_TFT_FILTER_ERROR 	"Semantic error in packet filter"
+VAL 	0x002D 	NWSM_SYNTACTIC_TFT_FILTER_ERROR 	"Syntactical error in packet filter"
+VAL 	0x002E 	NWSM_CONTEXT_NEEDS_TFT 	"PDP context without TFT already activated"
+VAL 	0x0051 	NWSM_INVALID_TI 	"Invalid transaction identifier value"
+VAL 	0x005F 	NWSM_SEMANTIC_ERROR_IN_MSG 	"Semantically incorrect message"
+VAL 	0x0060 	NWSM_INVALID_MANDATORY_ELEMENT 	"Invalid mandatory information"
+VAL 	0x0061 	NWSM_MSG_TYPE_NOT_IMPLEMENTED 	"Message type non-existent or not implemented"
+VAL 	0x0062 	NWSM_MSG_TYPE_INCOMPATIBLE_WITH_STATE 	"Message type not compatible with the protocol state"
+VAL 	0x0063 	NWSM_IE_NOT_IMPLEMENTED 	"Information element non-existent or not implemented"
+VAL 	0x0064 	NWSM_CONDITIONAL_IE_ERROR 	"Conditional IE error"
+VAL 	0x0065 	NWSM_MSG_INCOMPATIBLE_WITH_STATE 	"Message not compatible with the protocol state"
+VAL 	0x006F 	NWSM_PROTOCOL_ERROR_UNSPECIFIED 	"Unspecified protocol error"
+
+VALTAB 	VAL_sms_cause
+VAL 	0b1000100111111111 	SMS_NO_ERROR 	"No error"
+VAL 	0b1100100100000000 	SMS_PARAM_WRONG 	"Wrong parameter in primitive"
+VAL 	0b1100100100000001 	SMS_ENTITY_BUSY 	"Entity is busy"
+VAL 	0b1100100100000010 	SMS_OPER_NOT_ALLW 	"Operation not allowed"
+VAL 	0b1100100100000011 	SMS_OPER_NOT_SUPP 	"Operation not supported"
+VAL 	0b1100100100000100 	SMS_SIM_BUSY 	"SIM busy"
+VAL 	0b1100100100000101 	SMS_MEM_FAIL 	"Memory failure"
+VAL 	0b1100100100000110 	SMS_INV_INDEX 	"Invalid memory index"
+VAL 	0b1100100100001000 	SMS_MEM_FULL 	"Memory full"
+VAL 	0b1100100100001001 	SMS_NO_SERVICE 	"No network service"
+VAL 	0b1100100100001010 	SMS_NET_TIMEOUT 	"Network timeout"
+VAL 	0b1100100100001011 	SMS_UNEXP_CNMA 	"No +CNMA acknowledgement expected"
+VAL 	0b1100100100001111 	SMS_OTHER_ERROR 	"Any other error"
+
+VALTAB 	VAL_nwsms_cp_cause
+VAL 	0x0011 	NWSMS_CP_NETWORK_FAILURE 	"Network Failure"
+VAL 	0x0016 	NWSMS_CP_CONGESTION 	"Congestion"
+VAL 	0x0051 	NWSMS_CP_INVALID_TI 	"Invalid Transaction Identifier"
+VAL 	0x005F 	NWSMS_CP_SEM_INC_MSG 	"Semantically incorrect message"
+VAL 	0x0060 	NWSMS_CP_INV_MAND_INFO 	"Invalid mandatory information"
+VAL 	0x0061 	NWSMS_CP_MSG_TYPE_NON_EXIST 	"Message type non-existent or not implemented"
+VAL 	0x0062 	NWSMS_CP_MSG_NOT_COMP 	"Message not compatible with the short message protocol state"
+VAL 	0x0063 	NWSMS_CP_INFO_NON_EXIST 	"Information element non-existent or not implemented"
+VAL 	0x006F 	NWSMS_CP_PROTOCOL_ERROR 	"Protocol error, unspecified"
+
+VALTAB 	VAL_nwsms_rp_cause
+VAL 	0x0001 	NWSMS_RP_UNASSIGNED_NUMBER 	"Unassigned (unallocated) number"
+VAL 	0x0008 	NWSMS_RP_OPERATOR_DET_BARRED 	"Operator determined barring"
+VAL 	0x000A 	NWSMS_RP_CALL_BARRED 	"Call barred"
+VAL 	0x0015 	NWSMS_RP_SM_TRANSFER_REJECTED 	"Short message transfer rejected"
+VAL 	0x0016 	NWSMS_RP_MEM_CAP_EXCEEDED 	"Memory Capacity exceeded"
+VAL 	0x001B 	NWSMS_RP_DEST_OUT_OF_ORDER 	"Destination out of order"
+VAL 	0x001C 	NWSMS_RP_UNIDENT_SUBSCRIBER 	"Unidentified subscriber"
+VAL 	0x001D 	NWSMS_RP_FACILITY_REJECTED 	"Facility rejected"
+VAL 	0x001E 	NWSMS_RP_UNKNOWN_SUBSCRIBER 	"Unknown subscriber"
+VAL 	0x0026 	NWSMS_RP_NET_OUT_OF_ORDER 	"Network out of order"
+VAL 	0x0029 	NWSMS_RP_TEMP_FAILURE 	"Temporary Failure"
+VAL 	0x002A 	NWSMS_RP_CONGESTION 	"Congestion"
+VAL 	0x002F 	NWSMS_RP_NO_RESOURCES 	"Resources unavailable, unspecified"
+VAL 	0x0032 	NWSMS_RP_FAC_NOT_SUBSCRIBED 	"Requested facility not subscribed"
+VAL 	0x0045 	NWSMS_RP_FAC_NOT_IMPL 	"Requested facility not implemented"
+VAL 	0x0051 	NWSMS_RP_INV_SM_TR_REF_VAL 	"Invalid short message transfer reference value"
+VAL 	0x005F 	NWSMS_RP_SEM_INC_MSG 	"Semantically incorrect message"
+VAL 	0x0060 	NWSMS_RP_INV_MAND_INFO 	"Invalid mandatory information"
+VAL 	0x0061 	NWSMS_RP_MSG_NON_EXIST 	"Message type non-existent or not implemented"
+VAL 	0x0062 	NWSMS_RP_MSG_NOT_COMP 	"Message not compatible with the short message protocol state"
+VAL 	0x0063 	NWSMS_RP_INFO_NON_EXIST 	"Information element non-existent or not implemented"
+VAL 	0x006F 	NWSMS_RP_PROTOCOL_ERROR 	"Protocol error, unspecified"
+VAL 	0x007F 	NWSMS_RP_INTERWORKING 	"Interworking, unspecified"
+
+VALTAB 	VAL_nwsms_tp_cause
+VAL 	0x80 	NWSMS_TP_TM_IW_NOT_SUP 	"Telematic interworking not supported (MO)"
+VAL 	0x81 	NWSMS_TP_SM_0_NOT_SUP 	"Short Message Type 0 not supported (MO, MT)"
+VAL 	0x82 	NWSMS_TP_CANT_REP_SM 	"Cannot replace short message (MO, MT)"
+VAL 	0x8F 	NWSMS_TP_TP_PID_UNSPEC 	"Unspecified TP-PID error (MO, MT)"
+VAL 	0x90 	NWSMS_TP_DCS_NOT_SUP 	"Data coding scheme (alphabet) not supported (MO)"
+VAL 	0x91 	NWSMS_TP_CLASS_NOT_SUP 	"Message class not supported (MT)"
+VAL 	0x9F 	NWSMS_TP_TP_DCS_UNSPEC 	"Unspecified TP-DCS error (MO, MT)"
+VAL 	0xA0 	NWSMS_TP_CMD_CANT_ACT 	"Command cannot be actioned (MO)"
+VAL 	0xA1 	NWSMS_TP_CMD_NOT_SUP 	"Command unsupported (MO)"
+VAL 	0xAF 	NWSMS_TP_TP_CMD_UNSPEC 	"Unspecified TP-Command error (MO)"
+VAL 	0xB0 	NWSMS_TP_TPDU_NOT_SUP 	"TPDU not supported (MO, MT)"
+VAL 	0xC0 	NWSMS_TP_SC_BUSY 	"SC busy (MO)"
+VAL 	0xC1 	NWSMS_TP_NO_SC_SUBSCRIPT 	"No SC subscription (MO)"
+VAL 	0xC2 	NWSMS_TP_SC_SYS_FAIL 	"SC system failure (MO)"
+VAL 	0xC3 	NWSMS_TP_INV_SME_ADDR 	"Invalid SME address (MO)"
+VAL 	0xC4 	NWSMS_TP_DEST_SME_BARRED 	"Destination SME barred (MO)"
+VAL 	0xC5 	NWSMS_TP_REJ_DUPL_SM 	"SM rejected-duplicate SM (MO)"
+VAL 	0xC6 	NWSMS_TP_TPVPF_NOT_SUP 	"Validity Period Format not supported (MO)"
+VAL 	0xC7 	NWSMS_TP_TPVP_NOT_SUP 	"Validity Period not supported (MO)"
+VAL 	0xD0 	NWSMS_TP_SIM_MEM_FULL 	"SIM SMS storage full (MT)"
+VAL 	0xD1 	NWSMS_TP_NO_SMS_MEM_IN_MS 	"No SMS storage capability in SIM (MT)"
+VAL 	0xD2 	NWSMS_TP_ERROR_IN_MS 	"Error in MS (MT)"
+VAL 	0xD3 	NWSMS_TP_MEM_CAP_EXCEED 	"Memory Capacity exceeded (MO, MT)"
+VAL 	0xD4 	NWSMS_TP_SAT_BUSY 	"SIM Application Toolkit busy (MT)"
+VAL 	0xD5 	NWSMS_TP_SAT_DNL_ERROR 	"SIM Data Download error (MT)"
+VAL 	0xFF 	NWSMS_TP_UNSPECIFIED 	"Unspecified error cause (MO, MT)"
+
+VALTAB 	VAL_sn_cause
+VAL 	0x0000 	SN_NORMAL_RELEASE 	"normal release (Not specified in 3G)"
+VAL 	0x0100 	SN_INVALID_XID 	"invalid XID response"
+VAL 	0x0101 	SN_DM_RECEIVED 	"DM received"
+VAL 	0x0102 	SN_NO_PEER_RESPONSE 	"no peer response"
+VAL 	0x0103 	SN_LOWLAYER_DEACT 	"lower layer deactivation"
+
+VALTAB 	VAL_upm_cause
+VAL 	0x0000 	UPM_NORMAL_RELEASE 	"normal release"
+VAL 	0x0010 	UPM_DTI_DISCONNECT 	"The DTI was closed for some reason"
+VAL 	0x0200 	UPM_RT_QOS_RELEASE 	"A real-time QoS caused a (RAB) release"
+VAL 	0x0201 	UPM_REEST_NEEDED 	"A real-time QoS context needs (RAB) reestablishment"
+VAL 	0x0202 	UPM_REEST_REJECT 	"A reestablishment was rejected"
+
+VALTAB 	VAL_rrlc_cause
+VAL 	0 	LCS_OK 	"no error"
+VAL 	1 	LCS_ERROR 	"Unspecified  error"
+VAL 	10 	LCS_WRONG_BTS 	"Serving Cell BTS differs from Reference BTS"
+VAL 	20 	LCS_HANDOVER 	"handover occured during Position Measurement procedure"
+
+
+
+
+VAR 	cc_cause 	"Cause element containing result of a CC operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_cc_cause@ 	
+
+VAR 	nwcc_cause 	"Cause element containing result of a CC operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_nwcc_cause@ 	
+
+VAR 	nwss_cause 	"Cause element containing result of a SS operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_nwcc_cause@ 	
+
+VAR 	dl_cause 	"Cause element containing result of a DL operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_dl_cause@ 	
+
+VAR 	l2r_cause 	"Cause element containing result of a L2R operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_l2r_cause@ 	
+
+VAR 	llc_cause 	"Cause element containing result of a LLC operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_llc_cause@ 	
+
+VAR 	mm_cause 	"Cause element containing result of an MM operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_mm_cause@ 	
+
+VAR 	nwmm_cause 	"Cause element from network peer MM" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_nwmm_cause@ 	
+
+VAR 	ppp_cause 	"Cause element containing result of a PPP operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_ppp_cause@ 	
+
+VAR 	upper_nw_cause 	"If ctrl_value is below is_from_nw the cause originates from NW. Do NOT use as real value of ctrl_value." 	S
+
+
+VAR 	upper_ue_cause 	"If ctrl_value is between is_from_nw and is_from_ue the cause originates from UE. Do NOT use as real value of ctrl_value." 	S
+
+
+VAR 	rcm_cause 	"Cause element containing result of an RCM operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_rcm_cause@ 	
+
+VAR 	rr_cause 	"Cause element containing result of an RR operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_rr_cause@ 	
+
+VAR 	nwrr_cause 	"Cause element from GSM peer RR" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_nwrr_cause@ 	
+
+VAR 	rlp_cause 	"Cause element containing result of an RLP operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_rlp_cause@ 	
+
+VAR 	rrc_cause 	"Cause element containing result of an RRC operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_rrc_cause@ 	
+
+VAR 	nwrrc_cause 	"Cause element from UTRAN peer RRC" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_nwrrc_cause@ 	
+
+VAR 	sim_cause 	"Cause element from SIM to ACI/SMS/MM" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_sim_cause@ 	
+
+VAR 	sm_cause 	"Cause element containing result of an SM operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_sm_cause@ 	
+
+VAR 	nwsm_cause 	"Cause element from network peer SM" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_nwsm_cause@ 	
+
+VAR 	sms_cause 	"Cause element containing result of an SMS operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_sms_cause@ 	
+
+VAR 	nwsms_cp_cause 	"Cause element containing result of an SMS operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_nwsms_cp_cause@ 	
+
+VAR 	nwsms_rp_cause 	"Cause element containing result of an SMS operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_nwsms_rp_cause@ 	
+
+VAR 	nwsms_tp_cause 	"Cause element containing result of an SMS operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_nwsms_tp_cause@ 	
+
+VAR 	sn_cause 	"Cause element containing result of an SNDCP operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_sn_cause@ 	
+
+VAR 	upm_cause 	"Cause element containing result of an UPM operation" 	S
+
+VAL 	@p_8010_153_cause_include - VAL_upm_cause@ 	
+
+VAR 	rrlc_cause 	"cause" 	B
+
+VAL 	@p_8010_153_cause_include - VAL_rrlc_cause@ 	
+
+
+
+
+UNION 	value 	 "Cause element containing result of operation"
+{
+ 	is_from_nwmm 	nwmm_cause 	 ; MM Network cause
+ 	is_from_nwrr 	nwrr_cause 	 ; RR Network cause
+ 	is_from_nwrrc 	nwrrc_cause 	 ; RRC Network cause
+ 	is_from_nwsm 	nwsm_cause 	 ; SM Network cause
+ 	is_from_nwss 	nwss_cause 	 ; SS Network cause
+ 	is_from_nwsms_cp 	nwsms_cp_cause 	 ; SMS CP Network Cause
+ 	is_from_nwsms_rp 	nwsms_rp_cause 	 ; SMS RP Network Cause
+ 	is_from_nwsms_tp 	nwsms_tp_cause 	 ; SMS TP Network Cause
+ 	is_from_nw 	upper_nw_cause 	 ; If ctrl_value is below is_from_nw the cause originates from NW. Do NOT use as real value of ctrl_value.
+ 	is_from_cc 	cc_cause 	 ; CC cause
+ 	is_from_dl 	dl_cause 	 ; DL cause
+ 	is_from_l2r 	l2r_cause 	 ; L2R cause
+ 	is_from_llc 	llc_cause 	 ; LLC cause
+ 	is_from_mm 	mm_cause 	 ; MM cause
+ 	is_from_nwcc 	nwcc_cause 	 ; CC Network cause
+ 	is_from_ppp 	ppp_cause 	 ; PPP cause
+ 	is_from_rcm 	rcm_cause 	 ; RCM cause
+ 	is_from_rr 	rr_cause 	 ; RR cause
+ 	is_from_rlp 	rlp_cause 	 ; RLP cause
+ 	is_from_rrc 	rrc_cause 	 ; RRC cause
+ 	is_from_sim 	sim_cause 	 ; SIM cause
+ 	is_from_sm 	sm_cause 	 ; SM cause
+ 	is_from_sms 	sms_cause 	 ; SMS cause
+ 	is_from_sndcp 	sn_cause 	 ; SNDCP cause
+ 	is_from_upm 	upm_cause 	 ; UPM cause
+ 	is_from_ue 	upper_ue_cause 	 ; If ctrl_value is between is_from_nw and is_from_ue the cause originates from UE. Do NOT use as real value of ctrl_value.
+ 	is_from_rrlc 	rrlc_cause 	 ; RRLC cause value
+}
+
+
+
+COMP 	ps_cause 	 "Cause element containing result of operation"
+{
+ 	value 	 ; Cause value
+}
+
+
+
+
+
+
+; CAUSE_EXPORT 	0x0000
+
+
+
+PRIM 	CAUSE_EXPORT 	0x0000
+{
+ 	ps_cause 	 ; Cause element containing result of operation
+}
+
+
+
+
+
+
+
+
+

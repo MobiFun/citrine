@@ -1,0 +1,1612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">rlp</DocName>
+        <DocNum Number="101" Project="8411"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The protocol stack for fax and data transmission consists of several entities. Each entity has one ore more service access points, over which the entity provides a service for the upper entity. The entity, which is described in this document, is coloured grey in the following figure :</Section>
+            <Section>Figure 1-1: Architecture of the fax and data protocol stack</Section>
+            <Section>The information units passed via the SAPs are called primitives and consists of an operation code and several parameters. See the Users Guide for details.</Section>
+            <Section>The entities of the fax and data protocol stack are:</Section>
+            <Section>1.1 RA - Rate Adaptation</Section>
+            <Section>This entity performs an adaptation between an asynchronous or synchronous data stream with several bit rates on to the fixed bit rate used at the TCH. This is performed by the rate adaptation functions RA1' and RA0 described in GSM 04.21.</Section>
+            <Section>1.2 RLP - Radio Link Protocol</Section>
+            <Section>This entity provides a Layer 2 protocol for asynchronous reliable data transfer as specified in GSM 04.22. It includes error correction, sequence numbers and a mechanism for repeating corrupted and lost messages.</Section>
+            <Section>1.3 L2R - Layer 2 Relay Functionality</Section>
+            <Section>The L2R provides relay functions in order to adapt the character-oriented data received from the TE via USART to the bit-oriented RLP protocol.</Section>
+            <Section>1.4 FAD 03.45 - Fax Adaptation Protocol</Section>
+            <Section>The fax adaptation protocol, as specified in GSM 03.45, provides synchronisation with the BCS and MSG modems of the peer entity. It uses byte repetition in conjunction with a voting algorithm to handle corruption on the TCH data stream. The non-transparent fax protocol in accordance with GSM 03.46 is not part of this implementation.</Section>
+            <Section>The fax adapter enables T.30 to send BCS at 300 BPS and T.4 MSG in 2400, 4800, 7200 and 9600 BPS.</Section>
+            <Section>1.5 T.30 - Fax Protocol Entity</Section>
+            <Section>The protocol uses binary coded signals packed in HDLC frames to set up and release a connection in the message phase of the FAX transmission. This entity is specified in the ITU-T.30. The main tasks of this unit are:</Section>
+            <Section>? Building the HDLC frames with CRC.</Section>
+            <Section>? Performing bit stuffing/de-stuffing.</Section>
+            <Section>? Executing a sequence of 5 phases: 1.) set up, 2.) pre-message procedures, 3.) transmission/reception, 4.) post message procedures, 5.) waiting for call release.</Section>
+            <Section>1.6 ACI - AT Command Interpreter</Section>
+            <Section>The ACI is specified in GSM 07.07. It is responsible for call establishment via the GSM voice protocol stack and terminal adaptation for asynchronous transparent character-oriented data transmission. The ACI is able to receive AT commands and send the replies over the USART driver to a remote PC. This makes it possible to control the voice and data protocol stack from a remote application running on a PC. The ACI also provides a unique interface for an internal MMI in the MS.</Section>
+            <Section>1.7 USART - Universal Synchronous Asynchronous Receiver Transmitter Driver</Section>
+            <Section>The USART is a hardware component that facilitates a connection between the mobile station and terminal equipment (e.g. a PC). This interface uses some of the circuits described in V.24.</Section>
+            <Section>The data exchange provided by this unit is serial and asynchronous (synchronous communication is not in the scope of this document). A driver that uses interrupts to manage a circular buffer for the sending and receiving direction is necessary in order to use this component in the F&amp;D. The driver has to be able to perform flow control.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="100" Year="98"/>
+            <Date Day="25" Month="3" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="101" Year="98"/>
+            <Date Day="26" Month="3" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>RLP_ATTACH_REQ w/o transmission rate RLP_DISC_CNF added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="102" Year="98"/>
+            <Date Day="6" Month="3" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>RLP_READY_IND added RLP_FLOWCTRL_REQ added RLP_GETDATA_REQ added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="103" Year="98"/>
+            <Date Day="15" Month="4" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>RLP_FLOWCTRL_REQ removed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="104" Year="98"/>
+            <Date Day="21" Month="4" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Renaming of Compression Parameters</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="105" Year="98"/>
+            <Date Day="15" Month="6" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>MAX_DATA_xxx_FRAMES added Used_Flags removed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="106" Year="98"/>
+            <Date Day="16" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Window size as USHORT</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="107" Year="98"/>
+            <Date Day="22" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Header and trailer length added, Number of frames in RLP_READY_IND and     RLP_GETDATA_REQ removed, RLP_ERR_INTERNAL added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="108" Year="98"/>
+            <Date Day="24" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Values renamed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="109" Year="98"/>
+            <Date Day="27" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Constants MAX_DATA_IND_FRAMES and     MAX_DATA_REQ_FRAMES removed</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="110" Year="98"/>
+            <Date Day="28" Month="7" Year="1998"/>
+            <Author>PZ</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>SDU aligned with reserved element</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="111" Year="98"/>
+            <Date Day="31" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>RLP_TRAILER_LENGTH set to zero</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="112" Year="98"/>
+            <Date Day="13" Month="8" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>RLP_ATTACH_REQ: transmission rate added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="113" Year="98"/>
+            <Date Day="20" Month="10" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>RLP_DETACH_CNF added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="114" Year="98"/>
+            <Date Day="11" Month="12" Year="1998"/>
+            <Author>MG</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>14.4 kBit/s</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="115" Year="98"/>
+            <Date Day="22" Month="4" Year="2002"/>
+            <Author>slo</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Opcodes expanded to 32 bit</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the RLP SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>RLP_HEADER_LEN</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment>Length of RLP header in bits</Comment>
+        </Constant>
+        <Constant>
+            <Alias>RLP_TRAILER_LEN</Alias>
+            <Value ValueType="DEC">0</Value>
+            <Comment>Length of RLP trailer in bits</Comment>
+        </Constant>
+        <History>
+            <Date Day="23" Month="2" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="12" Month="5" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>New constants added</Comment>
+        </History>
+        <History>
+            <Date Day="14" Month="5" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>New constants shifted to SDL</Comment>
+        </History>
+        <History>
+            <Date Day="15" Month="5" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>MAX_DATA_xxx_FRAMES added</Comment>
+        </History>
+        <History>
+            <Date Day="17" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>Header and trailer length added</Comment>
+        </History>
+        <History>
+            <Date Day="30" Month="7" Year="1998"/>
+            <Author>MG</Author>
+            <Comment>RLP_TRAILER_LENGTH set to zero</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="17">
+        <Description>
+            <Section>This section contains all primitives that are defined for the RLP SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The RLP_ATTACH_REQ is used to switch the mobile to the &quot;ADM and attached&quot; state. This is the first primitive, which should be passed to RLP after starting the entity. It contains all parameters necessary for initialisation. Prior to the RLP_ATTACH_REQ primitive the RA entity should be activated by a RA_ACTIVATE_REQ from the ACI entity.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_ATTACH_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>k_ms_iwf</Name>
+                </ItemLink>
+                <Comment>window size ms->iwf</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>k_iwf_ms</Name>
+                </ItemLink>
+                <Comment>window size iwf->ms</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>t1</Name>
+                </ItemLink>
+                <Comment>acknowledge timer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>t2</Name>
+                </ItemLink>
+                <Comment>reply delay</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>n2</Name>
+                </ItemLink>
+                <Comment>retransmission attempts</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>pt</Name>
+                </ItemLink>
+                <Comment>type of data compression</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>p0</Name>
+                </ItemLink>
+                <Comment>v.42 bis data compression request</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>p1</Name>
+                </ItemLink>
+                <Comment>v.42 bis number of possible codewords</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>p2</Name>
+                </ItemLink>
+                <Comment>v.42 bis maximum encodable data string length</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>bytes_per_prim</Name>
+                </ItemLink>
+                <Comment>bytes per primitive</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Window size as USHORT</Comment>
+            </History>
+            <History>
+                <Date Day="27" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>frames per primitive added</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="8" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>transmission rate added</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>frames per prim changed to bytes per prim</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_DETACH_REQ is used to switch the mobile to the &quot;ADM and Detached&quot; state. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_DETACH_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_DETACH_CNF is used to acknowledge a previous RLP_DETACH_REQ. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_DETACH_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="20" Month="10" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_CONNECT_REQ is used to switch the mobile and the base station to the ABM state. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_CONNECT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_CONNECT_IND is used to indicate, that the base station wants to switch to the ABM state. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_CONNECT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_CONNECT_RES is used to acknowledge the RLP_CONNECT_IND. The acknowledge can be positive (ACK) or negativ (NAK) depending on the parameter.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_CONNECT_RES</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>ack_flg</Name>
+                </ItemLink>
+                <Comment>acknowledge flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_CONNECT_CNF acknowledges the previous RLP_CONNECT_REQ. The acknowledge can be positive (ACK) or negative (NAK) depending on the parameter.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_CONNECT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>ack_flg</Name>
+                </ItemLink>
+                <Comment>acknowledge flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_DISC_REQ is used to switch the mobile and the base station to the ADM state. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_DISC_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_DISC_IND is used to indicate, that the base station is switching to the ADM state. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_DISC_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_DISC_IND is used to confirm, that a previous RLP_DISC_REQ has been successfully carried out.</Section>
+                <Section>This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_DISC_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_RESET_REQ is used to reset the communication. The internal variables and buffers for sending and receiving numbered information are set to zero on both sides. A SABM command is send to the base station. Since the internal variables and buffers are set to zero, a loss of information may occur. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_RESET_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_RESET_IND is used to indicate, that the base station is resetting the communication. The internal variables and buffers for sending and receiving numbered information are set to zero on both sides. Therefore a loss of information may occur. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_RESET_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_RESET_RES is used to acknowledge the RLP_RESET_IND. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_RESET_RES</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Acknowledge flag removed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_RESET_CNF acknowledges the previous RLP_RESET_REQ. This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_RESET_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Acknowledge flag removed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_READY_IND indicates, that RLP is ready to accept data from the upper layer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_READY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="1" Month="4" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Number of frames omitted</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_DATA_REQ is used to send L2R data to the base station. Reliable transmission by numbered information is used.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>reserved</Name>
+                </ItemLink>
+                <Control>[4]</Control>
+                <Comment>reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>SDU aligned.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_GETDATA_REQ is used by L2R to request data from RLP.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_GETDATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="6" Month="4" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Number of frames omitted</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_DATA_IND is used to forward received numbered data to L2R.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>data_size</Name>
+                </ItemLink>
+                <Comment>data size</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>reserved</Name>
+                </ItemLink>
+                <Control>[2]</Control>
+                <Comment>reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>SDU aligned.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_UI_REQ is used to send upper layer data as unnumbered information to the base station. This primitive is never used by L2R.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_UI_REQ</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_UI_IND is used to forward received unnumbered data to L2R. As L2R does not support unnumbered information, this primitive is ignored in L2R and the data are rejected.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_UI_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_XID_IND is used to forward the negotiated data compression parameters to L2R. Negotiation is invoked by the base station or by RLP itself without request from the upper layer. Negotiation of data compression parameters is allowed only in the ADM state.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_XID_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>rlp_vers</Name>
+                </ItemLink>
+                <Comment>RLP version no.</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>k_ms_iwf</Name>
+                </ItemLink>
+                <Comment>window size ms->iwf</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>k_iwf_ms</Name>
+                </ItemLink>
+                <Comment>window size iwf->ms</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>t1</Name>
+                </ItemLink>
+                <Comment>acknowledge timer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>t2</Name>
+                </ItemLink>
+                <Comment>reply delay</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>n2</Name>
+                </ItemLink>
+                <Comment>retransmission attempts</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>pt</Name>
+                </ItemLink>
+                <Comment>type of data compression</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>p0</Name>
+                </ItemLink>
+                <Comment>v.42 bis data compression request</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>p1</Name>
+                </ItemLink>
+                <Comment>v.42 bis number of possible codewords</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>p2</Name>
+                </ItemLink>
+                <Comment>v.42 bis maximum encodable data string length</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Indicate RLP-Parameters (like window size) also</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="5" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>'used flags' new</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="6" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>'used flags' removed</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Window size as USHORT</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_ERROR_IND is used to indicate a fatal error condition in the RLP. A fatal error condition arises if RLP cannot communicate with its peer. Generally this means, that after a number (N2) of repetitions an answer to a frame has not been received. In this case the RLP link is disconnected and an RLP_ERROR_IND is generated.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_STATISTIC_IND provides some statistical information about the quality of the link to the upper layer. It can be used by the upper layer to modify the transmission parameters. E. g. if there is a low quality, the transmission rate might be reduced.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_STATISTIC_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>error_rate</Name>
+                </ItemLink>
+                <Comment>error rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_REMAP_REQ is used to chage the traffic channel coding between 14.4 kbit/s and the lower bit rates 9.6 kBit/s and 4.8 kbit/s. The RLP entity switches to the appropriatae frame format and starts a REMAP procedure. After this all frames in the transmit buffer of the RLP entity are sent back to the upper layer to be repacked in the new frame format.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_REMAP_REQ</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>rate</Name>
+                </ItemLink>
+                <Comment>transmission rate</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_REMAP_CNF is used to confirm a previous RLP_REMAP_REQ. It also singals that all data in the transmit buffer of the RLP entity have been sent back to the upper layer for repacking.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_REMAP_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_REMAP_DATA_IND is used to sent data back to L2R for repacking in a REMAP procedure.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_REMAP_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>RLP</Sender>
+                    <Receiver>L2R</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>data_size</Name>
+                </ItemLink>
+                <Comment>data size</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>reserved</Name>
+                </ItemLink>
+                <Control>[2]</Control>
+                <Comment>reserved</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The RLP_REMAP_DATA_RES is used by L2R to indicate, that the next RLP_REMAP_DATA_IND can be sent by RLP.</Section>
+            </Description>
+            <PrimDef>
+                <Name>RLP_REMAP_DATA_RES</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>L2R</Sender>
+                    <Receiver>RLP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>Service Data Unit</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">rlp</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>buffer content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the negotiated version number of the RLP. This is the lower of the version numbers of the two RLP entities. These version numbers are defined:</Section>
+                <Section>RLP version 0: single-link basic version;</Section>
+                <Section>RLP version 1: single-link extended version (V42bis data compression);</Section>
+                <Section>RLP version 2: multi-link version (HSCSD and 14.4 kBit/s).</Section>
+                <Section>The current implementation is a RLP version 1. Therefore this parameter can be 0 or 1.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rlp_vers</Name>
+                <Type>U8</Type>
+                <Comment>rlp version number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the maximum number (k) of sequentially numbered  I frames that may be outstanding (i.e. unacknowledged) at any given time in the uplink direction. This is a system parameter which will be negotiated with the base station, it can never exceed 61.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>k_ms_iwf</Name>
+                <Type>U16</Type>
+                <Comment>window size ms -> iwf</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Window size as USHORT</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the maximum number (k) of sequentially numbered  I frames that may be outstanding (i.e. unacknowledged) at any given time in the downlink direction. This is a system parameter which will be negotiated with the base station, it can never exceed 61.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>k_iwf_ms</Name>
+                <Type>U16</Type>
+                <Comment>window size iwf -> ms</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Window size as USHORT</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the acknowledge timer t1. If this timer is expired after sending a frame without receiving an acknowledge, the retransmission of the frame will be initiated. The period of the timer starts at the beginning of the transmission of the frame. This is a system parameter, which will be negotiated with the base station. The unit of t1 is 10 ms.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t1</Name>
+                <Type>U8</Type>
+                <Comment>acknowledge timer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the maximum replay delay t2. The RLP entity must acknowledge a frame within this time. t2 is a system parameter, which will be negotiated with the base station. It must be less then t1. The unit of t2 is 10 ms.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>t2</Name>
+                <Type>U8</Type>
+                <Comment>reply delay</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the maximum number of retransmission attempts n2 after running out of timer t1. This is a system parameter, which will be negotiated with the base station.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>n2</Name>
+                <Type>U8</Type>
+                <Comment>maximum numer of retransmission attempts</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the type of data compression. Currently only V.42bis is defined. This parameter is not negotiable.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pt</Name>
+                <Type>U8</Type>
+                <Comment>type of data compression</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rlp</DocName>
+                <Name>VAL_pt</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Value renamed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies in which direction V.42bis data compression is used.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p0</Name>
+                <Type>U8</Type>
+                <Comment>v.42bis data compression direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rlp</DocName>
+                <Name>VAL_p0</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="4" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values renamed</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values renamed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the number of possible codewords in the V.42bis algorithm. It can range from 512 to 65535.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p1</Name>
+                <Type>U16</Type>
+                <Comment>v.42 bis number of possible codewords</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the maximum encodable data string length in th V.42bis algorithm. It can range from 6 to 250.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>p2</Name>
+                <Type>U8</Type>
+                <Comment>v.42 bis maximum encodable string length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the number of bytes which can be sent in one primitive. Actually this number is rounded up to the next multiple of the current frame size.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bytes_per_prim</Name>
+                <Type>U16</Type>
+                <Comment>bytes per primitive</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Frames Per Primitive changed to Bytes Per Primitive</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter identifies the transmission rate of the traffic chanel. RLP needs to know this, because the default values of some negotiable parameters depend on the transmission rate.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rate</Name>
+                <Type>U8</Type>
+                <Comment>transmission rate</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rlp</DocName>
+                <Name>VAL_rate</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="10" Month="8" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>14.4 kbit/s added, values remapped</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the acknowledge flag in response and confirm primitives.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ack_flg</Name>
+                <Type>U8</Type>
+                <Comment>acknowledge flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rlp</DocName>
+                <Name>VAL_ack_flg</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values renamed</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a service data unit.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>buffer content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a cause for RLP related events/actions.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">rlp</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="11" Month="3" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="5" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values added</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values added</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="7" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Values added</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="12" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Value added</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="6" Year="2002"/>
+                <Author>KJF</Author>
+                <Comment>Concept for Causes</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the error rate of the data link.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>error_rate</Name>
+                <Type>U32</Type>
+                <Comment>error_rate</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="2" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to insert reserved fields into the data structure of the DATA_REQ and DATA_IND primitives to align the position of the sdu to avoid copy operations..</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reserved</Name>
+                <Type>U8</Type>
+                <Comment>Reserved</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="7" Year="1998"/>
+                <Author>PZ</Author>
+                <Comment>Added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter identifies the number of frames in a RLP_DATA_IND. This must be known by the upper layer, because RLP may send primitives with the old data size after a REMAP procedure.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data_size</Name>
+                <Type>U16</Type>
+                <Comment>data size</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="26" Month="11" Year="1998"/>
+                <Author>MG</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the RLP SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pt</Name>
+                <Comment>values for pt</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RLP_COMPR_TYPE_V42BIS</Alias>
+                <Comment>V.42bis</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_p0</Name>
+                <Comment>values for p0</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RLP_COMP_DIR_NONE</Alias>
+                <Comment>compress in neither direction</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RLP_COMP_DIR_TRANSMIT</Alias>
+                <Comment>compress in uplink direction only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>RLP_COMP_DIR_RECEIVE</Alias>
+                <Comment>compress in downlink direction only</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>RLP_COMP_DIR_BOTH</Alias>
+                <Comment>compress in both directions</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rate</Name>
+                <Comment>values for rate</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RLP_HALFRATE_4800</Alias>
+                <Comment>halfrate 4,8/6 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RLP_FULLRATE_4800</Alias>
+                <Comment>fullrate 4,8/6 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>RLP_FULLRATE_9600</Alias>
+                <Comment>fullrate 9,6/12 kBit</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>RLP_FULLRATE_14400</Alias>
+                <Comment>fullrate 13,4/14,4 kBit</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ack_flg</Name>
+                <Comment>values for ack_flg</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>RLP_ACK</Alias>
+                <Comment>acknowledged</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>RLP_NAK</Alias>
+                <Comment>not acknowledged</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">C200</Value>
+                <Alias>RLP_ERR_PF_RETRANS</Alias>
+                <Comment>Max Retransmissions of Poll reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C201</Value>
+                <Alias>RLP_ERR_XID_RETRANS</Alias>
+                <Comment>Max Retransmissions of XID reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C202</Value>
+                <Alias>RLP_ERR_SABM_RETRANS</Alias>
+                <Comment>Max Retransmissions of SABM reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C203</Value>
+                <Alias>RLP_ERR_DISC_RETRANS</Alias>
+                <Comment>Max Retransmissions of DISC reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C204</Value>
+                <Alias>RLP_ERR_REMAP_RETRANS</Alias>
+                <Comment>Max Retransmissions of REMAP reached</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C210</Value>
+                <Alias>RLP_ERR_SDU_TO_SMALL</Alias>
+                <Comment>Received SDU is to small</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">C220</Value>
+                <Alias>RLP_ERR_INTERNAL</Alias>
+                <Comment>Internal error</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

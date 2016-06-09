@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">app</DocName>
+        <DocNum Number="NA" Project="NA"/>
+        <Description>
+            <Section>The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</Section>
+            <Section>The base of the Protocol Stack rests on the physical layer.</Section>
+            <Section>The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</Section>
+            <Section>Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</Section>
+            <Section>Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</Section>
+            <Section>Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</Section>
+            <Section>Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</Section>
+            <Section>Short Message Services (SMS) is used for sending and receiving point-to-point short messages. Additionally the reception of cell broadcast short messages is included.</Section>
+            <Section>The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</Section>
+            <Section>Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</Section>
+            <Section>The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</Section>
+            <Section>Figure 1: Mobile-station protocol architecture</Section>
+            <Section>This document describes the services offered by the radio resource management to the mobility management.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="2005" Year="00"/>
+            <Date Day="12" Month="5" Year="2005"/>
+            <Author>Liyi</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>initial</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="30">
+        <Description>
+            <Section>This section contains all primitives that are defined for the APP SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>primitive to indicate the test result for BAT Lib and GDD</Section>
+            </Description>
+            <PrimDef>
+                <Name>APP_BAT_TEST_RSLT</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>APP</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">app</DocName>
+                    <Name>test_rslt</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">app</DocName>
+                    <Name>additional_info</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="12" Month="5" Year="2005"/>
+                <Author>Liyi</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This value shows the result of the test.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>test_rslt</Name>
+                <Type>U8</Type>
+                <Comment>test result</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="12" Month="5" Year="2005"/>
+                <Author>Liyi</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter carries the additional informaion</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>additional_info</Name>
+                <Type>U32</Type>
+                <Comment>additional info</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="12" Month="5" Year="2005"/>
+                <Author>Liyi</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+</SAP>

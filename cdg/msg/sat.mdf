@@ -1,0 +1,1254 @@
+;********************************************************************************
+;*** File           : sat.mdf
+;*** Creation       : Thu Jun 19 15:32:13 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : sat
+;*** Document No.   : 6147.609.99.011
+;*** Document Date  : 2003-02-25
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SBK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:21:04 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-02-25"
+PRAGMA 	ID_AND_VERSION 	"6147.609.99.011"
+
+
+
+CONST 	MAX_PARTY_NUM_SAT 	480 	; Maximum number length of a cld/clg party
+CONST 	MAX_SUBADDR_NUM 	20 	; Maximum number length of a cld/clg party subaddress
+CONST 	MAX_CH_DATA_LEN 	241 	; Maximum length of channel data string
+CONST 	MAX_CMD_AT_LEN 	241 	; Maximum length of an AT command string
+CONST 	MAX_ALPHA_ID_LEN 	241 	; Maximum bytelength of alpha identifier
+CONST 	MAX_SS_STRING_LEN 	60 	; Maximum length of SS string
+CONST 	MAX_SAT_USSD_LEN 	160 	; Maximum length of USSD string
+CONST 	MAX_SMS_DIGIT_LEN 	20 	; Maximum number of digits in SMS addresses
+CONST 	MAX_SMS_TPDU_LEN 	184 	; Maximum length of SMS SUBMIT or COMMAND
+CONST 	MAX_CAP_CNF_LEN 	112 	; Maximum bitlength of capability configuration
+CONST 	MAX_TEXT_LEN 	160 	; Maximum length of text (response to Send USSD)
+CONST 	MAX_EVENT_LIST_LEN 	10 	; Maximum number of supported events
+CONST 	MAX_TI_LEN 	16 	; Maximum number of different transaction identifier
+CONST 	MAX_DTMF_LEN 	80 	; Maximum number of DTMF digits
+CONST 	MAX_PROV_F_PATH_LEN 	16 	; Maximum number of supported paths
+CONST 	MAX_BEARER_LIST_LEN 	253 	; Maximum list length of supported bearer
+CONST 	MAX_CAUSE_LEN 	30 	; Maximum length of cause information element
+CONST 	CCR_ALLW_NO_MDFY 	0x00 	; Allowed, no modification
+CONST 	CCR_NOT_ALLW 	0x01 	; Not allowed
+CONST 	CCR_ALLW_WITH_MDFY 	0x02 	; Allowed, with modification
+CONST 	MAX_SAT_APN_LEN 	102 	; Maximum byte length of APN string
+CONST 	MAX_URL_LEN 	253 	; Maximum length for URL
+CONST 	MAX_PFP_ELEM 	10 	; Maximum provisioning file path elements
+
+
+
+VALTAB 	VAL_cmd_typ
+VAL 	0x01 	SAT_CMD_REFRESH 	"Refresh command"
+VAL 	0x02 	SAT_CMD_MORE_TIME 	"More time command"
+VAL 	0x03 	SAT_CMD_POLL_INTERVAL 	"Poll interval command"
+VAL 	0x04 	SAT_CMD_POLL_OFF 	"Polling off command"
+VAL 	0x05 	SAT_CMD_EVENT_LIST 	"Setup event list command"
+VAL 	0x10 	SAT_CMD_SETUP_CALL 	"Set up call command"
+VAL 	0x11 	SAT_CMD_SEND_SS 	"Send SS command"
+VAL 	0x12 	SAT_CMD_SEND_USSD 	"Send USSD Command"
+VAL 	0x13 	SAT_CMD_SEND_SMS 	"Send Short Message command"
+VAL 	0x14 	SAT_CMD_SEND_DTMF 	"Send DTMF command"
+VAL 	0x15 	SAT_CMD_LAUNCH_BROWSER 	"Launch WWW Browser class c"
+VAL 	0x20 	SAT_CMD_PLAY_TONE 	"Play tone command"
+VAL 	0x21 	SAT_CMD_DISPLAY_TEXT 	"Display text command"
+VAL 	0x22 	SAT_CMD_GET_INKEY 	"Get inkey command"
+VAL 	0x23 	SAT_CMD_GET_INPUT 	"Get input command"
+VAL 	0x24 	SAT_CMD_SEL_ITEM 	"Select item command"
+VAL 	0x25 	SAT_CMD_SETUP_MENU 	"Set up menu command"
+VAL 	0x26 	SAT_CMD_PROV_LOC_INFO 	"Provide loacal information command"
+VAL 	0x27 	SAT_CMD_TIMER_MNG 	"Timer Managemant command"
+VAL 	0x28 	SAT_CMD_IDLE_TEXT 	"Set up idle mode text command"
+VAL 	0x34 	SAT_CMD_RUN_AT 	"Run AT command"
+VAL 	0x40 	SAT_CMD_OPEN_CHANNEL 	"Open data channel for CS or GPRS              class e"
+VAL 	0x41 	SAT_CMD_CLOSE_CHANNEL 	"Close data channel                                  class e"
+VAL 	0x42 	SAT_CMD_RECEIVE_DATA 	"Receive data from ME from the channel     class e"
+VAL 	0x43 	SAT_CMD_SEND_DATA 	"Send the data to the channel via ME         class e"
+VAL 	0x44 	SAT_CMD_GET_CHANNEL_STATUS 	"Get the status of the data channel opened class e"
+VAL 	0x81 	SAT_CMD_END_SESSION 	"End of proactive session command"
+
+VALTAB 	VAL_cmd_qlf
+VAL 	0x00 	QLF_RFSH_INIT 	"Refresh: SIM initialization"
+VAL 	0x01 	QLF_RFSH_INIT_FULL_CHNG_NTFY 	"Refresh: SIM initialization and full file change notification"
+VAL 	0x02 	QLF_RFSH_FILE_CHNG_NTFY 	"Refresh: File change notification"
+VAL 	0x03 	QLF_RFSH_INIT_FILE_CHNG_NTFY 	"Refresh: SIM initialization and file change notification"
+VAL 	0x04 	QLF_RFSH_RESET 	"Refresh: SIM reset"
+VAL 	0x00 	QLF_CALL_IDLE 	"Set up call: idle"
+VAL 	0x01 	QLF_CALL_IDLE_RDL 	"Set up call: idle with redial"
+VAL 	0x02 	QLF_CALL_HOLD 	"Set up call: hold"
+VAL 	0x03 	QLF_CALL_HOLD_RDL 	"Set up call: hold with redial"
+VAL 	0x04 	QLF_CALL_DISC 	"Set up call: disconnect"
+VAL 	0x05 	QLF_CALL_DISC_RDL 	"Set up call: disconnect with redial"
+VAL 	0b00000000 	QLF_SMS_NO_PACK 	"Send SMS: packing not required"
+VAL 	0b00000001 	QLF_SMS_PACK 	"Send SMS: packing required"
+VAL 	0b00000000 	QLF_DISP_PRIO_NORM 	"Display text: normal priority"
+VAL 	0b00000001 	QLF_DISP_PRIO_HIGH 	"Display text: high priority"
+VAL 	0b00000000 	QLF_DISP_CLR_DELAY 	"Display text: clear message after delay"
+VAL 	0b10000000 	QLF_DISP_CLR_USER 	"Display text: wait for user to clear message"
+VAL 	0b00000000 	QLF_INKY_DIGITS 	"Get inkey: digits (0-9, *,# and +) only"
+VAL 	0b00000001 	QLF_INKY_ALPHA 	"Get inkey: alphabet set"
+VAL 	0b00000000 	QLF_INKY_SMS_DEF 	"Get inkey; SMS default alphabet"
+VAL 	0b00000010 	QLF_INKY_UCS2 	"Get inkey: UCS2 alphabet"
+VAL 	0b00000000 	QLF_INKY_NO_HELP 	"Get inkey: no help information available"
+VAL 	0b10000000 	QLF_INKY_HELP 	"Get inkey: help information available"
+VAL 	0b00000000 	QLF_INPT_DIGITS 	"Get input: digits (0-9, *,# and +) only"
+VAL 	0b00000001 	QLF_INPT_ALPHA 	"Get input: alphabet set"
+VAL 	0b00000000 	QLF_INPT_SMS_DEF 	"Get input; SMS default alphabet"
+VAL 	0b00000010 	QLF_INPT_UCS2 	"Get input: UCS2 alphabet"
+VAL 	0b00000000 	QLF_INPT_ECHO 	"Get input: ME may echo input"
+VAL 	0b00000100 	QLF_INPT_NO_ECHO 	"Get input: input shall not revealed in any way"
+VAL 	0b00000000 	QLF_INPT_NO_PACK 	"Get input: unpacket input format"
+VAL 	0b00001000 	QLF_INPT_PACK 	"Get input: SMS packed input format"
+VAL 	0b00000000 	QLF_INPT_NO_HELP 	"Get input: no help information available"
+VAL 	0b10000000 	QLF_INPT_HELP 	"Get input: help information available"
+VAL 	0b00000000 	QLF_SITM_NOPRES 	"Select item: presentation type is not specified"
+VAL 	0b00000001 	QLF_SITM_PRES 	"Select item: presentation type is specified in bit 2"
+VAL 	0b00000000 	QLF_SITM_CHVAL 	"Select item: presentation as a choice of data values if bit 1 = '1'"
+VAL 	0b00000010 	QLF_SITM_CHNAV 	"Select item: presentation as a choice of navigation options if bit 1 is '1'"
+VAL 	0b00000000 	QLF_SITM_SEL_NOPREF 	"Select item: no selection preference"
+VAL 	0b00000100 	QLF_SITM_SEL_PREF_SOFTKEY 	"Select item: selection using soft key preferred"
+VAL 	0b00000000 	QLF_SITM_NO_HELP 	"Select item: no help information available"
+VAL 	0b10000000 	QLF_SITM_HELP 	"Select item: help information available"
+VAL 	0b00000000 	QLF_SMNU_SEL_NOPREF 	"Set up menu: no selection preference"
+VAL 	0b00000001 	QLF_SMNU_SEL_PREF_SOFTKEY 	"Set up menu: selection using soft key preferred"
+VAL 	0b00000000 	QLF_SMNU_NO_HELP 	"Set up menu: no help information available"
+VAL 	0b10000000 	QLF_SMNU_HELP 	"Set up menu: help information available"
+VAL 	0x00 	QLF_PLOI_LOC_INFO 	"Provide local information: Local information"
+VAL 	0x01 	QLF_PLOI_IMEI 	"Provide local information: IMEI of ME"
+VAL 	0x02 	QLF_PLOI_NTW_MSR 	"Provide local information: Network measurement results"
+VAL 	0x03 	QLF_PLOI_DTT 	"Provide local information: Date, Time and Timezone"
+VAL 	0x04 	QLF_PLOI_LANG_SET 	"Provide local information: Language Setting"
+VAL 	0x05 	QLF_PLOI_TIM_ADV 	"Provide local information: Timing Advance"
+VAL 	0x00 	QLF_LABR_IF_NOT_LCHD 	"Launch Browser: launch browser, if not already launched"
+VAL 	0x02 	QLF_LABR_NOT_USED1 	"Launch Browser: not used"
+VAL 	0x02 	QLF_LABR_USE_EXISTING 	"Launch Browser: use the existing browser"
+VAL 	0x03 	QLF_LABR_CLOSE_AND_NEW 	"Launch Browser: close the existing browser session and launch new browser session"
+VAL 	0x04 	QLF_LABR_NOT_USED2 	"Launch Browser: not used"
+VAL 	0b00000000 	QLF_OPCH_ON_DEMD_LINK_EST 	"Open Channel: on demand link establishment (class e)"
+VAL 	0b00000001 	QLF_OPCH_IMMDT_LINK_EST 	"Open Channel: immediate link establishment (class e)"
+VAL 	0b00000000 	QLF_OPCH_NO_AUTO_RECONNECT 	"Open Channel: no automatic reconnection (class e)"
+VAL 	0b00000010 	QLF_OPCH_AUTO_RECONNECT 	"Open Channel: automatic reconnection (class e)"
+VAL 	0b00000000 	QLF_SNDDAT_TX 	"Send Data: store data in Tx buffer (class e)"
+VAL 	0b00000001 	QLF_SNDDAT_IM 	"Send Data: Send data immediately (class e)"
+
+VALTAB 	VAL_src_dev
+VAL 	0x01 	DEV_SRC_KBD 	"Device keypad"
+VAL 	0x02 	DEV_SRC_DSP 	"Device display"
+VAL 	0x03 	DEV_SRC_EAR 	"Device earpiece"
+VAL 	0x10 	DEV_SRC_CDR0 	"Device Additional Card Reader 0"
+VAL 	0x11 	DEV_SRC_CDR1 	"Device Additional Card Reader 1"
+VAL 	0x12 	DEV_SRC_CDR2 	"Device Additional Card Reader 2"
+VAL 	0x13 	DEV_SRC_CDR3 	"Device Additional Card Reader 3"
+VAL 	0x14 	DEV_SRC_CDR4 	"Device Additional Card Reader 4"
+VAL 	0x15 	DEV_SRC_CDR5 	"Device Additional Card Reader 5"
+VAL 	0x16 	DEV_SRC_CDR6 	"Device Additional Card Reader 6"
+VAL 	0x17 	DEV_SRC_CDR7 	"Device Additional Card Reader 7"
+VAL 	0x21 	DEV_SRC_CH1 	"Device Channel 1 (class e)"
+VAL 	0x22 	DEV_SRC_CH2 	"Device Channel 2 (class e)"
+VAL 	0x23 	DEV_SRC_CH3 	"Device Channel 3 (class e)"
+VAL 	0x24 	DEV_SRC_CH4 	"Device Channel 4 (class e)"
+VAL 	0x25 	DEV_SRC_CH5 	"Device Channel 5 (class e)"
+VAL 	0x26 	DEV_SRC_CH6 	"Device Channel 6 (class e)"
+VAL 	0x27 	DEV_SRC_CH7 	"Device Channel 7 (class e)"
+VAL 	0x81 	DEV_SRC_SIM 	"Device SIM"
+VAL 	0x82 	DEV_SRC_ME 	"Device mobile equipment"
+VAL 	0x83 	DEV_SRC_NTW 	"Device network"
+
+VALTAB 	VAL_dest_dev
+VAL 	0x01 	DEV_DST_KBD 	"Device keypad"
+VAL 	0x02 	DEV_DST_DSP 	"Device display"
+VAL 	0x03 	DEV_DST_EAR 	"Device earpiece"
+VAL 	0x10 	DEV_DST_CDR0 	"Device Additional Card Reader 0"
+VAL 	0x11 	DEV_DST_CDR1 	"Device Additional Card Reader 1"
+VAL 	0x12 	DEV_DST_CDR2 	"Device Additional Card Reader 2"
+VAL 	0x13 	DEV_DST_CDR3 	"Device Additional Card Reader 3"
+VAL 	0x14 	DEV_DST_CDR4 	"Device Additional Card Reader 4"
+VAL 	0x15 	DEV_DST_CDR5 	"Device Additional Card Reader 5"
+VAL 	0x16 	DEV_DST_CDR6 	"Device Additional Card Reader 6"
+VAL 	0x17 	DEV_DST_CDR7 	"Device Additional Card Reader 7"
+VAL 	0x21 	DEV_DST_CH1 	"Device Channel 1 (class e)"
+VAL 	0x22 	DEV_DST_CH2 	"Device Channel 2 (class e)"
+VAL 	0x23 	DEV_DST_CH3 	"Device Channel 3 (class e)"
+VAL 	0x24 	DEV_DST_CH4 	"Device Channel 4 (class e)"
+VAL 	0x25 	DEV_DST_CH5 	"Device Channel 5 (class e)"
+VAL 	0x26 	DEV_DST_CH6 	"Device Channel 6 (class e)"
+VAL 	0x27 	DEV_DST_CH7 	"Device Channel 7 (class e)"
+VAL 	0x81 	DEV_DST_SIM 	"Device SIM"
+VAL 	0x82 	DEV_DST_ME 	"Device mobile equipment"
+VAL 	0x83 	DEV_DST_NTW 	"Device network"
+
+VALTAB 	VAL_time_unit
+VAL 	0x00 	TU_MIN 	"Minutes"
+VAL 	0x01 	TU_SEC 	"Seconds"
+VAL 	0x02 	TU_100_MSEC 	"Tenth of seconds"
+
+VALTAB 	VAL_noa
+VAL 	DEF 	 	"Reserved"
+VAL 	0b000 	NOA_UNKNOWN 	"unknown"
+VAL 	0b001 	NOA_INTER_NUM 	"international number"
+VAL 	0b010 	NOA_NATIO_NUM 	"national significant number"
+VAL 	0b011 	NOA_NETW_NUM 	"network specific number"
+VAL 	0b100 	NOA_SUBSC_NUM 	"subscriber number"
+VAL 	0b110 	NOA_ABBRV_NUM 	"abbreviated number"
+
+VALTAB 	VAL_npi
+VAL 	DEF 	 	"reserved"
+VAL 	0b0000 	NPI_UNKNOWN 	"unknown"
+VAL 	0b0001 	NPI_ISDN 	"ISDN/Telephony Numbering Plan (Rec CCITT E.164)"
+VAL 	0b0011 	NPI_X121 	"data numbering plan (CCITT Rec X.121)"
+VAL 	0b0100 	NPI_F69 	"telex numbering plan (CCITT Rec F.69)"
+VAL 	0b0110 	NPI_LAND_MOBILE 	"land mobile numbering plan (CCITT Rec E.212)"
+VAL 	0b1000 	NPI_NATIONAL 	"land mobile numbering plan (CCITT Rec E.212)"
+VAL 	0b1001 	NPI_PRIVATE 	"Private numbering plan"
+
+VALTAB 	VAL_gen
+VAL 	0x00 	RSLT_PERF_SUCCESS 	"Command performed successfully"
+VAL 	0x01 	RSLT_PERF_PART_CMPR 	"Command performed with partial comprehension"
+VAL 	0x02 	RSLT_PERF_MISS_INFO 	"Command performed with missing information"
+VAL 	0x03 	RSLT_RFSH_ADD_EF 	"Refresh performed with additional EF read"
+VAL 	0x05 	RSLT_PERF_MDFY_SIM 	"Command performed but modified by SIM"
+VAL 	0x06 	RSLT_PERF_LIM_SRV 	"Command performed successfully, limited service"
+VAL 	0x07 	RSLT_PERF_MDFIED 	"Command performed with modification  (class e)"
+VAL 	0x10 	RSLT_SESS_USR_TERM 	"Proactive SIM session terminated by user"
+VAL 	0x11 	RSLT_SESS_USR_BACK 	"Backward move in proactive SIM session"
+VAL 	0x12 	RSLT_NO_RESP 	"No response from user"
+VAL 	0x13 	RSLT_HELP_USR_REQ 	"Help information required by user"
+VAL 	0x14 	RSLT_USER_TERM_SS 	"SS or USSD transaction terminated by user"
+VAL 	0x20 	RSLT_ME_UNAB_PROC 	"ME is unable to process command"
+VAL 	0x21 	RSLT_NTW_UNAB_PROC 	"Network is unable to process command"
+VAL 	0x22 	RSLT_USR_REJ 	"User did not accept set up request"
+VAL 	0x23 	RSLT_USR_CLR_DWN 	"User cleared down call before connection or network release"
+VAL 	0x25 	RSLT_CC_SIM_TMP 	"Interaction with call control by SIM temporary problem"
+VAL 	0x26 	RSLT_LABRWS_GENERIC 	"Launch browser generic error code  (class e)"
+VAL 	0x30 	RSLT_ME_CAP 	"Command beyond ME capabilities"
+VAL 	0x31 	RSLT_UNKN_TYPE 	"Command type not understood"
+VAL 	0x32 	RSLT_UNKN_DATA 	"Command data not understood"
+VAL 	0x33 	RSLT_UNKN_NR 	"Command number not understood"
+VAL 	0x34 	RSLT_SS_ERR 	"SS return error"
+VAL 	0x35 	RSLT_SMS_ERR 	"SMS RP-ERROR"
+VAL 	0x36 	RSLT_ERR_REQ_VAL 	"Error, required values are missing"
+VAL 	0x37 	RSLT_USSD_ERR 	"USSD return error"
+VAL 	0x39 	RSLT_CC_SIM_PRM 	"interaction with call control by SIM or SMS control by SIM permanent problem"
+VAL 	0x3A 	RSLT_BEARIND_PERR 	"Bearer Independent Protocol error  (class e)"
+
+VALTAB 	VAL_add
+VAL 	0x00 	ADD_NO_CAUSE 	"No specific cause can be given"
+VAL 	0x01 	ADD_ME_SCR_BUSY 	"ME: Screen is busy"
+VAL 	0x02 	ADD_ME_CALL_BUSY 	"ME: currently busy on call"
+VAL 	0x03 	ADD_ME_SS_BUSY 	"ME: currently busy on SS transaction"
+VAL 	0x04 	ADD_ME_NO_SERV 	"ME: no service"
+VAL 	0x05 	ADD_ME_ACC_BAR 	"ME: Access control class bar"
+VAL 	0x06 	ADD_ME_RR_DENIED 	"ME: Radio resource not granted"
+VAL 	0x07 	ADD_ME_NO_SPCH_CALL 	"ME: Not in speech call"
+VAL 	0x08 	ADD_ME_USSD_BUSY 	"ME: currently busy on USSD transaction"
+VAL 	0x01 	ADD_CC_NOT_ALLWD 	"Call Control: Action not allowed"
+VAL 	0x02 	ADD_CC_REQ_CHNG 	"Call Control: Type of request has changed"
+VAL 	0x01 	ADD_LBP_BEARR_NAVAIL 	"Launch browser: Bearer unavailable (class c)"
+VAL 	0x02 	ADD_LBP_BRWSR_NAVAIL 	"Launch browser: Browser unavailable (class c)"
+VAL 	0x03 	ADD_LBP_ME_UNABL_RDPD 	"Launch browser: ME unable to read provisioning data (class c)"
+VAL 	0x01 	ADD_BIP_NO_CHAN_AVAIL 	"No channel available (class e)"
+VAL 	0x02 	ADD_BIP_CHAN_CLOSD 	"Channel closed (class e)"
+VAL 	0x03 	ADD_BIP_CHANID_NT_VLD 	"Channel identifier not valid (class e)"
+VAL 	0x04 	ADD_BIP_BUF_SIZ_NAVAIL 	"Requested buffer size not available (class e)"
+VAL 	0x05 	ADD_BIP_SECUR_ERR 	"Security error (unsuccessful authentication) (class e)"
+VAL 	0x06 	ADD_BIP_SIME_ITL_NAVAIL 	"Requested SIM/ME interface transport level not available (class e)"
+
+VALTAB 	VAL_tos
+VAL 	DEF 	 	"Reserved"
+VAL 	0b000 	TOS_X213 	"NSAP (X.213/ISO 8348 AD2)"
+VAL 	0b010 	TOS_USER 	"User Specified"
+
+VALTAB 	VAL_oei
+VAL 	0b0 	OEI_EVEN 	"even number of address signals"
+VAL 	0b1 	OEI_ODD 	"odd number of address signals"
+
+VALTAB 	VAL_event
+VAL 	DEF 	 	"Reserved"
+VAL 	0x00 	EVENT_MT_CALL 	"Incoming Call"
+VAL 	0x01 	EVENT_CALL_CONN 	"Call is connected"
+VAL 	0x02 	EVENT_CALL_DISC 	"Call is disconnected"
+VAL 	0x03 	EVENT_LOC_STATUS 	"Service status change"
+VAL 	0x04 	EVENT_USER_ACTIVE 	"User activity"
+VAL 	0x05 	EVENT_IDLE_SCREEN 	"Idle screen is available"
+VAL 	0x08 	EVENT_BROWS_TERMIN 	"Browser Termination (if class c supported)"
+VAL 	0x09 	EVENT_DATA_AVAIL 	"Data available (if class e supported)"
+VAL 	0x0A 	EVENT_CHAN_STAT 	"Channel Status (if class e supported)"
+
+VALTAB 	VAL_bc_rpi
+VAL 	DEF 	 	"Reserved"
+VAL 	0x01 	BC_RPI_ALT 	"Alternate mode"
+VAL 	0x03 	BC_RPI_SEQ 	"Sequential mode"
+
+VALTAB 	VAL_loc_state
+VAL 	DEF 	 	"Reserved"
+VAL 	0x01 	LOC_ST_NORMAL 	"Normal service"
+VAL 	0x02 	LOC_ST_LIMITED 	"Limited service"
+VAL 	0x03 	LOC_ST_NOSERV 	"No service"
+
+VALTAB 	VAL_gprs_pdp_type
+VAL 	0x02 	PDP_TYPE_IP 	"Internet Protocol, IETF STD 5"
+
+VALTAB 	VAL_oth_addr_type
+VAL 	DEF 	 	"reserved"
+VAL 	0x21 	IPv4 	"Internet Protocal vers.4"
+VAL 	0x57 	IPv6 	"Internet Protocal vers.6"
+
+VALTAB 	VAL_trans_prot_type
+VAL 	DEF 	 	"reserved"
+VAL 	0x1 	UDP 	"User Datagramm Protocol"
+VAL 	0x2 	TCP 	"Transmission Control Protocol"
+
+VALTAB 	VAL_browser
+VAL 	DEF 	 	"reserved"
+VAL 	0x00 	DEFAULT_BROWSER 	"Default browser usage"
+
+VALTAB 	VAL_bearer
+VAL 	DEF 	 	"reserved"
+VAL 	0x00 	B_SMS 	"short message service"
+VAL 	0x01 	B_CSD 	"circle switched data"
+VAL 	0x02 	B_USSD 	"unstructured supplementary service data"
+VAL 	0x03 	B_GPRS 	"generel packet radio systeme"
+
+VALTAB 	VAL_brows_term_s
+VAL 	0x00 	USER_TERMINATION 	"terminated by user action"
+VAL 	0x01 	ERROR_TERMINATION 	"terminated by error"
+
+VALTAB 	VAL_chan_id
+VAL 	0b000 	NO_CHAN_AVAIL 	""
+VAL 	0b001 	CHANNEL_ID_1 	""
+VAL 	0b010 	CHANNEL_ID_2 	""
+VAL 	0b011 	CHANNEL_ID_3 	""
+VAL 	0b100 	CHANNEL_ID_4 	""
+VAL 	0b101 	CHANNEL_ID_5 	""
+VAL 	0b110 	CHANNEL_ID_6 	""
+VAL 	0b111 	CHANNEL_ID_7 	""
+
+VALTAB 	VAL_chan_stat_inf1
+VAL 	DEF 	 	"reserved"
+
+VALTAB 	VAL_chan_stat_link
+VAL 	0b00 	LINK_NO_ESTABL 	"link not established or PDP context not activated"
+VAL 	0b01 	LINK_ESTABL 	"link established or PDP context activated"
+
+VALTAB 	VAL_chan_stat_inf2
+VAL 	DEF 	 	"reserved"
+VAL 	0b00000000 	NO_FURTH_INFO 	"no further info can be given"
+VAL 	0b00000001 	 	"reserved"
+VAL 	0b00000010 	 	"reserved"
+VAL 	0b00000011 	 	"reserved"
+VAL 	0b00000100 	 	"reserved"
+VAL 	0b00000101 	LINK_DROPPED 	"link dropped"
+
+VALTAB 	VAL_bear_type
+VAL 	0x01 	BT_CSD 	"bearer type CSD"
+VAL 	0x02 	BT_GPRS 	"bearer type GPRS"
+VAL 	0x03 	BT_DEFAULT 	"default bearer parameters"
+
+
+
+
+VAR 	cmd_prms 	"Parameters" 	
+ 	1952
+
+
+VAR 	cmd_nr 	"Command number" 	
+ 	8
+
+
+VAR 	cmd_typ 	"Command type" 	
+ 	8
+
+VAL 	@m_sat - VAL_cmd_typ@ 	
+
+VAR 	cmd_qlf 	"Command qualifier" 	
+ 	8
+
+VAL 	@m_sat - VAL_cmd_qlf@ 	
+
+VAR 	src_dev 	"Source device" 	
+ 	8
+
+VAL 	@m_sat - VAL_src_dev@ 	
+
+VAR 	dest_dev 	"Destination device" 	
+ 	8
+
+VAL 	@m_sat - VAL_dest_dev@ 	
+
+VAR 	alpha_id 	"Alpha identifier" 	
+ 	8
+
+
+VAR 	alpha_id_2 	"Alpha identifier" 	
+ 	8
+
+
+VAR 	ss_ctrl_string 	"SS control string" 	
+ 	4
+
+
+VAR 	cap_cnf_parms 	"Capability configuration parameter 1" 	
+ 	MAX_CAP_CNF_LEN
+
+
+VAR 	cap_cnf_parms_2 	"Capability configuration parameter 2" 	
+ 	MAX_CAP_CNF_LEN
+
+
+VAR 	time_unit 	"Time unit" 	
+ 	8
+
+VAL 	@m_sat - VAL_time_unit@ 	
+
+VAR 	time_ivl 	"Time interval" 	
+ 	8
+
+
+VAR 	msg_type 	"Message type" 	
+ 	8
+
+
+VAR 	noa 	"Nature of address" 	
+ 	3
+
+VAL 	@m_sat - VAL_noa@ 	
+
+VAR 	npi 	"Numbering plan indication" 	
+ 	4
+
+VAL 	@m_sat - VAL_npi@ 	
+
+VAR 	bcdDigit 	"BCD digit" 	
+ 	4
+
+
+VAR 	gen 	"General result" 	
+ 	8
+
+VAL 	@m_sat - VAL_gen@ 	
+
+VAR 	add 	"Additional information" 	
+ 	1952
+
+VAL 	@m_sat - VAL_add@ 	
+
+VAR 	dcs 	"Data coding scheme" 	
+ 	8
+
+
+VAR 	text_str 	"Text string" 	
+ 	8
+
+
+VAR 	item 	"Choosen item" 	
+ 	8
+
+
+VAR 	mnc_mcc 	"MNC and MCC" 	
+ 	24
+
+
+VAR 	lac 	"Location area code" 	
+ 	16
+
+
+VAR 	cid 	"Cell identity value" 	
+ 	16
+
+
+VAR 	imei 	"IMEI" 	
+ 	64
+
+
+VAR 	ntw_msr_res 	"Network measurement results" 	
+ 	128
+
+
+VAR 	bcch_list 	"BCCH channel list" 	
+ 	384
+
+
+VAR 	cb_page 	"Cell broadcast page" 	
+ 	704
+
+
+VAR 	cc_req_act 	"CC requested action" 	
+ 	1936
+
+
+VAR 	tos 	"Type of subaddress" 	
+ 	3
+
+VAL 	@m_sat - VAL_tos@ 	
+
+VAR 	oei 	"Odd/even indicator" 	
+ 	1
+
+VAL 	@m_sat - VAL_oei@ 	
+
+VAR 	tpdu_data 	"Short Message Data" 	
+ 	8
+
+
+VAR 	ussd_str 	"USSD string" 	
+ 	8
+
+
+VAR 	icon_qu 	"Icon Qualifier" 	
+ 	8
+
+
+VAR 	icon_id 	"Icon Identifier" 	
+ 	8
+
+
+VAR 	event 	"List of events" 	
+ 	8
+
+VAL 	@m_sat - VAL_event@ 	
+
+VAR 	ti 	"Transaction Identifier" 	
+ 	4
+
+
+VAR 	cs 	"Cause" 	
+ 	8
+
+
+VAR 	bc_rpi 	"BC Repeat Indicator" 	
+ 	8
+
+VAL 	@m_sat - VAL_bc_rpi@ 	
+
+VAR 	loc_state 	"Location status" 	
+ 	8
+
+VAL 	@m_sat - VAL_loc_state@ 	
+
+VAR 	at_string 	"AT string" 	
+ 	8
+
+
+VAR 	csd_speed 	"CSD speed" 	
+ 	8
+
+
+VAR 	csd_name 	"CSD name" 	
+ 	8
+
+
+VAR 	csd_ce 	"CSD connection elem" 	
+ 	8
+
+
+VAR 	gprs_prec 	"GPRS precedence" 	
+ 	8
+
+
+VAR 	gprs_delay 	"GPRS delay" 	
+ 	8
+
+
+VAR 	gprs_rely 	"GPRS reliability" 	
+ 	8
+
+
+VAR 	gprs_peak 	"GPRS peak throughput" 	
+ 	8
+
+
+VAR 	gprs_mean 	"GPRS mean throughput" 	
+ 	8
+
+
+VAR 	gprs_pdp_type 	"GPRS PDP type" 	
+ 	8
+
+VAL 	@m_sat - VAL_gprs_pdp_type@ 	
+
+VAR 	ch_dat_str 	"Channel data string" 	
+ 	8
+
+
+VAR 	chan_dat_lth 	"Channel data length" 	
+ 	8
+
+
+VAR 	buffer_size 	"Buffer size" 	
+ 	16
+
+
+VAR 	oth_addr_type 	"Type of local Address" 	
+ 	8
+
+VAL 	@m_sat - VAL_oth_addr_type@ 	
+
+VAR 	ipv4_addr 	"IPv4 address" 	
+ 	8
+
+
+VAR 	ipv6_addr 	"IPv6 address" 	
+ 	8
+
+
+VAR 	trans_prot_type 	"Transport protocol type" 	
+ 	8
+
+VAL 	@m_sat - VAL_trans_prot_type@ 	
+
+VAR 	port_number 	"Port number" 	
+ 	16
+
+
+VAR 	browser 	"Browser" 	
+ 	8
+
+VAL 	@m_sat - VAL_browser@ 	
+
+VAR 	url_value 	"URL value" 	
+ 	8
+
+
+VAR 	bearer 	"Bearer List" 	
+ 	8
+
+VAL 	@m_sat - VAL_bearer@ 	
+
+VAR 	prov_file_id 	"Provisioning File Path Id" 	
+ 	8
+
+
+VAR 	brows_term_s 	"Browser Termination Source" 	
+ 	8
+
+VAL 	@m_sat - VAL_brows_term_s@ 	
+
+VAR 	chan_id 	"Channel Status Identifier" 	
+ 	3
+
+VAL 	@m_sat - VAL_chan_id@ 	
+
+VAR 	chan_stat_inf1 	"Channel Status Information1" 	
+ 	4
+
+VAL 	@m_sat - VAL_chan_stat_inf1@ 	
+
+VAR 	chan_stat_link 	"Channel Status Link" 	
+ 	1
+
+VAL 	@m_sat - VAL_chan_stat_link@ 	
+
+VAR 	chan_stat_inf2 	"Channel Status Information2" 	
+ 	8
+
+VAL 	@m_sat - VAL_chan_stat_inf2@ 	
+
+VAR 	n_acc_name 	"Network Access name" 	
+ 	8
+
+
+VAR 	bear_type 	"Bearer type" 	
+ 	8
+
+VAL 	@m_sat - VAL_bear_type@ 	
+
+VAR 	lang_buf 	"Provide Local Info/Language Setting" 	
+ 	8
+
+
+VAR 	subadr_str 	"sub address bytes" 	
+ 	8
+
+
+
+
+
+COMP 	cmd_details 	"Command details"
+{
+ 	 	cmd_nr 	 ; Command number
+ 	 	cmd_typ 	 ; Command type
+ 	 	cmd_qlf 	 ; Command qualifier
+}
+
+
+
+COMP 	dev_ids 	"Device identities"
+{
+ 	 	src_dev 	 ; Source device
+ 	 	dest_dev 	 ; Destination device
+}
+
+
+
+COMP 	pas_cmd 	"Proactive SIM Command"
+{
+ 	GSM5_TLV  	cmd_details 	0x81 	 ; Command details
+ 	GSM5_TLV  	dev_ids 	0x82 	 ; Device identities
+ 	GSM5_V  	cmd_prms 	 ; Command parameters
+}
+
+
+
+COMP 	ss_string 	"SS string"
+{
+ 	+ 	 	noa 	 ; Nature of address
+ 	* 	 	npi 	 ; Numbering plan identification
+ 	BCDEVEN  	ss_ctrl_string 	[0..MAX_SS_STRING_LEN] 	 ; SS control string
+}
+
+
+
+COMP 	addr 	"Address"
+{
+ 	+ 	 	noa 	 ; Nature of address
+ 	* 	 	npi 	 ; Numbering plan identification
+ 	BCDEVEN  	bcdDigit 	[0..MAX_PARTY_NUM_SAT] 	 ; BCD digit
+}
+
+
+
+COMP 	subaddr 	"Subaddress"
+{
+ 	+ 	 	tos 	 ; Type of subaddress
+ 	 	oei 	 ; Odd/even indicator
+ 	* 	.000  ; Spare
+ 	 	subadr_str 	[0..MAX_SUBADDR_NUM] 	 ; Structured Element Item
+}
+
+
+
+COMP 	res 	"Result"
+{
+ 	 	gen 	 ; General result
+ 	GSM5_V  	add 	 ; Additional information
+}
+TYPEDEF COMP res 	res_2 	"Result 2"
+
+
+
+COMP 	text 	"Text string"
+{
+ 	 	dcs 	 ; Data coding scheme
+ 	 	text_str 	[0..MAX_TEXT_LEN] 	 ; text string
+}
+TYPEDEF COMP text 	text2 	"Text string2"
+
+
+
+COMP 	item_id 	"Item identifier"
+{
+ 	 	item 	 ; Choosen item
+}
+
+
+
+COMP 	cc_smc_loc_info 	"CC and SMC Location Information"
+{
+ 	 	mnc_mcc 	 ; MNC and MCC
+ 	 	lac 	 ; Location Area Code
+ 	 	cid 	 ; Cell Identity Value
+}
+
+
+
+COMP 	cbd_cmd 	"CB download"
+{
+ 	GSM5_TLV  	dev_ids 	0x82 	 ; Device identities
+ 	GSM5_TLV  	cb_page 	0x8C 	 ; Cell broadcast page
+}
+
+
+
+COMP 	dur 	"Duration"
+{
+ 	 	time_unit 	 ; Time unit
+ 	 	time_ivl 	 ; Time interval
+}
+TYPEDEF COMP dur 	dur2 	"Duration2"
+
+
+
+COMP 	ussd_string 	"USSD string"
+{
+ 	 	dcs 	 ; Data coding scheme
+ 	 	ussd_str 	[0..MAX_SAT_USSD_LEN] 	 ; USSD string
+}
+
+
+
+COMP 	ccr_allw 	"Call control result, allowed"
+{
+ 	GSM5_TLV  	addr 	0x06 	 ; Address
+ 	GSM5_TLV  	ss_string 	0x09 	 ; SS string
+ 	GSM5_TLV  	ussd_string 	0x0A 	 ; USSD string
+ 	GSM5_TLV  	cap_cnf_parms 	0x07 	 ; Capabilitiy conf. parameter 1
+ 	GSM5_TLV  	subaddr 	0x08 	 ; Subaddress
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; Alpha identifier
+ 	GSM5_TLV  	bc_rpi 	0x2A 	 ; BC Repeat Indicator
+ 	GSM5_TLV  	cap_cnf_parms_2 	0x07 	 ; Capabilitiy conf. parameter 2
+}
+TYPEDEF COMP ccr_allw 	ccr_not_allw 	"Call control result, not allowed"
+TYPEDEF COMP ccr_allw 	ccr_allw_mdfy 	"Call Control result, allowed with modifications"
+
+
+
+COMP 	cc_cmd 	"Call control"
+{
+ 	GSM5_TLV  	dev_ids 	0x82 	 ; Device identities
+ 	GSM5_TLV  	addr 	0x86 	 ; Address
+ 	GSM5_TLV  	ss_string 	0x89 	 ; SS string
+ 	GSM5_TLV  	ussd_string 	0x8A 	 ; USSD string
+ 	GSM5_TLV  	cap_cnf_parms 	0x07 	 ; Capabilitiy configuration parameter 1
+ 	GSM5_TLV  	subaddr 	0x08 	 ; Subaddress
+ 	GSM5_TLV  	cc_smc_loc_info 	0x13 	 ; CC and SMC Location Information
+ 	GSM5_TLV  	cap_cnf_parms_2 	0x07 	 ; Capabilitiy configuration parameter 2
+}
+
+
+
+COMP 	smpdu 	"SMS TPDU"
+{
+ 	 	tpdu_data 	[7..MAX_SMS_TPDU_LEN] 	 ; Short Message Data
+}
+
+
+
+COMP 	icon 	"Icon Identifier"
+{
+ 	 	icon_qu 	 ; Icon Qualifier
+ 	 	icon_id 	 ; Icon Identifier
+}
+TYPEDEF COMP icon 	icon_2 	"Icon Identifier"
+
+
+
+COMP 	ev_list 	"Event list"
+{
+ 	 	event 	[1..MAX_EVENT_LIST_LEN] 	 ; List of events
+}
+
+
+
+COMP 	dtmf_string 	"DTMF string"
+{
+ 	BCDEVEN  	bcdDigit 	[0..MAX_DTMF_LEN] 	 ; BCD digit
+}
+
+
+
+COMP 	ti_oct 	"Transaction Identifier octet"
+{
+ 	 	ti 	 ; Transaction Identifier
+ 	.0000  ; Spare
+}
+
+
+
+COMP 	ti_list 	"Transaction identifier list"
+{
+ 	 	ti_oct 	[1..MAX_TI_LEN] 	 ; Single Transaction Identifier
+}
+
+
+
+COMP 	cause 	"Cause information element"
+{
+ 	 	cs 	[0..MAX_CAUSE_LEN] 	 ; Cause
+}
+
+
+
+COMP 	sm_addr 	"Address 1"
+{
+ 	+ 	 	noa 	 ; Nature of address
+ 	* 	 	npi 	 ; Numbering plan identification
+ 	BCDEVEN  	bcdDigit 	[0..MAX_SMS_DIGIT_LEN] 	 ; BCD digit
+}
+TYPEDEF COMP sm_addr 	sm_addr_2 	"Address 2"
+
+
+
+COMP 	smc_cmd 	"Call control"
+{
+ 	GSM5_TLV  	dev_ids 	0x82 	 ; Device identities
+ 	GSM5_TLV  	sm_addr 	0x86 	 ; Short Message Address 1
+ 	GSM5_TLV  	sm_addr_2 	0x86 	 ; Short Message Address 2
+ 	GSM5_TLV  	cc_smc_loc_info 	0x93 	 ; CC and SMC Location Information
+}
+
+
+
+COMP 	smcr_allw 	"Call control result, allowed"
+{
+ 	GSM5_TLV  	sm_addr 	0x06 	 ; Service Center Address
+ 	GSM5_TLV  	sm_addr_2 	0x06 	 ; Destination Address
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; Alpha identifier
+}
+TYPEDEF COMP smcr_allw 	smcr_not_allw 	"Call control result, not allowed"
+TYPEDEF COMP smcr_allw 	smcr_allw_mdfy 	"Call Control result, allowed with modifications"
+
+
+
+COMP 	at_resp 	"AT response"
+{
+ 	 	text_str 	[0..MAX_CMD_AT_LEN] 	 ; text string
+}
+
+
+
+COMP 	chan_data 	"Channel data"
+{
+ 	 	ch_dat_str 	[0..241] 	 ; Channel data string
+}
+
+
+
+COMP 	other_addr 	"Other Address"
+{
+ 	 	oth_addr_type 	 ; Other Address  type
+ 	< (oth_addr_type = 0x21) 	 	ipv4_addr 	[4] 	> 	 ; IPv4 parameter
+ 	< (oth_addr_type = 0x57) 	 	ipv6_addr 	[16] 	> 	 ; IPv6 parameter
+}
+TYPEDEF COMP other_addr 	data_dest_addr 	"Data Destination Address"
+
+
+
+COMP 	if_transp_lev 	"Interface transport level"
+{
+ 	 	trans_prot_type 	 ; Transport protocol type
+ 	 	port_number 	 ; Port number
+}
+
+
+
+COMP 	browser_id 	"Browser Identity"
+{
+ 	 	browser 	 ; Browser Identity
+}
+
+
+
+COMP 	url 	"URL"
+{
+ 	 	url_value 	[0..MAX_URL_LEN] 	 ; URL Value
+}
+
+
+
+COMP 	prov_file_ref 	"Provisioning File Reference"
+{
+ 	 	prov_file_id 	[0..MAX_PROV_F_PATH_LEN] 	 ; Provisioning File Path Id
+}
+
+
+
+COMP 	brows_term_cause 	"Browser Termination Cause"
+{
+ 	 	brows_term_s 	 ; Browser Termination Source
+}
+
+
+
+COMP 	chan_stat 	"Channel Status Parameter"
+{
+ 	 	chan_stat_link 	 ; Channel Status Link
+ 	 	chan_stat_inf1 	 ; Channel Status Information1
+ 	 	chan_id 	 ; Channel Identifier
+ 	 	chan_stat_inf2 	 ; Channel Status Information2
+}
+
+
+
+COMP 	evd_cmd 	"Call control"
+{
+ 	GSM5_TLV  	ev_list 	0x99 	 ; Event list
+ 	GSM5_TLV  	dev_ids 	0x82 	 ; Device identities
+ 	GSM5_TLV  	ti_list 	0x9C 	 ; Transaction identifier list
+ 	GSM5_TLV  	addr 	0x06 	 ; Address
+ 	GSM5_TLV  	subaddr 	0x08 	 ; Subaddress
+ 	GSM5_TLV  	cause 	0x1A 	 ; Cause information element
+ 	GSM5_TLV  	loc_state 	0x9B 	 ; Location status
+ 	GSM5_TLV  	cc_smc_loc_info 	0x13 	 ; CC and SMC Location Information
+ 	GSM5_TLV  	brows_term_cause 	0x35 	 ; Browser Termination cause
+ 	GSM5_TLV  	chan_stat 	0xB8 	 ; Channel status
+ 	GSM5_TLV  	chan_dat_lth 	0xB7 	 ; Channel data length
+}
+
+
+
+COMP 	csd_bear_prm 	"CSD bearer parameter"
+{
+ 	 	csd_speed 	 ; CSD speed
+ 	 	csd_name 	 ; CSD name
+ 	 	csd_ce 	 ; CSD connection elem
+}
+
+
+
+COMP 	gprs_bear_prm 	"GPRS bearer parameter"
+{
+ 	 	gprs_prec 	 ; GPRS precedence
+ 	 	gprs_delay 	 ; GPRS delay
+ 	 	gprs_rely 	 ; GPRS reliability
+ 	 	gprs_peak 	 ; GPRS peak throughput
+ 	 	gprs_mean 	 ; GPRS mean throughput
+ 	 	gprs_pdp_type 	 ; GPRS PDP type
+}
+
+
+
+COMP 	bear_desc 	"Bearer description"
+{
+ 	 	bear_type 	 ; Bearer type
+ 	< (bear_type = 1) 	 	csd_bear_prm 	> 	 ; CSD bearer parameter
+ 	< (bear_type = 2) 	 	gprs_bear_prm 	> 	 ; GPRS bearer parameter
+}
+
+
+
+COMP 	nan_buf 	"Network access name buffer"
+{
+ 	 	n_acc_name 	[0..MAX_SAT_APN_LEN] 	 ; Network access name
+}
+
+
+
+COMP 	dtt 	"Date-Time and Time zone"
+{
+ 	 	text_str 	[0..7] 	 ; text string
+}
+
+
+
+COMP 	lang 	"language Preferance"
+{
+ 	 	lang_buf 	[0..2] 	 ; text string
+}
+
+
+
+
+
+
+MSG 	stk_cmd 	downlink 	0b11100000 ; SAT Command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	pas_cmd 	0xD0 	 ; Proactive SIM Command
+}
+
+
+
+MSG 	send_ss 	downlink 	SAT_CMD_SEND_SS ; Send SS string
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	ss_string 	0x89 	 ; ss_string
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+}
+
+
+
+MSG 	setup_call 	downlink 	SAT_CMD_SETUP_CALL ; Set up call
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	addr 	0x86 	 ; address
+ 	GSM5_TLV  	cap_cnf_parms 	0x07 	 ; capability conf. parameter
+ 	GSM5_TLV  	subaddr 	0x08 	 ; subaddress
+ 	GSM5_TLV  	dur 	0x04 	 ; duration
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+ 	GSM5_TLV  	alpha_id_2 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	icon_2 	0x1E 	 ; Icon Identifier
+}
+
+
+
+MSG 	send_sm 	downlink 	SAT_CMD_SEND_SMS ; Send Short Message
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	addr 	0x06 	 ; address
+ 	GSM5_TLV  	smpdu 	0x8B 	 ; SMS TPDU
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+}
+
+
+
+MSG 	send_ussd 	downlink 	SAT_CMD_SEND_USSD ; Send USSD string
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	ussd_string 	0x8A 	 ; USSD string
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+}
+
+
+
+MSG 	send_dtmf 	downlink 	SAT_CMD_SEND_DTMF ; Send DTMF string
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	dtmf_string 	0xAC 	 ; DTMF string
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+}
+
+
+
+MSG 	setup_event 	downlink 	SAT_CMD_EVENT_LIST ; Setup Event List
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	ev_list 	0x99 	 ; Event list
+}
+
+
+
+MSG 	term_resp 	uplink 	0b11100000 ; Terminal response
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	cmd_details 	0x81 	 ; Command details
+ 	GSM5_TLV  	dev_ids 	0x82 	 ; Device identities
+ 	GSM5_TLV  	res 	0x83 	 ; Result
+ 	GSM5_TLV  	dur 	0x84 	 ; Duration
+ 	GSM5_TLV  	text 	0x8D 	 ; Text string
+ 	GSM5_TLV  	item_id 	0x90 	 ; Item identifier
+ 	GSM5_TLV  	cc_smc_loc_info 	0x93 	 ; CC and SMC Location Information
+ 	GSM5_TLV  	imei 	0x94 	 ; IMEI
+ 	GSM5_TLV  	ntw_msr_res 	0x96 	 ; Network measurement results
+ 	GSM5_TLV  	bcch_list 	0x9D 	 ; BCCH channel list
+ 	GSM5_TLV  	dtt 	0xA6 	 ; Date-Time and Time zone
+ 	GSM5_TLV  	cc_req_act 	0xA7 	 ; CC requested action
+ 	GSM5_TLV  	res_2 	0x83 	 ; Result 2
+ 	GSM5_TLV  	at_resp 	0xA9 	 ; AT Response
+ 	GSM5_TLV  	chan_data 	0xB6 	 ; Channel data
+ 	GSM5_TLV  	chan_stat 	[1..7] 	0xB8 	 ; Channel status
+ 	GSM5_TLV  	chan_dat_lth 	0xB7 	 ; Channel data length
+ 	GSM5_TLV  	bear_desc 	0xB5 	 ; Bearer Description
+ 	GSM5_TLV  	buffer_size 	0xB9 	 ; Buffer size
+ 	GSM5_TLV  	lang 	0xAD 	 ; Language Preferance
+}
+
+
+
+MSG 	env_cmd 	uplink 	0b11100001 ; Envelope command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	cbd_cmd 	0xD2 	 ; CB download command
+ 	GSM5_TLV  	cc_cmd 	0xD4 	 ; Call control command
+ 	GSM5_TLV  	smc_cmd 	0xD5 	 ; MO-SM control command
+ 	GSM5_TLV  	evd_cmd 	0xD6 	 ; Event download command
+}
+
+
+
+MSG 	env_res 	downlink 	0b11100001 ; Envelope command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	ccr_allw 	0x00 	 ; Call control result, allowed
+ 	GSM5_TLV  	ccr_not_allw 	0x01 	 ; Call control result, not allowed
+ 	GSM5_TLV  	ccr_allw_mdfy 	0x02 	 ; Call control result, allowed with modification
+}
+
+
+
+MSG 	env_res_smc 	downlink 	0b11100010 ; Envelope command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	smcr_allw 	0x00 	 ; Call control result, allowed
+ 	GSM5_TLV  	smcr_not_allw 	0x01 	 ; Call control result, not allowed
+ 	GSM5_TLV  	smcr_allw_mdfy 	0x02 	 ; Call control result, allowed with modification
+}
+
+
+
+MSG 	run_at 	downlink 	SAT_CMD_RUN_AT ; Run AT command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	at_string 	[MAX_CMD_AT_LEN] 	0xA8 	 ; AT string
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+}
+
+
+
+MSG 	open_channel 	downlink 	SAT_CMD_OPEN_CHANNEL ; Open Channel command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+ 	GSM5_TLV  	addr 	0x06 	 ; address
+ 	GSM5_TLV  	subaddr 	0x08 	 ; subaddress
+ 	GSM5_TLV  	dur 	0x04 	 ; duration
+ 	GSM5_TLV  	dur2 	0x04 	 ; duration2
+ 	GSM5_TLV  	bear_desc 	0xB5 	 ; bearer description
+ 	GSM5_TLV  	buffer_size 	0xB9 	 ; Buffer size
+ 	GSM5_TLV  	nan_buf 	0x47 	 ; Network Acc Name
+ 	GSM5_TLV  	other_addr 	0x3E 	 ; other address
+ 	GSM5_TLV  	text 	0x0D 	 ; Text string
+ 	GSM5_TLV  	text2 	0x0D 	 ; Text string2
+ 	GSM5_TLV  	if_transp_lev 	0x3C 	 ; IF transport level
+ 	GSM5_TLV  	data_dest_addr 	0x3E 	 ; Data dest address
+}
+
+
+
+MSG 	close_channel 	downlink 	SAT_CMD_CLOSE_CHANNEL ; Close Channel command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+}
+
+
+
+MSG 	receive_data 	downlink 	SAT_CMD_RECEIVE_DATA ; Receive Data command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+ 	GSM5_TLV  	chan_dat_lth 	0xB7 	 ; Channel data length
+}
+
+
+
+MSG 	send_data 	downlink 	SAT_CMD_SEND_DATA ; Send Data command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	alpha_id 	[MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+ 	GSM5_TLV  	chan_data 	0xB6 	 ; Channel data
+}
+
+
+
+MSG 	get_cha_stat 	downlink 	SAT_CMD_GET_CHANNEL_STATUS ; Get Channel Status command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	launch_browser 	downlink 	SAT_CMD_LAUNCH_BROWSER ; Launch Browser command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM5_TLV  	browser_id 	0x30 	 ; Browser Identity
+ 	GSM5_TLV  	url 	0xB1 	 ; Universal Res Loc
+ 	GSM5_TLV  	bearer 	[0..MAX_BEARER_LIST_LEN] 	0x32 	 ; Bearer
+ 	GSM5_TLV  	prov_file_ref 	[0..MAX_PFP_ELEM] 	0x33 	 ; Prov File Reference
+ 	GSM5_TLV  	text 	0x0D 	 ; Text string
+ 	GSM5_TLV  	alpha_id 	[0..MAX_ALPHA_ID_LEN] 	0x05 	 ; alpha identifier
+ 	GSM5_TLV  	icon 	0x1E 	 ; Icon Identifier
+}
+
+
+
+
+
+

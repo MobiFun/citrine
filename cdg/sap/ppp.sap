@@ -1,0 +1,2236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">ppp</DocName>
+        <DocNum Number="116" Project="8441"/>
+        <Description>
+            <Section>This section contains general information on PPP SAP</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="99"/>
+            <Date Day="13" Month="9" Year="1999"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="99"/>
+            <Date Day="14" Month="10" Year="1999"/>
+            <Author>DB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Removed dummy parameter.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="99"/>
+            <Date Day="29" Month="11" Year="1999"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Default values added and msid parameter in PPP_MODIFICATION_CNF primitive added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="99"/>
+            <Date Day="1" Month="12" Year="1999"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Reserved parameter added and msid parameter in PPP_ESTABLISH_CNF primitive added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="99"/>
+            <Date Day="8" Month="12" Year="1999"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>PPP_PDP_ACTIVATE_REJ primitive added, IP address parameter removed and some additional reserved parameters added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="99"/>
+            <Date Day="7" Month="3" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Parameter t_cause combined with e_cause, e_cause removed and parameter reserved removed.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="99"/>
+            <Date Day="25" Month="4" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Flow and data primitives removed (now in DTI); tui parameter for DTI added; peer_channel and protocol_channel parameter added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="99"/>
+            <Date Day="31" Month="5" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Primitives changed and parameters added for client mode and transparent mode</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="99"/>
+            <Date Day="4" Month="8" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Parameters dcomp and hcomp exchanged</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="99"/>
+            <Date Day="18" Month="10" Year="2000"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Rename PPP_TERM_OK_GACI to PPP_TERM_OK_MMI.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="99"/>
+            <Date Day="11" Month="1" Year="2001"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Readjst to SNREG SAP.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="012" Year="99"/>
+            <Date Day="13" Month="6" Year="2001"/>
+            <Author>XOF</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Primitive PPP_DTI_CONNECTED_IND added. Parameter channel ID for peer -and protocol layer in primitive PPP_ESTABLISH_REQ added.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="013" Year="99"/>
+            <Date Day="29" Month="8" Year="2001"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>add signal for Wakeup driver</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="014" Year="99"/>
+            <Date Day="26" Month="6" Year="2002"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>remove reserved parameters and replace PDP address parameter by IP address parameter</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="015" Year="99"/>
+            <Date Day="11" Month="9" Year="2002"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>modifications according cause concept</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="016" Year="99"/>
+            <Date Day="21" Month="10" Year="2002"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>merge with DTI2 version and rename UBYTE to U8, USHORT to U16 and ULONG to U32</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[1]</RefId>
+            <RefTitle>GSM 05.02 version 8.0.0 Release 1999Digital cellular telecommunications system (Phase 2+);Multiplexing and multiple access on the radio path</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[2]</RefId>
+            <RefTitle>GSM 04.60 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station (MS) - Base Station System (BSS) interface;Radio Link Control/ Medium Access Control (RLC/MAC) protocol</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[3]</RefId>
+            <RefTitle>GSM 04.08 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface layer 3 specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[4]</RefId>
+            <RefTitle>GSM 03.64 version 6.1.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Overall description of the GPRS radio interface; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[5]</RefId>
+            <RefTitle>GSM 03.60 version 6.3.1 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Service description; Stage 2</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[6]</RefId>
+            <RefTitle>GSM 04.07 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Mobile radio interface signalling layer 3; General aspects</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[7]</RefId>
+            <RefTitle>GSM 04.64 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);General Packet Radio Service (GPRS);Mobile Station - Serving GPRS Support Node (MS-SGSN)Logical Link Control (LLC) layer specification</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[8]</RefId>
+            <RefTitle>GSM 05.08 version 6.4.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem link control</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[9]</RefId>
+            <RefTitle>GSM 05.10 version 6.3.0 Release 1997Digital cellular telecommunications system (Phase 2+);Radio subsystem synchronization</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[10]</RefId>
+            <RefTitle>GSM 03.20 TS 100 929: July 1998 (GSM 03.20 version 6.0.1)Security related network functions, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[11]</RefId>
+            <RefTitle>Draft GSM 03.22: August 1998 (GSM 03.22 version 6.1.0)Functions related to Mobile Station (MS) in idle mode and group receive mode, ETSI</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[12]</RefId>
+            <RefTitle>GSM 04.65 V6.3.0: Subnetwork Dependant Convergence Protocol ETSI, March 1999</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[13]</RefId>
+            <RefTitle>ITU-T V42bis ITU-T, Recommendation V.42 bis 1990</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[14]</RefId>
+            <RefTitle>GSM 09.60 GPRS Tunneling Protocol (GTP) across the Gn and Gp Interface</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[15]</RefId>
+            <RefTitle>RFC 1661 IETF STD 51 July 1994The Point-to-Point Protocol (PPP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[16]</RefId>
+            <RefTitle>RFC 1662 IETF STD 51 July 1994PPP in HDLC-like Framing</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[17]</RefId>
+            <RefTitle>RFC 1570 January 1994PPP LCP Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[18]</RefId>
+            <RefTitle>RFC 1989 August 1996PPP Link Quality Monitoring</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[19]</RefId>
+            <RefTitle>RFC 1332 May 1992The PPP Internet Protocol Control Protocol (IPCP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[20]</RefId>
+            <RefTitle>RFC 1877 December 1995PPP IPCP Extensions for Name Server Addresses</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[21]</RefId>
+            <RefTitle>RFC 2153 May 1997PPP Vendor Extensions</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[22]</RefId>
+            <RefTitle>RFC 1334 October 1992PPP Authentication Protocols (for Password Authentication Protocol only)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[23]</RefId>
+            <RefTitle>RFC 1994 August 1996PPP Challenge Handshake Authentication Protocol (CHAP)</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[24]</RefId>
+            <RefTitle>TIA/EIA-136-370Packet-Data Services - Enhanced General Packet Radio for TIA/EIA-136 (EGPRS-136) - Overview, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[25]</RefId>
+            <RefTitle>TIA/EIA-136-376Packet-Data Services - EGPRS-136 Mobility Management, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+        <DocRef>
+            <RefId>[26]</RefId>
+            <RefTitle>TIA/EIA-136-972Packet-Data Services - Stage 2 Description, Telecommunications Industry Association</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the PPP SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>PPP_LOGIN_NAME_LENGTH</Alias>
+            <Value ValueType="DEC">33</Value>
+            <Comment>Length of login name </Comment>
+        </Constant>
+        <Constant>
+            <Alias>PPP_PASSWORD_LENGTH</Alias>
+            <Value ValueType="DEC">25</Value>
+            <Comment>Length of password</Comment>
+        </Constant>
+        <Constant>
+            <Alias>PPP_ORIGINATING_ENTITY</Alias>
+            <ItemLink>
+                <DocName DocType="SAP">gsmcom</DocName>
+                <Name>PPP_ORIGINATING_ENTITY</Name>
+            </ItemLink>
+            <Comment>mask for indicating the originating entity of a cause is PPP</Comment>
+        </Constant>
+        <History>
+            <Date Day="24" Month="9" Year="1999"/>
+            <Author>STW</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="5" Month="7" Year="2000"/>
+            <Author>STW</Author>
+            <Comment>PPP_LOGIN_NAME_LENGTH added</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="9" Year="2002"/>
+            <Author>STW</Author>
+            <Comment>PPP_ORIGINATING_ENTITY added</Comment>
+        </History>
+        <History>
+            <Date Day="29" Month="06" Year="2006"/>
+            <Author>STW</Author>
+            <Comment>PPP_PASSWORD_LENGTH added &amp; value of PPP_LOGIN_NAME_LENGTH changed from 25 to 33.</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="53">
+        <Description>
+            <Section>This section contains all primitives that are defined for the PPP SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>PPP_ESTABLISH_REQ is used to request establishment of PPP connection.</Section>
+                <Section>The mode parameter indicates whether PPP must start as client or as server or in transparent mode.</Section>
+                <Section>In client mode all parameters are valid.</Section>
+                <Section>In server mode the parameters mode, mru, ap, accm, rt, mc, mt, mf, peer_channel, protocol_channel, peer_direction, prot_direction,  peer_link_id and prot_link_id are valid.</Section>
+                <Section>In transparent mode the parameters mode, mru, peer_channel, protocol_channel, peer_direction, prot_direction,  peer_link_id and prot_link_id are valid.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_ESTABLISH_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PPP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>mode</Name>
+                </ItemLink>
+                <Comment>working mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>mru</Name>
+                </ItemLink>
+                <Comment>maximum receive unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ap</Name>
+                </ItemLink>
+                <Comment>authentication protocol</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>login</Name>
+                </ItemLink>
+                <Comment>authentication values</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>accm</Name>
+                </ItemLink>
+                <Comment>async control character map</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>rt</Name>
+                </ItemLink>
+                <Comment>restart timer</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>mc</Name>
+                </ItemLink>
+                <Comment>max configure</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>mt</Name>
+                </ItemLink>
+                <Comment>max terminate</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>mf</Name>
+                </ItemLink>
+                <Comment>max failure</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ppp_hc</Name>
+                </ItemLink>
+                <Comment>header compression of PPP connection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ip</Name>
+                </ItemLink>
+                <Comment>Internet Protocol address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>dns1</Name>
+                </ItemLink>
+                <Comment>primary DNS server address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>dns2</Name>
+                </ItemLink>
+                <Comment>secondary DNS server address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>peer_channel</Name>
+                </ItemLink>
+                <Comment>PPP-peer communication channel name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>protocol_channel</Name>
+                </ItemLink>
+                <Comment>network protocol communication channel name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>peer_direction</Name>
+                </ItemLink>
+                <Comment>direction of PPP peer communication channel</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>prot_direction</Name>
+                </ItemLink>
+                <Comment>direction of PPP protocol communication channel</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>peer_link_id</Name>
+                </ItemLink>
+                <Comment>link id for peer channel</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>prot_link_id</Name>
+                </ItemLink>
+                <Comment>link id for protocol channel</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>parameters tui, peer_channel and protocol_channel added</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>parameters for client mode added</Comment>
+            </History>
+            <History>
+                <Date Day="13" Month="6" Year="2001"/>
+                <Author>XOF</Author>
+                <Comment>Channel Ids for peer - and protocol layer added.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2001"/>
+                <Author>XOF</Author>
+                <Comment>Parameter for DTI channel changed</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>merge with DTI2 version and rename types to U8, U16 and U32</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>PPP_ESTABLISH_CNF is the positive response of a PPP_ESTABLISH_REQ at the end of the attempt to establish a PPP link.</Section>
+                <Section>All parameters contain negotiated values.</Section>
+                <Section>In client mode all parameters are valid.</Section>
+                <Section>In server mode the parameters mru, ppp_hc and msid are valid.</Section>
+                <Section>In transparent mode no parameter is valid.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_ESTABLISH_CNF</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>PPP</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>mru</Name>
+                </ItemLink>
+                <Comment>maximum receive unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ppp_hc</Name>
+                </ItemLink>
+                <Comment>header compression of PPP connection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>msid</Name>
+                </ItemLink>
+                <Comment>max slot identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ip</Name>
+                </ItemLink>
+                <Comment>Internet Protocol address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>dns1</Name>
+                </ItemLink>
+                <Comment>primary DNS server address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>dns2</Name>
+                </ItemLink>
+                <Comment>secondary DNS server address</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="12" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>msid parameter added</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>e_cause parameter replaced by t_cause parameter</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>t_cause, accm and ap parameter removed; parameters for client mode added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>PPP_TERMINATE_REQ is used to close the PPP connection.</Section>
+                <Section>The parameter indicates whether the lower layer is still available or not. If the lower layer is available PPP informs its peer about termination.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_TERMINATE_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PPP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>lower_layer</Name>
+                </ItemLink>
+                <Comment>status of lower layer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1999"/>
+                <Author>DB</Author>
+                <Comment>Removed dummy parameter.</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>downlink parameter added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>PPP_TERMINATE_IND is used to inform the MMI that the PPP connection is closed.</Section>
+                <Section>The ppp_cause parameter contains the exit code. If the PPP connection is closed, then MMI can receive and transmit AT commands.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_TERMINATE_IND</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>PPP</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ppp_cause</Name>
+                </ItemLink>
+                <Comment>PPP error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>cause concept</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>PPP_PDP_ACTIVATE_IND is used to activate the PDP context. This primive is only used in server mode.</Section>
+                <Section>The parameter msid is only valid if the parameter ppp_hc indicates that the PPP peer supports Van Jacobson header compression. The protocol configuration options are used to authenticate the PPP peer at the network and to negotiate the DNS addresses.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_PDP_ACTIVATE_IND</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>PPP</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ppp_hc</Name>
+                </ItemLink>
+                <Comment>header compression of PPP connection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>msid</Name>
+                </ItemLink>
+                <Comment>max slot identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>list of protocol configuration options</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="12" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Reserved parameters added</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Parameters dcomp and hcomp exchanged</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>Remove reserved parameters</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>PPP_PDP_ACTIVATE_RES is the positive response of a PPP_PDP_ACTIVATE_IND at the end of the attempt to activate the PDP context. This primitive is only used in server mode.</Section>
+                <Section>The parameter msid is only valid if the parameter ppp_hc indicates that the network supports Van Jacobson header compression.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_PDP_ACTIVATE_RES</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PPP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ppp_hc</Name>
+                </ItemLink>
+                <Comment>header compression of PPP connection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>msid</Name>
+                </ItemLink>
+                <Comment>max slot identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ip</Name>
+                </ItemLink>
+                <Comment>Internet Protocol address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>list of protocol configuration options</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="12" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Reserved parameters added</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="8" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Parameters dcomp and hcomp exchanged</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>Remove reserved parameters</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>use ip parameter</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>PPP_PDP_ACTIVATE_REJ is the negative response of a PPP_PDP_ACTIVATE_IND. This primive is only used in server mode.</Section>
+                <Section>The ppp_cause parameter contains the error code.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_PDP_ACTIVATE_REJ</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PPP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ppp_cause</Name>
+                </ItemLink>
+                <Comment>PPP error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="12" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="6" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>Remove reserved parameters</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>cause concept</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>PPP_MODIFICATION_REQ is used to negotiate header compression again. This primive is only used in server mode.</Section>
+                <Section>The parameter ppp_hc indicates the desired header compression. The parameter msid is only valid if the parameter ppp_hc indicates Van Jacobson header compression.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_MODIFICATION_REQ</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>PPP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ppp_hc</Name>
+                </ItemLink>
+                <Comment>header compression of PPP connection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>msid</Name>
+                </ItemLink>
+                <Comment>max slot identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="24" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>PPP_MODIFICATION_CNF is the response of a PPP_MODIFICATION_REQ at the end of the attempt to negotiate header compression again. This primive is only used in server mode.</Section>
+                <Section>The parameters indicate the negotiated header compression.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_MODIFICATION_CNF</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>PPP</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>ppp_hc</Name>
+                </ItemLink>
+                <Comment>header compression of PPP connection</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>msid</Name>
+                </ItemLink>
+                <Comment>max slot identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="24" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>msid parameter added</Comment>
+            </History>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Primitive ID changed</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>PPP send this primitive for each DTI channel that is connected.</Section>
+            </Description>
+            <PrimDef>
+                <Name>PPP_DTI_CONNECTED_IND</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>PPP</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>connected_direction</Name>
+                </ItemLink>
+                <Comment>connection DTI channel direction</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="13" Month="6" Year="2000"/>
+                <Author>XOF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="9" Year="2001"/>
+                <Author>XOF</Author>
+                <Comment>ref changed</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is for internal purpose. It should not be used by any other entity.</Section>
+                <Section>This primitive has no parameters.</Section>
+            </Description>
+            <PrimDef>
+                <Name>NEW_POWER_STATUS</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>PPP</Sender>
+                    <Receiver>PPP</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="21" Month="8" Year="2001"/>
+                <Author>SMN</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains all necessary PPP configuration and authentication packets for log on at the ISP. On reception, it contains the response PPP packets from the ISP.</Section>
+                <Section>A summery of the protocol configuration options format is shown in [GSM 04.08, 10.5.6.3]. The minimum length of this parameter is 2 octets. The second octet indicates the length of this parameter minus 2. The length of this parameter is specified when the correspond primitive is allocated.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Comment>list of protocol configuration options</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>length of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>offset of content in bit</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>Buf</Name>
+                </ItemLink>
+                <Control>[1]</Control>
+                <Comment>protocol configuration options</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="12" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Structure from sdu parameter</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains a string (zero terminated) which is the name of the communication channel to the next entity in direction of the PPP-peer (lower layer). The parameter is used to open the communication channel to this entity.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>peer_channel</Name>
+                <Comment>PPP-peer communication channel name</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>peer_entity</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>PPP-peer communication channel name value</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>Entity name value renamed</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains a string (zero terminated) which is the name of the communication channel to the next entity in direction of the network protocol (upper layer). The parameter is used to open the communication channel to this entity.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>protocol_channel</Name>
+                <Comment>network protocol communication channel name</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>protocol_entity</Name>
+                </ItemLink>
+                <Control>[6]</Control>
+                <Comment>network protocol communication channel name value</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>Entity name value renamed</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimStructElem>
+        <PrimStructElem>
+            <Description>
+                <Section>This parameter contains the values for user authentication.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>login</Name>
+                <Comment>authentication values</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>name_len</Name>
+                </ItemLink>
+                <Comment>length of name</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>name</Name>
+                </ItemLink>
+                <Control>[PPP_LOGIN_NAME_LENGTH]</Control>
+                <Comment>login name</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>password_len</Name>
+                </ItemLink>
+                <Comment>length of password</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">ppp</DocName>
+                    <Name>password</Name>
+                </ItemLink>
+                <Control>[PPP_PASSWORD_LENGTH]</Control>
+                <Comment>login password</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="30" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="7" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>PPP_LOGIN_NAME_LENGTH included</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="06" Year="2006"/>
+                <Author>STW</Author>
+                <Comment>Added PPP_PASSWORD_LENGTH</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the maximum number of octets of a PDP packet. The minimum value for this parameter is 1500 octets. The default value is also 1500 octets.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mru</Name>
+                <Type>U16</Type>
+                <Comment>maximum receive unit</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_mru</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>default value added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the desired authentication protocol. If the desired authentication protocol can not be negotiated, then PPP will close the PPP link.</Section>
+                <Section>If automatic authentication is choosen, then PPP first attempts to negotiate CHAP for authentication, then PAP and then no authentication will negotiated. The result of this attempts is included in the PPP_ESTABLISH_CNF primitive (see 3.2).</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ap</Name>
+                <Type>U8</Type>
+                <Comment>authentication protocol</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_ap</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to transmit ASCII control characters (leess than 0x20) transparently over the PPP link.</Section>
+                <Section>Each numbered bit corresponds to the octet of the same value. If the bit is cleared to zero, then that octet need not be mapped. If the bit is set to one, then that octet must remain mapped. For example, if bit 19 is set to zero, then the ASCII control character 19 (DC3, Control-S) may be sent in the clear. The least significant bit of this parameter is numbered bit 0, and would map to the ASCII control character NUL. The default value for this parameter is 0xFFFFFFFF.</Section>
+                <Section>If the ACCM is not acceptable for the other end of the PPP link, then PPP only accepts ACCMs with more than the given bits set to one. The result of this negotiation is included in the PPP_ESTABLISH_CNF primitive (see 3.2)</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>accm</Name>
+                <Type>U32</Type>
+                <Comment>async control character map</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_accm</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>default value added</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>disable value added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The Restart timer is used to time transmissions of Configuration, Termination and Authentication packets. Expiration of the Restart timer causes a retransmission of the corresponding packet.</Section>
+                <Section>This parameter defines the number of seconds waited without receiving a valid packet before transmitting the packet again. The default value of this parameter is 3 seconds.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rt</Name>
+                <Type>U8</Type>
+                <Comment>restart timer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_rt</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>default value added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Max-Configure defines the number of Configuration packets sent without receiving a valid packet before assuming that the peer is unable to respond. Max-Configure should default to 10 transmissions.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mc</Name>
+                <Type>U8</Type>
+                <Comment>max configure</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_mc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>default value added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Max-Terminate defines the number of Termination packets sent without receiving a valid packet before assuming that the peer is unable to respond. Max-Terminate should default to 2 transmissions.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mt</Name>
+                <Type>U8</Type>
+                <Comment>max terminate</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_mt</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>default value added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Max-Failure defines the number of unacceptable Configuration packets received without receiving an acceptable Configuration packet before assuming that configuration is not converging. Max-Failure should default to 5 receptions.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mf</Name>
+                <Type>U8</Type>
+                <Comment>max failure</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_mf</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="11" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>default value added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the exit code of the PPP termination and it is used to indicate the reason why a context activation is rejected. This parameter may also contain SMREG error causes. SMREG error causes can be found in SMREG SAP.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ppp_cause</Name>
+                <Type>U16</Type>
+                <Comment>PPP error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_ppp_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="3" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>combine e_cause and t_cause parameter</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="7" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>add error code</Comment>
+            </History>
+            <History>
+                <Date Day="18" Month="10" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>rename PPP_TERM_OK_GACI to PPP_TERM_OK_MMI</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>cause concept</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates which header compression algorithm is used by the TE or should used by the TE.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ppp_hc</Name>
+                <Type>U8</Type>
+                <Comment>header compression of PPP connection</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_ppp_hc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The Max-Slot-Identifier indicates the number of slots used by the Van Jacobson header compression algorithm. This parameter is only valid, if the ppp_hc parameter (see 4.9) indicates that Van Jacobson header compression is used.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>msid</Name>
+                <Type>U8</Type>
+                <Comment>max slot identifier</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains all necessary PPP configuration and authentication packets for log on at the ISP. On reception, it contains the response PPP packets from the ISP.</Section>
+                <Section>A summery of the protocol configuration options format is shown in [GSM 04.08, 10.5.6.3]. The minimum length of this parameter is 2 octets. The second octet indicates the length of this parameter minus 2. The length of this parameter is specified when the correspond primitive is allocated.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>length of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="12" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Structure from sdu parameter</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains all necessary PPP configuration and authentication packets for log on at the ISP. On reception, it contains the response PPP packets from the ISP.</Section>
+                <Section>A summery of the protocol configuration options format is shown in [GSM 04.08, 10.5.6.3]. The minimum length of this parameter is 2 octets. The second octet indicates the length of this parameter minus 2. The length of this parameter is specified when the correspond primitive is allocated.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>offset of content in bit</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="12" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Structure from sdu parameter</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains all necessary PPP configuration and authentication packets for log on at the ISP. On reception, it contains the response PPP packets from the ISP.</Section>
+                <Section>A summery of the protocol configuration options format is shown in [GSM 04.08, 10.5.6.3]. The minimum length of this parameter is 2 octets. The second octet indicates the length of this parameter minus 2. The length of this parameter is specified when the correspond primitive is allocated.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>Buf</Name>
+                <Type>U8</Type>
+                <Comment>protocol configuration options</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="9" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="12" Year="1999"/>
+                <Author>STW</Author>
+                <Comment>Structure from sdu parameter</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a string (zero terminated) which is the name of the communication channel to the next entity in direction of the PPP-peer (lower layer). The parameter is used to open the communication channel to this entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>peer_entity</Name>
+                <Type>U8</Type>
+                <Comment>PPP-peer communication channel name value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>Entity name value renamed</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains a string (zero terminated) which is the name of the communication channel to the next entity in direction of the network protocol (upper layer). The parameter is used to open the communication channel to this entity.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>protocol_entity</Name>
+                <Type>U8</Type>
+                <Comment>network protocol communication channel name value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="25" Month="4" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="9" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>Entity name value renamed</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the values for user authentication.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>name_len</Name>
+                <Type>U8</Type>
+                <Comment>length of name</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="7" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>PPP_LOGIN_NAME_LENGTH included</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the values for user authentication.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>name</Name>
+                <Type>U8</Type>
+                <Comment>login name</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="7" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>PPP_LOGIN_NAME_LENGTH included</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the values for user authentication.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>password_len</Name>
+                <Type>U8</Type>
+                <Comment>length of password</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="7" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>PPP_LOGIN_NAME_LENGTH included</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the values for user authentication.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>password</Name>
+                <Type>U8</Type>
+                <Comment>login password</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="30" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="5" Month="7" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>PPP_LOGIN_NAME_LENGTH included</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the desired or negotiated IP address of the PPP client.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ip</Name>
+                <Type>U32</Type>
+                <Comment>Internet Protocol address</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_ip</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="31" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the desired or negotiated primary DNS server address.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dns1</Name>
+                <Type>U32</Type>
+                <Comment>primary DNS server address</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_dns1</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="31" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter contains the desired or negotiated secondary DNS server address.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>dns2</Name>
+                <Type>U32</Type>
+                <Comment>secondary DNS server address</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_dns2</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="31" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates whether PPP should start as client or server or in transparent mode.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mode</Name>
+                <Type>U8</Type>
+                <Comment>working mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="31" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter indicates whether the lower layer is available or not.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>lower_layer</Name>
+                <Type>U8</Type>
+                <Comment>status of lower layer</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_lower_layer</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="31" Month="5" Year="2000"/>
+                <Author>STW</Author>
+                <Comment>Added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used by establish the DTI channel to Peer Layer.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>peer_direction</Name>
+                <Type>U8</Type>
+                <Comment>Direction for the Peer Layer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="9" Year="2001"/>
+                <Author>XOF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used by establish the DTI channel to Protocol Layer.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>prot_direction</Name>
+                <Type>U8</Type>
+                <Comment>Direction for the Protocol Layer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="9" Year="2001"/>
+                <Author>XOF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is the DTI Link Identifier to Peer Layer.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>peer_link_id</Name>
+                <Type>U32</Type>
+                <Comment>Link Id to Peer Layer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="9" Year="2001"/>
+                <Author>XOF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is the DTI Link Identifier to Protocol Layer.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>prot_link_id</Name>
+                <Type>U32</Type>
+                <Comment>Link Id to Protocol Layer</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="20" Month="9" Year="2001"/>
+                <Author>XOF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter defines the direction of the connected DTI channel.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>connected_direction</Name>
+                <Type>U8</Type>
+                <Comment>DTI direction</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">ppp</DocName>
+                <Name>VAL_connected_direction</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="20" Month="9" Year="2001"/>
+                <Author>XOF</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="12" Month="10" Year="2001"/>
+                <Author>STW</Author>
+                <Comment>Constants added</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="10" Year="2002"/>
+                <Author>STW</Author>
+                <Comment>rename types to U8, U16 and U32</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the PPP SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mru</Name>
+                <Comment>values for mru</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1500</Value>
+                <Alias>PPP_MRU_DEFAULT</Alias>
+                <Comment>default value for mru</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ap</Name>
+                <Comment>values for ap</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PPP_AP_NO</Alias>
+                <Comment>no authentication</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PPP_AP_PAP</Alias>
+                <Comment>password authentication protocol</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PPP_AP_CHAP</Alias>
+                <Comment>challenge handshake authentication protocol</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>PPP_AP_AUTO</Alias>
+                <Comment>automatic authentication</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_accm</Name>
+                <Comment>values for accm</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">FFFFFFFF</Value>
+                <Alias>PPP_ACCM_DEFAULT</Alias>
+                <Comment>default value for accm</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>PPP_ACCM_OFF</Alias>
+                <Comment>disable control character mapping</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rt</Name>
+                <Comment>values for rt</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>PPP_RT_DEFAULT</Alias>
+                <Comment>default value for restart timer</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mc</Name>
+                <Comment>values for mc</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>PPP_MC_DEFAULT</Alias>
+                <Comment>default value for max configure</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mt</Name>
+                <Comment>values for mt</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PPP_MT_DEFAULT</Alias>
+                <Comment>default value for max terminate</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mf</Name>
+                <Comment>values for mf</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>PPP_MF_DEFAULT</Alias>
+                <Comment>default value for max failure</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ppp_cause</Name>
+                <Comment>values for ppp_cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100000001</Value>
+                <Alias>PPP_TERM_OK_MMI</Alias>
+                <Comment>successful terminated (MMI initiated)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100000010</Value>
+                <Alias>PPP_TERM_OK_PEER</Alias>
+                <Comment>successful terminated (PPP peer initiated)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100000011</Value>
+                <Alias>PPP_TERM_NO_RESPONSE</Alias>
+                <Comment>no response from the PPP peer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100000100</Value>
+                <Alias>PPP_TERM_LOOP_BACK</Alias>
+                <Comment>looped-back link detected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100000101</Value>
+                <Alias>PPP_TERM_LCP_NOT_CONVERGE</Alias>
+                <Comment>LCP configuration is not converging</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100000110</Value>
+                <Alias>PPP_TERM_IPCP_NOT_CONVERGE</Alias>
+                <Comment>IPCP configuration is not converging</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100000111</Value>
+                <Alias>PPP_TERM_IPCP_NOT_STARTED</Alias>
+                <Comment>PPP peer did not start IPCP configuration</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100001000</Value>
+                <Alias>PPP_TERM_NO_CHANNEL</Alias>
+                <Comment>can not open communication channels</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100001001</Value>
+                <Alias>PPP_TERM_PROT_REJ_UNEXPECTED</Alias>
+                <Comment>unexpected Protocol Rejection from PPP peer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100001010</Value>
+                <Alias>PPP_TERM_USE_AUTHED_FAILED</Alias>
+                <Comment>user authentication failed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100111100001011</Value>
+                <Alias>PPP_TERM_PROT_ERROR_UNSPEC</Alias>
+                <Comment>unspecified protocol error</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ppp_hc</Name>
+                <Comment>values for ppp_hc</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PPP_HC_OFF</Alias>
+                <Comment>no header compression</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PPP_HC_VJ</Alias>
+                <Comment>Van Jacobson header compression</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ip</Name>
+                <Comment>values for ip</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>PPP_IP_DYNAMIC</Alias>
+                <Comment>dynaminc IP address negotiation</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dns1</Name>
+                <Comment>values for dns1</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>PPP_DNS1_DYNAMIC</Alias>
+                <Comment>dynaminc primary DNS server address negotiation</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_dns2</Name>
+                <Comment>values for dns2</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">00000000</Value>
+                <Alias>PPP_DNS2_DYNAMIC</Alias>
+                <Comment>dynaminc secondary DNS server address negotiation</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mode</Name>
+                <Comment>values for mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PPP_CLIENT</Alias>
+                <Comment>start PPP as client</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PPP_SERVER</Alias>
+                <Comment>start PPP as server</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>PPP_TRANSPARENT</Alias>
+                <Comment>start PPP in transparent mode</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_lower_layer</Name>
+                <Comment>values for lower_layer</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PPP_LOWER_LAYER_DOWN</Alias>
+                <Comment>lower layer is not available</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PPP_LOWER_LAYER_UP</Alias>
+                <Comment>lower layer is available</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_connected_direction</Name>
+                <Comment>values for connected_direction</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>PPP_DTI_CONN_PEER</Alias>
+                <Comment>DTI channel is connected to Peer Layer</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PPP_DTI_CONN_PROT</Alias>
+                <Comment>DTI channel is connected to Protocol Layer</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

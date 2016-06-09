@@ -1,0 +1,948 @@
+;********************************************************************************
+;*** File           : cgrlc.pdf
+;*** Creation       : Wed Mar 11 09:58:07 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : cgrlc
+;*** Document No.   : 8010.119.008.04
+;*** Document Date  : 2004-05-17
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SAB
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:38:02 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-05-17"
+PRAGMA 	ID_AND_VERSION 	"8010.119.008.04"
+PRAGMA 	PREFIX 	CGRLC 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	NO 	; Adds enumerations in the .val file.
+PRAGMA 	ENABLE_GROUP 	NO 	; Disable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+CONST 	MAX_CTRL_MSG_SIZE 	23 	; Maximum size of a control message in bytes.
+CONST 	MAX_TIMESLOTS 	8 	; Maximum number of timeslots
+
+
+
+VALTAB 	VAL_access_type
+VAL 	0 	AT_NULL 	"No access is required"
+VAL 	1 	AT_ONE_PHASE 	"One phase access requested."
+VAL 	2 	AT_TWO_PHASE 	"Two phase access requested."
+VAL 	3 	AT_SHORT_ACCESS 	"Short access requested."
+VAL 	4 	AT_PAGE_RESPONSE 	"Page response requested."
+VAL 	5 	AT_CELL_UPDATE 	"Access for cell update primitive requested."
+VAL 	6 	AT_MM_PROCEDURE 	"Access for MM/GMM primitive requested."
+VAL 	7 	AT_SINGLE_BLOCK 	"Only used in GRR: access for single block without TBF"
+
+VALTAB 	VAL_dl_timeslot_offset
+VAL 	0 	TEST_TN0 	"Downlink timeslot offset 0."
+VAL 	1 	TEST_TN1 	"Downlink timeslot offset 1."
+VAL 	2 	TEST_TN2 	"Downlink timeslot offset 2."
+VAL 	3 	TEST_TN3 	"Downlink timeslot offset 3."
+VAL 	4 	TEST_TN4 	"Downlink timeslot offset 4."
+VAL 	5 	TEST_TN5 	"Downlink timeslot offset 5."
+VAL 	6 	TEST_TN6 	"Downlink timeslot offset 6."
+VAL 	7 	TEST_TN7 	"Downlink timeslot offset 7."
+
+VALTAB 	VAL_failure
+VAL 	0 	ACCESS_2_NETWORK_NOT_ALLOWED 	"Access to the network is not allowed."
+VAL 	1 	PACKET_ACCESS_FAILURE 	"Failure during packet access procedure, e.g. T3162 expired."
+VAL 	2 	RLC_MAC_ERROR 	"T3168 expires during contention resolution."
+VAL 	3 	TLLI_MISMATCH 	"TLLI mismatch has occurred."
+VAL 	4 	TBF_ESTABLISHMENT_FAILURE 	"T3164 expires or failure occurs due to any other reason."
+VAL 	5 	RESUMPTION_FAILURE 	"Resumption failure after dedicated mode was left."
+VAL 	6 	CONTENTION_RESOLUTION_FAILED 	"Contention Resolution has failed."
+
+VALTAB 	VAL_prim_status
+VAL 	0 	PRIM_STATUS_NULL 	"No primitives shall be deleted."
+VAL 	1 	PRIM_STATUS_ONE 	"One primitive shall be deleted."
+VAL 	2 	PRIM_STATUS_TBF 	"All primitives, which belongs to the current TBF, shall be deleted."
+VAL 	0xFF 	PRIM_STATUS_ALL 	"All primitives shall be deleted."
+
+VALTAB 	VAL_prim_type
+VAL 	0 	PRIM_TYPE_GMM 	"At least one GMM primitive was confirmed."
+VAL 	1 	PRIM_TYPE_OTHER 	"No GMM primitive was confirmed. Other User data was confirmed."
+
+VALTAB 	VAL_tbf_rel_cause
+VAL 	0 	TBF_REL_NORMAL 	"Normal TBF release is or shall be performed."
+VAL 	1 	TBF_REL_ABNORMAL 	"Abnormal TBF release is or shall be performed."
+VAL 	2 	TBF_REL_CR_FAILED 	"Contention resolution failed"
+VAL 	3 	TBF_REL_WITH_CELL_RESELECT 	"TBF release with cell reselection"
+
+VALTAB 	VAL_starting_time
+VAL 	0xFFFFFFFF 	STARTING_TIME_NOT_PRESENT 	"No TBF starting time present."
+
+VALTAB 	VAL_test_mode_flag
+VAL 	0 	TEST_RANDOM 	"Pseudo random data."
+VAL 	1 	LOOP 	"Loop back."
+VAL 	0xFE 	TEST_MODE_RELEASE 	"used in GRLC, intermediate status during release procedure"
+VAL 	0xFF 	NO_TEST_MODE 	"No testmode active"
+
+VALTAB 	VAL_ti
+VAL 	0 	TLLI_NOT_PRESENT 	"TLLI shall not be sent in the RLC data block."
+VAL 	1 	TLLI_PRESENT 	"TLLI shall be sent in the RLC data block."
+
+VALTAB 	VAL_cs_mode
+VAL 	0 	CS_MODE_1 	"Coding scheme 1."
+VAL 	1 	CS_MODE_2 	"Coding scheme 2."
+VAL 	2 	CS_MODE_3 	"Coding scheme 3."
+VAL 	3 	CS_MODE_4 	"Coding scheme 4."
+
+VALTAB 	VAL_tlli_cs_mode
+VAL 	0 	TLLI_CS_MODE_1 	"CS 1 shall be used during Contention resolution."
+VAL 	1 	TLLI_CS_MODE_DEF 	"Default coding scheme shall be used during Contention resolution."
+
+VALTAB 	VAL_mac_mode
+VAL 	0 	MAC_MODE_DA 	"Dynamic allocation."
+VAL 	1 	MAC_MODE_EDA 	"Extended dynamic allocation."
+VAL 	2 	MAC_MODE_FA 	"Fixed allocation."
+VAL 	3 	MAC_MODE_FA_HD 	"Fixed allocation, half duplex mode."
+
+VALTAB 	VAL_queue_mode
+VAL 	0 	QUEUE_MODE_DEFAULT 	"Use current queue."
+VAL 	1 	QUEUE_MODE_GMM 	"Use GMM queue (RAU procedure)."
+VAL 	2 	QUEUE_MODE_LLC 	"Use LLC queue."
+
+VALTAB 	VAL_rlc_mode
+VAL 	0 	RLC_MODE_ACK 	"RLC acknowledged mode."
+VAL 	1 	RLC_MODE_UACK 	"RLC unacknowledged mode."
+
+VALTAB 	VAL_tbf_mode
+VAL 	0 	TBF_MODE_NULL 	"No tbf active, used in GRR"
+VAL 	1 	TBF_MODE_ACCESS_FAILED 	"Access has failed. GRLC handles prim queue."
+VAL 	2 	TBF_MODE_DL 	"Downlink TBF is assigned/released."
+VAL 	3 	TBF_MODE_UL 	"Uplink TBF is assigned/released."
+VAL 	4 	TBF_MODE_TMA 	"Uplink TBF for Testmode A is assigned."
+VAL 	5 	TBF_MODE_TMB 	"Uplink TBF for Testmode B is assigned."
+VAL 	6 	TBF_MODE_DL_UL 	"Uplink and Downlink TBF assigned/released."
+VAL 	7 	TBF_MODE_ESTABLISHMENT_FAILURE 	"T3164 expires or failure occurs due to any other reason"
+VAL 	8 	TBF_MODE_2PA 	%REL99 AND TI_PS_FF_TBF_EST_PACCH% 	"2 Phase access mode during TBF est on PACCH"
+
+VALTAB 	VAL_rxlev
+VAL 	0x00 	RXLEV_MIN 	"Minimum receive signal level value."
+VAL 	0x3F 	RXLEV_MAX 	"Maximum receive signal level value."
+VAL 	0x80 	RXLEV_NONE 	"Specific value used to indicate that no new RX value is present or RX value is invalid."
+
+VALTAB 	VAL_alpha
+VAL 	0xFF 	ALPHA_INVALID 	"No alpha value is available."
+
+VALTAB 	VAL_pc_meas_chan
+VAL 	0 	MEAS_CHAN_BCCH 	"Downlink measurements for power control shall be made on BCCH."
+VAL 	1 	MEAS_CHAN_PDCH 	"Downlink measurements for power control shall be made on PDCH."
+
+VALTAB 	VAL_gamma_ch
+VAL 	0xFF 	GAMMA_INVALID 	"No GCH is available."
+
+VALTAB 	VAL_disable_class
+VAL 	0 	DISABLE_CLASS_NULL 	"Initial state of the disable class"
+VAL 	1 	DISABLE_CLASS_OTHER 	"Any other cause for disable class"
+VAL 	2 	DISABLE_CLASS_CR 	"Disable cause is cell reselection"
+
+VALTAB 	VAL_poll_b_type
+VAL 	0 	POLL_NONE 	"No poll position present,only in grlc"
+VAL 	1 	POLL_COLLISION 	"Collision detected, only in grlc"
+VAL 	2 	POLL_DATA 	"Poll for dl ack/nack, only in grlc"
+VAL 	3 	POLL_UACK 	"Poll for pca uplink tbf relaase"
+VAL 	4 	POLL_CTRL 	"Default poll for control msg."
+VAL 	5 	POLL_RES_NB 	"Poll for normal burst with packet polling req"
+VAL 	6 	POLL_RES_AB 	"Poll for access burst with packet polling req"
+VAL 	7 	POLL_RE_ASS 	%REL99 AND TI_PS_FF_TBF_EST_PACCH% 	"Poll for TBF on PACCH for sendong PCA or PRR "
+
+VALTAB 	VAL_burst_type
+VAL 	0 	BURST_TYPE_AB 	"Access burst"
+VAL 	1 	BURST_TYPE_NB 	"Normal burst"
+
+VALTAB 	VAL_ab_type
+VAL 	0 	AB_8_BIT 	"8 bit access burst"
+VAL 	1 	AB_11_BIT 	"11 bit access burst"
+
+VALTAB 	VAL_blk_owner
+VAL 	0 	BLK_OWNER_CTRL 	"Owner is service ctrl (GRR)."
+VAL 	1 	BLK_OWNER_CS 	"Owner is service cs (GRR)."
+VAL 	2 	BLK_OWNER_TM 	"Owner is service tm (GRLC)."
+VAL 	3 	BLK_OWNER_MEAS 	"Owner is service meas (GRR)."
+VAL 	4 	BLK_OWNER_NONE 	"Owner is not specified"
+
+VALTAB 	VAL_cu_cause
+VAL 	0 	RA_DEFAULT 	"No action required"
+VAL 	1 	RA_CU 	"Next packet access cause will be cell update"
+
+VALTAB 	VAL_pmax
+VAL 	0xFF 	NO_UPDATE_N3102 	"N3102 shall not be updated"
+
+VALTAB 	VAL_llc_prim_type
+VAL 	0 	LLC_PRIM_TYPE_NULL 	"No primitive available"
+VAL 	1 	LLC_PRIM_TYPE_DATA_REQ 	"GRLC_DATA_REQ"
+VAL 	2 	LLC_PRIM_TYPE_UNITDATA_REQ 	"GRLC_UNITDATA_REQ"
+
+VALTAB 	VAL_ac_class
+VAL 	0 - 7 	"Allowed Radio priority"
+VAL 	8 	CCCH_AC_NOT_ALLOWED 	"CCCH access control class not allowed"
+VAL 	9 	PCCCH_AC_NOT_ALLOWED 	"PCCCH access control class not allowed"
+VAL 	10 	PCCCH_AC_ALLOWED 	"PCCCH access control class allowed"
+
+VALTAB 	VAL_enable_cause
+VAL 	0 	ENAC_NORMAL 	"Normal Operation"
+VAL 	1 	ENAC_ABNORM_RELEASE_CRESELECT_FAILED 	"Abnormal Release with Cell Re-Selection has Failed"
+
+VALTAB 	VAL_rlc_db_granted
+VAL 	0 - 255 	"Close ended tbf"
+VAL 	0 	OPEN_ENDED_TBF 	"Open ended tbf"
+
+VALTAB 	VAL_t3314_val
+VAL 	0x0 - 0xFFFFFFFF 	"Values Range"
+VAL 	0x00000000 	STANDBY 	"MS always in STANDBY state."
+VAL 	0x0000ABE0 	T3314_DEFAULT 	"Default timeout value for T3314."
+VAL 	0xFFFFFFFF 	DEACTIVATED 	"MS always in READY state."
+
+VALTAB 	VAL_pdch_band
+VAL 	0 	GSM_400 	"GSM 400MHz Band."
+VAL 	1 	GSM_850 	"GSM 850MHz Band."
+VAL 	2 	GSM_900 	"GSM 900MHz Band."
+VAL 	3 	DCS_1800 	"DCS 1800MHz Band."
+VAL 	4 	PCS_1900 	"PCS 1900MHz Band."
+
+VALTAB 	VAL_ilev
+VAL 	0x00 	ILEV_MIN 	"Minimum interference level value."
+VAL 	0x3F 	ILEV_MAX 	"Maximum interference level value."
+VAL 	0x80 	ILEV_NONE 	"Specific value used to indicate that no new interference level value is present or interference level value is invalid."
+
+VALTAB 	Val_pfi_support 	%REL99%
+VAL 	0 	PFI_NOT_SUPPORTED 	"PFC Not Supported"
+VAL 	1 	PFI_SUPPORTED 	"PFC  Supported"
+
+
+
+
+VAR 	access_type 	"Access Type." 	B
+
+VAL 	@p_cgrlc - VAL_access_type@ 	
+
+VAR 	data_array 	"Data Array." 	B
+
+
+VAR 	bitmap_array 	"Bitmap array" 	B
+
+
+VAR 	dl_timeslot_offset 	"Downlink Timeslot Offset." 	B
+
+VAL 	@p_cgrlc - VAL_dl_timeslot_offset@ 	
+
+VAR 	tn_mask 	"timeslot mask" 	B
+
+
+VAR 	tn 	"Timeslot number" 	B
+
+VAL 	@p_cgrlc - VAL_dl_timeslot_offset@ 	
+
+VAR 	failure 	"Lower layer failure." 	B
+
+VAL 	@p_cgrlc - VAL_failure@ 	
+
+VAR 	bs_cv_max 	"Maximum Countdown value." 	B
+
+
+VAR 	no_of_pdus 	"Number of PDUs." 	S
+
+
+VAR 	nts_max 	"Number of Timeslots." 	B
+
+
+VAR 	prim_status 	"Primitive Queue Handler." 	B
+
+VAL 	@p_cgrlc - VAL_prim_status@ 	
+
+VAR 	prim_type 	"Type of primitive." 	B
+
+VAL 	@p_cgrlc - VAL_prim_type@ 	
+
+VAR 	tbf_rel_cause 	"TBF Release Cause." 	B
+
+VAL 	@p_cgrlc - VAL_tbf_rel_cause@ 	
+
+VAR 	starting_time 	"TBF starting time." 	L
+
+VAL 	@p_cgrlc - VAL_starting_time@ 	
+
+VAR 	rel_fn 	"Release after Poll with fn." 	L
+
+VAL 	@p_cgrlc - VAL_starting_time@ 	
+
+VAR 	fn 	"Received frame number." 	L
+
+VAL 	@p_cgrlc - VAL_starting_time@ 	
+
+VAR 	poll_fn 	"Poll frame number." 	L
+
+VAL 	@p_cgrlc - VAL_starting_time@ 	
+
+VAR 	end_fn 	"End of bitmap framenumber" 	L
+
+VAL 	@p_cgrlc - VAL_starting_time@ 	
+
+VAR 	test_mode_flag 	"Test mode flag." 	B
+
+VAL 	@p_cgrlc - VAL_test_mode_flag@ 	
+
+VAR 	tfi 	"TFI value." 	B
+
+
+VAR 	ta_value 	"Timing Advance Value." 	B
+
+
+VAR 	ti 	"TLLI indicator." 	B
+
+VAL 	@p_cgrlc - VAL_ti@ 	
+
+VAR 	ul_tlli 	"Uplink TLLI value." 	L
+
+
+VAR 	dl_tlli 	"Downlink TLLI value." 	L
+
+
+VAR 	cs_mode 	"Type of Coding Scheme." 	B
+
+VAL 	@p_cgrlc - VAL_cs_mode@ 	
+
+VAR 	tlli_cs_mode 	"Type of Coding Scheme in Contention Resolution." 	B
+
+VAL 	@p_cgrlc - VAL_tlli_cs_mode@ 	
+
+VAR 	mac_mode 	"Type of MAC mode." 	B
+
+VAL 	@p_cgrlc - VAL_mac_mode@ 	
+
+VAR 	queue_mode 	"Type of Queue Mode." 	B
+
+VAL 	@p_cgrlc - VAL_queue_mode@ 	
+
+VAR 	rlc_mode 	"Type of RLC mode." 	B
+
+VAL 	@p_cgrlc - VAL_rlc_mode@ 	
+
+VAR 	tbf_mode 	"Type of TBF." 	B
+
+VAL 	@p_cgrlc - VAL_tbf_mode@ 	
+
+VAR 	t3192_val 	"Value of T3192." 	B
+
+
+VAR 	t3314_val 	"Value of T3314." 	L
+
+VAL 	@p_cgrlc - VAL_t3314_val@ 	
+
+VAR 	t3168_val 	"T3168 Value" 	B
+
+
+VAR 	ilev 	"Interference level" 	B
+
+VAL 	@p_cgrlc - VAL_ilev@ 	
+
+VAR 	pb 	"Power reduction value" 	B
+
+
+VAR 	alpha 	"Alpha" 	B
+
+VAL 	@p_cgrlc - VAL_alpha@ 	
+
+VAR 	pc_meas_chan 	"PC_MEAS_CHAN" 	B
+
+VAL 	@p_cgrlc - VAL_pc_meas_chan@ 	
+
+VAR 	t_avg_t 	"T_AVG_T" 	B
+
+
+VAR 	gamma_ch 	"Gamma" 	B
+
+VAL 	@p_cgrlc - VAL_gamma_ch@ 	
+
+VAR 	bcch_arfcn 	"ARFCN of the BCCH" 	S
+
+
+VAR 	pdch_hopping 	"Hopping or no hopping is used on the assigned PDCH" 	B
+
+
+VAR 	disable_class 	"Disable class." 	B
+
+VAL 	@p_cgrlc - VAL_disable_class@ 	
+
+VAR 	ra_prio 	"Radio priority" 	B
+
+
+VAR 	poll_b_type 	"Poll burst type" 	B
+
+VAL 	@p_cgrlc - VAL_poll_b_type@ 	
+
+VAR 	ctrl_ack 	"Ctrl_ack" 	B
+
+
+VAR 	burst_type 	"Default burst type" 	B
+
+VAL 	@p_cgrlc - VAL_burst_type@ 	
+
+VAR 	ab_type 	"Default access burst type" 	B
+
+VAL 	@p_cgrlc - VAL_ab_type@ 	
+
+VAR 	inc 	"Pan increment" 	B
+
+
+VAR 	dec 	"Pan decrement" 	B
+
+
+VAR 	ctrl_ack_bit 	"Ctrl ack bit" 	B
+
+
+VAR 	blk_owner 	"Block owner." 	B
+
+VAL 	@p_cgrlc - VAL_blk_owner@ 	
+
+VAR 	nr_blocks 	"Number of blocks" 	B
+
+
+VAR 	cu_cause 	"Cell update cause" 	B
+
+VAL 	@p_cgrlc - VAL_cu_cause@ 	
+
+VAR 	pmax 	"Pan maximum" 	B
+
+VAL 	@p_cgrlc - VAL_pmax@ 	
+
+VAR 	llc_prim_type 	"LLC Primitive type" 	B
+
+VAL 	@p_cgrlc - VAL_llc_prim_type@ 	
+
+VAR 	peak 	"Peak value" 	S
+
+
+VAR 	polling_bit 	"Polling bit" 	B
+
+
+VAR 	rlc_oct_cnt 	"Number of bytes for TBF" 	S
+
+
+VAR 	r_bit 	"R bit" 	B
+
+
+VAR 	ac_class 	"Access control class" 	B
+
+VAL 	@p_cgrlc - VAL_ac_class@ 	
+
+VAR 	pwr_max 	"Maximum output power of the MS." 	B
+
+
+VAR 	c_lev 	"C-value raw data level" 	M
+
+
+VAR 	c_idx 	"C-value raw data index" 	S
+
+
+VAR 	c_acrcy 	"C-value raw data accuracy" 	S
+
+
+VAR 	bitmap_len 	"Bitmap length" 	B
+
+
+VAR 	final_alloc 	"Final allocation" 	B
+
+
+VAR 	enable_cause 	"Enable Cause" 	B
+
+VAL 	@p_cgrlc - VAL_enable_cause@ 	
+
+VAR 	change_mark 	"Change mark value" 	B
+
+
+VAR 	rlc_db_granted 	"RLCdata block granted" 	S
+
+VAL 	@p_cgrlc - VAL_rlc_db_granted@ 	
+
+VAR 	pdch_band 	"PDCH band" 	B
+
+VAL 	@p_cgrlc - VAL_pdch_band@ 	
+
+VAR 	dl_trans_id 	"DL Assignmnet ID" 	B
+
+
+VAR 	nw_rel 	%REL99% 	"Network Release Flag" 	B
+
+
+VAR 	pfi_support 	%REL99% 	"Basic Element" 	B
+
+VAL 	@p_cgrlc - Val_pfi_support@ 	
+
+VAR 	tbf_est_pacch 	%REL99 AND TI_PS_FF_TBF_EST_PACCH% 	"TBF establishment on PACCH" 	B
+
+
+
+
+
+COMP 	fix_alloc_struct 	 "Fixed Allocation structure"
+{
+ 	bitmap_len 	 ; Bitmap length
+ 	bitmap_array 	[127] 	 ; Bitmap array
+ 	end_fn 	 ; End of bitmap framenumber
+ 	final_alloc 	 ; Final allocation
+}
+
+
+
+COMP 	freq_param 	 "Frequency Parameters"
+{
+ 	bcch_arfcn 	 ; ARFCN of the BCCH
+ 	pdch_hopping 	 ; Hopping or no hopping is used on the assigned PDCH
+ 	pdch_band 	 ; PDCH band
+}
+
+
+
+COMP 	pwr_ctrl_param 	 "Power Control Parameters"
+{
+ 	alpha 	 ; Alpha value
+ 	gamma_ch 	[MAX_TIMESLOTS] 	 ; Gamma value for each timeslot
+}
+
+
+
+COMP 	c_value 	 "C-Value"
+{
+ 	c_lev 	 ; C-value raw data level
+ 	c_idx 	 ; C-value raw data index
+ 	c_acrcy 	 ; C-value raw data accuracy
+}
+
+
+
+COMP 	pan_struct 	 "Pan Structure"
+{
+ 	inc 	 ; Pan increment
+ 	dec 	 ; Pan decrement
+ 	pmax 	 ; Pan maximum
+}
+
+
+
+COMP 	glbl_pwr_ctrl_param 	 "Global Power Control Parameters"
+{
+ 	alpha 	 ; Alpha value
+ 	t_avg_t 	 ; T_AVG_T
+ 	pb 	 ; Power reduction value
+ 	pc_meas_chan 	 ; PC_MEAS_CHAN
+ 	pwr_max 	 ; Maximum output power of the MS.
+}
+
+
+
+COMP 	pwr_ctrl 	 "Power Control Information"
+{
+ 	< () 	pwr_ctrl_param 	> 	 ; Power Control Parameters
+ 	< () 	glbl_pwr_ctrl_param 	> 	 ; Global Power Control Parameters
+ 	< () 	freq_param 	> 	 ; Frequency Parameters
+ 	< () 	c_value 	> 	 ; C-Value
+}
+
+
+
+
+
+
+; CGRLC_ENABLE_REQ 	0x80000098
+; CGRLC_DISABLE_REQ 	0x80010098
+; CGRLC_UL_TBF_RES 	0x80020098
+; CGRLC_DL_TBF_REQ 	0x80030098
+; CGRLC_TBF_REL_REQ 	0x80040098
+; CGRLC_TBF_REL_IND 	0x80004098
+; CGRLC_TBF_REL_RES 	0x80050098
+; CGRLC_UL_TBF_IND 	0x80014098
+; CGRLC_DATA_REQ 	0x80060098
+; CGRLC_DATA_IND 	0x80024098
+; CGRLC_POLL_REQ 	0x80070098
+; CGRLC_ACCESS_STATUS_REQ 	0x80080098
+; CGRLC_CTRL_MSG_SENT_IND 	0x80034098
+; CGRLC_STARTING_TIME_IND 	0x80044098
+; CGRLC_T3192_STARTED_IND 	0x80054098
+; CGRLC_CONT_RES_DONE_IND 	0x80064098
+; CGRLC_TA_VALUE_IND 	0x80074098
+; CGRLC_STATUS_IND 	0x80084098
+; CGRLC_TEST_MODE_REQ 	0x80090098
+; CGRLC_TEST_MODE_CNF 	0x80094098
+; CGRLC_TEST_END_REQ 	0x800A0098
+; CGRLC_TRIGGER_IND 	0x800A4098
+; CGRLC_STANDBY_STATE_IND 	0x800B4098
+; CGRLC_READY_STATE_IND 	0x800C4098
+; CGRLC_TA_VALUE_REQ 	0x800B0098
+; CGRLC_INT_LEVEL_REQ 	0x800C0098
+; CGRLC_TEST_MODE_IND 	0x800E4098
+; CGRLC_READY_TIMER_CONFIG_REQ 	0x800E0098
+; CGRLC_FORCE_TO_STANDBY_REQ 	0x800F0098
+; CGRLC_PWR_CTRL_REQ 	0x800D0098
+; CGRLC_PWR_CTRL_CNF 	0x800D4098
+
+
+
+PRIM 	CGRLC_ENABLE_REQ 	0x80000098
+{
+ 	enable_cause 	 ; Enable Cause
+ 	ul_tlli 	 ; Uplink TLLI value
+ 	dl_tlli 	 ; Downlink TLLI value
+ 	< () 	pan_struct 	> 	 ; Pan Structure
+ 	queue_mode 	 ; Type of Queue Mode
+ 	burst_type 	 ; Default bust type
+ 	ab_type 	 ; Default Access bust type
+ 	t3168_val 	 ; T3168 Value
+ 	cu_cause 	 ; Cell update cause
+ 	ac_class 	 ; Access control class
+ 	change_mark 	 ; Change mark value
+ 	nw_rel 	 	%REL99% ; Network Release Flag
+ 	pfi_support 	 	%REL99% ; Network PFC Support R99
+}
+
+
+
+
+
+
+PRIM 	CGRLC_DISABLE_REQ 	0x80010098
+{
+ 	disable_class 	 ; Disable Class
+ 	prim_status 	 ; Primitive Queue Handler
+}
+
+
+
+
+
+
+PRIM 	CGRLC_UL_TBF_RES 	0x80020098
+{
+ 	starting_time 	 ; TBF starting time
+ 	tbf_mode 	 ; Type of TBF
+ 	prim_status 	 ; Primitive Queue Handler
+ 	polling_bit 	 ; Polling bit
+ 	cs_mode 	 ; Type of Coding Scheme
+ 	mac_mode 	 ; Type of MAC mode
+ 	nts_max 	 ; Number of Timeslots
+ 	tn_mask 	 ; Timeslot mask
+ 	tfi 	 ; TFI value
+ 	ti 	 ; TLLI indicator
+ 	bs_cv_max 	 ; Maximum Countdown value
+ 	tlli_cs_mode 	 ; Type of Coding Scheme in Contention Resolution
+ 	r_bit 	 ; R bit
+ 	fix_alloc_struct 	 ; Fixed Allocation structure
+ 	rlc_db_granted 	 ; RLCdata block granted
+ 	pwr_ctrl 	 ; Power Control Information
+}
+
+
+
+
+
+
+PRIM 	CGRLC_DL_TBF_REQ 	0x80030098
+{
+ 	starting_time 	 ; TBF starting time
+ 	rlc_mode 	 ; Type of RLC mode
+ 	cs_mode 	 ; Type of Coding Scheme
+ 	mac_mode 	 ; Type of MAC mode
+ 	nts_max 	 ; Number of Timeslots
+ 	tn_mask 	 ; Timeslot mask
+ 	tfi 	 ; TFI value
+ 	t3192_val 	 ; Value of timer T3192
+ 	ctrl_ack_bit 	 ; Ctrl ack bit
+ 	polling_bit 	 ; Polling bit
+ 	pwr_ctrl 	 ; Power Control Information
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TBF_REL_REQ 	0x80040098
+{
+ 	tbf_mode 	 ; Type of TBF
+ 	tbf_rel_cause 	 ; TBF Release Cause
+ 	rel_fn 	 ; Release after Poll with fn
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TBF_REL_IND 	0x80004098
+{
+ 	tbf_mode 	 ; Type of TBF
+ 	tbf_rel_cause 	 ; TBF Release Cause
+ 	< () 	c_value 	> 	 ; Power Control Information
+ 	dl_trans_id 	 ; DL Assignment Id
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TBF_REL_RES 	0x80050098
+{
+ 	tbf_mode 	 ; Type of TBF
+}
+
+
+
+
+
+
+PRIM 	CGRLC_UL_TBF_IND 	0x80014098
+{
+ 	access_type 	 ; Access Type
+ 	ra_prio 	 ; Radio Priority
+ 	nr_blocks 	 ; Number of blocks
+ 	llc_prim_type 	 ; LLC Primitive type
+ 	peak 	 ; Peak value
+ 	rlc_oct_cnt 	 ; RLC octet count
+ 	tbf_est_pacch 	 	%REL99 AND TI_PS_FF_TBF_EST_PACCH% ; TBF est on PACCH
+}
+
+
+
+
+
+
+PRIM 	CGRLC_DATA_REQ 	0x80060098
+{
+ 	blk_owner 	 ; Block Owner
+ 	data_array 	[MAX_CTRL_MSG_SIZE] 	 ; Data array
+}
+
+
+
+
+
+
+PRIM 	CGRLC_DATA_IND 	0x80024098
+{
+ 	fn 	 ; Received frame number
+ 	tn 	 ; Timeslot number
+ 	data_array 	[MAX_CTRL_MSG_SIZE] 	 ; Data array
+}
+
+
+
+
+
+
+PRIM 	CGRLC_POLL_REQ 	0x80070098
+{
+ 	poll_fn 	 ; Poll frame number
+ 	tn 	 ; Timeslot number
+ 	poll_b_type 	 ; Poll burst type
+ 	ctrl_ack 	 ; Ctrl_ack
+}
+
+
+
+
+
+
+PRIM 	CGRLC_ACCESS_STATUS_REQ 	0x80080098
+{
+}
+
+
+
+
+
+
+PRIM 	CGRLC_CTRL_MSG_SENT_IND 	0x80034098
+{
+}
+
+
+
+
+
+
+PRIM 	CGRLC_STARTING_TIME_IND 	0x80044098
+{
+ 	tbf_mode 	 ; Type of TBF
+ 	tfi 	 ; TFI value
+}
+
+
+
+
+
+
+PRIM 	CGRLC_T3192_STARTED_IND 	0x80054098
+{
+}
+
+
+
+
+
+
+PRIM 	CGRLC_CONT_RES_DONE_IND 	0x80064098
+{
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TA_VALUE_IND 	0x80074098
+{
+ 	ta_value 	 ; Timing Advance Value
+}
+
+
+
+
+
+
+PRIM 	CGRLC_STATUS_IND 	0x80084098
+{
+ 	failure 	 ; Lower layer failure
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TEST_MODE_REQ 	0x80090098
+{
+ 	no_of_pdus 	 ; Number of PDUs
+ 	dl_timeslot_offset 	 ; Downlink Timeslot Offset
+ 	test_mode_flag 	 ; Test Mode Flag
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TEST_MODE_CNF 	0x80094098
+{
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TEST_END_REQ 	0x800A0098
+{
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TRIGGER_IND 	0x800A4098
+{
+ 	prim_type 	 ; Type of primitive
+}
+
+
+
+
+
+
+PRIM 	CGRLC_STANDBY_STATE_IND 	0x800B4098
+{
+}
+
+
+
+
+
+
+PRIM 	CGRLC_READY_STATE_IND 	0x800C4098
+{
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TA_VALUE_REQ 	0x800B0098
+{
+ 	ta_value 	 ; Timing Advance Value
+}
+
+
+
+
+
+
+PRIM 	CGRLC_INT_LEVEL_REQ 	0x800C0098
+{
+ 	ilev 	[MAX_TIMESLOTS] 	 ; Interference Level
+}
+
+
+
+
+
+
+PRIM 	CGRLC_TEST_MODE_IND 	0x800E4098
+{
+ 	test_mode_flag 	 ; indicate the type of testmode
+}
+
+
+
+
+
+
+PRIM 	CGRLC_READY_TIMER_CONFIG_REQ 	0x800E0098
+{
+ 	t3314_val 	 ; Primitive Item
+}
+
+
+
+
+
+
+PRIM 	CGRLC_FORCE_TO_STANDBY_REQ 	0x800F0098
+{
+}
+
+
+
+
+
+
+PRIM 	CGRLC_PWR_CTRL_REQ 	0x800D0098
+{
+ 	pwr_ctrl 	 ; Power Control Information
+}
+
+
+
+
+
+
+PRIM 	CGRLC_PWR_CTRL_CNF 	0x800D4098
+{
+}
+
+
+
+
+
+
+
+
+

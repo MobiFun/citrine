@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">mnlc</DocName>
+        <DocNum Number="104" Project="8443"/>
+        <Description>
+            <Section>This section contains general information on MNLC SAP</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="8" Month="10" Year="2002"/>
+            <Author>MNC</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="8" Month="10" Year="2002"/>
+            <Author>MNC</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Prepared for review</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="25" Month="10" Year="2002"/>
+            <Author>TML</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Made constant MAX_CALLED_BCD_NO_LENGTH unique</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the MNLC SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>L_MAX_CALLED_BCD_NO_LENGTH</Alias>
+            <Value ValueType="DEC">10</Value>
+            <Comment>Max Bcd number length (digits)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>CURSOR_SMS_TEXT_140</Alias>
+            <Value ValueType="DEC">140</Value>
+            <Comment>Position SMS Message</Comment>
+        </Constant>
+        <History>
+            <Date Day="16" Month="9" Year="2002"/>
+            <Author>MNC</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="68">
+        <Description>
+            <Section>This section contains all primitives that are defined for the MNLC SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The MNLC_SMS_MEAS_REQ primitive is used to start a position request to the LC controller.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNLC_SMS_MEAS_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>LC</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnlc</DocName>
+                    <Name>reference</Name>
+                </ItemLink>
+                <Comment>Reference SMS request</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnlc</DocName>
+                    <Name>called_party_bcd_num</Name>
+                </ItemLink>
+                <Comment>Called Bcd Number</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="9" Year="2002"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MNLC_SMS_MEAS_CNF primitive transport the position data from the LC controller to ACI.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNLC_SMS_MEAS_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>LC</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnlc</DocName>
+                    <Name>reference</Name>
+                </ItemLink>
+                <Comment>Reference SMS request</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnlc</DocName>
+                    <Name>data_valid</Name>
+                </ItemLink>
+                <Comment>Cursor Data Valid</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnlc</DocName>
+                    <Name>sms_text</Name>
+                </ItemLink>
+                <Control>[CURSOR_SMS_TEXT_140]</Control>
+                <Comment>Cursor SMS</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="9" Year="2002"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the MNLC SAP</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The parameter defines the called Bcd number.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>called_party_bcd_num</Name>
+                <Comment>called Party Bcd number</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnlc</DocName>
+                    <Name>number_length</Name>
+                </ItemLink>
+                <Comment>Number Length</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnlc</DocName>
+                    <Name>bcd</Name>
+                </ItemLink>
+                <Control>[L_MAX_CALLED_BCD_NO_LENGTH]</Control>
+                <Comment>Bcd Number</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="16" Month="9" Year="2002"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the MNLC SAP</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter specifies the identification number for call.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>reference</Name>
+                <Type>U16</Type>
+                <Comment>Reference</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="9" Year="2002"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the called Bcd number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>bcd</Name>
+                <Type>U8</Type>
+                <Comment>Bcd Number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="9" Year="2002"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines if the calculated data is valid or not.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data_valid</Name>
+                <Type>U8</Type>
+                <Comment>Cursor Data Valid</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnlc</DocName>
+                <Name>VAL_data_valid</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="9" Year="2002"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the number of decimal digits in the Bcd number</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>number_length</Name>
+                <Type>U8</Type>
+                <Comment>Number of decimal digits in the Bcd number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="9" Year="2002"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines the SMS text</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sms_text</Name>
+                <Type>U8</Type>
+                <Comment>SMS text</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="9" Year="2002"/>
+                <Author>MNC</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the MNLC SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_data_valid</Name>
+                <Comment>values for data_valid</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DATA_VALID</Alias>
+                <Comment/>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DATA_INVALID</Alias>
+                <Comment/>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

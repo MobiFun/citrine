@@ -1,0 +1,11 @@
+# This configuration builds an experimental ramImage that runs on the
+# Mot C155/C156 target and includes the GSM protocol stack.  Control is via
+# AT commands over RVTMUX (no UI).  Flash is not touched; FFS is in RAM and
+# initialized blank on every boot.
+
+target	c155
+feature	gsm
+feature	at-rvtmux
+
+feature	etm
+feature	tmffs2

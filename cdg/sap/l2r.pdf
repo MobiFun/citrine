@@ -1,0 +1,406 @@
+;********************************************************************************
+;*** File           : l2r.pdf
+;*** Creation       : Wed Mar 11 09:58:14 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : l2r
+;*** Document No.   : 8411.102.01.124
+;*** Document Date  : 2001-10-31
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: TVO
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:44:22 2007"
+PRAGMA 	LAST_MODIFIED 	"2001-10-31"
+PRAGMA 	ID_AND_VERSION 	"8411.102.01.124"
+
+
+
+CONST 	L2R_K_MS_IWF_MIN 	0 	; window size ms->iwf (min)
+CONST 	L2R_K_MS_IWF_MAX 	61 	; window size ms->iwf (max)
+CONST 	L2R_K_MS_IWF_DEF 	61 	; window size ms->iwf (default)
+CONST 	L2R_K_IWF_MS_MIN 	0 	; window size iwf->ms (min)
+CONST 	L2R_K_IWF_MS_MAX 	61 	; window size iwf->ms (max)
+CONST 	L2R_K_IWF_MS_DEF 	61 	; window size iwf->ms (default)
+CONST 	L2R_T1_MIN_FULLRATE_14400 	42 	; acknowledge timer (min at fullrate 14400)
+CONST 	L2R_T1_MIN_FULLRATE_9600 	38 	; acknowledge timer (min at fullrate 9600)
+CONST 	L2R_T1_MIN_FULLRATE_4800 	44 	; acknowledge timer (min at fullrate 4800)
+CONST 	L2R_T1_MIN_HALFRATE_4800 	60 	; acknowledge timer (min at halfrate 4800)
+CONST 	L2R_T1_MIN 	38 	; acknowledge timer ( >>> to be removed !!! <<<)
+CONST 	L2R_T1_MAX 	255 	; acknowledge timer (max at all rates)
+CONST 	L2R_T1_DEF_FULLRATE_14400 	52 	; acknowledge timer (default at fullrate 14400)
+CONST 	L2R_T1_DEF_FULLRATE_9600 	48 	; acknowledge timer (default at fullrate 9600)
+CONST 	L2R_T1_DEF_FULLRATE_4800 	54 	; acknowledge timer (default at fullrate 4800)
+CONST 	L2R_T1_DEF_HALFRATE_4800 	78 	; acknowledge timer (default at halfrate 4800)
+CONST 	L2R_T1_DEF 	48 	; acknowledge timer ( >>> to be removed !!! <<<)
+CONST 	L2R_T2_MIN 	0 	; reply delay (min)
+CONST 	L2R_T2_MAX 	255 	; reply delay (max)
+CONST 	L2R_T2_DEF 	20 	; reply delay (default)
+CONST 	L2R_N2_MIN 	1 	; retransmission attempts (min)
+CONST 	L2R_N2_MAX 	255 	; retransmission attempts (max)
+CONST 	L2R_N2_DEF 	6 	; retransmission attempts (default)
+CONST 	L2R_PT_MIN 	0 	; type of data compression (min)
+CONST 	L2R_PT_MAX 	0 	; type of data compression (max)
+CONST 	L2R_PT_DEF 	0 	; type of data compression (default)
+CONST 	L2R_P0_MIN 	0 	; v.42 bis data compression direction (min)
+CONST 	L2R_P0_MAX 	0 	; v.42 bis data compression direction (max)
+CONST 	L2R_P0_DEF 	0 	; v.42 bis data compression direction (default)
+CONST 	L2R_P1_MIN 	512 	; v.42 bis number of possible codewords (min)
+CONST 	L2R_P1_MAX 	65535 	; v.42 bis number of possible codewords (max)
+CONST 	L2R_P1_DEF 	512 	; v.42 bis number of possible codewords (default)
+CONST 	L2R_P2_MIN 	6 	; v.42 bis maximum encodable data string length (min)
+CONST 	L2R_P2_MAX 	250 	; v.42 bis maximum encodable data string length (max)
+CONST 	L2R_P2_DEF 	6 	; v.42 bis maximum encodable data string length (default)
+CONST 	L2R_BYTES_PER_PRIM_MIN 	25 	; bytes per primitive (min)
+CONST 	L2R_BYTES_PER_PRIM_MAX 	250 	; bytes per primitive (max)
+CONST 	L2R_BYTES_PER_PRIM_DEF 	250 	; bytes per primitive (default)
+CONST 	L2R_BUFFER_SIZE_MIN 	2048 	; receive and transmit buffer size in bytes (min)
+CONST 	L2R_BUFFER_SIZE_MAX 	4096 	; receive and transmit buffer size in bytes (max)
+CONST 	L2R_BUFFER_SIZE_DEF 	2048 	; receive and transmit buffer size in bytes (default)
+CONST 	L2R_ENTITY_NAME_LEN 	6 	; maximum length of entity name including NULL
+
+
+
+VALTAB 	VAL_pt
+VAL 	0 	L2R_COMPR_TYPE_V42BIS 	"V.42bis"
+
+VALTAB 	VAL_p0
+VAL 	0 	L2R_COMP_DIR_NONE 	"compress in neither direction"
+VAL 	1 	L2R_COMP_DIR_TRANSMIT 	"compress in uplink direction only"
+VAL 	2 	L2R_COMP_DIR_RECEIVE 	"compress in downlink direction only"
+VAL 	3 	L2R_COMP_DIR_BOTH 	"compress in both directions"
+
+VALTAB 	VAL_uil2p
+VAL 	0 	L2R_ISO6429 	"ISO6429, codeset 0, DC1/DC3 (with flow control)"
+VAL 	1 	L2R_COPnoFlCt 	"Character Oriented Protocol with No Flow Control"
+
+VALTAB 	VAL_rate
+VAL 	0 	L2R_HALFRATE_4800 	"halfrate 4,8/6 kBit"
+VAL 	1 	L2R_FULLRATE_4800 	"fullrate 4,8/6 kBit"
+VAL 	2 	L2R_FULLRATE_9600 	"fullrate 9,6/12 kBit"
+VAL 	3 	L2R_FULLRATE_14400 	"fullrate 13,4/14,4 kBit"
+
+VALTAB 	VAL_ack_flg
+VAL 	0 	L2R_ACK 	"acknowledged"
+VAL 	1 	L2R_NAK 	"not acknowledged"
+
+VALTAB 	VAL_cause
+VAL 	0x0000 	CAUSE_DUMMY 	"The following causes can occur within this primitive: all those possible within the RLP_ERROR_IND primitive of  the RLP SAP"
+
+VALTAB 	VAL_dti_conn
+VAL 	0 	L2R_CONNECT_DTI 	"Connect DTI to L2R"
+VAL 	1 	L2R_DISCONNECT_DTI 	"Connect DTI to upper layer"
+
+VALTAB 	VAL_link_id
+VAL 	0 	L2R_LINK_ID_DEFAULT 	"Default link id"
+
+VALTAB 	VAL_dti_direction
+VAL 	0 	L2R_DTI_NORMAL 	"DTI used normally"
+VAL 	1 	L2R_DTI_INVERTED 	"DTI is inverted"
+
+
+
+
+VAR 	rlp_vers 	"rlp version number" 	B
+
+
+VAR 	k_ms_iwf 	"window size ms -> iwf" 	S
+
+
+VAR 	k_iwf_ms 	"window size iwf -> ms" 	S
+
+
+VAR 	t1 	"acknowledge timer" 	B
+
+
+VAR 	t2 	"reply delay" 	B
+
+
+VAR 	n2 	"maximum number of retransmission attempts" 	B
+
+
+VAR 	pt 	"type of data compression" 	B
+
+VAL 	@p_l2r - VAL_pt@ 	
+
+VAR 	p0 	"v.42bis data compression direction" 	B
+
+VAL 	@p_l2r - VAL_p0@ 	
+
+VAR 	p1 	"v.42bis number of possible codewords" 	S
+
+
+VAR 	p2 	"v.42bis maximum encodable string length" 	B
+
+
+VAR 	uil2p 	"user information layer 2 protocol" 	B
+
+VAL 	@p_l2r - VAL_uil2p@ 	
+
+VAR 	bytes_per_prim 	"bytes per primitive" 	S
+
+
+VAR 	buffer_size 	"buffer size in bytes" 	S
+
+
+VAR 	rate 	"transmission rate" 	B
+
+VAL 	@p_l2r - VAL_rate@ 	
+
+VAR 	ack_flg 	"acknowledge flag" 	B
+
+VAL 	@p_l2r - VAL_ack_flg@ 	
+
+VAR 	cause 	"error cause" 	S
+
+VAL 	@p_l2r - VAL_cause@ 	
+
+VAR 	error_rate 	"error_rate" 	L
+
+
+VAR 	dti_conn 	"DTI connect" 	B
+
+VAL 	@p_l2r - VAL_dti_conn@ 	
+
+VAR 	entity_name 	"name of an neighbour entity" 	B
+
+
+VAR 	link_id 	"Link identifier" 	L
+
+VAL 	@p_l2r - VAL_link_id@ 	
+
+VAR 	dti_direction 	"DTI direction" 	B
+
+VAL 	@p_l2r - VAL_dti_direction@ 	
+
+
+
+
+
+
+
+; L2R_ACTIVATE_REQ 	0x80000012
+; L2R_ACTIVATE_CNF 	0x80004012
+; L2R_DEACTIVATE_REQ 	0x80010012
+; L2R_DEACTIVATE_CNF 	0x80014012
+; L2R_CONNECT_REQ 	0x80020012
+; L2R_CONNECT_CNF 	0x80024012
+; L2R_CONNECT_IND 	0x80034012
+; L2R_DISC_REQ 	0x80030012
+; L2R_DISC_CNF 	0x80044012
+; L2R_DISC_IND 	0x80054012
+; L2R_XID_IND 	0x800A4012
+; L2R_ERROR_IND 	0x800B4012
+; L2R_RESET_IND 	0x800C4012
+; L2R_STATISTIC_IND 	0x800D4012
+; L2R_DTI_REQ 	0x80070012
+; L2R_DTI_CNF 	0x800E4012
+; L2R_DTI_IND 	0x800F4012
+; L2R_CHANGE_RATE_REQ 	0x80080012
+
+
+
+PRIM 	L2R_ACTIVATE_REQ 	0x80000012
+{
+ 	k_ms_iwf 	 ; window size ms->iwf
+ 	k_iwf_ms 	 ; window size iwf->ms
+ 	t1 	 ; acknowledge timer
+ 	t2 	 ; reply delay
+ 	n2 	 ; retransmission attempts
+ 	pt 	 ; type of data compression
+ 	p0 	 ; v.42 bis data compression direction
+ 	p1 	 ; v.42 bis number of possible codewords
+ 	p2 	 ; v.42 bis maximum encodable data string length
+ 	uil2p 	 ; user information layer 2 protocol
+ 	bytes_per_prim 	 ; bytes per primitive
+ 	buffer_size 	 ; receive and transmit buffer size in bytes
+ 	rate 	 ; transmission rate
+}
+
+
+
+
+
+
+PRIM 	L2R_ACTIVATE_CNF 	0x80004012
+{
+ 	ack_flg 	 ; acknowledge flag
+}
+
+
+
+
+
+
+PRIM 	L2R_DEACTIVATE_REQ 	0x80010012
+{
+}
+
+
+
+
+
+
+PRIM 	L2R_DEACTIVATE_CNF 	0x80014012
+{
+}
+
+
+
+
+
+
+PRIM 	L2R_CONNECT_REQ 	0x80020012
+{
+}
+
+
+
+
+
+
+PRIM 	L2R_CONNECT_CNF 	0x80024012
+{
+ 	ack_flg 	 ; acknowledge flag
+}
+
+
+
+
+
+
+PRIM 	L2R_CONNECT_IND 	0x80034012
+{
+}
+
+
+
+
+
+
+PRIM 	L2R_DISC_REQ 	0x80030012
+{
+}
+
+
+
+
+
+
+PRIM 	L2R_DISC_CNF 	0x80044012
+{
+}
+
+
+
+
+
+
+PRIM 	L2R_DISC_IND 	0x80054012
+{
+}
+
+
+
+
+
+
+PRIM 	L2R_XID_IND 	0x800A4012
+{
+ 	rlp_vers 	 ; RLP version no.
+ 	k_ms_iwf 	 ; window size ms->iwf
+ 	k_iwf_ms 	 ; window size iwf->ms
+ 	t1 	 ; acknowledge timer
+ 	t2 	 ; reply delay
+ 	n2 	 ; retransmission attempts
+ 	pt 	 ; type of data compression
+ 	p0 	 ; v.42 bis data compression direction
+ 	p1 	 ; v.42 bis number of possible codewords
+ 	p2 	 ; v.42 bis maximum encodable data string length
+}
+
+
+
+
+
+
+PRIM 	L2R_ERROR_IND 	0x800B4012
+{
+ 	cause 	 ; error cause
+}
+
+
+
+
+
+
+PRIM 	L2R_RESET_IND 	0x800C4012
+{
+}
+
+
+
+
+
+
+PRIM 	L2R_STATISTIC_IND 	0x800D4012
+{
+ 	error_rate 	 ; error rate
+}
+
+
+
+
+
+
+PRIM 	L2R_DTI_REQ 	0x80070012
+{
+ 	dti_conn 	 ; DTI connect
+ 	entity_name 	[L2R_ENTITY_NAME_LEN] 	 ; entity name
+ 	link_id 	 ; link identifier
+ 	dti_direction 	 ; DTI direction
+}
+
+
+
+
+
+
+PRIM 	L2R_DTI_CNF 	0x800E4012
+{
+ 	dti_conn 	 ; DTI connect
+ 	link_id 	 ; link identifier
+}
+
+
+
+
+
+
+PRIM 	L2R_DTI_IND 	0x800F4012
+{
+ 	link_id 	 ; link identifier
+}
+
+
+
+
+
+
+PRIM 	L2R_CHANGE_RATE_REQ 	0x80080012
+{
+ 	rate 	 ; transmission rate
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,977 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">8010_142_smreg_sap</DocName>
+        <DocNum Number="142" Project="8010"/>
+        <Description>
+            <Section>This document is part of the High Level Design (HLD) for the TI G23-Dual-mode protocol stack. The document describes the service access point between the Session Management (SM) entity and the ACI entity.</Section>
+            <Section>This document is based on the functionality and services described in the specifications [3G 24.007], [3G 24.008], [3G 23.107], as well as the requirements in [TI 8010.968 SM REQ] and [TI 8010.944 DM HLS].</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document based on 8441.108   smreg.doc</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>HEM</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Status changed to Accepted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="30" Month="1" Year="2003"/>
+            <Author>GSO</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated references</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="12" Month="2" Year="2003"/>
+            <Author>GSO</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated Pragma table</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="7" Month="4" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated qos types: sm_qos changed to qos. sm_min_qos moved to NAS include and renamed.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="02"/>
+            <Date Day="2" Month="5" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>SMREG prefixes removed numerous places due to autoprefixing</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="02"/>
+            <Date Day="3" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="02"/>
+            <Date Day="21" Month="7" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added TFT parameter to SMREG_PDP_ACTIVATE_REQ. Removed now-redundant valid flags for qos and ip_address types. Removed redundant "direc" type from SMREG_PDP_ACTIVATE_REQ.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="02"/>
+            <Date Day="30" Month="7" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Added deactivation cause parameter to SMREG_PDP_DEACTIVATE_IND. Added comp_params parameter to SMREG_PDP_MODIFY_IND. Added PDP_EMPTY value to pdp_type.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="02"/>
+            <Date Day="22" Month="8" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Removed unused apn parameter from SMREG_PDP_ACTIVATE_REJ_RES.</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the 8010_142_SMREG_SAP SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">SMREG</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>KBS</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </PragmasSection>
+    <PrimitivesSection PrimIDType="BIT16" SAPid="38">
+        <Description>
+            <Section>This section contains all primitives that are defined for the 8010_142_SMREG_SAP SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by ACI to update RAT (Radio Access Technology) and core network release values in SM. ACI sends this primitive the first time the UE succesfully attaches on a PS service-enabled network, and subsequently after every succesful attach on a cell where RAT or core network release parameters differ from the currently active ones (as seen by SM).</Section>
+                <Section>The RAT parameter is used by UPM - SM merely routes the information to UPM in subsequent activation primitives.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_CONFIGURE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>rat</Name>
+                </ItemLink>
+                <Comment>RAT</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sgsn_rel</Name>
+                </ItemLink>
+                <Comment>network release</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MS initiates a PDP context activation. SM is requested to send the ACTIVATE PDP CONTEXT REQUEST message to the network. The PDP context is pending activation.</Section>
+                <Section>Compression parameters in comp_params are used in GSM only.</Section>
+                <Section>The DTI parameters are used by UPM.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_ACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>Transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>comp_params</Name>
+                </ItemLink>
+                <Comment>Compression parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Comment>Requested quality of service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>min_qos</Name>
+                </ItemLink>
+                <Comment>Minimum requested QoS</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_142_smreg_sap</DocName>
+                    <Name>pdp_type</Name>
+                </ItemLink>
+                <Comment>PDP type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ip_address</Name>
+                </ItemLink>
+                <Comment>PDP address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_142_smreg_sap</DocName>
+                    <Name>apn</Name>
+                </ItemLink>
+                <Comment>Access point name</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft</Name>
+                </ItemLink>
+                <Comment>Traffic Flow Template; R99</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>PDP config options</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="4" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>smreg_ prefix removed from smreg_apn.</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed "direc" parameter and added "tft" parameter.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MS initiated PDP context activation succeeded. The network confirmed the PDP context activation, i.e. the MS received an ACTIVATE_PDP_CONTEXT_ACCEPT message from the network. The PDP context is active.</Section>
+                <Section>Compression parameters in "comp_params" are used in GSM only.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_ACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_142_smreg_sap</DocName>
+                    <Name>pdp_type</Name>
+                </ItemLink>
+                <Comment>PDP type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Comment>Quality of service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>comp_params</Name>
+                </ItemLink>
+                <Comment>Compression parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ip_address</Name>
+                </ItemLink>
+                <Comment>PDP address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Comment>PDP config options</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used for informing ACI that the network asked for a PDP context activation. The REQUEST_PDP_CONTEXT_ACTIVATION message was received from the network. The MS reacts either by initiating a new PDP context or by rejecting the network's request.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_ACTIVATE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_142_smreg_sap</DocName>
+                    <Name>pdp_type</Name>
+                </ItemLink>
+                <Comment>PDP type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ip_address</Name>
+                </ItemLink>
+                <Comment>PDP address</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_142_smreg_sap</DocName>
+                    <Name>apn</Name>
+                </ItemLink>
+                <Comment>access point name</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="4" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>smreg_ prefix removed from smreg_apn</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The PDP context activation failed, the PDP context is not activated. The cause parameter details the cause of the rejection.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_ACTIVATE_REJ</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>Cause of rejection</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive replaces SMREG_PDP_ACTIVATE_RES. It is a new primitive introduced in R99 [3G 24.007, 6.5.1.14]. The primitive is used when an MT context activation occurs and ACI is not able to set up another context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_ACTIVATE_REJ_RES</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>cause of rejection</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="4" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>smreg_ prefix removed from smreg_apn</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="8" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed unused apn parameter.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MS initiates a secondary PDP context activation. SM is requested to send the ACTIVATE SECONDARY PDP CONTEXT REQUEST message to the network. The PDP context is pending activation.</Section>
+                <Section>Compression parameters in "comp_params" are used in GSM only.</Section>
+                <Section>The DTI parameters are used by UPM.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_ACTIVATE_SEC_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>pri_nsapi</Name>
+                </ItemLink>
+                <Comment>Primary NSAPI</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ti</Name>
+                </ItemLink>
+                <Comment>Transaction identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>comp_params</Name>
+                </ItemLink>
+                <Comment>Compression parameters</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Comment>Requested quality of service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>min_qos</Name>
+                </ItemLink>
+                <Comment>Minimum requested QoS</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft</Name>
+                </ItemLink>
+                <Comment>Traffic flow template</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MS initiated secondary PDP context activation succeeded. The network confirmed the secondary PDP context activation, i.e. the MS received an ACTIVATE SECONDARY PDP CONTEXT ACCEPT message from the network. The PDP context is active. SNDCP or UPM has established any necessary links.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_ACTIVATE_SEC_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Comment>quality of service</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The secondary PDP context activation failed, the PDP context is not activated. One reason for failure is that the network rejected the activation attempt, which means the ACTIVATE SECONDARY PDP CONTEXT FAILURE message was received. Otherwise, SNDCP or UBM were unable to establish the needed links.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_ACTIVATE_SEC_REJ</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>cause of rejection</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MS initiates a PDP context deactivation: SM is requested to send a DEACTIVATE_PDP_CONTEXT_REQUEST message to the network. The PDP context is pending deactivation.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_DEACTIVATE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>Set of network layer service access point identifiers</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>rel_ind</Name>
+                </ItemLink>
+                <Comment>Local deactivation flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The MS initiated PDP context deactivation has been done. The network confirmed the PDP context deactivation, i.e. the DEACTIVATE_PDP_CONTEXT_ACCEPT message has been received from the network. The PDP context has been deactivated.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_DEACTIVATE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>Set of network layer service access point identifiers</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>A network initiated PDP context deactivation has been performed. A DEACTIVATE_PDP_CONTEXT_REQUEST message has been received from the network. The MS has acknowledged with DEACTIVATE_PDP_CONTEXT_ACCEPT. The PDP context has been deactivated.</Section>
+                <Section>RABs and LLC links are released after this primitive is sent, in order to allow ACI to quickly disable the user plane once the context is deactivated.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_DEACTIVATE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>Set of network layer service access point identifiers</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>Deactivation cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>A MS initiated PDP context modification is requested. The MODIFY PDP CONTEXT REQUEST message is sent to the network and pending acceptance. The affected PDP context is identified via the NSAPI value included in the primitive.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_MODIFY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>ACI</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Comment>requested quality of service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>min_qos</Name>
+                </ItemLink>
+                <Comment>minimum quality of service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>tft</Name>
+                </ItemLink>
+                <Comment>traffic flow template</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed optional flag from qos, min_qos. Now in union ctrl.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>An MS initiated PDP context modification has been accepted by the network. The modification is acknowledged from the network via the MODIFY PDP CONTEXT ACCEPT message.</Section>
+                <Section>GSM: LLC link is adjusted according to the QoS returned from the network.</Section>
+                <Section>UMTS: RLC link is adjusted according to the QoS returned from the network.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_MODIFY_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Comment>quality of service</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed optional flag from qos. Now in union controller.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>A network initiated PDP context modification has been performed. A MODIFY_PDP_CONTEXT_REQUEST message was received from the network and acknowledged by sending a MODIFY_PDP_CONTEXT_ACCEPT message. The fields present indicate which parameters where changed.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_MODIFY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>Network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Comment>Quality of service; Optional</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>ip_address</Name>
+                </ItemLink>
+                <Comment>PDP address; R99, Optional</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed optional flag from qos, ip_address. Now in union ctrl.</Comment>
+            </History>
+            <History>
+                <Date Day="30" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Added optional comp_params parameter.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>An MS initiated PDP context mofication has been rejected by the network. The rejection is signalled from the network via the MODIFY PDP CONTEXT REJECT message with the cause code. The PDP context remains active without change of QoS.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SMREG_PDP_MODIFY_REJ</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>ACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>cause of rejection</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>The purpose of the access point name information element is to identify the packet data network to which the GPRS user wishes to connect. The Access Point Name is a label or a full qualified domain name according to DNS naming conventions (see [RFC 1035], [3G 23.003]). The access point name is a type 4 information element with a minimum length of 3 octets and a maximum length of 102 octets.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>apn</Name>
+                <Comment>access point name</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_142_smreg_sap</DocName>
+                    <Name>apn_buf</Name>
+                </ItemLink>
+                <Control>[3..102]</Control>
+                <Comment>Access point name value</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="4" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>smreg_ prefix removed from smreg_apn.</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>The purpose of the access point name information element is to identify the packet data network to which the GPRS user wishes to connect. The Access Point Name is a label or a full qualified domain name according to DNS naming conventions (see [RFC 1035], [3G 23.003]). The access point name is a type 4 information element with a minimum length of 3 octets and a maximum length of 102 octets.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>apn_buf</Name>
+                <Type>U8</Type>
+                <Comment>Access point name value</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="4" Year="2003"/>
+                <Author>KBS</Author>
+                <Comment>smreg_ prefix removed from smreg_apn.</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This parameter is used to define the type of the Packet Data Protocol.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pdp_type</Name>
+                <Type>U8</Type>
+                <Comment>PDP type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">8010_142_smreg_sap</DocName>
+                <Name>VAL_pdp_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="24" Month="7" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Added PDP_EMPTY constant.</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the 8010_142_SMREG_SAP SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_pdp_type</Name>
+                <Comment>values for pdp_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>PDP_PPP</Alias>
+                <Comment>PDP type PPP</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">15</Value>
+                <Alias>PDP_EMPTY</Alias>
+                <Comment>Dynamic address assignment in effect</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">33</Value>
+                <Alias>PDP_IPV4</Alias>
+                <Comment>IP version 4</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">87</Value>
+                <Alias>PDP_IPV6</Alias>
+                <Comment>IP version 6</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="27" Month="1" Year="2004"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

@@ -1,0 +1,265 @@
+;********************************************************************************
+;*** File           : 8010_136_simdrv_sap.pdf
+;*** Creation       : Wed Mar 11 09:57:50 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_136_simdrv_sap
+;*** Document No.   : 8010.136.03.009
+;*** Document Date  : 2004-06-10
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: FDU
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:27:56 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-06-10"
+PRAGMA 	ID_AND_VERSION 	"8010.136.03.009"
+PRAGMA 	PREFIX 	SIMDRV 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Adds enumerations in the .val file.
+PRAGMA 	ENABLE_GROUP 	YES 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+CONST 	SIZE_ATR_INFO 	0x21 	; The maximum length of the data returned from the ATR procedure
+ 	GROUP uicc
+CONST 	MIN_RESULT 	0x01 	; Minimum size of the response of any given command
+ 	GROUP uicc
+CONST 	MAX_RESULT 	0x100 	; Maximum size of the response of any given command
+ 	GROUP uicc
+CONST 	MIN_DATA_SIZE 	0x01 	; Minimum length of a data element
+ 	GROUP uicc
+CONST 	MAX_DATA_SIZE 	0xFF 	; Maximum length of a data element
+ 	GROUP uicc
+CONST 	MAX_READERS 	0x02 	; Maximum number of card readers supported.
+ 	GROUP uicc
+
+
+
+VALTAB 	VAL_reset_return_val
+ 	GROUP uicc
+VAL 	0 	SIM_INSERTED 	"A SIM is inserted and ATR/PPS was successful"
+VAL 	1 	SIM_NOT_INSERTED 	"No SIM inserted (hardware detected)"
+VAL 	2 	INVALID_CARD 	"Card is not responding or gives unintelligible answers, communications time out."
+VAL 	3 	ME_FAILURE 	"Power management related problems, e.g. voltage selection"
+VAL 	4 	IMPROPER_CALL_BACK 	"simdrv_register function called with pointer improperly set, e.g. NULL."
+VAL 	5 	ME_READER_NOT_AVAILABLE 	"The reader requested is not available"
+
+VALTAB 	VAL_len
+ 	GROUP uicc
+VAL 	0x00 - 0x100 	"Range of Length of Data"
+VAL 	0xFFFF 	LENGTH_UNKNOWN 	"Indicating that the length expected is unknown."
+
+VALTAB 	VAL_sw1_2
+ 	GROUP uicc
+VAL 	0x0001 	ERR_NOCARD 	"No SIM inserted (hardware detected)"
+VAL 	0x0002 	ERR_NOT_RESET 	"A reset has not been performed on the driver with the requested Id."
+VAL 	0x0003 	ERR_ME_FAIL 	"Unrecoverable ME failure (for instance interrupt fails to occur)"
+VAL 	0x0004 	ERR_RETRY_FAIL 	"ME/SIM communication failed after certain retries, SIM reset required"
+VAL 	0x0005 	ERR_PARAM_WRONG 	"A driver function is called with invalid parameters"
+
+VALTAB 	VAL_cla
+ 	GROUP uicc
+VAL 	0xA0 	GSM_CLASS_BYTE 	"GSM Class byte according to [GSM 11.11 / 3GPP 51.011]"
+VAL 	0x80 	UMTS_CLASS_BYTE 	"UMTS Class byte according to [ETSI 102 221 10.1.2]"
+VAL 	0x00 	UICC_CLASS_BYTE 	"UICC Class byte according to [ISO 7816-4]"
+
+VALTAB 	VAL_ins
+ 	GROUP uicc
+VAL 	0xA4 	INS_SELECT 	"Select Instruction"
+VAL 	0xF2 	INS_STATUS 	"Status Instruction"
+VAL 	0xB0 	INS_READ_BINARY 	"Read Binary Instruction"
+VAL 	0xD6 	INS_UPDATE_BINARY 	"Update Binary Instruction"
+VAL 	0xB2 	INS_READ_RECORD 	"Read Record Instruction"
+VAL 	0xDC 	INS_UPDATE_RECORD 	"Update Record Instruction"
+VAL 	0xA2 	INS_SEEK 	"Seek Instruction"
+VAL 	0x32 	INS_INCREASE 	"Increase Instruction"
+VAL 	0x20 	INS_VERIFY_CHV 	"Verify Chv Instruction"
+VAL 	0x24 	INS_CHANGE_CHV 	"Change Chv Instruction"
+VAL 	0x26 	INS_DISABLE_CHV 	"Disable Chv Instruction"
+VAL 	0x28 	INS_ENABLE_CHV 	"Ensable Chv Instruction"
+VAL 	0x2C 	INS_UNBLOCK_CHV 	"Unblock Chv Instruction"
+VAL 	0x04 	INS_INVALIDATE 	"Invalidate Instruction"
+VAL 	0x44 	INS_REHABILITATE 	"Rehabilitate Instruction"
+VAL 	0x88 	INS_AUTHENTICATE 	"Run GSM Algorithm (2/2.5G) / Authenticate (3G) Instruction"
+VAL 	0x10 	INS_TERMINAL_PROFILE 	"Terminal Profile Instruction"
+VAL 	0xC2 	INS_ENVELOPE 	"Envelope Instruction"
+VAL 	0x12 	INS_FETCH 	"Fetch Instruction"
+VAL 	0x14 	INS_TERMINAL_RESPONSE 	"Terminal Response Instruction"
+VAL 	0xC0 	INS_GET_RESPONSE 	"Get Response Instruction"
+
+VALTAB 	VAL_voltage_select
+ 	GROUP uicc
+VAL 	0 	REQ_VOLTAGE_SEL 	"The SIM reader driver shall perform voltage selection"
+VAL 	1 	OMIT_VOLTAGE_SEL 	"The SIM reader driver shall restart with the current voltage"
+
+VALTAB 	VAL_config_requested
+ 	GROUP uicc
+VAL 	0x00 	OMIT_CONFIG_CHARACTERISTICS 	"PS Shall not retrieve Configuration Characteristics"
+VAL 	0x01 	REQUEST_CONFIG_CHARACTERISTICS 	"PS Shall retrieve Configuration Characteristics"
+
+VALTAB 	VAL_reader_id
+ 	GROUP uicc
+VAL 	01 - MAX_READERS 	"Range of Id's of readers"
+
+
+
+
+VAR 	insert_ptr 	"insert pointer" 	L
+ 	GROUP uicc
+
+
+VAR 	remove_ptr 	"remove pointer" 	L
+ 	GROUP uicc
+
+
+VAR 	atr_string 	"SIM Card Answer to reset string" 	B
+ 	GROUP uicc
+
+
+VAR 	reset_return_val 	"Reset return value" 	B
+ 	GROUP uicc
+
+VAL 	@p_8010_136_simdrv_sap - VAL_reset_return_val@ 	
+
+VAR 	result 	"Result byte" 	B
+ 	GROUP uicc
+
+
+VAR 	len 	"Maximum length of expected data" 	S
+ 	GROUP uicc
+
+VAL 	@p_8010_136_simdrv_sap - VAL_len@ 	
+
+VAR 	data 	"Data element" 	B
+ 	GROUP uicc
+
+
+VAR 	sw1_2 	"Status Words" 	S
+ 	GROUP uicc
+
+VAL 	@p_8010_136_simdrv_sap - VAL_sw1_2@ 	
+
+VAR 	cla 	"Class Byte" 	B
+ 	GROUP uicc
+
+VAL 	@p_8010_136_simdrv_sap - VAL_cla@ 	
+
+VAR 	ins 	"instruction code" 	B
+ 	GROUP uicc
+
+VAL 	@p_8010_136_simdrv_sap - VAL_ins@ 	
+
+VAR 	voltage_select 	"Perform Voltage Selection" 	B
+ 	GROUP uicc
+
+VAL 	@p_8010_136_simdrv_sap - VAL_voltage_select@ 	
+
+VAR 	p1 	"Parameter 1 of the SIM APDU" 	B
+ 	GROUP uicc
+
+
+VAR 	p2 	"Parameter 2 of the SIM APDU" 	B
+ 	GROUP uicc
+
+
+VAR 	config_requested 	"Configuration Characteristics requested" 	B
+ 	GROUP uicc
+
+VAL 	@p_8010_136_simdrv_sap - VAL_config_requested@ 	
+
+VAR 	reader_id 	"Reader Id" 	B
+ 	GROUP uicc
+
+VAL 	@p_8010_136_simdrv_sap - VAL_reader_id@ 	
+
+VAR 	uicc_characteristics 	"UICC Characteristics" 	B
+ 	GROUP uicc
+
+
+
+
+
+COMP 	atr_string_info 	 "SIM Card Info"
+ 	GROUP uicc
+{
+ 	atr_string 	[2..SIZE_ATR_INFO] 	 ; SIM Card Answer to reset string
+}
+
+
+
+COMP 	result_info 	 "Result Buffer"
+ 	GROUP uicc
+{
+ 	len 	 ; Length of expected data
+ 	result 	DYN[MIN_RESULT..MAX_RESULT] 	 ; Result byte
+}
+
+
+
+COMP 	data_info 	 "Data element info"
+ 	GROUP uicc
+{
+ 	data 	DYN[MIN_DATA_SIZE..MAX_DATA_SIZE] 	 ; Data element
+}
+
+
+
+COMP 	cmd_header 	 "Transparent command header"
+ 	GROUP uicc
+{
+ 	cla 	 ; Class Byte value
+ 	ins 	 ; Instruction Code
+ 	p1 	 ; Parameter P1
+ 	p2 	 ; Parameter P2
+}
+
+
+
+COMP 	config_characteristics 	 "Configuration Characteristics"
+ 	GROUP uicc
+{
+ 	uicc_characteristics 	 ; UICC Characteristics
+}
+
+
+
+
+
+
+; SIMDRV_DUMMY 	0x80FF009A
+
+
+
+PRIM 	SIMDRV_DUMMY 	0x80FF009A
+ 	GROUP uicc
+{
+ 	atr_string_info 	PTR 	 ; SIM Card Info
+ 	reset_return_val 	 ; Return Value
+ 	result_info 	PTR 	 ; Result Buffer
+ 	len 	 ; Length of expected data
+ 	data_info 	PTR 	 ; Update Data Element
+ 	sw1_2 	 ; Status Words
+ 	cla 	 ; Class Byte
+ 	ins 	 ; Instruction Code
+ 	cmd_header 	 ; Transparent command header
+ 	voltage_select 	 ; Perform Voltage Selection
+ 	p1 	 ; SIM Command Parameters
+ 	p2 	 ; SIM Command Parameters
+ 	config_requested 	 ; Configuration Characteristics requested
+ 	config_characteristics 	PTR 	 ; Configuration Characteristics
+ 	reader_id 	 ; Reader Id
+ 	uicc_characteristics 	 ; UICC Characteristics
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,763 @@
+;********************************************************************************
+;*** File           : rr.pdf
+;*** Creation       : Wed Mar 11 09:58:44 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : rr
+;*** Document No.   : 6147.107.97.108
+;*** Document Date  : 2003-02-04
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: LG
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Tue Jun 3 11:14:30 2008"
+PRAGMA 	LAST_MODIFIED 	"2003-02-04"
+PRAGMA 	ID_AND_VERSION 	"6147.107.97.108"
+
+
+
+CONST 	MAX_SDU_LEN 	1 	; 
+CONST 	MAX_PLMN 	12 	; 
+CONST 	MAX_DIGITS 	16 	; 
+CONST 	SIZE_MCC 	3 	; 
+CONST 	SIZE_MNC 	3 	; 
+EXTERN CONST 	@p_gsmcom - RR_ORIGINATING_ENTITY@ 	RR_ORIGINATING_ENTITY 	; 
+CONST 	SIZE_EPLMN 	18 	; 
+CONST 	BA_BITMAP_SIZE 	16 	; 
+CONST 	KC_STRING_SIZE 	16 	; 
+
+
+
+VALTAB 	VAL_abcs
+VAL 	0 	ABCS_NORM 	"normal abort, MM->RR"
+VAL 	1 	ABCS_SIM_REM 	"SIM remove, MM->RR"
+
+VALTAB 	VAL_accc
+VAL 	0x0 - 0xFFFF 	"access control classes value"
+
+VALTAB 	VAL_v_kc
+VAL 	0 	V_KC_NOT_PRES 	"not present"
+VAL 	1 	V_KC_PRES 	"present"
+
+VALTAB 	VAL_v_bcch
+VAL 	0 	V_BCCH_NOT_PRES 	"not present"
+VAL 	1 	V_BCCH_PRES 	"present"
+
+VALTAB 	VAL_bcch
+VAL 	0 	BCCH_CH_NOT_INCL 	"channel is not included"
+VAL 	1 	BCCH_CH_INCL 	"channel is included"
+
+VALTAB 	VAL_ch_mode
+VAL 	0 	CHM_SIG_ONLY 	"signalling only"
+VAL 	1 	CHM_SPEECH 	"speech full rate or half rate version 1"
+VAL 	33 	CHM_SPEECH_V2 	"speech full rate or half rate version 2"
+VAL 	65 	CHM_SPEECH_V3 	"speech full rate or half rate version 3"
+VAL 	3 	CHM_DATA_9_6 	"data 9.6 kBit/s"
+VAL 	11 	CHM_DATA_4_8 	"data 4.8 kBit/s"
+VAL 	19 	CHM_DATA_2_4 	"data 2.4 kBit/s"
+VAL 	15 	CHM_DATA_14_4 	"data 2.4 kBit/s"
+
+VALTAB 	VAL_ch_type
+VAL 	0 	CH_SDCCH 	"SDCCH channel"
+VAL 	1 	CH_TCH_F 	"TCH Fullrate"
+VAL 	2 	CH_TCH_H 	"TCH Halfrate"
+
+VALTAB 	VAL_cksn
+VAL 	0 - 6 	"valid values"
+VAL 	7 	CKSN_RES 	"reserved"
+VAL 	255 	CKSN_NOT_PRES 	"not present"
+
+VALTAB 	VAL_ciph
+VAL 	0 	CIPH_OFF 	"ciphering off"
+VAL 	1 	CIPH_ON 	"ciphering on"
+VAL 	255 	CIPH_NOT_PRES 	"not present"
+
+VALTAB 	VAL_estcs
+VAL 	0x0400 	ESTCS_SERV_REQ_BY_MM 	"service requested by MM (Location updating or detach)"
+VAL 	0x04A0 	ESTCS_EMRG_CAL 	"emergency call"
+VAL 	0x04C0 	ESTCS_CAL_REEST 	"call reestablishment"
+VAL 	0x04E0 	ESTCS_MOB_ORIG_SPCH_CAL_BY_CC 	"mobile originated speech call by CC"
+VAL 	0x04E1 	ESTCS_MOB_ORIG_DATA_CAL_BY_CC 	"mobile originated data call by CC"
+VAL 	0x04E2 	ESTCS_MOB_ORIG_DATA_CAL_BY_CC_HR_SUFF 	"mobile originated data call by CC, halfrate sufficient"
+VAL 	0x04F0 	ESTCS_MOB_ORIG_CAL_BY_SS_SMS 	"mobile originated call by SS or SMS"
+
+VALTAB 	VAL_thplmn
+VAL 	1 - 80 	"(6*value) minutes"
+VAL 	81 - 255 	"30 minutes"
+VAL 	0 	THPLMN_NO_HPLMN_SRCH 	"no HPLMN search"
+
+VALTAB 	VAL_att
+VAL 	0 	ATT_NOT_ALLOW 	"attach / detach not allowed"
+VAL 	1 	ATT_ALLOW 	"attach / detach allowed"
+
+VALTAB 	VAL_band
+VAL 	255 	BND_DMY_VAL 	"dummy value needed by TAP"
+
+VALTAB 	VAL_valid
+VAL 	0 	MM_INFO_NOT_PRES 	"information is not present"
+VAL 	1 	MM_INFO_PRES 	"information is present"
+
+VALTAB 	VAL_re
+VAL 	0 	RE_ALLOW 	"re-establishment is allowed"
+VAL 	1 	RE_NOT_ALLOW 	"re-establishment is not allowed"
+
+VALTAB 	VAL_t3212
+VAL 	1 - 255 	"(6 * value) minutes"
+VAL 	0 	T3212_NO_PRD_UPDAT 	"no periodic updating"
+
+VALTAB 	VAL_la
+VAL 	0 	LA_NOT_IN_FRBD_LST_INCL 	"not in forbidden list included"
+VAL 	1 	LA_IN_FRBD_LST_INCL 	"in forbidden list included"
+
+VALTAB 	VAL_v_mid
+VAL 	0 	V_MID_NOT_PRES 	"not present"
+VAL 	1 	V_MID_PRES 	"present"
+
+VALTAB 	VAL_id_type
+VAL 	0 	TYPE_NO_ID 	"no identity"
+VAL 	1 	TYPE_IMSI 	"IMSI"
+VAL 	4 	TYPE_TMSI 	"TMSI"
+
+VALTAB 	VAL_m
+VAL 	0 	M_AUTO 	"automatic mode"
+VAL 	1 	M_MAN 	"manual mode"
+
+VALTAB 	VAL_service
+VAL 	0 	NO_SERVICE 	"no service available"
+VAL 	1 	LIMITED_SERVICE 	"Limited service available"
+VAL 	2 	FULL_SERVICE 	"Full service available"
+
+VALTAB 	VAL_v_op
+VAL 	0 	V_OP_NOT_PRES 	"not present"
+VAL 	1 	V_OP_PRES 	"present"
+
+VALTAB 	VAL_func
+VAL 	0 	FUNC_LIM_SERV_ST_SRCH 	"limited service state search"
+VAL 	1 	FUNC_PLMN_SRCH 	"PLMN search"
+VAL 	2 	FUNC_NET_SRCH_BY_MMI 	"Net search by MMI"
+VAL 	3 	FUNC_ST_PWR_SCAN 	"Initiate power scan"
+
+VALTAB 	VAL_ts
+VAL 	0 	TS_NO_AVAIL 	"no test SIM card available"
+VAL 	1 	TS_AVAIL 	"test SIM card available"
+
+VALTAB 	VAL_sim_ins
+VAL 	0 	SIM_NO_INSRT 	"no SIM inserted"
+VAL 	1 	SIM_INSRT 	"SIM inserted"
+
+VALTAB 	VAL_plmn_avail
+VAL 	0 - MAX_PLMN 	"number of PLMN identifications"
+
+VALTAB 	VAL_v_plmn
+VAL 	0 	V_PLMN_NOT_PRES 	"not present"
+VAL 	1 	V_PLMN_PRES 	"present"
+
+VALTAB 	VAL_cause
+VAL 	0x0300 	RRCS_NORM 	"Normal event"
+VAL 	0x0301 	RRCS_ABNORM_UNSPEC 	"Abnormal release, unspecified"
+VAL 	0x0302 	RRCS_ABNORM_CH_UNACC 	"Abnormal release, channel unacceptable"
+VAL 	0x0303 	RRCS_ABNORM_TIM_EXP 	"Abnormal release, timer expired"
+VAL 	0x0304 	RRCS_ABNORM_NO_ACTIVE 	"Abnormal release, no activity on the radio path"
+VAL 	0x0305 	RRCS_PREEM 	"Preemptive release"
+VAL 	0x0308 	RRCS_TIME_ADVANCE 	"Handover impossible, timing advance out of range"
+VAL 	0x0309 	RRCS_CHANNEL_MODE 	"Channel mode unacceptable"
+VAL 	0x030A 	RRCS_FREQ_NOT_IMPL 	"Frequency not implemented"
+VAL 	0x0341 	RRCS_CAL_ALRED_CLR 	"Call already cleared"
+VAL 	0x035F 	RRCS_INCORRECT_MSG 	"Semantically incorrect message"
+VAL 	0x0360 	RRCS_INVALID_MANDATORY 	"Invalid mandatory information"
+VAL 	0x0361 	RRCS_MSG_TYPE_NOT_IMPLEM 	"Message type non-existent or not implemented"
+VAL 	0x0362 	RRCS_MES_INCOMPAT 	"Message type not compatible with protocol state"
+VAL 	0x0364 	RRCS_INVALID_IE 	"Conditional IE error"
+VAL 	0x0365 	RRCS_NO_CELL_ALLOCATION 	"No cell allocation available"
+VAL 	0x036F 	RRCS_PROT_ERR_UNSPEC 	"Protocol error, unspecified"
+VAL 	0xC310 	RRCS_ABORT_CEL_SEL_FAIL 	"Cell selection failed (RR_ABORT_IND)"
+VAL 	0xC311 	RRCS_ABORT_RAD_LNK_FAIL 	"Radio link failure (RR_ABORT_IND)"
+VAL 	0xC312 	RRCS_DATA_LINK_FAIL 	"Data link failure (RR_ABORT_IND / RR_RELEASE_IND)"
+VAL 	0x8320 	RRCS_ACCESS_BARRED 	"Access barred because of access class control"
+VAL 	0x8321 	RRCS_RND_ACC_DELAY 	"Random access is delayed (immediate assignment reject)"
+VAL 	0xC322 	RRCS_RND_ACC_FAIL 	"Random access failed"
+VAL 	0xC323 	RRCS_DL_EST_FAIL 	"DL establishment failure"
+VAL 	0xC324 	RRCS_MO_MT_COLL 	"Collision MO with MT; MT has higher priority than MO"
+VAL 	0xC325 	RRCS_MM_ABORTED 	"MM aborted the connection"
+VAL 	0xC326 	RRCS_QUEUE_FULL 	"Internal RR primitive queue full"
+VAL 	0xC327 	RRCS_T3122_RUNNING 	"T3122 is still running, emergency calls only until expiry"
+VAL 	0xC328 	RRCS_INVALID_HOP_FREQ 	"Frequency hopping in more than one frequency band"
+VAL 	0xC3FF 	RRCS_INT_NOT_PRESENT 	"Internal release, release cause not present"
+VAL 	0xc400 	RRCS_ABORT_PTM 	"RR is in GPRS_PTM_BCCH, GPRS_PTM_PBCCH, GPRS_PAM_BCCH, GPRS_PAM_PBCCH states cannot handle RR_ACTIVATE__REQ"
+
+VALTAB 	VAL_sapi
+VAL 	0 	SAPI_0 	"SAPI 0"
+VAL 	3 	SAPI_3 	"SAPI 3"
+
+VALTAB 	VAL_synccs
+VAL 	0x8300 	SYNCCS_ACC_CLS_CHA 	"access class changed"
+VAL 	0x8301 	SYNCCS_T3122_TIM_OUT 	"T3122 time-out"
+VAL 	0x8411 	SYNCCS_TMSI_CKSN_KC_INVAL 	"TMSI, CKSN, Kc invalid"
+VAL 	0x8412 	SYNCCS_TMSI_INVAL 	"TMSI invalid"
+VAL 	0x8413 	SYNCCS_TMSI_CKSN_KC_INVAL_NO_PAG 	"TMSI, CKSN, Kc invalid, no paging"
+VAL 	0x8414 	SYNCCS_LAI_NOT_ALLOW 	"LAI not allowed"
+VAL 	0x8415 	SYNCCS_LAI_ALLOW 	"LAI allowed"
+VAL 	0x8416 	SYNCCS_LUP_RETRY 	"Lup retry permission"
+VAL 	0x8417 	SYNCCS_LIMITED_SERVICE 	"RR is informed about limited service"
+VAL 	0x8418 	SYNCCS_BACK_FROM_DEDICATED 	"RR has selected old cell after conn"
+VAL 	0x8419 	SYNCCS_SYS_INFO_CHANGE 	"RR has detected a sysinfo change"
+VAL 	0x841A 	SYNCCS_ACCC 	"access class changed"
+VAL 	0x841B 	SYNCCS_IDLE_SELECTION 	"RR has selected the old cell"
+VAL 	0x841C 	SYNCCS_LAI_NOT_ALLOW_FOR_ROAMING 	"LAI not allowed for roaming"
+VAL 	0x841D 	SYNCCS_EPLMN_LIST 	"Changed EPLMN list available"
+
+VALTAB 	VAL_cell_test
+VAL 	0x00 	CELL_TEST_DISABLE 	"cell test operation disable"
+VAL 	0x01 	CELL_TEST_ENABLE 	"cell test operation enable"
+
+VALTAB 	VAL_gprs_indication
+VAL 	0x00 	GPRS_NO 	"no GPRS mode"
+VAL 	0x01 	GPRS_YES 	"GPRS mode"
+
+VALTAB 	VAL_gprs_resumption
+VAL 	0x00 	GPRS_RESUMPTION_NOT_ACK 	"GPRS resumption not successfull"
+VAL 	0x01 	GPRS_RESUMPTION_ACK 	"GPRS resumption successfull"
+
+VALTAB 	VAL_check_hplmn
+VAL 	0 	CHECK_PLMN_NOT_PRES 	"not present"
+VAL 	1 	CHECK_PLMN_PRES 	"present"
+
+
+
+
+VAR 	abcs 	"abort cause" 	B
+
+VAL 	@p_rr - VAL_abcs@ 	
+
+VAR 	accc 	"access control classes" 	S
+
+VAL 	@p_rr - VAL_accc@ 	
+
+VAR 	v_kc 	"valid flag" 	B
+
+VAL 	@p_rr - VAL_v_kc@ 	
+
+VAR 	kc 	"Kc value" 	B
+
+
+VAR 	v_bcch 	"valid flag" 	B
+
+VAL 	@p_rr - VAL_v_bcch@ 	
+
+VAR 	bcch 	"BCCH carrier list" 	B
+
+VAL 	@p_rr - VAL_bcch@ 	
+
+VAR 	cid 	"cell identity" 	S
+
+
+VAR 	ch_type 	"Channel Type" 	B
+
+VAL 	@p_rr - VAL_ch_type@ 	
+
+VAR 	ch_mode 	"Channel Mode" 	B
+
+VAL 	@p_rr - VAL_ch_mode@ 	
+
+VAR 	cksn 	"ciphering key sequence number" 	B
+
+VAL 	@p_rr - VAL_cksn@ 	
+
+VAR 	ciph 	"cipher mode" 	B
+
+VAL 	@p_rr - VAL_ciph@ 	
+
+VAR 	d1 	"dummy, not used" 	B
+
+
+VAR 	d2 	"dummy, not used" 	B
+
+
+VAR 	param 	"dummy parameter" 	B
+
+
+VAR 	estcs 	"establishment cause" 	S
+
+VAL 	@p_rr - VAL_estcs@ 	
+
+VAR 	thplmn 	"HPLN time" 	B
+
+VAL 	@p_rr - VAL_thplmn@ 	
+
+VAR 	lac 	"location area code" 	S
+
+
+VAR 	valid 	"valid information" 	B
+
+VAL 	@p_rr - VAL_valid@ 	
+
+VAR 	la 	"Location area indication" 	B
+
+VAL 	@p_rr - VAL_la@ 	
+
+VAR 	att 	"attach / detach flag" 	B
+
+VAL 	@p_rr - VAL_att@ 	
+
+VAR 	re 	"re-establishment flag" 	B
+
+VAL 	@p_rr - VAL_re@ 	
+
+VAR 	band 	"band (dummy)" 	B
+
+VAL 	@p_rr - VAL_band@ 	
+
+VAR 	ncc 	"national colour code" 	B
+
+
+VAR 	bcc 	"base station colour code" 	B
+
+
+VAR 	t3212 	"periodic updating timer period" 	B
+
+VAL 	@p_rr - VAL_t3212@ 	
+
+VAR 	v_mid 	"valid flag" 	B
+
+VAL 	@p_rr - VAL_v_mid@ 	
+
+VAR 	id_type 	"type of identity" 	B
+
+VAL 	@p_rr - VAL_id_type@ 	
+
+VAR 	id 	"IMSI digits" 	B
+
+
+VAR 	tmsi_dig 	"TMSI digits" 	L
+
+
+VAR 	v_op 	"valid flag" 	B
+
+VAL 	@p_rr - VAL_v_op@ 	
+
+VAR 	ts 	"test SIM card" 	B
+
+VAL 	@p_rr - VAL_ts@ 	
+
+VAR 	m 	"registration mode" 	B
+
+VAL 	@p_rr - VAL_m@ 	
+
+VAR 	sim_ins 	"SIM card" 	B
+
+VAL 	@p_rr - VAL_sim_ins@ 	
+
+VAR 	func 	"Operation Mode" 	B
+
+VAL 	@p_rr - VAL_func@ 	
+
+VAR 	service 	"RR Service" 	B
+
+VAL 	@p_rr - VAL_service@ 	
+
+VAR 	plmn_avail 	"PLMN available" 	B
+
+VAL 	@p_rr - VAL_plmn_avail@ 	
+
+VAR 	v_plmn 	"valid flag" 	B
+
+VAL 	@p_rr - VAL_v_plmn@ 	
+
+VAR 	cause 	"RR cause" 	S
+
+VAL 	@p_rr - VAL_cause@ 	
+
+VAR 	sapi 	"service access point identifier" 	B
+
+VAL 	@p_rr - VAL_sapi@ 	
+
+VAR 	l_buf 	"length in bits" 	S
+
+
+VAR 	o_buf 	"offset in bits" 	S
+
+
+VAR 	buf 	"bit buffer" 	B
+
+
+VAR 	synccs 	"synchronisation cause" 	S
+
+VAL 	@p_rr - VAL_synccs@ 	
+
+VAR 	rxlevel 	"Fieldstrength" 	B
+
+
+VAR 	power 	"Power class" 	B
+
+
+VAR 	cell_test 	"cell test operation" 	B
+
+VAL 	@p_rr - VAL_cell_test@ 	
+
+VAR 	gprs_indication 	"GPRS indicator" 	B
+
+VAL 	@p_rr - VAL_gprs_indication@ 	
+
+VAR 	gprs_resumption 	"GPRS resumption information" 	B
+
+VAL 	@p_rr - VAL_gprs_resumption@ 	
+
+VAR 	lac_list 	"LACs of found PLMNs" 	S
+
+
+VAR 	v_eq_plmn 	"Validity of equivalent plmn list" 	B
+
+
+VAR 	mcc 	"Mobile country code." 	B
+
+
+VAR 	mnc 	"Mobile network code." 	B
+
+
+VAR 	eq_plmn 	"Basic Element" 	B
+
+
+VAR 	check_hplmn 	"Flag for HPLMN " 	B
+
+VAL 	@p_rr - VAL_check_hplmn@ 	
+
+
+
+
+COMP 	kcv 	 "kc - Value"
+{
+ 	v_kc 	 ; valid flag
+ 	kc 	[KC_STRING_SIZE] 	 ; Kc value
+}
+
+
+
+COMP 	bcch_info 	 "BCCH information"
+{
+ 	v_bcch 	 ; valid flag
+ 	bcch 	[BA_BITMAP_SIZE] 	 ; BCCH carrier list
+}
+
+
+
+COMP 	chm 	 "Channel using mode"
+{
+ 	ch_type 	 ; Channel Type
+ 	ch_mode 	 ; Channel Mode
+}
+
+
+
+COMP 	mm_info 	 "MM information"
+{
+ 	valid 	 ; valid information
+ 	la 	 ; Location area indication
+ 	att 	 ; attach / detach flag
+ 	re 	 ; re-establishment flag
+ 	band 	 ; band (dummy)
+ 	ncc 	 ; national colour code
+ 	bcc 	 ; base station colour code
+ 	t3212 	 ; periodic updating timer period
+}
+
+
+
+COMP 	imsi_struct 	 "mobile identity"
+{
+ 	v_mid 	 ; valid flag
+ 	id_type 	 ; type of identity
+ 	id 	[MAX_DIGITS] 	 ; IMSI digits
+ 	tmsi_dig 	 ; TMSI digits
+}
+TYPEDEF COMP imsi_struct 	tmsi_struct 	 "mobile identity"
+
+
+
+COMP 	op 	 "operation mode"
+{
+ 	v_op 	 ; valid flag
+ 	ts 	 ; test SIM card
+ 	m 	 ; registration mode
+ 	sim_ins 	 ; SIM card
+ 	func 	 ; Operation Mode
+ 	service 	 ; RR Service
+}
+
+
+
+COMP 	plmn 	 "PLMN identification"
+{
+ 	v_plmn 	 ; valid flag
+ 	mcc 	[SIZE_MCC] 	 ; mobile country code
+ 	mnc 	[SIZE_MNC] 	 ; mobile network code
+}
+
+
+
+COMP 	sdu 	 "Service Data Unit"
+{
+ 	l_buf 	 ; length in bits
+ 	o_buf 	 ; offset in bits
+ 	buf 	[MAX_SDU_LEN] 	 ; bit buffer
+}
+
+
+
+COMP 	eq_plmn_list 	 "Equivalent plmn List"
+{
+ 	eq_plmn 	[SIZE_EPLMN] 	 ; Equivalent PLMN
+ 	v_eq_plmn 	 ; Validity of equivalent plmn list
+}
+
+
+
+
+
+
+; RR_ABORT_REQ 	0x80000006
+; RR_ABORT_IND 	0x80004006
+; RR_ACTIVATE_REQ 	0x80010006
+; RR_ACTIVATE_CNF 	0x80014006
+; RR_ACTIVATE_IND 	0x80024006
+; RR_DATA_REQ 	0x80020006
+; RR_DATA_IND 	0x80034006
+; RR_DEACTIVATE_REQ 	0x80030006
+; RR_ESTABLISH_REQ 	0x80040006
+; RR_ESTABLISH_CNF 	0x80044006
+; RR_ESTABLISH_IND 	0x80054006
+; RR_RELEASE_IND 	0x80074006
+; RR_SYNC_REQ 	0x80050006
+; RR_SYNC_IND 	0x80084006
+; RR_RRLP_START_IND 	0x80094006
+; RR_RRLP_STOP_IND 	0x800A4006
+; RR_SYNC_HPLMN_REQ 	0x80060006
+
+
+
+PRIM 	RR_ABORT_REQ 	0x80000006
+{
+ 	abcs 	 ; abort cause
+}
+
+
+
+
+
+
+PRIM 	RR_ABORT_IND 	0x80004006
+{
+ 	op 	 ; operation mode
+ 	cause 	 ; abort cause
+ 	plmn_avail 	 ; PLMN available
+ 	plmn 	[MAX_PLMN] 	 ; PLMN identification
+ 	lac_list 	[MAX_PLMN] 	 ; List of LACs
+ 	rxlevel 	[MAX_PLMN] 	 ; RX level
+ 	power 	 ; power class
+}
+
+
+
+
+
+
+PRIM 	RR_ACTIVATE_REQ 	0x80010006
+{
+ 	plmn 	 ; PLMN identification
+ 	op 	 ; operation mode
+ 	cksn 	 ; ciphering key sequence number
+ 	kcv 	 ; kc - Value
+ 	accc 	 ; access control class
+ 	imsi_struct 	 ; mobile identity
+ 	tmsi_struct 	 ; mobile identity
+ 	thplmn 	 ; HPLMN time
+ 	bcch_info 	 ; BCCH information
+ 	cell_test 	 ; Cell test operation
+ 	gprs_indication 	 ; GPRS indicator
+ 	eq_plmn_list 	 ; Equivalent PLMN list
+ 	check_hplmn 	 ; Flag for HPLMN 
+}
+
+
+
+
+
+
+PRIM 	RR_ACTIVATE_CNF 	0x80014006
+{
+ 	op 	 ; Operation mode
+ 	mm_info 	 ; MM information
+ 	cid 	 ; cell identity
+ 	plmn 	 ; PLMN identification
+ 	lac 	 ; location area code
+ 	power 	 ; power class
+ 	gprs_indication 	 ; GPRS indicator
+}
+
+
+
+
+
+
+PRIM 	RR_ACTIVATE_IND 	0x80024006
+{
+ 	op 	 ; operation mode
+ 	mm_info 	 ; MM information
+ 	cid 	 ; cell identity
+ 	plmn 	 ; PLMN identification
+ 	lac 	 ; location area code
+ 	power 	 ; power class
+ 	gprs_indication 	 ; GPRS indicator
+}
+
+
+
+
+
+
+PRIM 	RR_DATA_REQ 	0x80020006
+{
+ 	d1 	 ; dummy, not used
+ 	d2 	 ; dummy, not used
+ 	sdu 	 ; layer 3 message
+}
+
+
+
+
+
+
+PRIM 	RR_DATA_IND 	0x80034006
+{
+ 	d1 	 ; dummy, not used
+ 	d2 	 ; dummy, not used
+ 	sdu 	 ; layer 3 message
+}
+
+
+
+
+
+
+PRIM 	RR_DEACTIVATE_REQ 	0x80030006
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	RR_ESTABLISH_REQ 	0x80040006
+{
+ 	estcs 	 ; establishment cause
+ 	sdu 	 ; layer 3 message
+}
+
+
+
+
+
+
+PRIM 	RR_ESTABLISH_CNF 	0x80044006
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	RR_ESTABLISH_IND 	0x80054006
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	RR_RELEASE_IND 	0x80074006
+{
+ 	cause 	 ; RR cause
+ 	sapi 	 ; service access point identifier
+ 	gprs_resumption 	 ; GPRS resumption
+}
+
+
+
+
+
+
+PRIM 	RR_SYNC_REQ 	0x80050006
+{
+ 	op 	 ; operation mode
+ 	cksn 	 ; ciphering key sequence number
+ 	kcv 	 ; kc - Value
+ 	tmsi_struct 	 ; mobile identity
+ 	plmn 	 ; PLMN identification
+ 	lac 	 ; location area code
+ 	synccs 	 ; sync cause
+ 	accc 	 ; access control classes
+ 	thplmn 	 ; HPLMN search period
+ 	eq_plmn_list 	 ; Equivalent PLMN list
+}
+
+
+
+
+
+
+PRIM 	RR_SYNC_IND 	0x80084006
+{
+ 	ciph 	 ; cipher mode
+ 	mm_info 	 ; MM information
+ 	bcch_info 	 ; BCCH information
+ 	synccs 	 ; sync cause
+ 	chm 	 ; channel using mode
+}
+
+
+
+
+
+
+PRIM 	RR_RRLP_START_IND 	0x80094006 	%REL99%
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	RR_RRLP_STOP_IND 	0x800A4006 	%REL99%
+{
+ 	param 	 ; dummy parameter
+}
+
+
+
+
+
+
+PRIM 	RR_SYNC_HPLMN_REQ 	0x80060006
+{
+ 	plmn 	 ; Primitive Item
+}
+
+
+
+
+
+
+
+
+

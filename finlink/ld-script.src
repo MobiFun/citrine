@@ -1,0 +1,165 @@
+dnl This ld script source is fed through m4 in order to fill in
+dnl those settings which depend on the configuration.
+dnl Memory region sizes are set in ../include/config.m4, generated
+dnl by the configuration mechanism based on the selected target,
+dnl and the Makefile prepends flash.m4 or xram.m4 to select the
+dnl type of image we are linking: either the regular flashable image,
+dnl or a RAM-only test image (to be loaded via fc-xram) that does not
+dnl touch the flash and pretends as if the flash doesn't even exist.
+
+/*
+ * FreeCalypso ld script for the Buildmem build
+ */
+
+ENTRY(ifelse(Buildmem,XRAM,_FlashorXram_entry,_Flash_boot_entry))
+
+include(`../include/config.m4')dnl
+MEMORY {
+ifelse(Buildmem-FLASH_BOOT_VIA_BOOTROM,FLASH-1,
+`	FLASH_OVERLAY : ORIGIN = 0, LENGTH = 0x2000')
+ifelse(Buildmem,FLASH,
+`	FLASH : ORIGIN = FLASHIMAGE_BASE_ADDR,
+		LENGTH = CONFIG_FWFLASH_SIZE - FLASHIMAGE_BASE_ADDR')
+	IRAM : ORIGIN = 0x00800000, LENGTH = CONFIG_IRAM_SIZE
+	XRAM : ORIGIN = 0x01000000, LENGTH = CONFIG_XRAM_SIZE
+}
+ifelse(FFS_IN_RAM,1,`
+RAMFFS_BLKSIZE_BYTES = 1 << RAMFFS_BLKSIZE_LOG2;
+RAMFFS_TOTAL_SIZE = RAMFFS_BLKSIZE_BYTES * RAMFFS_NBLOCKS;
+')dnl
+
+SECTIONS {
+dnl The following sections exist only in the flashImage build,
+dnl and only on targets that use the Calypso boot ROM.
+ifelse(Buildmem-FLASH_BOOT_VIA_BOOTROM,FLASH-1,
+`	/* Part of flash overlaid by the boot ROM */
+	bootrom.overlay 0 : {
+		*(bootrom.overlay)
+	} > FLASH_OVERLAY
+
+	/* code that enables the boot ROM and jumps to it */
+	bootrom.switch : {
+		*(bootrom.switch)
+	} > IRAM AT> FLASH_OVERLAY
+	__romswitch_ram_addr = ADDR(bootrom.switch);
+	__romswitch_flash_addr = LOADADDR(bootrom.switch);
+	__romswitch_size = SIZEOF(bootrom.switch);
+')dnl
+
+dnl all flashImage builds
+ifelse(Buildmem,FLASH,
+`	/* Flash boot entry point */
+	flashboot.text FLASHIMAGE_BASE_ADDR : {
+		*(flashboot.text)
+	} > FLASH
+')dnl
+
+	/* XIP code, going into flash or XRAM emulating flash */
+	xip.text : {
+		*(xip.text*)
+		xipcode.o(.text*)
+		*comlib.a:(.text*)
+		*libdsp.a:(.text*)
+		*libdti.a:(.text*)
+		*libgdi.a:(.text*)
+		*libplus.xip.a:(.text*)
+		*libgpf.xip.a:(.text*)
+		*libccd.a:(.text*)
+		*librv.a:(.text*)
+		*libsprintf.a:(.text*)
+		/* let's put the ARM->Thumb veneers in the XIP section */
+		*(.glue_7)
+	} > Buildmem
+
+	/* copy-to-IRAM code */
+	iram.text 0x80001C : {
+		/* the 7 exception and interrupt vectors @ 0x80001C */
+		*(iram.vectors)
+		*(iram.text*)
+		iramcode.o(.text*)
+		*libplus.iram.a:(.text*)
+		*libgpf.iram.a:(.text*)
+		*libiram.a:(.text*)
+		*libc.a:(.text*)
+		*libgcc.a:(.text*)
+	} > IRAM Put_in_flash
+ifelse(Buildmem,FLASH,
+`	__iramtext_ram_addr = ADDR(iram.text);
+	__iramtext_flash_addr = LOADADDR(iram.text);
+	__iramtext_size = SIZEOF(iram.text);
+')dnl
+
+	/* all .rodata will stay in flash */
+	.rodata : {
+		*(.rodata*)
+	} > Buildmem
+
+	/*
+	 * All .data will go into XRAM.
+	 * For the flash build we'll have a step that copies
+	 * the .data section from flash to XRAM; for the RAM-only
+	 * build it goes directly into XRAM and stays there.
+	 */
+	.data : {
+		*(.data*)
+	} > XRAM Put_in_flash
+ifelse(Buildmem,FLASH,
+`	__initdata_ram_addr = ADDR(.data);
+	__initdata_flash_addr = LOADADDR(.data);
+	__initdata_size = SIZEOF(.data);
+')dnl
+
+	/* we have two kinds of BSS: internal and external */
+	int.bss (NOLOAD) : {
+		*(int.bss*)
+		*(.l1s_global)
+		iramcode.o(.bss* COMMON)
+		*libplus.iram.a:(.bss* COMMON)
+		*libgpf.iram.a:(.bss* COMMON)
+		*libiram.a:(.bss* COMMON)
+		*libc.a:(.bss* COMMON)
+		*libgcc.a:(.bss* COMMON)
+		. = ALIGN(4);
+	} > IRAM
+	__intbss_start = ADDR(int.bss);
+	__intbss_size = SIZEOF(int.bss);
+
+	ext.bss (NOLOAD) : {
+		*(ext.bss*)
+		xipcode.o(.bss* COMMON)
+		*comlib.a:(.bss* COMMON)
+		*libdsp.a:(.bss* COMMON)
+		*libdti.a:(.bss* COMMON)
+		*libgdi.a:(.bss* COMMON)
+		*libplus.xip.a:(.bss* COMMON)
+		*libgpf.xip.a:(.bss* COMMON)
+		*libccd.a:(.bss* COMMON)
+		*librv.a:(.bss* COMMON)
+		*libsprintf.a:(.bss* COMMON)
+		. = ALIGN(4);
+	} > XRAM
+	__extbss_start = ADDR(ext.bss);
+	__extbss_size = SIZEOF(ext.bss);
+
+	/* finally, we have "raw RAM": like BSS, but we don't zero it out */
+	int.ram (NOLOAD) : {
+		*(int.ram*)
+		*(system_stack)
+		*(irq_stack)
+		*(fiq_stack)
+		*(timer_hisr_stack)
+		. = ALIGN(4);
+		_iram_end = .;
+	} > IRAM
+
+	ext.ram (NOLOAD) : {
+		*(ext.ram*)
+		*(except_stack)
+		. = ALIGN(4);
+ifelse(FFS_IN_RAM,1,
+`		_RAMFFS_area = .;
+		. += RAMFFS_TOTAL_SIZE;
+')dnl
+		_xram_end = .;
+	} > XRAM
+}

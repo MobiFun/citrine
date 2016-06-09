@@ -1,0 +1,111 @@
+;********************************************************************************
+;*** File           : ph.pdf
+;*** Creation       : Wed Mar 11 09:58:34 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : ph
+;*** Document No.   : 6147.112.01.100
+;*** Document Date  : 2001-10-26
+;*** Document Status: APPROVED
+;*** Document Author: SBK
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:50:28 2007"
+PRAGMA 	LAST_MODIFIED 	"2001-10-26"
+PRAGMA 	ID_AND_VERSION 	"6147.112.01.100"
+
+
+
+CONST 	DUMMY_PH 	0 	; Dummy, not used, needed to satisfy tool chain which requires at least one constant definition in a SAP
+
+
+
+VALTAB 	VAL_ch_type
+VAL 	0 	CH_TYPE_SACCH 	"SACCH"
+VAL 	1 	CH_TYPE_SDCCH 	"SDCCH"
+VAL 	2 	CH_TYPE_FACCH 	"FACCH Full Rate"
+VAL 	3 	 	"reserved"
+VAL 	4 	 	"reserved"
+VAL 	5 	 	"reserved"
+VAL 	6 	 	"reserved"
+VAL 	7 	CH_TYPE_FACCH_HR 	"FACCH Half Rate"
+
+
+
+
+VAR 	l2_channel 	"Layer 2 channel-type" 	B
+
+VAL 	@p_mphc - VAL_l2_channel@ 	
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"buffer content; the actual size of buf is determined and allocated at run-time and not restricted to 1;" 	B
+
+
+VAR 	dummy 	"dummy not used" 	B
+
+
+
+
+
+COMP 	sdu 	 "message unit"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[1] 	 ; buffer content; the actual size of buf is determined and allocated at run-time and not restricted to 1;
+}
+
+
+
+
+
+
+; PH_READY_TO_SEND 	0x4100
+; PH_DATA_REQ 	0x0100
+; PH_TRACE_IND 	0x4102
+
+
+
+PRIM 	PH_READY_TO_SEND 	0x4100
+{
+ 	l2_channel AS ch_type 	 ; channel type
+}
+
+
+
+
+
+
+PRIM 	PH_DATA_REQ 	0x0100
+{
+ 	l2_channel AS ch_type 	 ; channel type
+ 	dummy 	 ; dummy not used; reserved
+ 	sdu 	 ; message unit
+}
+
+
+
+
+
+
+PRIM 	PH_TRACE_IND 	0x4102
+{
+ 	dummy 	 ; dummy not used; not used
+}
+
+
+
+
+
+
+
+
+

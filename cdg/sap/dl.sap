@@ -1,0 +1,2393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">dl</DocName>
+        <DocNum Number="100" Project="8010"/>
+        <Description>
+            <Section>The Service Access Point (SAP) for an entity defines the interface supported by that entity in order to gain access to its services. This document contains a specification of the DL SAP for the Data Link layer (DL) entity of the Texas Instruments UMTS Dual mode protocol stack.</Section>
+            <Section>The DL SAP is based on the exchange of primitives between the DL entity and the RR entity (see Figure 1).</Section>
+            <Section>Figure 1: The DL SAP context.</Section>
+            <Section>The 3GPP DL specification, [3G 04.06], defines primitives for the DL entity. These primitives are defined in an abstract manner that does not specify or constrain implementations. The primitives and parameters defined in the present document may deviate from the ones in the 3GPP specifications, although the general principle is maintained.</Section>
+            <Section>Further information on the system design can be found in "Dual Mode System Design" [TI 8010.944].</Section>
+            <Section>1.1 Reading Guide</Section>
+            <Section>This document has three primary sections. The first (section 2) contains a specification of constants used on the interface, which are not specific to the value of a particular parameter. Such constants are typically size fields, specifying array or element sizes.</Section>
+            <Section>The second primary section (section 0) contains the top-level description of the primitives defined for the interface. For each primitive its function is described, and a parameter list is given.</Section>
+            <Section>For any primitive using complex structures or parameters with identified values, references will be given to subsections of the third primary section (section 4). This section contains specifications of the complex types used in the primitives of the interface. It also contains specifications of parameters with predefined values or value ranges. Cross-references to subtypes may be used within this section for complex type declarations.</Section>
+            <Section>Types and constants, in this document, which are common for more entities and SAP's are imported via the common include-strategy. The common types and constants are imported from the common SAP documents specifying the interfaces throughout the protocol stack using the include mechanisms of the SAP tool-chain.</Section>
+            <Section>The method used for exchange of primitives is message passing. The terms "message" and "primitive" are used interchangeably in this document.</Section>
+            <Section>All constants will be prefixed by the value defined in the Pragma table in section 2. This is done by the SAP-compiler when compiling this file. That is, all constant values will have the prefix DL_.</Section>
+            <Section>When primitives contain arrays of elements where the array size is not fixed, dynamic array declarations are used. This is indicated through the use of array element sizes of the form [MIN..MAX], where MIN denotes the minimum and MAX the maximum number of array elements used on the interface. Where such dynamic array elements are used, a length specifier is always implicitly present, giving the number of elements actually included in the primitive. This parameter is always named as the array parameter with an addition of the prefix "c_" (for count).</Section>
+            <Section>In some primitives or structures parameters may be optional, depending on the actual context in which the primitive is used. In such cases mandatory and optional parameters are indicated for the entire primitive or structure. Wherever an optional parameter is present, a parameter will always implicitly be present, indicating whether the parameter is included in the primitive or not. This parameter is always named as the optional parameter with an addition of the prefix "v_" (for valid).</Section>
+            <Section>In some primitives or structures the parameters may contain a pointer, which points to a structure or an array of structures, etc. This is indicated with a "PTR" inside the Ctrl column.</Section>
+            <Section>For all primitives included in this SAP, it is an unavoidable fact that as the world of 3G evolves, some changes to this interface may be necessary. However, as this document is the basis for the DL SAP it will be fully maintained and all necessary changes will result in updated versions of this document.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="27" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="27" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Based on dl.doc number 6147.110.97.100</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>SAP reviewed and accepted after minor changes</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="24" Month="1" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>The document references are updated. The direction field inside the primitive ids are reversed. The context diagram is inserted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="10" Month="2" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated after review.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="1" Month="7" Year="2003"/>
+            <Author>LOE</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed PS cause from UNION to STRUCT type</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="02"/>
+            <Date Day="15" Month="8" Year="2003"/>
+            <Author>MSB</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Merged Berlin and Aalborg versions.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="02"/>
+            <Date Day="20" Month="8" Year="2003"/>
+            <Author>MSB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Add cnf parameter for and to DL_DATA_REQ. Add DL_DATA_CNF, DL_UNITDATA_IND primitives, Reorder  primitives and primitiv identifier.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="02"/>
+            <Date Day="27" Month="9" Year="2003"/>
+            <Author>MSB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Introducing of DL_SHORT_UNITDATA_REQ/IND primitives, Exchange of c-macros for FACCH channel types.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="02"/>
+            <Date Day="28" Month="4" Year="2004"/>
+            <Author>MSB</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Introducing of channel type parameter for DL_SHORT_UNITDATA_REQ.</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the DL SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">DL</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Adds enumerations in the .val file.</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="27" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="10" Month="2" Year="2003"/>
+            <Author>AGR</Author>
+            <Comment>More pragma constants are inserted.</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="6" Year="2003"/>
+            <Author>MSB</Author>
+            <Comment>Prefix changed from DLL to DL</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the DL SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>MAX_SDU_LEN</Alias>
+            <Value ValueType="DEC">1</Value>
+            <Comment>Maximum number of bytes in an SDU (dummy value)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>N201_SACCH_A_B</Alias>
+            <Value ValueType="DEC">18</Value>
+            <Comment>Maximum number of octets for the information field for frames of format A and B (SACCH)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>N201_DCCH_A_B</Alias>
+            <Value ValueType="DEC">20</Value>
+            <Comment>Maximum number of octets for the information field for frames of format A and B (SDCCH, FACCH)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>N201_Bbis</Alias>
+            <Value ValueType="DEC">23</Value>
+            <Comment>Maximum number of octets for the information field for frames of format Bbis (BCCH,AGCH,NCH,PCH)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>N201_SACCH_Bter</Alias>
+            <Value ValueType="DEC">21</Value>
+            <Comment>Maximum number of octets for the information field for frames of format Bter (SACCH)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>N201_DCCH_Bter</Alias>
+            <Value ValueType="DEC">23</Value>
+            <Comment>Maximum number of octets for the information field for frames of format Bter (FACCH,SDCCH)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MAX_L2_FRAME_SIZE</Alias>
+            <ItemLink>
+                <DocName DocType="SAP">mphc</DocName>
+                <Name>MAX_L2_FRAME_SIZE</Name>
+            </ItemLink>
+            <Comment>Maximum number of octets for layer 2 frames of all formats</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SPD_PID</Alias>
+            <Value ValueType="DEC">16</Value>
+            <Comment>Defines the Primitive number for DL_SHORTUNIT_DATA_REQ/IND</Comment>
+        </Constant>
+        <History>
+            <Date Day="27" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="10" Month="2" Year="2003"/>
+            <Author>AGR</Author>
+            <Comment>More pragma constants are inserted.</Comment>
+        </History>
+        <History>
+            <Date Day="11" Month="6" Year="2003"/>
+            <Author>MSB</Author>
+            <Comment>Prefix changed from DLL to DL</Comment>
+        </History>
+        <History>
+            <Date Day="28" Month="04" Year="2004"/>
+            <Author>MSB</Author>
+            <Comment>Add N201_DCCH_Bter</Comment>
+        </History>
+        <History>
+            <Date Day="16" Month="01" Year="2007"/>
+            <Author>xparapgu</Author>
+            <Comment>Added constant for Primitive number for DL_SHORTUNIT_DATA_REQ/IND</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="3">
+        <Description>
+            <Section>This section contains all primitives that are defined for the DL SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>The DL_ESTABLISH_REQ primitive is used by RR to initiate the establishment of a mobile originated multiple frame acknowledged operation.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The parameter sapi specifies the identity of the service access point. The sdu parameter contains the layer 3 message.</Section>
+                <Section>In normal operation the primitive has no SDU. For contention resolution a SDU is inserted.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_ESTABLISH_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The sdu field is now optional.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Restructuring according to ID.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_ESTABLISH_CNF primitive is used by DL to confirm the establishment of a mobile originated multiple frame acknowledged operation.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The parameter sapi specifies the identity of the service access point. The indication parameter contains an indication whether or not there are outstanding acknowledgements or unserved DL-DATA-REQUEST primitives.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_ESTABLISH_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>indication</Name>
+                </ItemLink>
+                <Comment>Indication of outstanding acknowledgements or unserved DL-DATA-REQUEST primitives</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Restructuring according to ID. The indication parameter is added</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_ESTABLISH_IND primitive is used by DL to indicate the establishment of a mobile terminated multiple frame acknowledged operation.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The parameter sapi specifies the identity of the service access point. The indication parameter contains an indication whether or not there are outstanding acknowledgements or unserved DL-DATA-REQUEST primitives.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_ESTABLISH_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>indication</Name>
+                </ItemLink>
+                <Comment>Indication of outstanding acknowledgements or unserved DL-DATA-REQUEST primitives</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The sdu field is now optional.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Restructuring according to ID. The sdu field is removed (A sdu field is only available and valid for the peer data link layer entity in the BS). The indication parameter is added.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_RELEASE_REQ primitive is used by RR to release a multiple frame acknowledged operation. It supports both the "Normal release procedure" according to GSM 04.06, 5.4.4.2 and "Local end release procedure" according to GSM 04.06, 5.4.4.4 depending on the release mode parameter.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The parameter sapi specifies the identity of the service access point. The parameter mode specifies the kind of release procedure.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_RELEASE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>mode</Name>
+                </ItemLink>
+                <Comment>Release mode</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Add release mode parameter</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>The ID is reordered. Supplementing of comment.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_RELEASE_CNF primitive is used by DL to confirm the release of a multiple frame acknowledged operation.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The parameter sapi specifies the identity of the service access point. The parameter indication specifies the number of outstanding acknowledgements or unserved DL-DATA-REQUEST primitives.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_RELEASE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>indication</Name>
+                </ItemLink>
+                <Comment>Indication of outstanding acknowledgements or unserved DL-DATA-REQUEST primitives</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Add indication parameter</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Supplementing of comment.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_RELEASE_IND primitive is used by DL to release a multiple frame acknowledged operation.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The parameter sapi specifies the identity of the service access point. The parameter ps_cause contains the error that DL wants to report.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_RELEASE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Error cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>cs</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Error cause</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The ps_cause is inserted.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>The ID is reordered.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_DATA_REQ primitive is used by RR to pass on layer 3 messages to DL, with multiple frame acknowledged operation.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The parameter sapi specifies the identity of the service access point. The cnf parameter specifies the request of a confirmation. The sdu parameter contains the layer 3 message.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_DATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>cnf</Name>
+                </ItemLink>
+                <Comment>confirmation demand</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="7" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Add cnf parameter</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>The ID is reordered. Supplementing of comment</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_DATA_CNF is used to confirm sucessful sending of the layer 3 message requested by DL_DATA_REQ. This confirmation appears only if the DL_DATA_REQ had demanded it by a cnf paramter with a value unequal 0.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The parameter sapi specifies the identity of the service access point. The cnf parameter has the same value as the corresponding cnf parameter in DL_DATA_REQ.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_DATA_CNF</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>cnf</Name>
+                </ItemLink>
+                <Comment>confirmation demand</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="7" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_DATA_IND primitive is used by DL to pass on received layer 3 messages to RR, with multiple frame acknowledged operation.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The parameter sapi specifies the identity of the service access point. The sdu parameter contains the layer 3 message.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>RR</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>The ID is reordered.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Introduce frame number</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_UNITDATA_REQ primitive is used by RR to send layer 3 messages with unacknowledged operation.</Section>
+                <Section>The sdu parameter contains the layer 3 message. This is for SACCH channel type and a value of sapi set to 0 only.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_UNITDATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The ch_type field is removed.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>The sapi field is removed. Comment slightly changed.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="04" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Description is changed (no sapi anymore)</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_UNITDATA_IND primitive is used by by DL to pass on received layer 3 messages to RR, with unacknowledged operation.</Section>
+                <Section>The sdu parameter contains the layer 3 message. This is for SACCH channel type and a value of sapi set to 0 only.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_UNITDATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>error_flag</Name>
+                </ItemLink>
+                <Comment>Indicates if l2_frame data is invalid</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>pwr_lev</Name>
+                </ItemLink>
+                <Comment>Ordered mobile power level</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>ta</Name>
+                </ItemLink>
+                <Comment>Timing advance</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Introduce frame number</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_SHORT_UNITDATA_REQ primitive is used by RR to send layer 3 messages with unacknowledged operation with use of L2 short header according to 24.007, section 11.3.2, 04.06, section 3.4a and 04.18, all messages using "RR short PD".</Section>
+                <Section>The sdu parameter contains the layer 3 message with L2 short header format. This is for SACCH channel type and a value of sapi set to 0 only. DL expects a sdu with offset 16 and a maximal length of 21 octects. The first two octets are place holders for the layer 1 header. From the third octect (offset 16) the sdu have to contain the layer 3 message according to the format type Bter. Bit 1 and 2 of the third octect should contain the short L2 header.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SHORT_UNITDATA_REQ</Name>
+                <PrimID Direction="UPLINK" Number="16"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="9" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="04" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Introduce channel type</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_UNITDATA_IND primitive is used by by DL to pass on received layer 3 messages to RR, with unacknowledged operation with use of L2 short header according to 24.007, section 11.3.2, 04.06, section 3.4a and 04.18, all messages using "RR short PD".</Section>
+                <Section>The sdu parameter contains the layer 3 message with L2 short header format. The parameter ch_type specifies the type of the channel. For channel type FACCH and SDCCH the frame contains 23 octects, the sdu offset is set to zero. In case of channel type SACCH the information field contains only 21 octects, the sdu offset is set to 16. The first two octets are set to zero. This primitive is used for a value of sapi set to 0 only.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SHORT_UNITDATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="16"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>error_flag</Name>
+                </ItemLink>
+                <Comment>Indicates if l2_frame data is invalid</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>pwr_lev</Name>
+                </ItemLink>
+                <Comment>Ordered mobile power level</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>ta</Name>
+                </ItemLink>
+                <Comment>Timing advance</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>fn</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Frame number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="29" Month="9" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Introduce frame number</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_SUSPEND_REQ primitive is used by RR to suspend the layer 2 multiple frame operation (before an ASSIGNMENT or HANDOVER) in such a way, that the SDU's and the state of the transmit/receive counters are saved.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. This is for SAPI 0 only.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SUSPEND_REQ</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The sapi field is removed.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>The ID is reordered.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_RESUME_REQ primitive is used by RR to resume the layer 2 multiple frame operation (after an ASSIGNMENT COMPLETE or HANDOVER COMPLETE) in such a way, that the communication with the network is without loss of layer 3 messages.</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The sdu parameter contains the layer 3 message. This is for SAPI 0 only.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_RESUME_REQ</Name>
+                <PrimID Direction="UPLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The sapi field is removed.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>The ID is reordered. The sapi field is added again.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_RECONNECT_REQ primitive is used by RR to restore multiple frame operation on the old channel after failure of a channel change (e.g. ASSIGNMENT FAILURE or HANDOVER FAILURE).</Section>
+                <Section>The parameter ch_type specifies the type of the channel. The sdu parameter contains the layer 3 message. This is for SAPI 0 only.</Section>
+                <Section>The SDU passed to the DL with a previous DL_RESUME_REQ is discarded and the SDU is passed with this primitive instead.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_RECONNECT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_147_l1_include</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l2_channel</Name>
+                </ItemLink>
+                <Alias>ch_type</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Channel type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>sdu</Name>
+                </ItemLink>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Service data unit</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The sapi field is removed.</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>The ID is reordered. The sapi field is added again.</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="12" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Introduce feature flag TI_DUAL_MODE</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The DL_TRACE_REQ signal is used by the radio resource management to write out all collected layer 2 traces. It is only send in the state NO_SERVICE and if  the registration timer is deactivated.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_TRACE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>RR</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="15" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Description changed</Comment>
+            </History>
+            <History>
+                <Date Day="20" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>The ID is reordered.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_ESTABLISH_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="18"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_ESTABLISH_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="19"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_DATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="20"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_DATA_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="21"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_UNITDATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="22"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_SHORT_UNITDATA_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="24"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_RELEASE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="26"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_RELEASE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="27"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="28"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_FREE_POINTER</Name>
+                <PrimID Direction="DOWNLINK" Number="29"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_CONCATENATE</Name>
+                <PrimID Direction="DOWNLINK" Number="30"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_L2TRACE</Name>
+                <PrimID Direction="DOWNLINK" Number="31"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_L3TRACE</Name>
+                <PrimID Direction="DOWNLINK" Number="32"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="11" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_EM_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="33"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_EM_WRITE</Name>
+                <PrimID Direction="DOWNLINK" Number="34"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>signal_data</Name>
+                </ItemLink>
+                <Alias>signal_data</Alias>
+                <Comment>Pointer</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="14" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>To avoid sending primitives or traces within L1 interrupt context the entity sends signals instead. The primitives or traces are delayed until the entity will be in the own context.</Section>
+            </Description>
+            <PrimDef>
+                <Name>DL_SIGNAL_EM_READ</Name>
+                <PrimID Direction="DOWNLINK" Number="35"/>
+                <PrimUsage>
+                    <Sender>DL</Sender>
+                    <Receiver>DL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="18" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <Section>This section contains all structured elements that are defined for the dl SAP</Section>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <Section>This is a container for a service data unit. It consists of a length field specifying the size of the message in the container, an offset specifying where inside the included data array the message starts and a data array holding the message. The array has a default size of one byte, but in reality this is a variable length structure. Only use as the last element in a primitive, and allocate memory using SDU allocation routine.</Section>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sdu</Name>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Container for a message</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>Length in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>Offset in bits</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">dl</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[MAX_SDU_LEN]</Control>
+                <Comment>Message content</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="1" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Default length set to one byte</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the primitives described above and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>Identifies a layer 2 channel-type.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l2_channel</Name>
+                <Type>U8</Type>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Layer 2 channel-type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mphc</DocName>
+                <Name>VAL_l2_channel</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="2" Month="4" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used as an indication wether or not there are outstanding acknowledgements or unserved DL-DATA-REQUEST primitives on the request of a local end release procedure procedure or on procedures for re-establishment.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>indication</Name>
+                <Type>U8</Type>
+                <Comment>Indication for unserved data requests</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dl</DocName>
+                <Name>VAL_indication</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="15" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used to make a distinction between normal and local end release procedure.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mode</Name>
+                <Type>U8</Type>
+                <Comment>release mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dl</DocName>
+                <Name>VAL_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="15" Month="8" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter contains the service access point identifier.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>sapi</Name>
+                <Type>U8</Type>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>service access point identifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dl</DocName>
+                <Name>VAL_sapi</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="27" Month="10" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter is used to request a confirmation after successful sending of a DL_DATA_REQ. A value unequal 0 demands a confirmation DL_DATA_CNF with this value as cnf paramter.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cnf</Name>
+                <Type>U8</Type>
+                <Comment>Confimation demand</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dl</DocName>
+                <Name>VAL_cnf</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="7" Year="2003"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a container for a service data unit. It consists of a length field specifying the size of the message in the container, an offset specifying where inside the included data array the message starts and a data array holding the message. The array has a default size of one byte, but in reality this is a variable length structure. Only use as the last element in a primitive, and allocate memory using SDU allocation routine.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Length in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="1" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Default length set to one byte</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a container for a service data unit. It consists of a length field specifying the size of the message in the container, an offset specifying where inside the included data array the message starts and a data array holding the message. The array has a default size of one byte, but in reality this is a variable length structure. Only use as the last element in a primitive, and allocate memory using SDU allocation routine.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Offset in bits</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="1" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Default length set to one byte</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>This is a container for a service data unit. It consists of a length field specifying the size of the message in the container, an offset specifying where inside the included data array the message starts and a data array holding the message. The array has a default size of one byte, but in reality this is a variable length structure. Only use as the last element in a primitive, and allocate memory using SDU allocation routine.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>Message content</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>KBS</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="16" Month="1" Year="2003"/>
+                <Author>LOE</Author>
+                <Comment>Default length set to one byte</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>The parameter defines a data link failure.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cs</Name>
+                <Type>U8</Type>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">dl</DocName>
+                <Name>VAL_cs</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="27" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Indicates if l2_frame data is invalid</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>error_flag</Name>
+                <Type>U8</Type>
+                <Comment>error cause</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mphc</DocName>
+                <Name>VAL_error_flag</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="27" Month="01" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Layer 1 header, ordered mobile power level</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pwr_lev</Name>
+                <Type>U8</Type>
+                <Comment>Ordered mobile power level</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="01" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Layer 1 header, timing advance command</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ta</Name>
+                <Type>U8</Type>
+                <Comment>Timing advance</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="27" Month="01" Year="2004"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Element point to data structure of a signal</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>signal_data</Name>
+                <Type>U32</Type>
+                <Comment>Pointer to signal data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="06" Month="05" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Frame number.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>fn</Name>
+                <Type>U32</Type>
+                <Comment>Frame number</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="17" Month="5" Year="2004"/>
+                <Author>MSB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the DL SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_l2_channel</Name>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>values for l2_channel</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>L2_CHANNEL_SACCH</Alias>
+                <Comment>SACCH block</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>L2_CHANNEL_SDCCH</Alias>
+                <Comment>SDCCH block</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>L2_CHANNEL_FACCH_H</Alias>
+                <Comment>FACCH halfrate block</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>L2_CHANNEL_FACCH_F</Alias>
+                <Comment>FACCH fullrate block</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>L2_CHANNEL_CCCH</Alias>
+                <Comment>CCCH block</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">6</Value>
+                <Alias>L2_CHANNEL_NBCCH</Alias>
+                <Comment>normal BCCH block</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">7</Value>
+                <Alias>L2_CHANNEL_PCH</Alias>
+                <Comment>PCH block</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">8</Value>
+                <Alias>L2_CHANNEL_EPCH</Alias>
+                <Comment>extended PCH block</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">9</Value>
+                <Alias>L2_CHANNEL_CBCH</Alias>
+                <Comment>CBCH block</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">10</Value>
+                <Alias>L2_CHANNEL_EBCCH</Alias>
+                <Comment>extended BCCH</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_sapi</Name>
+                <Comment>values for sapi</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SAPI_0</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>SAPI 0</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>SAPI_3</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>SAPI 3</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This defines are constants for the indication element.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_indication</Name>
+                <Comment>values for indication</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>ALL_DONE</Alias>
+                <Comment>no unacknowledges or unserved data requests</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>UNSERVED</Alias>
+                <Comment>unserved data requests</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This defines are constants for the release mode element.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mode</Name>
+                <Comment>values for mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>NORMAL_RELEASE</Alias>
+                <Comment>normal release procedure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>LOCAL_END_RELEASE</Alias>
+                <Comment>local end release procedure</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This defines are constants for the confirmation element.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cnf</Name>
+                <Comment>values for cnf</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>NO_CONFIRMATION</Alias>
+                <Comment>no confimation necessary</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>This defines are constants for the cause element.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cs</Name>
+                <Comment>values for cs</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>INFO_FIELD_MISMATCH</Alias>
+                <Version>!TI_DUAL_MODE</Version>
+                <Comment>different information fields</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="26" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

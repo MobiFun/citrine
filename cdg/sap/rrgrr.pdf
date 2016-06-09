@@ -1,0 +1,1455 @@
+;********************************************************************************
+;*** File           : rrgrr.pdf
+;*** Creation       : Wed Mar 11 09:58:45 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : rrgrr
+;*** Document No.   : 8441.112.03.031
+;*** Document Date  : 2003-11-19
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: SAB
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:52:28 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-11-19"
+PRAGMA 	ID_AND_VERSION 	"8441.112.03.031"
+
+
+
+CONST 	RRGRR_MAX_ARFCN_NCELL_SYNC_REQ 	12 	; maximum number of frequencies to be synchronised for cell re-selection and EOTD
+CONST 	RRGRR_MAX_ARFCN_EXT_MEAS 	64 	; maximum number of frequencies during Extended Measurement
+CONST 	RRGRR_MEAS_REP_LIST_SIZE 	7 	%!REL99 OR !TI_PS_FF_EMR% 	; Measurement report list size (1 serving and 6 neighbour cells)
+CONST 	RRGRR_BA_LIST_SIZE 	32 	; BA list size
+CONST 	SIZE_MCC 	3 	; maximum number of BCD digits of the mobile country code
+CONST 	SIZE_MNC 	3 	; maximum number of BCD digits of the mobile network code
+CONST 	RRGRR_MAX_RSLT_NCELL_SYNC_IND 	12 	%REL99 AND TI_PS_FF_EMR% 	; maximum number of results of synchronisation attempts for cell re-selection
+CONST 	RRGRR_MAX_RSLT_NCELL_SYNC_IND 	6 	%!REL99 OR !TI_PS_FF_EMR% 	; maximum number of results of synchronisation attempts for cell re-selection
+CONST 	RRGRR_MEAS_REP_LIST_SIZE 	33 	%REL99 AND TI_PS_FF_EMR% 	; Measurement report list size (1 serving and 32 neighbour cells)
+CONST 	MAX_NUM_OF_RTD_VALUES 	3 	; Maximum number of RTD values for an ARFCN
+
+
+
+VALTAB 	VAL_cause
+VAL 	0 	GPRS_NOT_SUPPORTED 	"Serving cell does not support GPRS"
+VAL 	1 	GPRS_SUPPORTED 	"Serving cell supports GPRS"
+VAL 	2 	GPRS_CELL_NOT_SUITABLE 	"for GRR-controlled cell reselection"
+
+VALTAB 	VAL_si_to_read
+VAL 	0 	UNSPECIFIED_SI 	"Update of unspecified SI message or SI messages"
+VAL 	1 	UPDATE_SI1 	"Update of SI1 message"
+VAL 	2 	UPDATE_SI2_SI2BIS_OR_SI2TER 	"Update of SI2, SI2 bis or SI2 ter message"
+VAL 	3 	UPDATE_SI3_SI4_SI7_OR_SI8 	"Update of SI3, SI4, SI7 or SI8 message"
+VAL 	4 	UPDATE_SI9 	"Update of SI9 message"
+VAL 	5 	COMPLETE_SI 	"Read complete SI"
+VAL 	255 	UPDATE_SI13 	"Update or read of SI13"
+
+VALTAB 	VAL_si1_state
+VAL 	0 	SI1_NOT_SEND 	"SI not send"
+VAL 	1 	SI1_RECEIVED 	"SI received"
+VAL 	2 	SI1_NOT_RECEIVED 	"SI not received"
+
+VALTAB 	VAL_si3_state
+VAL 	0 	SI3_NOT_SEND 	"SI not send"
+VAL 	1 	SI3_RECEIVED 	"SI received"
+VAL 	2 	SI3_NOT_RECEIVED 	"SI not received"
+
+VALTAB 	VAL_si13_state
+VAL 	0 	SI13_NOT_SEND 	"SI not send"
+VAL 	1 	SI13_RECEIVED 	"SI received"
+VAL 	2 	SI13_NOT_RECEIVED 	"SI not received"
+
+VALTAB 	VAL_pg_type
+VAL 	0 	RRGRR_IMSI 	"MS is paged by IMSI"
+VAL 	1 	RRGRR_PTMSI 	"MS is paged by PTMSI (GPRS TMSI)"
+
+VALTAB 	VAL_rr_est
+VAL 	0 	RR_EST_NOT_ALLOWED 	"RR establishment not allowed"
+VAL 	1 	RR_EST_ALLOWED 	"RR establishment allowed"
+
+VALTAB 	VAL_ecsc 	%REL99%
+VAL 	0 	ECS_FORBIDDEN 	"Early classmark sending forbidden in the cell"
+VAL 	1 	ECS_ALLOWED 	"Early classmark sending allowed in the cell"
+
+VALTAB 	VAL_susp_req
+VAL 	0 	SUSPENSION_REQ_NOT_NEEDED 	"RR need not send GPRS suspension request"
+VAL 	1 	SUSPENSION_REQ_NEEDED 	"RR has to send GPRS suspension request"
+
+VALTAB 	VAL_r_bit
+VAL 	0 	CHAN_REQ_SENT_ONCE 	"MS has sent channel request only once"
+VAL 	1 	CHAN_REQ_SENT_MORE 	"MS has sent channel request twice or more"
+
+VALTAB 	VAL_old_ptmsi
+VAL 	0xFFFFFFFF 	RRGRR_PTMSI_INVALID 	"P-TMSI or TMSI invalid (see GSM 3.03)"
+
+VALTAB 	VAL_stop_cause
+VAL 	3 	CONTENTION_RESOLUTION_FAIL 	"Establishment fails due to contention resolution"
+VAL 	4 	DL_ESTABLISHMENT_FAIL 	"Layer 2 establishment failure"
+
+VALTAB 	VAL_arfcn
+VAL 	1 - 124 	"GSM 900 without extension band"
+VAL 	1 - 174 	"GSM 900 with extension band"
+VAL 	512 - 810 	"PCS 1900"
+VAL 	512 - 885 	"DCS 1800"
+VAL 	1 - 498 	"Dual band(GSM/DCS)"
+VAL 	1 - 548 	"Dual band(EGSM/DCS)"
+VAL 	0xFFFF 	RRGRR_INVALID_ARFCN 	"Used to mark a channel number entry as invalid."
+
+VALTAB 	VAL_sb_flag
+VAL 	0 	NO_SB_FOUND 	"synchronisation burst not found"
+VAL 	1 	SB_FOUND 	"synchronisation burst found"
+VAL 	2 	SB_UNKNOWN 	"status of synchronisation burst unknown"
+
+VALTAB 	VAL_bsic
+VAL 	0 - 63 	"base station identification code"
+VAL 	255 	RRGRR_INVALID_BSIC 	"Used to identify a BSIC entry as invalid"
+
+VALTAB 	VAL_cr_type
+VAL 	0 	CR_NEW 	"RR has to reselect the given cell"
+VAL 	1 	CR_COMPLETE 	"RR has to camp on this cell"
+VAL 	2 	CR_CONT 	"Continue cell reselection."
+VAL 	3 	CR_CS 	"start cell selection process again"
+VAL 	4 	CR_NEW_NOT_SYNCED 	"start cr for not syncd cell (ie. PCCO)"
+VAL 	124 	CR_SUSPENDED_IDLE 	"start idle procedures"
+VAL 	125 	CR_REQ_CANDIDATE 	"inform GRR that is has to start a CR"
+VAL 	126 	CR_NORMAL 	"Do not abort TBF"
+VAL 	127 	CR_ABNORMAL 	"Abort TBF"
+
+VALTAB 	VAL_sync_res
+VAL 	0 	SYNC_OK 	"Synchronisation OK"
+VAL 	1 	SYNC_FAILED 	"Synchronisation failed"
+
+VALTAB 	VAL_cell_type
+VAL 	0 	SYNC_SCELL 	"Synchronisation to serving cell"
+VAL 	1 	SYNC_NCELL 	"Synchronisation to neighbour cell"
+
+VALTAB 	VAL_pag_mode
+VAL 	0 	PAG_MODE_LAST_ONE 	"RR shall use the last page (before pag_Reorg)"
+VAL 	1 	PAG_MODE_REORG 	"RR shall use Paging reorg mode"
+VAL 	2 	PAG_MODE_PTM_NP 	"RR shall use the NORMAL paging in packet transfer mode, start only CCCH"
+VAL 	3 	PAG_MODE_PIM_NP 	"RR shall start only CCCH with REORG and change to NORMAL paging"
+VAL 	255 	PAG_MODE_DEFAULT 	"RR shall use the default paging mode and goes to idle mode"
+
+VALTAB 	VAL_split_pg
+VAL 	704 	RRGRR_NO_DRX 	"Non DRX mode"
+
+VALTAB 	VAL_rac
+VAL 	0xFF 	RRGRR_RAC_INVALID 	"routing area code invalid"
+
+VALTAB 	VAL_reconn_state
+VAL 	0 	RECONN_OK 	"The reconnection to the 'old' channel was cuessful"
+VAL 	1 	RECONN_LOW_FAIL 	"A Lower Layer Failure occured during the reconnection."
+
+VALTAB 	VAL_reconn_cause
+VAL 	0b00000000 	RECONN_NORM_EVENT 	"Normal event"
+VAL 	0b00000001 	RECONN_UNSPECIFIED 	"Abnormal release, unspecified"
+VAL 	0b00000010 	RECONN_CHN_UNACCEPTABLE 	"Abnormal release, channel unacceptable"
+VAL 	0b00000011 	RECONN_TIMER_EXPIRED 	"Abnormal release, timer expired"
+VAL 	0b00000100 	RECONN_NO_ACTIVITY 	"Abnormal release, no activity on the radio path"
+VAL 	0b00000101 	RECONN_PREEMPTIVE 	"Preemptive release"
+VAL 	0b00001000 	RECONN_TA_OUT_OF_RANGE 	"Handover impossible, timing advance out of range"
+VAL 	0b00001001 	RECONN_CHANNEL_MODE 	"Channel mode unacceptable"
+VAL 	0b00001010 	RECONN_FREQ_NOT_IMPL 	"Frequency not implemented"
+VAL 	0b01000001 	RECONN_CALL_CLEARED 	"Call already cleared"
+VAL 	0b01011111 	RECONN_INCORRECT_SEMANTIC 	"Semantically incorrect message"
+VAL 	0b01100000 	RECONN_INVALID_INFO 	"Invalid mandatory information"
+VAL 	0b01100001 	RECONN_UNKNWN_MSG_TYPE 	"Message type non-existent or not implemented"
+VAL 	0b01100010 	RECONN_INCMPTBLE_MSG_TYPE 	"Message type not compatible with protocol state"
+VAL 	0b01100100 	RECONN_COND_IE_ERROR 	"Conditional IE error"
+VAL 	0b01100101 	RECONN_NO_CELL_ALLOC 	"No cell allocation available"
+VAL 	0b01101111 	RECONN_PROT_UNSPECIFIED 	"Protocol error unspecified"
+
+VALTAB 	VAL_ident_type
+VAL 	1 	ID_IMSI 	"Paged by IMSI"
+VAL 	4 	ID_TMSI 	"Paged by TMSI"
+VAL 	8 	ID_PTMSI 	"Paged by PTMSI"
+
+VALTAB 	VAL_report_type
+VAL 	0x0 	REP_TYPE_1 	"synchronize to the 6 strongest carriers and provide their BSICs"
+VAL 	0x1 	REP_TYPE_2 	"synchronize to carriers in decreasing field strength until the BSICs for 6 carriers with allowed NCC are fully decoded"
+VAL 	0x2 	REP_TYPE_3 	"no synchronization, no BSICs are provided"
+VAL 	0x3 	REP_TYPE_RES 	"reserved, ignore request for measurement data in this version"
+
+VALTAB 	VAL_xmeas_cause
+VAL 	0 	EXT_MEAS_OK 	"The results of the Extended Measurment procedure are valid."
+VAL 	1 	EXT_MEAS_RESET 	"GRR has stopped the Extended Measurement procedure"
+VAL 	2 	EXT_MEAS_LEAVE_IDLE 	"RR has entered a non-idle state and stopped the Extended Measurement procedure"
+
+VALTAB 	VAL_lac
+VAL 	DEF 	 	"lac"
+VAL 	0xFFFE 	RRGRR_LA_INVALID 	"la invalid"
+
+VALTAB 	VAL_v_stop_ccch
+VAL 	0 	DONT_STOP_CCCH 	"Don't stop CCCH"
+VAL 	1 	STOP_CCCH 	"Stop CCCH"
+VAL 	2 	INVALID_MSG 	"The message was not assigned to MS"
+VAL 	3 	TASK_STOP_DUMMY_VALUE 	"Dummy value, only used for GRR internal purposes"
+
+VALTAB 	VAL_rxlev
+VAL 	0x80 	RRGRR_INVALID_RXLEV 	"receive signal strength level not present"
+
+VALTAB 	VAL_idx
+VAL 	0xFF 	RRGRR_INVALID_IDX 	"index not present"
+
+VALTAB 	VAL_state
+VAL 	0 	TASK_STATE_PIM 	"Packet Idle Mode"
+VAL 	1 	TASK_STATE_PAM 	"Packet Access Mode"
+VAL 	2 	TASK_STATE_PTM 	"Packet Transfer Mode"
+
+VALTAB 	VAL_cell_bar_access_2
+VAL 	0 	CBA_2_NORMAL 	"Status for cell reselection is set to normal"
+VAL 	1 	CBA_2_BARRED 	"Status for cell reselection is set to barred"
+
+VALTAB 	VAL_exc_acc
+VAL 	0 	EXC_ACC_NORMAL 	"Status for cell selection and reselection is set to normal"
+VAL 	1 	EXC_ACC_LIMITED 	"The MS is only allowed to camp on the cell for limited service"
+
+VALTAB 	VAL_same_ra_as_serving_cell
+VAL 	0 	DIFFERENT_RA_AS_SCELL 	"The cell is in a routing area different from the serving cell"
+VAL 	1 	SAME_RA_AS_SCELL 	"The cell is in the same routing area as the serving cell"
+
+VALTAB 	VAL_gprs_reselect_offset
+VAL 	0 - 31 	"Value range of parameter"
+VAL 	0x10 	GPRS_RESEL_OFF_DEFAULT 	"Default value (0 dB)"
+VAL 	0xFF 	GPRS_RESEL_OFF_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_gprs_rxlev_access_min
+VAL 	0 - 63 	"Value range of parameter"
+VAL 	0xFF 	GPRS_RXLEV_ACCESS_MIN_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_gprs_ms_txpwr_max_cch
+VAL 	0 - 31 	"Value range of parameter"
+VAL 	0xFF 	GPRS_MS_TXPWR_MAX_CCH_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_gprs_temporary_offset
+VAL 	0 - 7 	"Value range of parameter"
+VAL 	0xFF 	GPRS_TEMPORARY_OFFSET_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_gprs_penalty_time
+VAL 	0 - 31 	"Value range of parameter"
+VAL 	0xFF 	GPRS_PENALTY_TIME_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_priority_class
+VAL 	0 - 7 	"Value range of parameter"
+VAL 	0xFF 	GPRS_PRIORITY_CLASS_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_hcs_thr
+VAL 	0 - 31 	"Value range of parameter"
+VAL 	0xFF 	GPRS_HCS_THR_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_si13_location
+VAL 	0 	SI13_LOC_BCCH_NORM 	"SYSTEM INFORMATION TYPE 13 message is sent on BCCH norm"
+VAL 	1 	SI13_LOC_BCCH_EXT 	"SYSTEM INFORMATION TYPE 13 message is sent on BCCH ext"
+VAL 	0xFF 	SI13_LOC_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_pbcch_location
+VAL 	0 - 3 	"Value range of parameter"
+VAL 	0xFF 	PBCCH_LOC_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_psi1_repeat_period
+VAL 	0 - 15 	"Value range of parameter"
+VAL 	0xFF 	PSI1_RPT_PRD_INVALID 	"This value is used to indicate the absence of this parameter"
+
+VALTAB 	VAL_nc_mode
+VAL 	0 	NC2_NOT_USED 	"allow cell reselection"
+VAL 	1 	NC2_USED 	"inhibit cell reselection"
+VAL 	2 	NC_MODE_RESET 	"NC is reset to default"
+
+VALTAB 	VAL_meas_cause
+VAL 	0x0 	NC_STOP_MEAS 	" Stop the meas report"
+VAL 	0x1 	NC_START_MEAS 	"Start Averaging of measurements"
+VAL 	0x2 	NC_REPORT_MEAS 	"get the meas report from RR"
+
+VALTAB 	VAL_sync_type
+VAL 	0 	SYNC_INITIAL 	"Sync request for new carrier"
+VAL 	1 	SYNC_RECONFIRM 	"Reconfirm 10 sec Timer Expired"
+
+VALTAB 	VAL_rep_rate
+VAL 	0x00 	NORMAL_REP_RATE 	"Normal(SACCH)reporting rate"
+VAL 	0x01 	REDUCED_REP_RATE 	"Reduced reporting rate"
+
+VALTAB 	Val_inv_bsic
+VAL 	0x00 	INV_BSIC_REPORTING_DISABLED 	"Invalid BSIC reporting not enabled"
+VAL 	0x01 	INV_BSIC_REPORTING_ENABLED 	"Invalid BSIC reporting not enabled"
+
+VALTAB 	Val_scale_ord
+VAL 	0x00 	SCALE_0dB 	"Scaling by 0dB"
+VAL 	0x01 	SCALE_10dB 	"Scaling by 10dB"
+VAL 	0x02 	SCALE_AUTO 	"Automatic scaling"
+
+VALTAB 	Val_nco 	%REL99 AND TI_PS_FF_EMR%
+VAL 	0 	NCO_NC0 	%REL99 AND TI_PS_FF_EMR% 	"Values Item"
+VAL 	1 	NCO_NC1 	%REL99 AND TI_PS_FF_EMR% 	"Values Item"
+VAL 	2 	NCO_NC2 	%REL99 AND TI_PS_FF_EMR% 	"Values Item"
+VAL 	3 	NCO_RESET 	%REL99 AND TI_PS_FF_EMR% 	"Values Item"
+VAL 	4 	NCO_EMPTY 	%REL99 AND TI_PS_FF_EMR% 	"Values Item"
+
+
+
+
+VAR 	cause 	"Cause" 	B
+
+VAL 	@p_rrgrr - VAL_cause@ 	
+
+VAR 	bcch_arfcn 	"Frequency of BCCH" 	S
+
+
+VAR 	bcch_bsic 	"BSIC of BCCH" 	B
+
+
+VAR 	ac_class 	"Access class for RACH" 	S
+
+
+VAR 	pwr_offset 	"Power offset" 	B
+
+
+VAR 	limited 	"Limited service" 	B
+
+
+VAR 	l_buf 	"length of content in bit" 	S
+
+
+VAR 	o_buf 	"offset of content in bit" 	S
+
+
+VAR 	buf 	"buffer content" 	B
+
+
+VAR 	si_to_read 	"SI to read" 	B
+
+VAL 	@p_rrgrr - VAL_si_to_read@ 	
+
+VAR 	si1_state 	"SI1 states" 	B
+
+VAL 	@p_rrgrr - VAL_si1_state@ 	
+
+VAR 	si3_state 	"SI3 states" 	B
+
+VAL 	@p_rrgrr - VAL_si3_state@ 	
+
+VAR 	si13_state 	"SI13 states" 	B
+
+VAL 	@p_rrgrr - VAL_si13_state@ 	
+
+VAR 	pg_type 	"The type of paging" 	B
+
+VAL 	@p_rrgrr - VAL_pg_type@ 	
+
+VAR 	rr_est 	"Allowance of RR establishment" 	B
+
+VAL 	@p_rrgrr - VAL_rr_est@ 	
+
+VAR 	v_non_gprs 	"Valid flag for non GPRS" 	B
+
+
+VAR 	att 	"Attach/detach allowed" 	B
+
+
+VAR 	v_T3212 	"Valid flag for T3212" 	B
+
+
+VAR 	T3212 	"T3212 value" 	B
+
+
+VAR 	neci 	"Half rate support" 	B
+
+
+VAR 	pwrc 	"Power control indicator" 	B
+
+
+VAR 	dtx 	"DTX indicator" 	B
+
+
+VAR 	radio_link_timeout 	"Supervisory timer for RR connection" 	B
+
+
+VAR 	bs_ag_blks_res 	"Number of blocks reserved for access grant" 	B
+
+
+VAR 	ccch_conf 	"Physical channel configuration for CCCH" 	B
+
+
+VAR 	max_retrans 	"Maximum number of retransmissions" 	B
+
+
+VAR 	tx_integer 	"Number of slots to spread transmission" 	B
+
+
+VAR 	ec 	"Emergency call allowed" 	B
+
+
+VAR 	ecsc 	%REL99% 	"Early Classmark sending flag in PSI2" 	B
+
+VAL 	@p_rrgrr - VAL_ecsc@ 	
+
+VAR 	v_ext_ie 	"Valid flag for extension bits IE" 	B
+
+
+VAR 	ext_len 	"Extension length" 	B
+
+
+VAR 	spare_bit 	"Spare bit (val(ext_len)+1)" 	B
+
+
+VAR 	ch_needed 	"Channel needed field" 	B
+
+
+VAR 	v_emlpp 	"Valid flag" 	B
+
+
+VAR 	emlpp 	"Value of emlpp_prio" 	B
+
+
+VAR 	susp_req 	"Send GPRS suspension request flag" 	B
+
+VAL 	@p_rrgrr - VAL_susp_req@ 	
+
+VAR 	req_data 	"" 	B
+
+
+VAR 	ia_index 	"indicates valid parts of the Imm Ass Ext msg" 	B
+
+
+VAR 	fn 	"Frame Number" 	L
+
+
+VAR 	wait_ind 	"wait indication (T3122)" 	B
+
+
+VAR 	r_bit 	"retry bit" 	B
+
+VAL 	@p_rrgrr - VAL_r_bit@ 	
+
+VAR 	old_ptmsi 	"Packet Temporary Mobile Subsciber Identity" 	L
+
+VAL 	@p_rrgrr - VAL_old_ptmsi@ 	
+
+VAR 	new_ptmsi 	"Packet Temporary Mobile Subsciber Identity" 	L
+
+VAL 	@p_rrgrr - VAL_old_ptmsi@ 	
+
+VAR 	mac_req 	"MAC mode request" 	B
+
+
+VAR 	cs_req 	"Channel Coding Schemme Request" 	B
+
+
+VAR 	tlli 	"temporary logical link identifier" 	L
+
+
+VAR 	mo_mt 	"MO/MT FALG" 	B
+
+
+VAR 	prio 	"Priority" 	B
+
+
+VAR 	rlc_mode_req 	"RLC Mode" 	B
+
+
+VAR 	llc_type 	"LLC Frame Type" 	B
+
+
+VAR 	req_bwd 	"Requested Bandwidth" 	S
+
+
+VAR 	rlc_octets 	"RLC Octet Count" 	S
+
+
+VAR 	c_value 	"C_Value" 	B
+
+
+VAR 	rxqual 	"Rx Quality" 	B
+
+
+VAR 	sign_var 	"Signal Variance" 	B
+
+
+VAR 	stop_cause 	"Stop cause" 	B
+
+VAL 	@p_rrgrr - VAL_stop_cause@ 	
+
+VAR 	arfcn 	"channel number" 	S
+
+VAL 	@p_rrgrr - VAL_arfcn@ 	
+
+VAR 	sb_flag 	"synchronisation burst flag" 	B
+
+VAL 	@p_rrgrr - VAL_sb_flag@ 	
+
+VAR 	bsic 	"base station identification code" 	B
+
+VAL 	@p_rrgrr - VAL_bsic@ 	
+
+VAR 	cr_type 	"Cell re-selection mode" 	B
+
+VAL 	@p_rrgrr - VAL_cr_type@ 	
+
+VAR 	sync_res 	"Indicates the result of synchronisation" 	B
+
+VAL 	@p_rrgrr - VAL_sync_res@ 	
+
+VAR 	cell_type 	"Ncell or Scell" 	B
+
+VAL 	@p_rrgrr - VAL_cell_type@ 	
+
+VAR 	v_cr_par 	"Valid Flag for GPRS Cell Selection Parameter" 	B
+
+
+VAR 	pag_mode 	"Paging Mode" 	B
+
+VAL 	@p_rrgrr - VAL_pag_mode@ 	
+
+VAR 	split_pg 	"Split paging cycle (the value, NOT the code)" 	S
+
+VAL 	@p_rrgrr - VAL_split_pg@ 	
+
+VAR 	rac 	"routing are code" 	B
+
+VAL 	@p_rrgrr - VAL_rac@ 	
+
+VAR 	is_pbcch_present 	"Indicates whether PBCCH is present or not" 	B
+
+
+VAR 	reconn_state 	"Indicates that the reconnection was successful or not" 	B
+
+VAL 	@p_rrgrr - VAL_reconn_state@ 	
+
+VAR 	reconn_cause 	"Cause for the reconnection, refer to causes sent with ASSIGNMENT FAILURE [3]" 	B
+
+VAL 	@p_rrgrr - VAL_reconn_cause@ 	
+
+VAR 	ident_type 	"Identity type" 	B
+
+VAL 	@p_rrgrr - VAL_ident_type@ 	
+
+VAR 	tmsi 	"temporary logical link identifier" 	L
+
+
+VAR 	report_type 	"Extended Measurement reporting type" 	B
+
+VAL 	@p_rrgrr - VAL_report_type@ 	
+
+VAR 	ncc_permitted 	"network colour code permission indicator" 	B
+
+
+VAR 	call_ref 	"Call reference ID" 	B
+
+
+VAR 	xmeas_cause 	"indicates the state of the extended measurement results" 	B
+
+VAL 	@p_rrgrr - VAL_xmeas_cause@ 	
+
+VAR 	lac 	"location area code" 	S
+
+VAL 	@p_rrgrr - VAL_lac@ 	
+
+VAR 	v_plmn 	"Valid Flag" 	B
+
+
+VAR 	mcc 	"Mobile Country Code" 	B
+
+
+VAR 	mnc 	"Mobile Network Code" 	B
+
+
+VAR 	v_stop_ccch 	"Indicates whether CCCH shall be stopped" 	B
+
+VAL 	@p_rrgrr - VAL_v_stop_ccch@ 	
+
+VAR 	cid 	"cell identification" 	S
+
+
+VAR 	rxlev 	"receive signal strength level" 	B
+
+VAL 	@p_rrgrr - VAL_rxlev@ 	
+
+VAR 	idx 	"index" 	B
+
+VAL 	@p_rrgrr - VAL_idx@ 	
+
+VAR 	state 	"Indicates to RR the state of GRR" 	B
+
+VAL 	@p_rrgrr - VAL_state@ 	
+
+VAR 	v_pim_pbcch 	"pim" 	B
+
+
+VAR 	v_pam_pbcch 	"pam" 	B
+
+
+VAR 	v_ptm_pbcch 	"ptm" 	B
+
+
+VAR 	bs_pa_mfrms 	"Paging Channel configuration" 	B
+
+
+VAR 	cell_bar_access_2 	"CELL_BAR_ACCESS_2" 	B
+
+VAL 	@p_rrgrr - VAL_cell_bar_access_2@ 	
+
+VAR 	exc_acc 	"EXC_ACC" 	B
+
+VAL 	@p_rrgrr - VAL_exc_acc@ 	
+
+VAR 	same_ra_as_serving_cell 	"SAME_RA_AS_SERVING_CELL" 	B
+
+VAL 	@p_rrgrr - VAL_same_ra_as_serving_cell@ 	
+
+VAR 	gprs_reselect_offset 	"GPRS_RESELECT_OFFSET" 	B
+
+VAL 	@p_rrgrr - VAL_gprs_reselect_offset@ 	
+
+VAR 	gprs_rxlev_access_min 	"GPRS_RXLEV_ACCESS_MIN" 	B
+
+VAL 	@p_rrgrr - VAL_gprs_rxlev_access_min@ 	
+
+VAR 	gprs_ms_txpwr_max_cch 	"GPRS_MS_TXPWR_MAX_CCH" 	B
+
+VAL 	@p_rrgrr - VAL_gprs_ms_txpwr_max_cch@ 	
+
+VAR 	gprs_temporary_offset 	"GPRS_TEMPORARY_OFFSET" 	B
+
+VAL 	@p_rrgrr - VAL_gprs_temporary_offset@ 	
+
+VAR 	gprs_penalty_time 	"GPRS_PENALTY_TIME" 	B
+
+VAL 	@p_rrgrr - VAL_gprs_penalty_time@ 	
+
+VAR 	priority_class 	"PRIORITY_CLASS" 	B
+
+VAL 	@p_rrgrr - VAL_priority_class@ 	
+
+VAR 	hcs_thr 	"HCS_THR" 	B
+
+VAL 	@p_rrgrr - VAL_hcs_thr@ 	
+
+VAR 	si13_location 	"SI13 Location" 	B
+
+VAL 	@p_rrgrr - VAL_si13_location@ 	
+
+VAR 	pbcch_location 	"PBCCH_LOCATION" 	B
+
+VAL 	@p_rrgrr - VAL_pbcch_location@ 	
+
+VAR 	psi1_repeat_period 	"PSI1_REPEAT_PERIOD" 	B
+
+VAL 	@p_rrgrr - VAL_psi1_repeat_period@ 	
+
+VAR 	nc_mode 	"NC mode" 	B
+
+VAL 	@p_rrgrr - VAL_nc_mode@ 	
+
+VAR 	meas_cause 	"Basic Element" 	B
+
+VAL 	@p_rrgrr - VAL_meas_cause@ 	
+
+VAR 	sync_type 	"Sync Info indicating the Reconfirm Sync timer status" 	B
+
+VAL 	@p_rrgrr - VAL_sync_type@ 	
+
+VAR 	nco 	%REL99 AND TI_PS_FF_EMR% 	"Network control order, values same as enum T_NC_ORDER in grr.h" 	B
+
+VAL 	@p_rrgrr - Val_nco@ 	
+
+VAR 	is_valid 	%REL99 AND TI_PS_FF_EMR% 	"Indicates whether NC parameters following are valid" 	B
+
+
+VAR 	nc_non_drx 	%REL99 AND TI_PS_FF_EMR% 	"minimum time the mobile station shall stay in non-DRX mode after an NC-measurement report " 	B
+
+
+VAR 	nc_rep_per_i 	%REL99 AND TI_PS_FF_EMR% 	"Time period for cell reselection measurement reporting for packet idle mode (I) " 	B
+
+
+VAR 	nc_rep_per_t 	%REL99 AND TI_PS_FF_EMR% 	"Time period for cell reselection measurement reporting for packet transfer mode (T) " 	B
+
+
+VAR 	ba_ind 	%REL99 AND TI_PS_FF_EMR% 	"BA_IND used by RR for neighbor cell list" 	B
+
+
+VAR 	rtd 	%REL99 AND TI_PS_FF_RTD% 	"Real time difference value for all the neighbour cells" 	S
+
+
+
+
+
+COMP 	sdu 	 "service data unit"
+{
+ 	l_buf 	 ; length of content in bit
+ 	o_buf 	 ; offset of content in bit
+ 	buf 	[1] 	 ; buffer content
+}
+
+
+
+COMP 	si_states 	 "States of the SI"
+{
+ 	si1_state 	 ; State of SI1
+ 	si3_state 	 ; State of SI3
+ 	si13_state 	 ; State of SI13
+}
+
+
+
+COMP 	non_gprs 	 "Non-GPRS parameters"
+{
+ 	v_non_gprs 	 ; Valid flag for non GPRS
+ 	att 	 ; Attach/detach allowed
+ 	v_T3212 	 ; Valid flag for T3212
+ 	T3212 	 ; T3212 value
+ 	neci 	 ; Half rate support
+ 	pwrc 	 ; Power control indicator
+ 	dtx 	 ; DTX indicator
+ 	radio_link_timeout 	 ; Supervisory timer for RR connection
+ 	bs_ag_blks_res 	 ; Number of blocks reserved for access grant
+ 	ccch_conf 	 ; Physical channel configuration for CCCH
+ 	bs_pa_mfrms 	 ; 51 MFs between paging
+ 	max_retrans 	 ; Maximum number of retransmissions
+ 	tx_integer 	 ; Number of slots to spread transmission
+ 	ec 	 ; Emergency call allowed
+ 	gprs_ms_txpwr_max_cch 	 ; GPRS_MS_TXPWR_MAX_CCH
+ 	ecsc 	 	%REL99% ; Early Classmark sending flag in PSI2
+}
+
+
+
+COMP 	ext_ie 	 "Possible future extension"
+{
+ 	ext_len 	 ; Extension length
+ 	spare_bit 	[8] 	 ; Spare bit (val(ext_len)+1)
+}
+
+
+
+COMP 	emlpp_prio 	 "eMLPP_PRIORITY"
+{
+ 	v_emlpp 	 ; Valid flag
+ 	emlpp 	 ; Value of emlpp_prio
+}
+
+
+
+COMP 	p_chan_req_des 	 "Requested channel characteristics"
+{
+ 	mo_mt 	 ; MO/MT FALG
+ 	prio 	 ; Priority
+ 	rlc_mode_req 	 ; RLC Mode
+ 	llc_type 	 ; LLC Frame Type
+ 	req_bwd 	 ; Requested Bandwidth
+ 	rlc_octets 	 ; RLC Octet Count
+}
+
+
+
+COMP 	gprs_meas_results 	 "GPRS Measurement Results"
+{
+ 	c_value 	 ; C_Value
+ 	rxqual 	 ; Rx Quality
+ 	sign_var 	 ; Signal Variance
+}
+
+
+
+COMP 	sync_result 	 "Results of Synchronisation Attempts"
+{
+ 	arfcn 	 ; Channel Number
+ 	sb_flag 	 ; Error Cause
+ 	bsic 	 ; Base Station Identity Code
+}
+
+
+
+COMP 	rm_freq_list 	 "frequencies to be removed"
+{
+ 	arfcn 	 ; Channel Number
+ 	bsic 	 ; BSIC
+}
+
+
+
+COMP 	meas_res 	 "measurements ordered by the network"
+{
+ 	arfcn 	 ; ARFCN
+ 	bsic 	 ; BSIC
+ 	rxlev 	 ; RX Value
+}
+
+
+
+COMP 	arfcn_idx 	 "Channel number and a associated index"
+{
+ 	arfcn 	 ; Radio Frequency Number
+ 	idx 	 ; Index to the ARFCN
+}
+
+
+
+COMP 	xmeas_res 	 "results of the extended measurement"
+{
+ 	arfcn_idx 	 ; Radio Frequency Number and index
+ 	rxlev 	 ; field strength
+ 	bsic 	 ; Base Station Identification Code
+}
+
+
+
+COMP 	plmn 	 "PLMN identification"
+{
+ 	v_plmn 	 ; Valid Flag
+ 	mcc 	[SIZE_MCC] 	 ; Mobile Country Code
+ 	mnc 	[SIZE_MNC] 	 ; Mobile Network Code
+}
+
+
+
+COMP 	rai 	 "routing area identifier"
+{
+ 	plmn 	 ; PLMN
+ 	lac 	 ; Location Area Code
+ 	rac 	 ; Routing Area Code
+}
+
+
+
+UNION 	task 	 "Task"
+{
+ 	RR_TASK_1 	v_stop_ccch 	 ; Stop CCCH indicator
+ 	LEAVE_PIM_PBCCH 	v_pim_pbcch 	 ; Leave idle mode
+ 	LEAVE_PAM_PBCCH 	v_pam_pbcch 	 ; Leave access mode
+ 	LEAVE_PTM_PBCCH 	v_ptm_pbcch 	 ; Leave transfer mode
+}
+
+
+
+COMP 	rr_cell_env 	 "current location of the mobile equipment"
+{
+ 	plmn 	 ; PLMN
+ 	lac 	 ; Location Area Code
+ 	cid 	 ; Cell Identification
+}
+
+
+
+COMP 	serving_cell_info 	 "Cell information"
+{
+ 	gprs_rxlev_access_min 	 ; GPRS_RXLEV_ACCESS_MIN
+ 	gprs_ms_txpwr_max_cch 	 ; GPRS_MS_TXPWR_MAX_CCH
+ 	bcch_arfcn 	 ; Frequency of BCCH
+ 	bcch_bsic 	 ; BSIC of BCCH
+ 	ac_class 	 ; Access class for RACH
+ 	pwr_offset 	 ; Power offset
+ 	rr_cell_env 	 ; Cell Environment
+ 	limited 	 ; Limited service
+ 	bs_pa_mfrms 	 ; BS_PA_MFRMS
+ 	arfcn 	[RRGRR_BA_LIST_SIZE] 	 ; BA List
+ 	ba_ind 	 	%REL99 AND TI_PS_FF_EMR% ; BA-IND of the BA(BCCH)
+}
+
+
+
+COMP 	nc_para_struct 	 	%REL99 AND TI_PS_FF_EMR% "Network control parameters"
+{
+ 	nco 	 	%REL99 AND TI_PS_FF_EMR% ; Network control order
+ 	is_valid 	 	%REL99 AND TI_PS_FF_EMR% ; Indicates whether following NC para are valid or not
+ 	nc_non_drx 	 	%REL99 AND TI_PS_FF_EMR% ; NC-NON-DRX
+ 	nc_rep_per_i 	 	%REL99 AND TI_PS_FF_EMR% ; NC Reporting period in PIM
+ 	nc_rep_per_t 	 	%REL99 AND TI_PS_FF_EMR% ; Primitive structure element item
+}
+
+
+
+COMP 	cr_par 	 "GPRS Cell Selection Parameter"
+{
+ 	cell_bar_access_2 	 ; CELL_BAR_ACCESS_2
+ 	exc_acc 	 ; EXC_ACC
+ 	same_ra_as_serving_cell 	 ; SAME_RA_AS_SERVING_CELL
+ 	gprs_rxlev_access_min 	 ; Primitive structure element item
+ 	gprs_ms_txpwr_max_cch 	 ; GPRS_RXLEV_ACCESS_MIN
+ 	gprs_temporary_offset 	 ; GPRS_MS_TXPWR_MAX_CCH
+ 	gprs_penalty_time 	 ; GPRS_PENALTY_TIME
+ 	gprs_reselect_offset 	 ; GPRS_RESELECT_OFFSET
+ 	priority_class 	 ; PRIORITY_CLASS
+ 	hcs_thr 	 ; HCS_THR
+ 	si13_location 	 ; SI13_LOCATION
+ 	pbcch_location 	 ; PBCCH_LOCATION
+ 	psi1_repeat_period 	 ; PSI1_REPEAT_PERIOD
+}
+
+
+
+COMP 	add_freq_list 	 "BA list"
+{
+ 	arfcn 	 ; ARFCN
+ 	bsic 	 ; BSIC
+ 	v_cr_par 	 ; Valid Flag for GPRS Cell Selection Parameter
+ 	cr_par 	 ; GPRS Cell Selection Parameter
+}
+
+
+
+COMP 	ncell_sync_list 	 	%REL99 AND TI_PS_FF_RTD% "List of neighbourcell that needs to be synchronised."
+{
+ 	arfcn 	 ; Primitive structure element item
+ 	< () 	rtd 	[0..MAX_NUM_OF_RTD_VALUES] 	> 	 ; Primitive structure element item
+}
+
+
+
+
+
+
+; RRGRR_GPRS_SI13_IND 	0x6D00
+; RRGRR_PACKET_PAGING_IND 	0x6D02
+; RRGRR_CHANNEL_REQ 	0x2D00
+; RRGRR_IA_IND 	0x6D03
+; RRGRR_IAEXT_IND 	0x6D04
+; RRGRR_ASSIGNMENT_REJ_IND 	0x6D05
+; RRGRR_DATA_IND 	0x6D06
+; RRGRR_DATA_REQ 	0x2D02
+; RRGRR_IA_DOWNLINK_IND 	0x6D08
+; RRGRR_START_MON_CCCH_REQ 	0x2D03
+; RRGRR_STOP_MON_CCCH_REQ 	0x2D04
+; RRGRR_CR_REQ 	0x2D05
+; RRGRR_START_MON_BCCH_REQ 	0x2D06
+; RRGRR_RR_EST_REQ 	0x2D07
+; RRGRR_RR_EST_RSP 	0x2D08
+; RRGRR_RR_EST_IND 	0x6D0D
+; RRGRR_ACTIVATE_REQ 	0x2D0A
+; RRGRR_GPRS_DATA_REQ 	0x2D0C
+; RRGRR_SUSPEND_DCCH_REQ 	0x2D0D
+; RRGRR_SUSPEND_DCCH_CNF 	0x6D10
+; RRGRR_RECONNECT_DCCH_REQ 	0x2D0E
+; RRGRR_RECONNECT_DCCH_CNF 	0x6D11
+; RRGRR_RESUMED_TBF_REQ 	0x2D01
+; RRGRR_RESUMED_TBF_CNF 	0x6D07
+; RRGRR_STOP_DCCH_IND 	0x6D12
+; RRGRR_CR_IND 	0x6D13
+; RRGRR_NCELL_SYNC_REQ 	0x2D0F
+; RRGRR_NCELL_SYNC_IND 	0x6D15
+; RRGRR_SYNC_REQ 	0x2D10
+; RRGRR_SYNC_IND 	0x6D16
+; RRGRR_UPDATE_BA_REQ 	0x2D12
+; RRGRR_MEAS_REP_REQ 	0x2D13
+; RRGRR_MEAS_REP_CNF 	0x6D17
+; RRGRR_TBF_ESTABLISHED_REQ 	0x2D14
+; RRGRR_CR_RSP 	0x2D15
+; RRGRR_MS_ID_IND 	0x6D19
+; RRGRR_EXT_MEAS_REQ 	0x2D16
+; RRGRR_EXT_MEAS_CNF 	0x6D0A
+; RRGRR_EXT_MEAS_STOP_REQ 	0x2D17
+; RRGRR_STOP_TASK_REQ 	0x2D18
+; RRGRR_STOP_TASK_CNF 	0x6D09
+; RRGRR_START_TASK_REQ 	0x2D19
+; RRGRR_START_TASK_CNF 	0x6D1A
+; RRGRR_STANDBY_STATE_IND 	0x2D1A
+; RRGRR_READY_STATE_IND 	0x2D1B
+; RRGRR_CBCH_INFO_IND 	0x2D1C
+; RRGRR_SI2QUATER_IND 	0x6D1B
+
+
+
+PRIM 	RRGRR_GPRS_SI13_IND 	0x6D00
+{
+ 	cause 	 ; Cause
+ 	si_states 	 ; State of SI
+ 	serving_cell_info 	 ; Cell information
+ 	sdu 	 ; Sdu to SI13 message
+}
+
+
+
+
+
+
+PRIM 	RRGRR_PACKET_PAGING_IND 	0x6D02
+{
+ 	pg_type 	 ; Paging type
+}
+
+
+
+
+
+
+PRIM 	RRGRR_CHANNEL_REQ 	0x2D00
+{
+ 	req_data 	 ; Channel Request Data
+}
+
+
+
+
+
+
+PRIM 	RRGRR_IA_IND 	0x6D03
+{
+ 	fn 	 ; Frame Number
+ 	r_bit 	 ; Retry Bit
+ 	sdu 	 ; Sdu to message
+}
+
+
+
+
+
+
+PRIM 	RRGRR_IAEXT_IND 	0x6D04
+{
+ 	ia_index 	 ; Index of IA
+ 	fn 	 ; Frame Number
+ 	r_bit 	 ; Retry Bit
+ 	sdu 	 ; Sdu to message
+}
+
+
+
+
+
+
+PRIM 	RRGRR_ASSIGNMENT_REJ_IND 	0x6D05
+{
+ 	wait_ind 	 ; wait indication
+ 	r_bit 	 ; Retry Bit
+}
+
+
+
+
+
+
+PRIM 	RRGRR_DATA_IND 	0x6D06
+{
+ 	fn 	 ; Frame Number
+ 	sdu 	 ; Sdu to message
+}
+
+
+
+
+
+
+PRIM 	RRGRR_DATA_REQ 	0x2D02
+{
+ 	sdu 	 ; Sdu to message
+}
+
+
+
+
+
+
+PRIM 	RRGRR_IA_DOWNLINK_IND 	0x6D08
+{
+ 	fn 	 ; Frame Number
+ 	r_bit 	 ; Retry Bit
+ 	sdu 	 ; Sdu to message
+}
+
+
+
+
+
+
+PRIM 	RRGRR_START_MON_CCCH_REQ 	0x2D03
+{
+ 	pag_mode 	 ; Paging Mode
+ 	split_pg 	 ; Split paging cycle
+}
+
+
+
+
+
+
+PRIM 	RRGRR_STOP_MON_CCCH_REQ 	0x2D04
+{
+ 	is_pbcch_present 	 ; PBCCH indicator
+}
+
+
+
+
+
+
+PRIM 	RRGRR_CR_REQ 	0x2D05
+{
+ 	cr_type 	 ; Cell re-selection mode
+ 	arfcn 	 ; channel number
+ 	bsic 	 ; bsic
+}
+
+
+
+
+
+
+PRIM 	RRGRR_START_MON_BCCH_REQ 	0x2D06
+{
+ 	si_to_read 	 ; SI to read
+}
+
+
+
+
+
+
+PRIM 	RRGRR_RR_EST_REQ 	0x2D07
+{
+ 	non_gprs 	 ; Non-GPRS parameters
+ 	ch_needed 	 ; Channel needed field
+ 	ident_type 	 ; Identity Type
+ 	emlpp_prio 	 ; eMLPP_PRIORITY
+ 	susp_req 	 ; GPRS Suspension request
+}
+
+
+
+
+
+
+PRIM 	RRGRR_RR_EST_RSP 	0x2D08
+{
+ 	rr_est 	 ; RR establishment allowence
+ 	susp_req 	 ; GPRS Suspension request
+}
+
+
+
+
+
+
+PRIM 	RRGRR_RR_EST_IND 	0x6D0D
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_ACTIVATE_REQ 	0x2D0A
+{
+ 	non_gprs 	 ; Non-GPRS parameters
+ 	susp_req 	 ; GPRS Suspension request
+ 	rac 	 ; Routing area code
+}
+
+
+
+
+
+
+PRIM 	RRGRR_GPRS_DATA_REQ 	0x2D0C
+{
+ 	old_ptmsi 	 ; Packet TMSI
+ 	new_ptmsi 	 ; Packet TMSI
+ 	tlli 	 ; TLLI
+ 	p_chan_req_des 	 ; Packet Channel Request Description
+ 	gprs_meas_results 	 ; GPRS Measurement Results
+ 	mac_req 	 ; MAC Mode Requested
+ 	cs_req 	 ; Channel Coding Scheme Requested
+ 	rai 	 ; Last valid routing area identifier
+}
+
+
+
+
+
+
+PRIM 	RRGRR_SUSPEND_DCCH_REQ 	0x2D0D
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_SUSPEND_DCCH_CNF 	0x6D10
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_RECONNECT_DCCH_REQ 	0x2D0E
+{
+ 	reconn_cause 	 ; why can't the procedure continue; ref to ASSIGNMENT FAILURE message
+}
+
+
+
+
+
+
+PRIM 	RRGRR_RECONNECT_DCCH_CNF 	0x6D11
+{
+ 	reconn_state 	 ; result of the reconnection procedure; may indicate Lower Layer Failure
+}
+
+
+
+
+
+
+PRIM 	RRGRR_RESUMED_TBF_REQ 	0x2D01
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_RESUMED_TBF_CNF 	0x6D07
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_STOP_DCCH_IND 	0x6D12
+{
+ 	stop_cause 	 ; Stop Cause
+}
+
+
+
+
+
+
+PRIM 	RRGRR_CR_IND 	0x6D13
+{
+ 	cr_type 	 ; Cell re-selection mode
+}
+
+
+
+
+
+
+PRIM 	RRGRR_NCELL_SYNC_REQ 	0x2D0F
+{
+ 	arfcn 	[RRGRR_MAX_ARFCN_NCELL_SYNC_REQ] 	 	%!TI_PS_FF_RTD% ; List of Channel Numbers
+ 	sync_type 	 ; Primitive Item
+ 	ncell_sync_list 	[RRGRR_MAX_ARFCN_NCELL_SYNC_REQ] 	 	%REL99 AND TI_PS_FF_RTD% ; List of neighbourcell that needs to be synchronised.
+}
+
+
+
+
+
+
+PRIM 	RRGRR_NCELL_SYNC_IND 	0x6D15
+{
+ 	sync_result 	[RRGRR_MAX_RSLT_NCELL_SYNC_IND] 	 ; Results of Neighbour Cell Synchronisation
+}
+
+
+
+
+
+
+PRIM 	RRGRR_SYNC_REQ 	0x2D10
+{
+ 	arfcn 	 ; Frequency
+ 	bsic 	 ; Bsic
+}
+
+
+
+
+
+
+PRIM 	RRGRR_SYNC_IND 	0x6D16
+{
+ 	sync_res 	 ; Synchronisation Result
+}
+
+
+
+
+
+
+PRIM 	RRGRR_UPDATE_BA_REQ 	0x2D12
+{
+ 	cell_type 	 ; cell type
+ 	nc_mode 	 ; NC mode
+ 	add_freq_list 	[RRGRR_BA_LIST_SIZE] 	 ; ba list added
+ 	rm_freq_list 	[RRGRR_BA_LIST_SIZE] 	 ; ba list removed
+}
+
+
+
+
+
+
+PRIM 	RRGRR_MEAS_REP_REQ 	0x2D13
+{
+ 	meas_cause 	 ; measurement repot
+}
+
+
+
+
+
+
+PRIM 	RRGRR_MEAS_REP_CNF 	0x6D17
+{
+ 	meas_res 	[RRGRR_MEAS_REP_LIST_SIZE] 	 ; meas report
+}
+
+
+
+
+
+
+PRIM 	RRGRR_TBF_ESTABLISHED_REQ 	0x2D14
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_CR_RSP 	0x2D15
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_MS_ID_IND 	0x6D19
+{
+ 	tmsi 	 ; T M S I
+}
+
+
+
+
+
+
+PRIM 	RRGRR_EXT_MEAS_REQ 	0x2D16
+{
+ 	arfcn_idx 	[1..RRGRR_MAX_ARFCN_EXT_MEAS] 	 ; Frequency Channel Numbers
+ 	call_ref 	 ; Call reference ID
+ 	report_type 	 ; Reporting type
+ 	ncc_permitted 	 ; Permitted cells indication
+}
+
+
+
+
+
+
+PRIM 	RRGRR_EXT_MEAS_CNF 	0x6D0A
+{
+ 	xmeas_res 	[0..RRGRR_MAX_ARFCN_EXT_MEAS] 	 ; Frequency Channel Numbers; array length = 0 if procedure was stopped
+ 	call_ref 	 ; Call reference ID
+ 	xmeas_cause 	 ; Result state
+}
+
+
+
+
+
+
+PRIM 	RRGRR_EXT_MEAS_STOP_REQ 	0x2D17
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_STOP_TASK_REQ 	0x2D18
+{
+ 	task 	 ; Task
+}
+
+
+
+
+
+
+PRIM 	RRGRR_STOP_TASK_CNF 	0x6D09
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_START_TASK_REQ 	0x2D19
+{
+ 	state 	 ; State
+}
+
+
+
+
+
+
+PRIM 	RRGRR_START_TASK_CNF 	0x6D1A
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_STANDBY_STATE_IND 	0x2D1A
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_READY_STATE_IND 	0x2D1B
+{
+}
+
+
+
+
+
+
+PRIM 	RRGRR_CBCH_INFO_IND 	0x2D1C 	%REL99%
+{
+ 	EXTERN @p_mph - cbch@ 	cbch 	 ; cell broadcast channel information.
+}
+
+
+
+
+
+
+PRIM 	RRGRR_SI2QUATER_IND 	0x6D1B 	%REL99 AND TI_PS_FF_EMR%
+{
+ 	EXTERN @p_mph - rep_type@ 	rep_type 	 	%REL99 AND TI_PS_FF_EMR% ; Primitive Item
+ 	EXTERN @p_mph - enh_para_struct@ 	enh_para_struct 	 	%REL99 AND TI_PS_FF_EMR% ; Primitive Item
+ 	nc_para_struct 	 	%REL99 AND TI_PS_FF_EMR% ; Primitive Item
+}
+
+
+
+
+
+
+
+
+

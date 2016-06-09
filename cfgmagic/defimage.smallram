@@ -1,0 +1,6 @@
+if [ "$CONFIG_INCLUDE_PS" = 1 ]
+then
+	BUILD_DEFAULT_IMAGE=flashImage
+else
+	BUILD_DEFAULT_IMAGE=ramImage
+fi

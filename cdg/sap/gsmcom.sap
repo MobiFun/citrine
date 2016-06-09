@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">gsmcom</DocName>
+        <DocNum Number="100" Project="8443"/>
+        <Description>
+            <Section>This Service Access Point (SAP) makes definitions common to several SAPs.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="7" Month="2" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="13" Month="5" Year="2002"/>
+            <Author>SLO</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>RLP as originating entity added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="14" Month="5" Year="2002"/>
+            <Author>KJF</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>FAD and T30 as originating entities added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="17" Month="7" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switched to 32bit opcode for pseudo primitive. Editorials.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="16" Month="8" Year="2002"/>
+            <Author>ID</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>GRR as originating entity added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="2" Month="9" Year="2002"/>
+            <Author>STW</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>PPP as originating entity added</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="02"/>
+            <Date Day="10" Month="9" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added originating entities LLC, SNDCP.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="02"/>
+            <Date Day="4" Month="10" Year="2002"/>
+            <Author>HM</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Added PKTIO entity. TUCT_TECH template location changed</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <Section>This section contains all constants that are defined for the GSMCOM SAP</Section>
+        </Description>
+        <Constant>
+            <Alias>SIM_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">000000</Value>
+            <Comment>mask for indicating the originating entity of a cause is SIM</Comment>
+        </Constant>
+        <Constant>
+            <Alias>ACI_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">000001</Value>
+            <Comment>mask for indicating the originating entity of a cause is ACI</Comment>
+        </Constant>
+        <Constant>
+            <Alias>RLP_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">000010</Value>
+            <Comment>mask for indicating the originating entity of a cause is RLP</Comment>
+        </Constant>
+        <Constant>
+            <Alias>RR_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">000011</Value>
+            <Comment>mask for indicating the originating entity of a cause is RR</Comment>
+        </Constant>
+        <Constant>
+            <Alias>MM_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">000100</Value>
+            <Comment>mask for indicating the originating entity of a cause is MM</Comment>
+        </Constant>
+        <Constant>
+            <Alias>CC_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">000101</Value>
+            <Comment>mask for indicating the originating entity of a cause is CC</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SS_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">000110</Value>
+            <Comment>mask for indicating the originating entity of a cause is SS</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SMSCP_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">000111</Value>
+            <Comment>mask for indicating the originating entity of a cause is SMS-CP</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SMSRP_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">001000</Value>
+            <Comment>mask for indicating the originating entity of a cause is SMS-RP</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SMSTP_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">001001</Value>
+            <Comment>mask for indicating the originating entity of a cause is SMS-TP</Comment>
+        </Constant>
+        <Constant>
+            <Alias>GMM_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">001010</Value>
+            <Comment>mask for indicating the originating entity of a cause is GMM</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SM_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">001011</Value>
+            <Comment>mask for indicating the originating entity of a cause is SM</Comment>
+        </Constant>
+        <Constant>
+            <Alias>FAD_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">001100</Value>
+            <Comment>mask for indicating the originating entity of a cause is FAD</Comment>
+        </Constant>
+        <Constant>
+            <Alias>T30_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">001101</Value>
+            <Comment>mask for indicating the originating entity of a cause is T30</Comment>
+        </Constant>
+        <Constant>
+            <Alias>GRR_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">001110</Value>
+            <Comment>mask for indicating the originating entity of a cause is GRR</Comment>
+        </Constant>
+        <Constant>
+            <Alias>PPP_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">001111</Value>
+            <Comment>mask for indicating the originating entity of a cause is PPP</Comment>
+        </Constant>
+        <Constant>
+            <Alias>LLC_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">010000</Value>
+            <Comment>mask for indicating the originating entity of a cause is LLC</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SNDCP_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">010001</Value>
+            <Comment>mask for indicating the originating entity of a cause is SNDCP</Comment>
+        </Constant>
+        <Constant>
+            <Alias>PKTIO_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">010010</Value>
+            <Comment>mask for indicating the originating entity of a cause is PKTIO</Comment>
+        </Constant>
+        <Constant>
+            <Alias>PSI_ORIGINATING_ENTITY</Alias>
+            <Value ValueType="BIN">010011</Value>
+            <Comment>mask for  indicating the originating entity of a cause is PSI</Comment>
+        </Constant>
+        <History>
+            <Date Day="7" Month="2" Year="2002"/>
+            <Author>SBK</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="13" Month="5" Year="2002"/>
+            <Author>SLO</Author>
+            <Comment>RLP added</Comment>
+        </History>
+        <History>
+            <Date Day="14" Month="5" Year="2002"/>
+            <Author>KJF</Author>
+            <Comment>FAD &amp; T30 added</Comment>
+        </History>
+        <History>
+            <Date Day="14" Month="5" Year="2002"/>
+            <Author>ID</Author>
+            <Comment>GRR added</Comment>
+        </History>
+        <History>
+            <Date Day="2" Month="9" Year="2002"/>
+            <Author>STW</Author>
+            <Comment>PPP added</Comment>
+        </History>
+        <History>
+            <Date Day="10" Month="9" Year="2002"/>
+            <Author>SBK</Author>
+            <Comment>added originating entities LLC, SNDCP</Comment>
+        </History>
+        <History>
+            <Date Day="4" Month="10" Year="2002"/>
+            <Author>HM</Author>
+            <Comment>added originating entity PKTIO</Comment>
+        </History>
+        <History>
+            <Date Day="04" Month="03" Year="2004"/>
+            <Author>RM</Author>
+            <Comment>added originating entity PSI</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="0">
+        <Description>
+            <Section>This section contains all primitives that are defined for the GSMCOM SAP</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>Dummy to fulfil tool requirements to have section 3 of an SAP. The primitive is not used for anything by anybody.</Section>
+            </Description>
+            <PrimDef>
+                <Name>GSMCOM_DUMMY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">gsmcom</DocName>
+                    <Name>gsmcom_dummy</Name>
+                </ItemLink>
+                <Comment>dummy</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="2" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>This section contains all basic elements that are defined for the GSMCOM SAP</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section>Dummy to fulfil tool requirements to have section 4 of an SAP. The parameters is not used for anything by anybody.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>gsmcom_dummy</Name>
+                <Type>U8</Type>
+                <Comment>dummy, not used</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">gsmcom</DocName>
+                <Name>VAL_gsmcom_dummy</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="2" Year="2002"/>
+                <Author>SBK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the GSMCOM SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section>This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_gsmcom_dummy</Name>
+                <Comment>values for gsmcom_dummy</Comment>
+            </ValuesDef>
+            <ValuesRange ValueType="DEC">
+                <MinValue>0</MinValue>
+                <MaxValue>6</MaxValue>
+                <Comment>ms originated identifier</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

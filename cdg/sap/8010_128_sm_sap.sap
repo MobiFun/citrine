@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">8010_128_sm_sap</DocName>
+        <DocNum Number="128" Project="8010"/>
+        <Description>
+            <Section>This document is part of the High Level Design (HLD) for the Texas Instruments G23-Dual-mode protocol stack. The document describes the service access point between the Session Management (SM) entity and UPM.</Section>
+            <Section>This document supersedes the SNSM SAP document [TI 8441.109.99.005 SNSM SAP], which covered GSM/GPRS only.</Section>
+            <Section>This document is based on the functionality and services described in the specifications [3G 24.007], [3G 24.008], as well as the requirements in [TI 8441.305 SM REQ], and [TI 8010.968 SM REQ].</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="02"/>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Document based on 7510.104.00.017</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="02"/>
+            <Date Day="2" Month="12" Year="2002"/>
+            <Author>HEM</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed status to Accepted.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="02"/>
+            <Date Day="30" Month="1" Year="2003"/>
+            <Author>GSO</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated to 8010</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="02"/>
+            <Date Day="11" Month="2" Year="2003"/>
+            <Author>AGR</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>The llc_sapi is renamed to sapi.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="02"/>
+            <Date Day="12" Month="2" Year="2003"/>
+            <Author>GSO</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Updated Pragma table</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="02"/>
+            <Date Day="7" Month="4" Year="2003"/>
+            <Author>MVJ</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed nsapi to nsapi_set in SM_COMPRESSION_REQ. Renamed sm_qos type to qos.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="02"/>
+            <Date Day="1" Month="7" Year="2003"/>
+            <Author>CLA</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed ps_cause from UNION to STRUCT</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="02"/>
+            <Date Day="8" Month="6" Year="2004"/>
+	    <Author>rpk</Author>
+            <DocStatus State="APPROVED"/>
+	    <Comment>Changed qos fields and pkt_flow_id to point to PS include SAP instead of NAS include SAP</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>This section contains all pragmas that are defined for the 8010_128_SM_SAP SAP</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">SM</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Enumeration values in value file</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">YES</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="28" Month="11" Year="2002"/>
+            <Author>NIA</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </PragmasSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="144">
+        <Description>
+            <Section>The following sections describe the primitives defined on the SM SAP.</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>Indication used by the SM to inform the UPM entity that SM has initiated context activation for the indicated NSAPI. UPM needs this information in UMTS RAT, as RAB establishment occurs before peer-to-peer SM context activation.</Section>
+                <Section>It also informs UPM about the negotiated QoS profile (see [3G 24.008, 10.5.6.5]).</Section>
+                <Section>UPM receives DTI parameters obtained from ACI. UPM needs these parameters for data transfer.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SM_ACTIVATE_STARTED_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>rat</Name>
+                </ItemLink>
+                <Comment>Radio Access Technology</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="31" Month="3" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Removed sm_qos, added rat parameter.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by the SM entity to inform the UPM entity that an NSAPI has been activated for data transfer. It also informs UPM about the negotiated QoS profile (see [3G 24.008, 10.5.6.5]).</Section>
+            </Description>
+            <PrimDef>
+                <Name>SM_ACTIVATE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>LLC service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Comment>radio priority</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Comment>quality of service</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>pkt_flow_id</Name>
+                </ItemLink>
+                <Comment>packet flow identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>comp_params</Name>
+                </ItemLink>
+                <Comment>compression parameters; GSM Only</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The llc_sapi is renamed to sapi.</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="6" Year="2004"/>
+		<Author>rpk</Author>
+		<Comment>Changed itemlink for qos parameter and pkt_flow_id from nas_include to ps_include sap.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Response used by the UPM entity to inform SM entity that the indicated NSAPI is now in use.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SM_ACTIVATE_RES</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>comp_params</Name>
+                </ItemLink>
+                <Comment>compression parameters; GSM Only</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by SM to inform UPM that a (number of) NSAPI(s) have been deallocated and any resources allocated to them should be release in UPM.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SM_DEACTIVATE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>set of network layer service access point identifiers</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>rel_ind</Name>
+                </ItemLink>
+                <Comment>LLC Release indicator</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Response used by the UPM entity to inform the SM entity that resources allocated to the indicated NSAPIs have been released.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SM_DEACTIVATE_RES</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>set of network layer service access point identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Indication used by the SM entity to trigger change of the QoS profile ([3G 24.008]) for an NSAPI.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SM_MODIFY_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>SM</Sender>
+                    <Receiver>UPM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>LLC service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>radio_prio</Name>
+                </ItemLink>
+                <Comment>radio priority</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>pkt_flow_id</Name>
+                </ItemLink>
+                <Comment>packet flow identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos</Name>
+                </ItemLink>
+                <Comment>quality of service</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The llc_sapi is renamed to sapi.</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="6" Year="2004"/>
+		<Author>rpk</Author>
+		<Comment>Changed itemlink for qos parameter and pkt_flow_id from nas_include to ps_include sap.</Comment>
+            </History>		
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>Response used by UPM  to inform SM that the indicated NSAPI and QoS profile are now in use and the underlying LLC/RAB is updated.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SM_MODIFY_RES</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi</Name>
+                </ItemLink>
+                <Comment>network layer service access point identifier</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used by UPM to inform SM of RAB/LLC link releases or abnormal situations.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SM_STATUS_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>set of network layer service access point identifiers</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sapi</Name>
+                </ItemLink>
+                <Comment>LLC service access point identifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_153_cause_include</DocName>
+                    <Name>ps_cause</Name>
+                </ItemLink>
+                <Comment>Cause of the error</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial.</Comment>
+            </History>
+            <History>
+                <Date Day="11" Month="2" Year="2003"/>
+                <Author>AGR</Author>
+                <Comment>The llc_sapi is renamed to sapi.</Comment>
+            </History>
+            <History>
+                <Date Day="1" Month="7" Year="2003"/>
+                <Author>CLA</Author>
+                <Comment>Changed ps_cause from UNION to STRUCT.</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>This primitive is used in GSM RAT only. It is used by UPM to inform SM changed compression parameters (after XID negotiation in SNDCP).  SM forwards the compression parameters to ACI.</Section>
+            </Description>
+            <PrimDef>
+                <Name>SM_COMPRESSION_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>UPM</Sender>
+                    <Receiver>SM</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>nsapi_set</Name>
+                </ItemLink>
+                <Comment>Set of network layer service access point identifiers</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_137_nas_include</DocName>
+                    <Name>comp_params</Name>
+                </ItemLink>
+                <Comment>compression parameters</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="28" Month="11" Year="2002"/>
+                <Author>NIA</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="3" Month="4" Year="2003"/>
+                <Author>MVJ</Author>
+                <Comment>Changed nsapi to nsapi_set.</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+</SAP>

@@ -1,0 +1,92 @@
+;********************************************************************************
+;*** File           : gmmaa.pdf
+;*** Creation       : Wed Mar 11 09:58:03 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : gmmaa
+;*** Document No.   : 8441.107.99.001
+;*** Document Date  : 1999-06-22
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: ANS
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:41:58 2007"
+PRAGMA 	LAST_MODIFIED 	"1999-06-22"
+PRAGMA 	ID_AND_VERSION 	"8441.107.99.001"
+
+
+
+
+
+
+VALTAB 	VAL_aa_timer
+VAL 	DEF 	 	"value is incremented in multiples of 1 min"
+VAL 	0 	GMMAA_TIMER_2_SEC 	"value is incremented in multiples of 2 sec"
+VAL 	1 	GMMAA_TIMER_1_MIN 	"value is incremented in multiples of 1 min"
+VAL 	2 	GMMAA_TIMER_1_DH 	"value is incremented in multiples of 1 decihour"
+VAL 	7 	GMMAA_TIMER_DEACT 	"timer is deactivated"
+
+
+
+
+VAR 	aa_timer 	"GPRS READY timer" 	B
+
+VAL 	@p_gmmaa - VAL_aa_timer@ 	
+
+
+
+
+
+
+
+; GMMAA_ESTABLISH_REQ 	0x2500
+; GMMAA_RELEASE_IND 	0x6500
+; GMMAA_ESTABLISH_REJ 	0x6501
+; GMMAA_TIMER_REQ 	0x2501
+
+
+
+PRIM 	GMMAA_ESTABLISH_REQ 	0x2500
+{
+}
+
+
+
+
+
+
+PRIM 	GMMAA_RELEASE_IND 	0x6500
+{
+}
+
+
+
+
+
+
+PRIM 	GMMAA_ESTABLISH_REJ 	0x6501
+{
+}
+
+
+
+
+
+
+PRIM 	GMMAA_TIMER_REQ 	0x2501
+{
+ 	aa_timer 	 ; GPRS AA-READY  timer
+}
+
+
+
+
+
+
+
+
+

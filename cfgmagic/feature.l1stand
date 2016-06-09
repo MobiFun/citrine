@@ -1,0 +1,7 @@
+CONFIG_L1_STANDALONE=1
+export_to_c	CONFIG_L1_STANDALONE
+export_to_mk	CONFIG_L1_STANDALONE
+
+# enable the necessary components
+CONFIG_INCLUDE_GPF=1
+CONFIG_INCLUDE_L1=1

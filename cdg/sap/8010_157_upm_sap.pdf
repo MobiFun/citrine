@@ -1,0 +1,98 @@
+;********************************************************************************
+;*** File           : 8010_157_upm_sap.pdf
+;*** Creation       : Wed Mar 11 09:57:56 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : 8010_157_upm_sap
+;*** Document No.   : 8010.157.04.003
+;*** Document Date  : 2004-01-19
+;*** Document Status: APPROVED
+;*** Document Author: MVJ
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:29:28 2007"
+PRAGMA 	LAST_MODIFIED 	"2004-01-19"
+PRAGMA 	ID_AND_VERSION 	"8010.157.04.003"
+PRAGMA 	PREFIX 	UPM 	; Prefix for this document
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Enumeration values in value file
+PRAGMA 	ENABLE_GROUP 	NO 	; Enable h-file grouping
+PRAGMA 	COMPATIBILITY_DEFINES 	NO 	; Compatible to the old #defines
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+; UPM_DTI_REQ 	0x8000009D
+; UPM_DTI_CNF 	0x8000409D
+; UPM_COUNT_REQ 	0x8001009D
+; UPM_COUNT_CNF 	0x8001409D
+
+
+
+PRIM 	UPM_DTI_REQ 	0x8000009D
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; Network layer service access point identifier
+ 	EXTERN @p_8010_137_nas_include - dti_conn@ 	dti_conn 	 ; DTI connect
+ 	EXTERN @p_8010_137_nas_include - dti_direction@ 	dti_direction 	 ; DTI direction
+ 	EXTERN @p_8010_137_nas_include - dti_linkid@ 	dti_linkid 	 ; DTI link ID
+ 	EXTERN @p_8010_137_nas_include - dti_neighbor@ 	dti_neighbor 	 ; DTI neighbor
+}
+
+
+
+
+
+
+PRIM 	UPM_DTI_CNF 	0x8000409D
+{
+ 	EXTERN @p_8010_137_nas_include - dti_linkid@ 	dti_linkid 	 ; DTI Link ID
+ 	EXTERN @p_8010_137_nas_include - dti_conn@ 	dti_conn 	 ; DTI connect
+}
+
+
+
+
+
+
+PRIM 	UPM_COUNT_REQ 	0x8001009D
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_137_nas_include - reset@ 	reset 	 ; shall counters be reset
+}
+
+
+
+
+
+
+PRIM 	UPM_COUNT_CNF 	0x8001409D
+{
+ 	EXTERN @p_8010_137_nas_include - nsapi@ 	nsapi 	 ; network layer service access point identifier
+ 	EXTERN @p_8010_137_nas_include - octets_uplink@ 	octets_uplink 	 ; octets uplink
+ 	EXTERN @p_8010_137_nas_include - octets_downlink@ 	octets_downlink 	 ; octets  downlink
+ 	EXTERN @p_8010_137_nas_include - packets_uplink@ 	packets_uplink 	 ; packets uplink
+ 	EXTERN @p_8010_137_nas_include - packets_downlink@ 	packets_downlink 	 ; packets downlink
+}
+
+
+
+
+
+
+
+
+

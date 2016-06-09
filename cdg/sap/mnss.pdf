@@ -1,0 +1,216 @@
+;********************************************************************************
+;*** File           : mnss.pdf
+;*** Creation       : Wed Mar 11 09:58:27 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : mnss
+;*** Document No.   : 6147.102.97.104
+;*** Document Date  : 2002-08-01
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: HM
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:48:44 2007"
+PRAGMA 	LAST_MODIFIED 	"2002-08-01"
+PRAGMA 	ID_AND_VERSION 	"6147.102.97.104"
+
+
+
+CONST 	FACILITY_LEN 	251 	; Max. length of facility considering L2 constraints
+CONST 	VERSION_LEN 	8 	; 
+EXTERN CONST 	@p_gsmcom - SS_ORIGINATING_ENTITY@ 	SS_ORIGINATING_ENTITY 	; mask for indicating the originating entity of a cause is SS
+
+
+
+VALTAB 	VAL_ti
+VAL 	0 - 6 	"ms originated identifier"
+VAL 	8 - 14 	"ms terminated transaction"
+VAL 	7 	TI_RES_MO 	"reserved"
+VAL 	15 	TI_RES_MT 	"reserved"
+
+VALTAB 	VAL_cause
+VAL 	0b0000011000000000 	MNSS_CAUSE_UNASSIGN 	"Unassigned (unallocated) Note 9 number"
+VAL 	0b0000011000000011 	MNSS_CAUSE_NO_ROUTE 	"No route to destination"
+VAL 	0b0000011000000110 	MNSS_CAUSE_CHAN_UNACCEPT 	"Channel unacceptable"
+VAL 	0b0000011000001000 	MNSS_CAUSE_BARRED 	"Operator determined barring"
+VAL 	0b0000011000010000 	MNSS_CAUSE_CALL_CLEAR 	"Normal call clearing"
+VAL 	0b0000011000010001 	MNSS_CAUSE_USER_BUSY 	"User busy"
+VAL 	0b0000011000010010 	MNSS_CAUSE_NO_RESPONSE 	"No user responding"
+VAL 	0b0000011000010011 	MNSS_CAUSE_ALERT_NO_ANSWER 	"User alerting, no answer"
+VAL 	0b0000011000010101 	MNSS_CAUSE_CALL_REJECT 	"Call rejected"
+VAL 	0b0000011000010110 	MNSS_CAUSE_NUM_CHANGED 	"Number changed"
+VAL 	0b0000011000011001 	MNSS_CAUSE_PREEMPTION 	"Pre-emption"
+VAL 	0b0000011000011010 	MNSS_CAUSE_USER_CLEAR 	"Non selected user clearing"
+VAL 	0b0000011000011011 	MNSS_CAUSE_DEST_ORDER 	"Destination out of order"
+VAL 	0b0000011000011100 	MNSS_CAUSE_NUM_FORMAT 	"Invalid number format (incomplete number)"
+VAL 	0b0000011000011101 	MNSS_CAUSE_FACILITY_REJECT 	"Facility rejected"
+VAL 	0b0000011000011110 	MNSS_CAUSE_STATUS_ENQUIRY 	"Response to STATUS ENQUIRY"
+VAL 	0b0000011000011111 	MNSS_CAUSE_UNSPECIFIED 	"Normal, unspecified"
+VAL 	0b0000011000100010 	MNSS_CAUSE_NO_CHAN_AVAIL 	"No circuit/channel available"
+VAL 	0b0000011000100110 	MNSS_CAUSE_NETWORK_ORDER 	"Network out of order"
+VAL 	0b0000011000101001 	MNSS_CAUSE_TEMP_FAIL 	"Temporary failure"
+VAL 	0b0000011000101010 	MNSS_CAUSE_SWITCH_CONGEST 	"Switching equipment congestion"
+VAL 	0b0000011000101011 	MNSS_CAUSE_INFO_DISCARD 	"Access information discarded"
+VAL 	0b0000011000101100 	MNSS_CAUSE_REQ_CHAN_UNAVAIL 	"requested circuit/channel not available"
+VAL 	0b0000011000101111 	MNSS_CAUSE_RESOURCE_UNAVAIL 	"Resources unavailable, unspecified"
+VAL 	0b0000011000110001 	MNSS_CAUSE_QOS_UNAVAIL 	"Quality of service unavailable"
+VAL 	0b0000011000110010 	MNSS_CAUSE_FACILITY_UNSUBSCRIB 	"Requested facility not subscribed"
+VAL 	0b0000011000110111 	MNSS_CAUSE_BARRED_IN_CUG 	"Incoming calls barred within the CUG"
+VAL 	0b0000011000111001 	MNSS_CAUSE_BEARER_CAP_AUTHORIZ 	"Bearer capability not authorized"
+VAL 	0b0000011000111010 	MNSS_CAUSE_BEARER_CAP_UNAVAIL 	"Bearer capability not presently available"
+VAL 	0b0000011000111111 	MNSS_CAUSE_SERVICE_UNAVAIL 	"Service or option not available, unspecified"
+VAL 	0b0000011001000001 	MNSS_CAUSE_BEARER_NOT_IMPLEM 	"Bearer service not implemented"
+VAL 	0b0000011001000100 	MNSS_CAUSE_ACM_MAX 	"ACM equal to or greater than ACMmax"
+VAL 	0b0000011001000101 	MNSS_CAUSE_FACILITY_NOT_IMPLEM 	"Requested facility not implemented"
+VAL 	0b0000011001000110 	MNSS_CAUSE_RESTICT_BEARER_CAP 	"Only restricted digital information bearer capability is available"
+VAL 	0b0000011001001111 	MNSS_CAUSE_SERVICE_NOT_IMPLEM 	"Service or option not implemented, unspecified"
+VAL 	0b0000011001010001 	MNSS_CAUSE_INVALID_TI 	"Invalid transaction identifier value"
+VAL 	0b0000011001010111 	MNSS_CAUSE_USER_NOT_IN_CUG 	"User not member of CUG"
+VAL 	0b0000011001011000 	MNSS_CAUSE_INCOMPAT_DEST 	"Incompatible destination"
+VAL 	0b0000011001011011 	MNSS_CAUSE_INVALID_TRANS_NET 	"Invalid transit network selection"
+VAL 	0b0000011001011111 	MNSS_CAUSE_INCORRECT_MESSAGE 	"Semantically incorrect message"
+VAL 	0b0000011001100000 	MNSS_CAUSE_INVALID_MAND_INFO 	"Invalid mandatory information"
+VAL 	0b0000011001100001 	MNSS_CAUSE_MESSAGE_TYPE_NOT_IMPLEM 	"Message type non-existent or not implemented"
+VAL 	0b0000011001100010 	MNSS_CAUSE_MESSAGE_TYPE_INCOMPAT 	"Message type not compatible with protocol state"
+VAL 	0b0000011001100011 	MNSS_CAUSE_INFO_ELEM_NOT_IMPLEM 	"Information element non existent or not implemented"
+VAL 	0b0000011001100100 	MNSS_CAUSE_COND_INFO_ELEM 	"Conditional IE error"
+VAL 	0b0000011001100101 	MNSS_CAUSE_MESSAGE_INCOMPAT 	"Message not compatible with protocol state"
+VAL 	0b0000011001100110 	MNSS_CAUSE_TIMER 	"Recovery on timer expiry"
+VAL 	0b0000011001101111 	MNSS_CAUSE_PROTOCOL 	"Protocol error, unspecified"
+VAL 	0b0000011001111111 	MNSS_CAUSE_INTERWORKING 	"Interworking, unspecified"
+VAL 	0b1000011011111111 	MNSS_CAUSE_NO_NET_CAUSE 	"Network initiated without cause"
+
+
+
+
+VAR 	ti 	"Transaction Identifier" 	B
+
+VAL 	@p_mnss - VAL_ti@ 	
+
+VAR 	l_fac 	"facility length" 	S
+
+
+VAR 	o_fac 	"facility offset" 	S
+
+
+VAR 	fac 	"facility content" 	B
+
+
+VAR 	cause 	"cause" 	S
+
+VAL 	@p_mnss - VAL_cause@ 	
+
+VAR 	len 	"length of ss version" 	B
+
+
+VAR 	ver 	"ss version content" 	B
+
+
+
+
+
+COMP 	fac_inf 	 "facility information"
+{
+ 	l_fac 	 ; facility length
+ 	o_fac 	 ; facility offset
+ 	fac 	[FACILITY_LEN] 	 ; facility content
+}
+
+
+
+COMP 	ss_ver 	 "ss version"
+{
+ 	len 	 ; length of ss version
+ 	ver 	[VERSION_LEN] 	 ; ss version content
+}
+
+
+
+
+
+
+; MNSS_BEGIN_REQ 	0x8000000C
+; MNSS_FACILITY_REQ 	0x8001000C
+; MNSS_END_REQ 	0x8002000C
+; MNSS_BEGIN_IND 	0x8000400C
+; MNSS_FACILITY_IND 	0x8001400C
+; MNSS_END_IND 	0x8002400C
+
+
+
+PRIM 	MNSS_BEGIN_REQ 	0x8000000C
+{
+ 	ti 	 ; transaction identifier
+ 	fac_inf 	 ; facility information
+ 	ss_ver 	 ; ss version
+}
+
+
+
+
+
+
+PRIM 	MNSS_FACILITY_REQ 	0x8001000C
+{
+ 	ti 	 ; transaction identifier
+ 	fac_inf 	 ; facility information
+ 	ss_ver 	 ; ss version
+}
+
+
+
+
+
+
+PRIM 	MNSS_END_REQ 	0x8002000C
+{
+ 	ti 	 ; transaction identifier
+ 	fac_inf 	 ; facility information
+}
+
+
+
+
+
+
+PRIM 	MNSS_BEGIN_IND 	0x8000400C
+{
+ 	ti 	 ; transaction identifier
+ 	fac_inf 	 ; facility information
+}
+
+
+
+
+
+
+PRIM 	MNSS_FACILITY_IND 	0x8001400C
+{
+ 	ti 	 ; transaction identifier
+ 	fac_inf 	 ; facility information
+}
+
+
+
+
+
+
+PRIM 	MNSS_END_IND 	0x8002400C
+{
+ 	ti 	 ; transaction identifier
+ 	cause 	 ; cause; The following causes can occur within this primitive: all those mentioned in 4.3 and all possible within the MMSS_RELEASE_IND and MMSS_ERROR_IND primitives of the MMSS SAP
+ 	fac_inf 	 ; facility information
+}
+
+
+
+
+
+
+
+
+

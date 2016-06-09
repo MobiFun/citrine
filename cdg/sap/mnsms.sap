@@ -1,0 +1,3082 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">mnsms</DocName>
+        <DocNum Number="103" Project="6147"/>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Protocol Stacks are used to define the functionality of the GSM protocols for interfaces. The GSM specifications are normative when used to describe the functionality of interfaces, but the stacks and the subdivision of protocol layers does not imply or restrict any implementation.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The base of the Protocol Stack rests on the physical layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The Data Link Layer (DL) is used to handle an acknowledged connection between mobile and base station. The LAPDm protocol is used.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Radio Resource (RR) manages the resources of the air-interface. That means configuration of physical layer, cell selection and cell reselection, data transfer, RR-Connection handling.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Mobility Management (MM) handles registration aspects for the mobile station. It detects changes of location areas and updates a mobile station in the new location area.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Call Control (CC) provides the call functionality. This includes call establishment, call maintenance procedures like Hold, Retrieve or Modify, and call disconnection.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Supplementary Services (SS) handles all call independent supplementary services like call forwarding or call barring.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Short Message Services (SMS) is used for sending and receiving point-to-point short messages.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The man machine interface (MMI) is the interface to the user. Normally it is connected with a keypad as input device and a display as output device.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Between the several entities data interfaces are defined. These data interfaces are called Service Access Points (SAPs), indicating that an upper layer uses the services of a lower layer.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">The GSM specification do not set out any implementation of the Protocol Stack. The following diagrams show the implementation described in all these documents for the mobile station. All entities except the Man Machine Interface and Physical Layer are implemented as part of the Protocol Stack.</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Figure 1: Mobile-station protocol architecture</XHTMLElement>
+            </DocElement>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This document describes the services offered by the short message service to the man machine interface.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="96"/>
+            <Date Day="21" Month="9" Year="2001"/>
+            <Author>FK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Changes for Concatenated SMS and other enhancements.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="106" Year="96"/>
+            <Date Day="23" Month="1" Year="2002"/>
+            <Author>FK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Primitive MNSMS_ERROR_IND introduced.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="107" Year="96"/>
+            <Date Day="19" Month="4" Year="2002"/>
+            <Author>SBK</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Switch to new template. Switch to 32bit opcodes.</Comment>
+        </DocHistory>
+        <DocRef>
+            <RefId>[C_7010.801]</RefId>
+            <RefTitle>7010.801, References and Vocabulary, Condat AG</RefTitle>
+        </DocRef>
+    </DocInfoSection>
+    <ConstantsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all constants that are defined for the MNSMS SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Constant>
+            <Alias>SMS_MSG_LEN</Alias>
+            <Value ValueType="DEC">140</Value>
+            <Comment>Length of message text counted as octets</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SMS_CMD_LEN</Alias>
+            <Value ValueType="DEC">157</Value>
+            <Comment>Length of command data (number of octets)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SIM_PDU_LEN</Alias>
+            <Value ValueType="DEC">175</Value>
+            <Comment>Length of SMS data stored in nonvolatile memory (SIM/ME)</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SMSCP_ORIGINATING_ENTITY</Alias>
+            <ItemLink>
+                <DocName DocType="SAP">gsmcom</DocName>
+                <Name>SMSCP_ORIGINATING_ENTITY</Name>
+            </ItemLink>
+            <Comment>mask for indicating the originating entity of a cause is SMS-CP</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SMSRP_ORIGINATING_ENTITY</Alias>
+            <ItemLink>
+                <DocName DocType="SAP">gsmcom</DocName>
+                <Name>SMSRP_ORIGINATING_ENTITY</Name>
+            </ItemLink>
+            <Comment>mask for indicating the originating entity of a cause is SMS-RP</Comment>
+        </Constant>
+        <Constant>
+            <Alias>SMSTP_ORIGINATING_ENTITY</Alias>
+            <ItemLink>
+                <DocName DocType="SAP">gsmcom</DocName>
+                <Name>SMSTP_ORIGINATING_ENTITY</Name>
+            </ItemLink>
+            <Comment>mask for indicating the originating entity of a cause is SMS-CP</Comment>
+        </Constant>
+        <History>
+            <Date Day="16" Month="12" Year="1996"/>
+            <Author>LE</Author>
+            <Comment>Initial</Comment>
+        </History>
+        <History>
+            <Date Day="2" Month="6" Year="1997"/>
+            <Author>MS</Author>
+            <Comment>Revised</Comment>
+        </History>
+        <History>
+            <Date Day="3" Month="11" Year="1999"/>
+            <Author>FK</Author>
+            <Comment>changed identifier MAX_BCD_DIGITS (new name, new value = 20) to avoid double definition warning</Comment>
+        </History>
+        <History>
+            <Date Day="21" Month="9" Year="2001"/>
+            <Author>FK</Author>
+            <Comment>Revised</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="13">
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all primitives that are defined for the MNSMS SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MNSMS_MESSAGE_IND is used on (re-)initialisation of the SIM to report the stored messages in memory to ACI. Such a sequence of primitives starts after sending a MNSMS_REPORT_IND indicating the initialisation state of the SMS Entity and finishes with the sending of a MNSMS_REPORT_IND indicating the ready state of the SMS Entity. To recognize an existent but empty memory one MNSMS_MESSAGE_IND is sent with parameter 'rec_num' set to SMS_RECORD_NOT_EXIST, parameter 'rec_max' set to the number of avalailable records and parameter 'sms_sdu' left empty.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">In ready state the primitive is used to indicate the reception of a short message. If the message is not stored in memory, then the parameter 'rec_num' has the value ZERO and the parameter 'mem_type' and 'rec_max' have no meaning. The parameter 'status' shall be coded as mobile terminated, unread message.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_MESSAGE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_max</Name>
+                </ItemLink>
+                <Comment>maximum number of records</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>status</Name>
+                </ItemLink>
+                <Comment>sms status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>SIM-PDU</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive MNSMS_REPORT_IND reports the current state of the SMS Entity.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_REPORT_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>state</Name>
+                </ItemLink>
+                <Comment>SMS state</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cmms_mode</Name>
+                </ItemLink>
+                <Comment>Mode value for +CMMS command</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="11" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>UL/DL flag changed in ID</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>New meaning</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MNSMS_STATUS_IND shall be used to indicate a status report, which has been previously requested with a MNSMS_COMMAND_REQ or a MNSMS_SUBMIT_REQ.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_STATUS_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>SIM-PDU</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="11" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>UL/DL flag changed in ID</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>cld_pty changed to dest_addr, message type added</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>msg_ref added</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Coding changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive MNSMS_DELETE_REQ shall be used to delete a stored SMS message.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_DELETE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>delete_status</Name>
+                </ItemLink>
+                <Comment>Delete flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="11" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>UL/DL flag changed in ID</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Parameter changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive MNSMS_DELETE_CNF is the response to the previous MNSMS_DELETE_REQ.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_DELETE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Error code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>delete_rec_next</Name>
+                </ItemLink>
+                <Comment>Next Record</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>FK</Author>
+                <Comment>Adaption to Cause Concept</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="04" Year="2006"/>
+                <Author>Shashank</Author>
+                <Comment>Added new element delete_rec_next</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MNSMS_READ_REQ shall be used to request reading of a short message. This message is retuned to the MMI with the primitive MNSMS_READ_CNF.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If the parameter 'status' takes the value 1, 3, 5, 7 while the record number is set to SMS_RECORD_NOT_EXIST (0), then the first message which that value is returned and also the number of a following record id existent. The values '0x0D, 0x15, 0x1D are treated as to be equal to '5'. All other values provide the first message found in memory.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_READ_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>read_mode</Name>
+                </ItemLink>
+                <Comment>read mode</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>status</Name>
+                </ItemLink>
+                <Comment>message status</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="11" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>UL/DL flag changed in ID</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Parameter changed</Comment>
+            </History>
+            <History>
+                <Date Day="29" Month="9" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>Parameter 'read_mode' added</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Parameter order changed</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="9" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Parameter 'status' added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive MNSMS_READ_CNF is the response to a previous MNSMS_READ_REQ takes the short message requested by the MMI.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_next' indicates the number of the next record containing a short message with the status given in the primitive MNSMS_READ_REQ. If the parameter 'status' indicated any message to be returned, then 'rec_next' points to the next available message. the value SMS_RECORD_NOT_EXIST (0) indicates that no more messages are available.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_READ_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_next</Name>
+                </ItemLink>
+                <Comment>number of next record</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_max</Name>
+                </ItemLink>
+                <Comment>maximum number of records</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Error code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_status</Name>
+                </ItemLink>
+                <Comment>status record</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>status</Name>
+                </ItemLink>
+                <Comment>message status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>SIM-PDU</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>FK</Author>
+                <Comment>Adaption to Cause Concept</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MNSMS_STORE_REQ shall be used to store a mobile originated short message on the indicated memory type. A record number zero means that SMS shall search for a free entry. Record number 1 to n means updating of the previous content. The parameter msg_ref is only valid, if the parameter status has the value SMS_RECORD_STO_SENT.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_STORE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>condx</Name>
+                </ItemLink>
+                <Comment>write condition</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>status</Name>
+                </ItemLink>
+                <Comment>message status</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>SIM-PDU</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="11" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>UL/DL flag changed in ID</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>'cld_pty' changed to 'dest_addr', message type added</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>Message status added</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="4" Year="2000"/>
+                <Author>FK</Author>
+                <Comment>Message reference added</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Structure of primitive changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive MNSMS_STORE_CNF reports the outcome of a previous MNSMS_STORE_REQ to the MMI.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_STORE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="2"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Error code</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>FK</Author>
+                <Comment>Adaption to Cause Concept</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MNSMS_SUBMIT_REQ shall be used to start a mobile originated short message transfer. The parameter 'sms_pdu' shall take a validly coded MT-SM in SIM PDU format [74].</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">A record number unequal to SMS_RECORD_NOT_EXIST indicates that the message to be sent shall be taken from this record. If the evaluation of parameter 'condx' leads to the result, that overwriting is not allowed, then the SMS Entity shall write the message with the correct TP-MR value and status STORE UNSENT to an empty record.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'modify' is only valid, if a record number is given. It decides which elements of parameter 'sms_pdu' substitute the same elements of the messages fetched from memory (Remark: TP-DA and TP-OA are considered as identical).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_SUBMIT_REQ</Name>
+                <PrimID Direction="UPLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>condx</Name>
+                </ItemLink>
+                <Comment>write condition</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>modify</Name>
+                </ItemLink>
+                <Comment>Modifier</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>auto_rep_flag</Name>
+                </ItemLink>
+                <Version>REL99</Version>
+                <Comment>Automatic repeat</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>SIM-PDU</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="11" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>UL/DL flag changed in ID</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>structure changed</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>cld_pty changed to dest_addr, message type added</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="4" Year="2000"/>
+                <Author>FK</Author>
+                <Comment>memory type and record number added</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Structure of primitive changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive MNSMS_SUBMIT_CNF reports the outcome of a previous MNSMS_SUBMIT_REQ to the MMI. If the record number has the value SMS_RECORD_NOT_EXIST, then the sent message is not stored in memory. If the parameter 'sms_pdu' is not empty, then it takes a SMS-SUBMIT-REPORT(RP-ACK) or SMS-SUBMIT-REPORT(RP-ERROR) message. This is only possible, if sending of the message is successful, or a RP-ERROR message is received from the network.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rslt_type' defines the interpretation of the parameter 'rslt_code'.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_SUBMIT_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="3"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Error code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>tp_mr</Name>
+                </ItemLink>
+                <Comment>TP Message Reference</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>SIM-PDU</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>FK</Author>
+                <Comment>Adaption to Cause Concept</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MNSMS_COMMAND_REQ shall be used to send commands to the serving center.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_COMMAND_REQ</Name>
+                <PrimID Direction="UPLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>auto_rep_flag</Name>
+                </ItemLink>
+                <Version>REL99</Version>
+                <Comment>Automatic repeat</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>SIM-PDU</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="11" Year="1997"/>
+                <Author>PZ</Author>
+                <Comment>UL/DL flag changed in ID</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="2" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>structure changed</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>cld_pty changed to dest_addr</Comment>
+            </History>
+            <History>
+                <Date Day="28" Month="4" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>command data added</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Structure of primitive changed</Comment>
+            </History>
+            <History>
+                <Date Day="04" Month="04" Year="2006"/>
+                <Author>X0047685</Author>
+                <Comment>Structure of primitive changed(Added autoreply flag)</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive MNSMS_COMMAND_CNF reports the outcome of a previous MNSMS_COMMAND_REQ to the MMI. If the parameter 'sms_pdu' is not empty, then it takes a SMS-STATUS-REPORT message. This is only possible, if sending if the command is successful.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'tp_mr' returns the TP Message Reference value used for the request.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rslt_type' defines the interpretation of the parameter 'rslt_code'.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_COMMAND_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="4"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Error code</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>tp_mr</Name>
+                </ItemLink>
+                <Comment>TP Message Reference</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>SIM-PDU</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>FK</Author>
+                <Comment>Adaption to Cause Concept</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MNSMS_ACK_RES is the equivalent for AT command +CNMA. It shall be used to respond to MNSMS_MESSAGE_IND and MNSMS_STATUS_IND from the network, when message handling compatibility is set to phase 2+ (see MNSMS_CONFIGURE_REQ). The parameter 'sms_pdu' takes a SMS-DELIVER-REPORT(RP-ACK) or SMS-DELIVER-REPORT(RP-ERROR) depending on the value of parameter 'resp'.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_ACK_RES</Name>
+                <PrimID Direction="UPLINK" Number="8"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>resp</Name>
+                </ItemLink>
+                <Comment>type of response</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>SIM-PDU</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="17" Month="11" Year="1999"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Structure of primitive changed</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">MNSMS_CONFIGURE_REQ shall be used to configure the behaviour of SMS.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_CONFIGURE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>pref_mem_3</Name>
+                </ItemLink>
+                <Comment>preferred memory 3</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mt</Name>
+                </ItemLink>
+                <Comment>mobile terminated message handling</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>ds</Name>
+                </ItemLink>
+                <Comment>status report handling</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mhc</Name>
+                </ItemLink>
+                <Comment>message handling compatibility</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cmms_mode</Name>
+                </ItemLink>
+                <Comment>mode value of +CMMS command</Comment>
+            </PrimItem>
+            <PrimItem Presentation="OPTIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>tmms_val</Name>
+                </ItemLink>
+                <Comment>timer Value for +CMMS comamnd</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>message handling changed</Comment>
+            </History>
+            <History>
+                <Date Day="17" Month="11" Year="1999"/>
+                <Author>FK</Author>
+                <Comment>parameter mhc added</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The primitive MNSMS_ERROR_IND reports an error condition in conjunction with a MT transaction to ACI (applicable, when ACI confirmation for a MT-SM is required).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_ERROR_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Error code</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="23" Month="1" Year="2002"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>FK</Author>
+                <Comment>Adaption to Cause Concept</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Modifies the currently selected MO SMS message service.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">See [85] 10.2.14</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Applicable only to GPRS. See [86],[87] for usage scenarios</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_MO_SERV_REQ</Name>
+                <PrimID Direction="UPLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>GACI</Sender>
+                    <Receiver>MNSMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mo_sms_serv</Name>
+                </ItemLink>
+                <Comment>MO SMS Service</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="11" Year="1999"/>
+                <Author>DGH</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Returns the currently selected MO SMS message service.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">See [85] 10.2.14</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Applicable only to GPRS. See [86],[87] for usage scenarios</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_MO_SERV_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="12"/>
+                <PrimUsage>
+                    <Sender>MNSMS</Sender>
+                    <Receiver>GACI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mo_sms_serv</Name>
+                </ItemLink>
+                <Comment>MO SMS Service</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="4" Month="11" Year="1999"/>
+                <Author>DGH</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">PAUSE REQ is used by the sms user to inhibit the sms delivery for mobile terminated messages. The SMS entity then informs the network to suspend the sending of messages until other notice (-&gt; RESUME REQ).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_PAUSE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="6"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="22" Month="3" Year="2004"/>
+                <Author>HP</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">RESUME REQ is used by the sms user to re-allow the receiption of sms messages from the network after the user has blocked the receiption with the PAUSE REQ.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_RESUME_REQ</Name>
+                <PrimID Direction="UPLINK" Number="7"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="22" Month="3" Year="2004"/>
+                <Author>HP</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"> MNSMS_RESUME_CNF is sent in response to the resume request. It contains an indication whether or not the resumption of mobile terminated sms delivery has been successfully negotiated with the network. </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_RESUME_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="10"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>Error Code</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="24" Month="3" Year="2004"/>
+                <Author>HP</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"> Used to query the sms entity status for: - sms delivery status (pause or resume) </XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_QUERY_REQ</Name>
+                <PrimID Direction="UPLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender/>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>query_type</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="4" Year="2004"/>
+                <Author>HP</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Query Confirm is send in response to a Query Request and carries the requested status information.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_QUERY_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="11"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver/>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>query_type</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="CONDITIONAL">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>deliver_status</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="8" Month="4" Year="2004"/>
+                <Author>HP</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This primitive is used for the purpose of Over the Air (OTA) de-personalization of mobile station.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_OTA_MESSAGE_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sms</DocName>
+                    <Name>tp_pid</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sms</DocName>
+                    <Name>tp_dcs</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sms</DocName>
+                    <Name>tp_ud</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="15" Month="06" Year="2005"/>
+                <Author>x0004818</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_OTA_MESSAGE_RES</Name>
+                <PrimID Direction="UPLINK" Number="13"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sms</DocName>
+                    <Name>tp_pid</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="AIM">sms</DocName>
+                    <Name>tp_dcs</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>len</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>packedlen</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>data</Name>
+                </ItemLink>
+                <Control>[20]</Control>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="15" Month="06" Year="2005"/>
+                <Author>x0004818</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive MNSMS_RETRANS_REQ is used to request retransmission of last failed message. Refer Sec 9.2.3.6.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_RETRANS_REQ</Name>
+                <PrimID Direction="UPLINK" Number="9"/>
+                <PrimUsage>
+                    <Sender>MMI</Sender>
+                    <Receiver>SMS</Receiver>
+                </PrimUsage>
+                <Version>REL99</Version>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>auto_rep_flag</Name>
+                </ItemLink>
+                <Version>REL99</Version>
+                <Comment>auto repeat flag</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="04" Month="04" Year="2006"/>
+                <Author>x0047685</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>The primitive MNSMS_RETRANS_CNF is used to send the status of retransmission request.</Section>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_RETRANS_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="5"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+                <Version>REL99</Version>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>cause</Name>
+                </ItemLink>
+                <Comment>error cause</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>mem_type</Name>
+                </ItemLink>
+                <Comment>memory type</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>rec_num</Name>
+                </ItemLink>
+                <Comment>record number</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>tp_mr</Name>
+                </ItemLink>
+                <Comment>message reference</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>sms_sdu</Name>
+                </ItemLink>
+                <Comment>Primitive Item</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="04" Month="04" Year="2006"/>
+                <Author>x0047685</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section/>
+            </Description>
+            <PrimDef>
+                <Name>MNSMS_SEND_PROG_IND</Name>
+                <PrimID Direction="DOWNLINK" Number="14"/>
+                <PrimUsage>
+                    <Sender>SMS</Sender>
+                    <Receiver>MMI</Receiver>
+                </PrimUsage>
+                <Version>REL99</Version>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>resend_count</Name>
+                </ItemLink>
+                <Version>REL99</Version>
+                <Comment>Resend count to MMI</Comment>
+            </PrimItem>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>max_retrans</Name>
+                </ItemLink>
+                <Version>REL99</Version>
+                <Comment>Max retrans allowed(=1)</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="07" Month="04" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <PrimStructElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimStructElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a SDU which carries SMS data in SIM-PDU format.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference: [74], section 4.13</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimStructElemDef Type="STRUCT">
+                <Name>sms_sdu</Name>
+                <Comment>SIM-PDU</Comment>
+            </PrimStructElemDef>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>l_buf</Name>
+                </ItemLink>
+                <Comment>command length</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>o_buf</Name>
+                </ItemLink>
+                <Comment>command offset</Comment>
+            </PrimStructElemItem>
+            <PrimStructElemItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">mnsms</DocName>
+                    <Name>buf</Name>
+                </ItemLink>
+                <Control>[SIM_PDU_LEN]</Control>
+                <Comment>command data</Comment>
+            </PrimStructElemItem>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimStructElem>
+    </PrimStructElementsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">Parameters shall be part of the primitives described below and if applied the parameters shall contain the values specified here. These values are selected to correspond element values used in the air interface protocol.</XHTMLElement>
+            </DocElement>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter indicates the type of the used memory.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mem_type</Name>
+                <Type>U8</Type>
+                <Comment>memory type</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_mem_type</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="2" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values changed</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Values changed</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Cell broadcast deleted</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="9" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Definition for status report memory added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter indicates the type of the used memory.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>pref_mem_3</Name>
+                <Type>U8</Type>
+                <Comment>memory type</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+            <History>
+                <Date Day="26" Month="2" Year="1998"/>
+                <Author>SZ</Author>
+                <Comment>Values changed</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Values changed</Comment>
+            </History>
+            <History>
+                <Date Day="14" Month="10" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Cell broadcast deleted</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="9" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Definition for status report memory added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter indicates the outcome of any operation. The cause values given here are error codes indicating internally recognized problems. Additionally, all cause values specified by the TL, RL, CL protocols are applicable.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cause</Name>
+                <Type>U16</Type>
+                <Comment>error code</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_cause</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="10" Month="9" Year="2002"/>
+                <Author>FK</Author>
+                <Comment>Adaption to Cause Concept</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter indicates the state of the SMS Entity.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>state</Name>
+                <Type>U8</Type>
+                <Comment>State of the SMS Entity</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_state</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter indicates how the SMS Entity shall react, when the referenced SMS record is ocupied by another message. If the condition is not met, then the result of the operation shall be an error.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>condx</Name>
+                <Type>U8</Type>
+                <Comment>write condition</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_condx</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="16" Month="12" Year="1996"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="2" Month="6" Year="1997"/>
+                <Author>MS</Author>
+                <Comment>Revised</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter contains the TP message reference used by the actual mobile originated short message operation.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tp_mr</Name>
+                <Type>U8</Type>
+                <Comment>TP message reference</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines how a stored short message to be sent shall be modified with the message given by the primitive.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>modify</Name>
+                <Type>U8</Type>
+                <Comment>Modifier</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_modify</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_num' indicates the used record number for storing short messages.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_next' indicates the number of a following record containing a valid short message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_max' indicates the maximum number of usable records in the referenced memory.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_status' designates a record in EF(SMSR) which holds a status message related to the given mobile originated short message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If a value cannot be given, then the parameter shall take the value SMS_RECORD_NOT_EXIST (0).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rec_num</Name>
+                <Type>U8</Type>
+                <Comment>record number</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_rec_num</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Parameters and values added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_num' indicates the used record number for storing short messages.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_next' indicates the number of a following record containing a valid short message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_max' indicates the maximum number of usable records in the referenced memory.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_status' designates a record in EF(SMSR) which holds a status message related to the given mobile originated short message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If a value cannot be given, then the parameter shall take the value SMS_RECORD_NOT_EXIST (0).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rec_next</Name>
+                <Type>U8</Type>
+                <Comment>number of a following record with a valid message, if existent</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_rec_num</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Parameters and values added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_num' indicates the used record number for storing short messages.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_next' indicates the number of a following record containing a valid short message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_max' indicates the maximum number of usable records in the referenced memory.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_status' designates a record in EF(SMSR) which holds a status message related to the given mobile originated short message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If a value cannot be given, then the parameter shall take the value SMS_RECORD_NOT_EXIST (0).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rec_max</Name>
+                <Type>U8</Type>
+                <Comment>maximum number of records (1..255) in EF(SMS) or other memory</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_rec_num</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Parameters and values added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_num' indicates the used record number for storing short messages.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_next' indicates the number of a following record containing a valid short message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_max' indicates the maximum number of usable records in the referenced memory.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter 'rec_status' designates a record in EF(SMSR) which holds a status message related to the given mobile originated short message.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">If a value cannot be given, then the parameter shall take the value SMS_RECORD_NOT_EXIST (0).</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>rec_status</Name>
+                <Type>U8</Type>
+                <Comment>number of a record in EF(SMSR) related to the given stored message</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_rec_num</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="7" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Parameters and values added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter indicates the status of a short message stored in memory. It is equal to the first byte stored at SIM or mobile equipment memory according GSM 11.11, clause 10.5.3.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>status</Name>
+                <Type>U8</Type>
+                <Comment>message status</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_status</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Values added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the handling of mobile terminated messages in SMS. The value of MT_DEF has to be &lt;last entry value + 1&gt;.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mt</Name>
+                <Type>U8</Type>
+                <Comment>mobile terminated message handling</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_mt</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the handling of status report.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>ds</Name>
+                <Type>U8</Type>
+                <Comment>status report message handling</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_ds</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="5" Year="1998"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="21" Month="9" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Coding 'DS2' added</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines whether the message handling is compatible to GSM Phase 2 (default) or GSM Phase 2+. This is equivalent to the parameter &lt;service&gt; in GSM 07.05 AT command +CSMS. The latter setting is necessary for use of primitive MNSMS_ACK_RES.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mhc</Name>
+                <Type>U8</Type>
+                <Comment>status report message handling</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_mhc</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="11" Year="1999"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines the type of read operation.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>read_mode</Name>
+                <Type>U8</Type>
+                <Comment>Read Mode</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_read_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="29" Month="9" Year="1999"/>
+                <Author>LE</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines how to respond to MNSMS_MESSAGE_IND or MNSMS_STATUS_IND, if message handling compatibility is set to GSM Phase 2+.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>resp</Name>
+                <Type>U8</Type>
+                <Comment>type of response</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_resp</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="17" Month="11" Year="1999"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This parameter defines which type of radio link (CSD or PSD) for MO Short Messages shall be used.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">See [85] 10.2.14</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Applicable only to GPRS. See [86],[87] for usage scenarios</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>mo_sms_serv</Name>
+                <Type>U8</Type>
+                <Comment>MO SMS Service</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_mo_sms_serv</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="4" Month="11" Year="1999"/>
+                <Author>DGH</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a SDU which carries SMS data in SIM-PDU format.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference: [74], section 4.13</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>l_buf</Name>
+                <Type>U16</Type>
+                <Comment>command length</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a SDU which carries SMS data in SIM-PDU format.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference: [74], section 4.13</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>o_buf</Name>
+                <Type>U16</Type>
+                <Comment>command offset</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter defines a SDU which carries SMS data in SIM-PDU format.</XHTMLElement>
+                </DocElement>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Reference: [74], section 4.13</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>buf</Name>
+                <Type>U8</Type>
+                <Comment>command data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="4" Month="5" Year="2001"/>
+                <Author>FK</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Query Type specifies to which status the Query Request/Confirm refers to.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>query_type</Name>
+                <Type>U8</Type>
+                <Comment>specifies to which status the query request refers to</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_query</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="4" Year="2004"/>
+                <Author>HP</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">sms delivery status as requested by the user; either pause or resume.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>deliver_status</Name>
+                <Type>U8</Type>
+                <Comment>sms delivery status - pause or resume</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_deliver_status</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="8" Month="4" Year="2004"/>
+                <Author>HP</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>cmms_mode</Name>
+                <Type>U8</Type>
+                <Comment>Specifies the mode for +CMMS</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_cmms_mode</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="06" Year="2005"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION"/>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>tmms_val</Name>
+                <Type>U16</Type>
+                <Comment>Timer value for +CMMS command</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="06" Year="2005"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter which type of SMS messages to be deleted.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>delete_status</Name>
+                <Type>U8</Type>
+                <Comment>Delete flag</Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">mnsms</DocName>
+                <Name>VAL_delete_status</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="23" Month="09" Year="2005"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The parameter contains the next record, which is having the same status as requested in delete flag.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>delete_rec_next</Name>
+                <Type>U8</Type>
+                <Comment>Next Record to be deleted.</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="23" Month="09" Year="2005"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">IMEI of the mobile to be extracted from TP user data</XHTMLElement>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>data</Name>
+                <Type>U8</Type>
+                <Comment>IMEI  and category status of the mobile to be extracted from TP user data</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="21" Month="06" Year="2005"/>
+                <Author>x0004818</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <DocLink DocType="OTHER">
+                        <Name/>
+                    </DocLink>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>len</Name>
+                <Type>U8</Type>
+                <Comment>length of the OTA response</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="26" Month="05" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <DocElement>
+                    <DocLink DocType="OTHER">
+                        <Name/>
+                    </DocLink>
+                </DocElement>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>packedlen</Name>
+                <Type>U8</Type>
+                <Comment>length of the OTA response</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="26" Month="05" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Flag is used to indicate the retransmission.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>auto_rep_flag</Name>
+                <Type>U8</Type>
+                <Version>REL99</Version>
+                <Comment>Added auto_rep_flag variable</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="04" Month="04" Year="2006"/>
+                <Author>x0028909</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Current count of retransmission attempt made.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>resend_count</Name>
+                <Type>U8</Type>
+                <Version>REL99</Version>
+                <Comment>To resend the count to MMI during retransmission</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="07" Month="04" Year="2006"/>
+                <Author>x0028909</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+        <PrimBasicElem>
+            <Description>
+                <Section>Maximum number of retransmission allowed which is communicated to MMI.</Section>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>max_retrans</Name>
+                <Type>U8</Type>
+                <Version>REL99</Version>
+                <Comment>Maximum number of retransmission allowed which is communicated to MMI</Comment>
+            </PrimBasicElemDef>
+            <History>
+                <Date Day="07" Month="04" Year="2006"/>
+                <Author>x0028909</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <DocElement>
+                <XHTMLElement Type="TEXT_SECTION">This section contains all sets of values that are defined for the MNSMS SAP</XHTMLElement>
+            </DocElement>
+        </Description>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mem_type</Name>
+                <Comment>values for mem_type</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MEM_ME</Alias>
+                <Comment>mobile equipment memory 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>MEM_SM</Alias>
+                <Comment>subscriber identity module memory</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">5</Value>
+                <Alias>MEM_SR</Alias>
+                <Comment>status report memory</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cause</Name>
+                <Comment>values for cause</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="BIN">1000100111111111</Value>
+                <Alias>SMS_NO_ERROR</Alias>
+                <Comment>No error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000000</Value>
+                <Alias>SMS_CAUSE_PARAM_WRONG</Alias>
+                <Comment>Wrong parameter in primitive</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000001</Value>
+                <Alias>SMS_CAUSE_ENTITY_BUSY</Alias>
+                <Comment>Entity is busy</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000010</Value>
+                <Alias>SMS_CAUSE_OPER_NOT_ALLW</Alias>
+                <Comment>Operation not allowed</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000011</Value>
+                <Alias>SMS_CAUSE_OPER_NOT_SUPP</Alias>
+                <Comment>Operation not supported</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000100</Value>
+                <Alias>SMS_CAUSE_SIM_BUSY</Alias>
+                <Comment>SIM busy</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000101</Value>
+                <Alias>SMS_CAUSE_MEM_FAIL</Alias>
+                <Comment>Memory failure</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100000110</Value>
+                <Alias>SMS_CAUSE_INV_INDEX</Alias>
+                <Comment>Invalid memory index</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001000</Value>
+                <Alias>SMS_CAUSE_MEM_FULL</Alias>
+                <Comment>Memory full</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001001</Value>
+                <Alias>SMS_CAUSE_NO_SERVICE</Alias>
+                <Comment>No network service</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001010</Value>
+                <Alias>SMS_CAUSE_NET_TIMEOUT</Alias>
+                <Comment>Network timeout</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001011</Value>
+                <Alias>SMS_CAUSE_UNEXP_CNMA</Alias>
+                <Comment>No +CNMA acknowledgement expected</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001111</Value>
+                <Alias>SMS_CAUSE_OTHER_ERROR</Alias>
+                <Comment>Any other error</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001100</Value>
+                <Alias>SMS_CAUSE_MEM_AVAIL</Alias>
+                <Comment>Memory available after full</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="BIN">1100100100001110</Value>
+                <Alias>SMS_CAUSE_FAILED_MSG_NOT_FOUND</Alias>
+                <Version>REL99</Version>
+                <Comment>Failed Message not found during Transmission</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="08" Month="12" Year="2003"/>
+                <Author>T.Schott</Author>
+                <Comment>add new cause value</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_state</Name>
+                <Comment>values for state</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SMS_STATE_READY</Alias>
+                <Comment>SMS is full operable</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SMS_STATE_INITIALISING</Alias>
+                <Comment>SMS is in initialisation state</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>SMS_STATE_BUSY</Alias>
+                <Comment>SMS is in a busy condition</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">FF</Value>
+                <Alias>SMS_STATE_NOT_AVAILABLE</Alias>
+                <Comment>SMS is inoperable</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="HEX">
+                <MinValue>3</MinValue>
+                <MaxValue>FE</MaxValue>
+                <Comment>reserved, to be treated as SMS inoperable</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_condx</Name>
+                <Comment>values for condx</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SMS_CONDX_OVR_NON</Alias>
+                <Comment>do not overwrite an existing message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SMS_CONDX_OVR_MO</Alias>
+                <Comment>overwrite only an exisiting mobile originated message</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>SMS_CONDX_OVR_ANY</Alias>
+                <Comment>overwrite any existing message</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>3</MinValue>
+                <MaxValue>255</MaxValue>
+                <Comment>reserved, interpret as 'overwrite any'</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_modify</Name>
+                <Comment>values for modify</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SMS_MODIFY_NON</Alias>
+                <Comment>no modification</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SMS_MODIFY_TPOA</Alias>
+                <Comment>substitution of TP-OA</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>SMS_MODIFY_SCA</Alias>
+                <Comment>substitution of SCA</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>SMS_MODIFY_TPOA_SCA</Alias>
+                <Comment>substitution of TP-OA and SCA</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>SMS_MODIFY_ALL</Alias>
+                <Comment>substitution of the complete message</Comment>
+            </ValuesItem>
+            <ValuesRange ValueType="DEC">
+                <MinValue>5</MinValue>
+                <MaxValue>255</MaxValue>
+                <Comment>reserved, interpret as 'complete substitution'</Comment>
+            </ValuesRange>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_rec_num</Name>
+                <Comment>values for rec_num</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0</Value>
+                <Alias>SMS_RECORD_NOT_EXIST</Alias>
+                <Comment>record is not existing</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_status</Name>
+                <Comment>values for status</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">0</Value>
+                <Alias>SMS_RECORD_FREE</Alias>
+                <Comment>Free record</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">3</Value>
+                <Alias>SMS_RECORD_REC_UNREAD</Alias>
+                <Comment>MT record, not read</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1</Value>
+                <Alias>SMS_RECORD_REC_READ</Alias>
+                <Comment>MT record, already read</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">7</Value>
+                <Alias>SMS_RECORD_STO_UNSENT</Alias>
+                <Comment>MO record, not sent</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">5</Value>
+                <Alias>SMS_RECORD_STO_SENT</Alias>
+                <Comment>MO record, already sent, status report not requested</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">0D</Value>
+                <Alias>SMS_RECORD_STAT_UNRCVD</Alias>
+                <Comment>MO record, already sent, status report requested, not received</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">15</Value>
+                <Alias>SMS_RECORD_STAT_UNSTRD</Alias>
+                <Comment>MO record, already sent, status report received, not stored</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">1D</Value>
+                <Alias>SMS_RECORD_STAT_STRD</Alias>
+                <Comment>MO record, already sent, status report received and stored</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">E0</Value>
+                <Alias>SMS_RECORD_INVALID</Alias>
+                <Comment>The record keeps unrecognizable data</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mt</Name>
+                <Comment>values for mt</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>MT0</Alias>
+                <Comment>Mobile Terminated Mode 0</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>MT1</Alias>
+                <Comment>Mobile Terminated Mode 1</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>MT2</Alias>
+                <Comment>Mobile Terminated Mode 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>MT3</Alias>
+                <Comment>Mobile Terminated Mode 3</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>MT_DEF</Alias>
+                <Comment>Mobile Terminated Mode Default</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_ds</Name>
+                <Comment>values for ds</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>DS0</Alias>
+                <Comment>Status Report Mode 0: no status report to be returned</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>DS1</Alias>
+                <Comment>Status Report Mode 1: status report returned to MMI</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>DS2</Alias>
+                <Comment>Status Report Mode 2: status report stored, if possible</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mhc</Name>
+                <Comment>values for mhc</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SMS_MHC_DEF</Alias>
+                <Comment>default (Phase 2)</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>SMS_MHC_PH2</Alias>
+                <Comment>Phase 2</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>SMS_MHC_PH2PLUS</Alias>
+                <Comment>Phase 2+</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_read_mode</Name>
+                <Comment>values for read_mode</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>READ_NORMAL</Alias>
+                <Comment>Normal reading</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>READ_PREVIEW</Alias>
+                <Comment>Reading without preview</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>READ_STATUS_CHANGE</Alias>
+                <Comment>Change only status</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_resp</Name>
+                <Comment>values for resp</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>SMS_RP_ACK</Alias>
+                <Comment>send RP-ACK to network</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SMS_RP_ERROR</Alias>
+                <Comment>send RP-ERROR to network</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">This former local values table was generated by the doc2XML converter tool. Please exchange this description by a more meaningful one !!!</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_mo_sms_serv</Name>
+                <Comment>values for mo_sms_serv</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>GPRS_SMS_GPRS_ONLY</Alias>
+                <Comment>Use GPRS only for MO SMS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>GPRS_SMS_CCT_ONLY</Alias>
+                <Comment>Use CCT  only for MO SMS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>GPRS_SMS_GPRS_PREF</Alias>
+                <Comment>Use GPRS in preference for MO SMS</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>GPRS_SMS_CCT_PREF</Alias>
+                <Comment>Use CCT in preference for MO SMS</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="4" Month="11" Year="2003"/>
+                <Author>doc2XML</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Enumeration of all query type values</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_query</Name>
+                <Comment>values for status the query request refers to</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>SMS_QUERY_DELIVER_STATUS</Alias>
+                <Comment>Query Request is for delivery status (pause or resume)</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="8" Month="4" Year="2004"/>
+                <Author>HP</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Enumeration of sms delivery status values </XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_deliver_status</Name>
+                <Comment>values for deliver status</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">10</Value>
+                <Alias>SMS_DELIVER_STATUS_PAUSE</Alias>
+                <Comment>SMS delivery paused by user</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">11</Value>
+                <Alias>SMS_DELIVER_STATUS_RESUME</Alias>
+                <Comment>SMS delivery to user allowed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="8" Month="4" Year="2004"/>
+                <Author>HP</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">The different mode values for +CMMS mode.</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_cmms_mode</Name>
+                <Comment>The values which shall be used for mode value of +CMMS command</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CMMS_MODE_DEF</Alias>
+                <Comment>Default value of 0 for +CMMS mode. The mode switches to 0 when timer expires if the mode set was 1. </Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CMMS_MODE_ONE</Alias>
+                <Comment>Mode value of one for +CMMS mode. For this mode set, when the timer expires, mode is switched back to 0.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CMMS_MODE_TWO</Alias>
+                <Comment>Mode value of two for +CMMS mode. For this mode set, even after the timer expiry mode is not switched to 0</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="06" Year="2005"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <DocElement>
+                    <XHTMLElement Type="TEXT_SECTION">Different status values for +CMGD</XHTMLElement>
+                </DocElement>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_delete_status</Name>
+                <Comment>values for Status</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>CMGD_DEL_INDEX</Alias>
+                <Comment>Delete the messages specified by the index.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>CMGD_DEL_READ</Alias>
+                <Comment>Ignore the index and delete all the read messages.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">2</Value>
+                <Alias>CMGD_DEL_READ_SENT</Alias>
+                <Comment>Ignore the index and delete all the read and sent messages.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">3</Value>
+                <Alias>CMGD_DEL_READ_SENT_UNSENT</Alias>
+                <Comment>Ignore the index and delete all the read, send and unsent messages.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">4</Value>
+                <Alias>CMGD_DEL_ALL</Alias>
+                <Comment>Ignore the index and delete all the messages whatever the status it is.</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="23" Month="09" Year="2005"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+        <Values>
+            <Description>
+                <Section>Flag used for retransmission of failed messages.</Section>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_auto_rep_flag</Name>
+                <Version>REL99</Version>
+                <Comment>Value constants for VAL_auto_rep_flag</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="DEC">0</Value>
+                <Alias>AUTO_REP_FLAG_DISABLED </Alias>
+                <Version>REL99</Version>
+                <Comment>Do not attempt retransmission</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="DEC">1</Value>
+                <Alias>AUTO_REP_FLAG_ENABLED</Alias>
+                <Version>REL99</Version>
+                <Comment>Attempt retransmission  </Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="05" Month="04" Year="2006"/>
+                <Author/>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>

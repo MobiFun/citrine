@@ -1,0 +1,283 @@
+;********************************************************************************
+;*** File           : dcm.pdf
+;*** Creation       : Wed Mar 11 09:57:42 CST 2009
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Service Access Point Specification
+;*** Document Name  : dcm
+;*** Document No.   : 8462.101.03.001
+;*** Document Date  : 2003-09-03
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: STW
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Thu Nov 29 09:39:32 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-09-03"
+PRAGMA 	ID_AND_VERSION 	"8462.101.03.001"
+
+
+
+CONST 	CDCM_APN_MAX_LEN 	100 	; Maximum length of an access point name
+CONST 	CDCM_PHONE_NR_LEN 	84 	; Maximum length of a CSD phone number
+CONST 	CDCM_PDP_MAX_LEN 	20 	; Maximum length of PDP address
+CONST 	CDCM_GATE_MAX_LEN 	20 	; Maximum length of gateway address
+CONST 	CDCM_USER_MAX_LEN 	25 	; Maximum length of user name
+CONST 	CDCM_PASSWORD_MAX_LEN 	25 	; Maximum length of password
+CONST 	CDCM_DNS_MAX_LEN 	20 	; Maximum length of DNS addresses
+
+
+
+VALTAB 	VAL_bearer_select
+VAL 	1 	DCM_SOCK_BEARER_ANY 	"DCM will decide which connection type to be used"
+VAL 	2 	DCM_SOCK_BEARER_GPRS 	"Use a GPRS context as bearer, DCM will decide which GPRS settings to be used"
+VAL 	3 	DCM_SOCK_BEARER_GSM 	"Use GSM data connection as bearer DCM will decide which GSM settings to be used"
+VAL 	4 	DCM_SOCK_BEARER_USE_PROFILE 	"Use a specific data account for this connection"
+VAL 	5 	DCM_SOCK_BEARER_AS_SPECIFIED 	"Use the data account information which is which is delivered within this signal"
+
+VALTAB 	VAL_authtype
+VAL 	1 	DCM_SOCK_AUTH_PAP 	"PAP authentification protocol"
+VAL 	2 	DCM_SOCK_AUTH_CHAP 	"CHAP authentification protocol !!! NOT SUPPORTED"
+VAL 	3 	DCM_SOCK_AUTH_NO 	"No authentication"
+
+VALTAB 	VAL_result
+VAL 	0 	DCM_RET_OK 	"The action has been performed successfully."
+VAL 	1 	DCM_RET_NOT_READY 	"The command can not be processed now."
+VAL 	2 	DCM_RET_ALREADY_ACTIVATED 	"Connection refused because already actuvated."
+VAL 	3 	DCM_RET_UNKNOWN_EVENT 	"Unknown receipt event."
+VAL 	4 	DCM_RET_INVALID_PARAMETER 	"A parameter is wrong."
+VAL 	5 	DCM_RET_CMD_PENDING 	"There is a pending command yet."
+VAL 	6 	DCM_RET_PS_CONN_BROKEN 	"Loose of bearer connection."
+
+
+
+
+VAR 	api_instance 	"The api_instance value returned by sock_api_initialize()." 	L
+
+
+VAR 	bearer_handle 	"Bearer handle" 	S
+
+
+VAR 	bearer_select 	"Bearer type" 	M
+
+VAL 	@p_dcm - VAL_bearer_select@ 	
+
+VAR 	authtype 	"Authentication type" 	S
+
+VAL 	@p_dcm - VAL_authtype@ 	
+
+VAR 	profile_number 	"Profile ID for bearer selection" 	S
+
+
+VAR 	bearer_handle 	"Systemwide bearer handle" 	S
+
+
+VAR 	app_handle 	"Comm handle of application" 	S
+
+
+VAR 	bearer_type 	"Used bearer type" 	B
+
+
+VAR 	apn_valid 	"Flag for apn validation" 	B
+
+
+VAR 	apn 	"Access Point Name" 	B
+
+
+VAR 	phone_number_valid 	"Flag for phone number validation" 	B
+
+
+VAR 	phone_number 	"CSD dial up phone number" 	B
+
+
+VAR 	user_id_valid 	"Flag for user ID validation" 	B
+
+
+VAR 	user_id 	"User ID" 	B
+
+
+VAR 	password_valid 	"Flag for password validation" 	B
+
+
+VAR 	password 	"Password" 	B
+
+
+VAR 	cid 	"GPRS context ID" 	S
+
+
+VAR 	ip_address 	"Used IP address" 	L
+
+
+VAR 	dns1 	"First domain name server" 	L
+
+
+VAR 	dns2 	"Second domain name server" 	L
+
+
+VAR 	gateway 	"Gateway address" 	L
+
+
+VAR 	auth_type 	"Type of authentication" 	S
+
+
+VAR 	data_compr 	"Flag for data compression" 	B
+
+
+VAR 	header_compr 	"Flag for header compression" 	B
+
+
+VAR 	precedence 	"GPRS precedence class" 	S
+
+
+VAR 	delay 	"GPRS delay class" 	S
+
+
+VAR 	reliability 	"GPRS reliability class" 	S
+
+
+VAR 	peak_throughput 	"GPRS peak throughput" 	S
+
+
+VAR 	mean_throughput 	"GPRS mean throughput" 	S
+
+
+VAR 	shareable 	"Flag for sharing requested bearer conn" 	B
+
+
+VAR 	result 	"Result of the operation" 	M
+
+VAL 	@p_dcm - VAL_result@ 	
+
+VAR 	dcm_err 	"Error value" 	M
+
+
+
+
+
+COMP 	dcm_info_conn 	 "Connection information"
+{
+ 	bearer_handle 	 ; Systemwide bearer handle
+ 	app_handle 	 ; Comm handle of application
+ 	bearer_type 	 ; Used bearer type
+ 	apn_valid 	 ; Flag for apn validation
+ 	apn 	[CDCM_APN_MAX_LEN + 1] 	 ; Access Point Name
+ 	phone_number_valid 	 ; Flag for phone number validation
+ 	phone_number 	[CDCM_PHONE_NR_LEN + 1] 	 ; CSD dial up phone number
+ 	user_id_valid 	 ; Flag for user ID validation
+ 	user_id 	[CDCM_USER_MAX_LEN + 1] 	 ; User ID
+ 	password_valid 	 ; Flag for password validation
+ 	password 	[CDCM_PASSWORD_MAX_LEN + 1] 	 ; Password
+ 	cid 	 ; GPRS context ID
+ 	ip_address 	 ; Used IP address
+ 	dns1 	 ; First domain name server
+ 	dns2 	 ; Second domain name server
+ 	gateway 	 ; Gateway address
+ 	auth_type 	 ; Type of authentication
+ 	data_compr 	 ; Flag for data compression
+ 	header_compr 	 ; Flag for header compression
+ 	precedence 	 ; GPRS precedence class
+ 	delay 	 ; GPRS delay class
+ 	reliability 	 ; GPRS reliability class
+ 	peak_throughput 	 ; GPRS peak throughput
+ 	mean_throughput 	 ; GPRS mean throughput
+ 	shareable 	 ; Flag for sharing requested bearer conn
+}
+
+
+
+
+
+
+; DCM_OPEN_CONN_REQ 	0x8000401C
+; DCM_OPEN_CONN_CNF 	0x8000001C
+; DCM_CLOSE_CONN_REQ 	0x8001401C
+; DCM_CLOSE_CONN_CNF 	0x8001001C
+; DCM_GET_CURRENT_CONN_REQ 	0x8002401C
+; DCM_GET_CURRENT_CONN_CNF 	0x8002001C
+; DCM_ERROR_IND 	0x8003001C
+
+
+
+PRIM 	DCM_OPEN_CONN_REQ 	0x8000401C
+{
+ 	api_instance 	 ; Api instance
+ 	bearer_select 	 ; Bearer type
+ 	profile_number 	 ; profile number
+ 	dcm_info_conn 	 ; Paramater used for bearer connection
+}
+
+
+
+
+
+
+PRIM 	DCM_OPEN_CONN_CNF 	0x8000001C
+{
+ 	result 	 ; Result of the operation
+ 	bearer_handle 	 ; Bearer handle
+}
+
+
+
+
+
+
+PRIM 	DCM_CLOSE_CONN_REQ 	0x8001401C
+{
+ 	api_instance 	 ; Api instance
+ 	bearer_handle 	 ; Beare handle
+}
+
+
+
+
+
+
+PRIM 	DCM_CLOSE_CONN_CNF 	0x8001001C
+{
+ 	result 	 ; Result of the operation
+}
+
+
+
+
+
+
+PRIM 	DCM_GET_CURRENT_CONN_REQ 	0x8002401C
+{
+ 	api_instance 	 ; Api instance
+ 	bearer_handle 	 ; Beare handle
+}
+
+
+
+
+
+
+PRIM 	DCM_GET_CURRENT_CONN_CNF 	0x8002001C
+{
+ 	result 	 ; Result of the operation
+ 	dcm_info_conn 	 ; Connection information
+}
+
+
+
+
+
+
+PRIM 	DCM_ERROR_IND 	0x8003001C
+{
+ 	dcm_err 	 ; Error value
+ 	result 	 ; Result of the operation
+}
+
+
+
+
+
+
+
+
+

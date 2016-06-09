@@ -1,0 +1,881 @@
+;********************************************************************************
+;*** File           : sm.mdf
+;*** Creation       : Thu Jun 19 15:32:13 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : sm
+;*** Document No.   : 8010.605.03.005
+;*** Document Date  : 2003-08-28
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: MVJ
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:21:12 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-08-28"
+PRAGMA 	ID_AND_VERSION 	"8010.605.03.005"
+PRAGMA 	CCDNAME 	SM 	; CCD name tag
+PRAGMA 	PREFIX 	M_SM 	; Document prefix
+PRAGMA 	ALLWAYS_ENUM_IN_VAL_FILE 	YES 	; Adds enumerations in the .val file.
+
+
+
+CONST 	SIZE_R97_QOS 	3 	; Size of R97 QoS IE (V-part only)
+CONST 	SIZE_R99_QOS 	11 	; Size of R99 QoS IE (V-part only)
+
+
+
+VALTAB 	VAL_nsapi_val
+VAL 	DEF 	 	"reserved"
+VAL 	5 	NSAPI_5 	"NSAPI 5"
+VAL 	6 	NSAPI_6 	"NSAPI 6"
+VAL 	7 	NSAPI_7 	"NSAPI 7"
+VAL 	8 	NSAPI_8 	"NSAPI 8"
+VAL 	9 	NSAPI_9 	"NSAPI 9"
+VAL 	10 	NSAPI_10 	"NSAPI 10"
+VAL 	11 	NSAPI_11 	"NSAPI 11"
+VAL 	12 	NSAPI_12 	"NSAPI 12"
+VAL 	13 	NSAPI_13 	"NSAPI 13"
+VAL 	14 	NSAPI_14 	"NSAPI 14"
+VAL 	15 	NSAPI_15 	"NSAPI 15"
+
+VALTAB 	VAL_delay
+VAL 	DEF 	 	"Delay class 4 (best effort)"
+VAL 	0 	DELAY_SUB 	"Subscribed delay class (uplink only)"
+VAL 	0 	DELAY_RES_DL 	"Reserved (downlink only)"
+VAL 	1 	DELAY_1 	"Delay class 1"
+VAL 	2 	DELAY_2 	"Delay class 2"
+VAL 	3 	DELAY_3 	"Delay class 3"
+VAL 	4 	DELAY_4 	"Delay class 4 (best effort)"
+VAL 	7 	DELAY_RES 	"Reserved"
+
+VALTAB 	VAL_reliability
+VAL 	DEF 	 	"Unacknowledged GTP and LLC; Acknowledged RLC, Protected data"
+VAL 	0 	RELY_SUB 	"Subscribed reliability class (uplink only)"
+VAL 	0 	RELY_RES_DL 	"Reserved (dowwnlink only)"
+VAL 	1 	RELY_1 	"Acknowledged GTP, LLC, and RLC; Protected data"
+VAL 	2 	RELY_2 	"Unacknowledged GTP; Acknowledged LLC and RLC, Protected data"
+VAL 	3 	RELY_3 	"Unacknowledged GTP and LLC; Acknowledged RLC, Protected data"
+VAL 	4 	RELY_4 	"Unacknowledged GTP, LLC, and RLC, Protected data"
+VAL 	5 	RELY_5 	"Unacknowledged GTP, LLC, and RLC, Unprotected data"
+VAL 	7 	RELY_RES 	"Reserved"
+
+VALTAB 	VAL_sapi
+VAL 	DEF 	 	"reserved"
+VAL 	0 	SAPI_NONE 	"No SAPI assigned"
+VAL 	3 	SAPI_3 	"SAPI 3"
+VAL 	5 	SAPI_5 	"SAPI 5"
+VAL 	9 	SAPI_9 	"SAPI 9"
+VAL 	11 	SAPI_11 	"SAPI 11"
+
+VALTAB 	VAL_peak
+VAL 	DEF 	 	"Up to 1000 octet/s"
+VAL 	0 	PEAK_SUB 	"Subscribed peak throughput (uplink only)"
+VAL 	0 	PEAK_RES_DL 	"reserved (downlink only)"
+VAL 	1 	PEAK_1000 	"Up to 1000 octet/s"
+VAL 	2 	PEAK_2000 	"Up to 2000 octet/s"
+VAL 	3 	PEAK_4000 	"Up to 4000 octet/s"
+VAL 	4 	PEAK_8000 	"Up to 8000 octet/s"
+VAL 	5 	PEAK_16000 	"Up to 16000 octet/s"
+VAL 	6 	PEAK_32000 	"Up to 32000 octet/s"
+VAL 	7 	PEAK_64000 	"Up to 64000 octet/s"
+VAL 	8 	PEAK_128000 	"Up to 128000 octet/s"
+VAL 	9 	PEAK_256000 	"Up to 256000 octet/s"
+VAL 	15 	PEAK_RES 	"Reserved"
+
+VALTAB 	VAL_precedence
+VAL 	DEF 	 	"Normal Priority"
+VAL 	0 	PRECED_SUB 	"Subscribed precedence (uplink only)"
+VAL 	0 	PRECED_RES_DL 	"Reserved (downlink only)"
+VAL 	1 	PRECED_HIGH 	"High priority"
+VAL 	2 	PRECED_NORM 	"Normal Priority"
+VAL 	3 	PRECED_LOW 	"Low priority"
+VAL 	7 	PRECED_RES 	"Reserved"
+
+VALTAB 	VAL_mean
+VAL 	DEF 	 	"Best effort"
+VAL 	0 	MEAN_SUB 	"Subscribed mean throughput (uplink only)"
+VAL 	0 	MEAN_RES_DL 	"reserved (downlink only)"
+VAL 	1 	MEAN_100 	"100 octet/h"
+VAL 	2 	MEAN_200 	"200 octet/h"
+VAL 	3 	MEAN_500 	"500 octet/h"
+VAL 	4 	MEAN_1000 	"1000 octet/h"
+VAL 	5 	MEAN_2000 	"2000 octet/h"
+VAL 	6 	MEAN_5000 	"5000 octet/h"
+VAL 	7 	MEAN_10000 	"10000 octet/h"
+VAL 	8 	MEAN_20000 	"20000 octet/h"
+VAL 	9 	MEAN_50000 	"50000 octet/h"
+VAL 	10 	MEAN_100000 	"100000 octet/h"
+VAL 	11 	MEAN_200000 	"200000 octet/h"
+VAL 	12 	MEAN_500000 	"500000 octet/h"
+VAL 	13 	MEAN_1000000 	"1000000 octet/h"
+VAL 	14 	MEAN_2000000 	"2000000 octet/h"
+VAL 	15 	MEAN_5000000 	"5000000 octet/h"
+VAL 	16 	MEAN_10000000 	"10000000 octet/h"
+VAL 	17 	MEAN_20000000 	"20000000 octet/h"
+VAL 	18 	MEAN_50000000 	"50000000 octet/h"
+VAL 	30 	MEAN_RES 	"Reserved"
+VAL 	31 	MEAN_BEST 	"Best effort"
+
+VALTAB 	VAL_tc
+VAL 	0 	QOS_TC_SUB 	"Subscribed traffic class (uplink only)"
+VAL 	0 	QOS_TC_RES_DL 	"Reserved (downlink only)"
+VAL 	1 	QOS_TC_CONV 	"Conversational class"
+VAL 	2 	QOS_TC_STREAM 	"Streaming class"
+VAL 	3 	QOS_TC_INTER 	"Interactive class"
+VAL 	4 	QOS_TC_BG 	"Background class"
+VAL 	7 	QOS_TC_RES 	"Reserved"
+
+VALTAB 	VAL_order
+VAL 	0 	QOS_ORDER_SUB 	"Subscribed delivery order (uplink only)"
+VAL 	0 	QOS_ORDER_RES_DL 	"Reserved (downlink only)"
+VAL 	1 	QOS_ORDER_YES 	"With delivery order ('yes')"
+VAL 	2 	QOS_ORDER_NO 	"Without delivery order ('no')"
+VAL 	3 	QOS_ORDER_RES 	"Reserved"
+
+VALTAB 	VAL_del_err_sdu
+VAL 	0 	QOS_DEL_ERR_SUB 	"Subscribed delivery order (uplink only)"
+VAL 	0 	QOS_DEL_ERR_RES_DL 	"Reserved (downlink only)"
+VAL 	1 	QOS_DEL_ERR_NODETECT 	"No detect ('-')"
+VAL 	2 	QOS_DEL_ERR_YES 	"Erroneous SDUs are delivered ('yes')"
+VAL 	3 	QOS_DEL_ERR_NO 	"Erroneous SDUs are not delivered ('no')"
+VAL 	7 	QOS_DEL_ERR_RES 	"Reserved"
+
+VALTAB 	VAL_max_sdu
+VAL 	0 	QOS_MAX_SDU_SUB 	"Subscribed maximum SDU size"
+VAL 	0 	QOS_MAX_SDU_RES_DL 	"Reserved (downlink only)"
+VAL 	151 	QOS_MAX_SDU_1502 	"Maximum SDU size 1502 octets"
+VAL 	152 	QOS_MAX_SDU_1510 	"Maximum SDU size 1510 octets"
+VAL 	153 	QOS_MAX_SDU_1520 	"Maximum SDU size 1520 octets"
+VAL 	255 	QOS_MAX_SDU_RES 	"Reserved"
+
+VALTAB 	VAL_max_br_ul
+VAL 	0 	QOS_MAX_BR_UL_SUB 	"Subscribed maximum uplink data rate (uplink only)"
+VAL 	0 	QOS_MAX_BR_UL_RES_DL 	"Reserved (downlink only)"
+VAL 	255 	QOS_MAX_BR_UL_0 	"0 kbps uplink data rate"
+
+VALTAB 	VAL_max_br_dl
+VAL 	0 	QOS_MAX_BR_DL_SUB 	"Subscribed maximum downlink data rate (uplink only)"
+VAL 	0 	QOS_MAX_BR_DL_RES_DL 	"Reserved (downlink only)"
+VAL 	255 	QOS_MAX_BR_DL_0 	"0 kbps downlink data rate"
+
+VALTAB 	VAL_ber
+VAL 	0 	QOS_BER_SUB 	"Subscribed residual BER (uplink only)"
+VAL 	0 	QOS_BER_RES_DL 	"Reserved (downlink only)"
+VAL 	1 	QOS_BER_5E_2 	"5*10-2"
+VAL 	2 	QOS_BER_1E_2 	"1*10-2"
+VAL 	3 	QOS_BER_5E_3 	"5*10-3"
+VAL 	4 	QOS_BER_4E_3 	"4*10-3"
+VAL 	5 	QOS_BER_1E_3 	"1*10-3"
+VAL 	6 	QOS_BER_1E_4 	"1*10-4"
+VAL 	7 	QOS_BER_1E_5 	"1*10-5"
+VAL 	8 	QOS_BER_1E_6 	"1*10-6"
+VAL 	9 	QOS_BER_6E_8 	"6*10-8"
+VAL 	15 	QOS_BER_RES 	"Reserved"
+
+VALTAB 	VAL_sdu_err_ratio
+VAL 	0 	QOS_SDU_ERR_SUB 	"Subscribed SDU error ratio"
+VAL 	0 	QOS_SDU_ERR_RES_DL 	"Reserved (downlink only)"
+VAL 	1 	QOS_SDU_ERR_1E_2 	"1*10-2"
+VAL 	2 	QOS_SDU_ERR_7E_3 	"7*10-3"
+VAL 	3 	QOS_SDU_ERR_1E_3 	"1*10-3"
+VAL 	4 	QOS_SDU_ERR_1E_4 	"1*10-4"
+VAL 	5 	QOS_SDU_ERR_1E_5 	"1*10-5"
+VAL 	6 	QOS_SDU_ERR_1E_6 	"1*10-6"
+VAL 	7 	QOS_SDU_ERR_1E_1 	"1*10-1"
+VAL 	15 	QOS_SDU_ERR_RES 	"Reserved"
+
+VALTAB 	VAL_xfer_delay
+VAL 	0 	QOS_XFER_DELAY_SUB 	"Subscribed transfer delay (uplink only)"
+VAL 	0 	QOS_XFER_DELAY_RES_DL 	"Reserved (downlink only)"
+VAL 	63 	QOS_XFER_DELAY_RES 	"Reserved"
+
+VALTAB 	VAL_handling_pri
+VAL 	0 	QOS_HANDLING_PRI_SUB 	"Subscribed traffic handling priority (uplink only)"
+VAL 	0 	QOS_HANDLING_PRI_RES_DL 	"Reserved (downlink only)"
+VAL 	1 	QOS_HANDLING_PRI_1 	"Priority level 1"
+VAL 	2 	QOS_HANDLING_PRI_2 	"Priority level 2"
+VAL 	3 	QOS_HANDLING_PRI_3 	"Priority level 3"
+
+VALTAB 	VAL_guar_br_ul
+VAL 	0 	QOS_GUAR_BR_UL_SUB 	"Subscribed guaranteed uplink data rate (uplink only)"
+VAL 	0 	QOS_GUAR_BR_UL_RES_DL 	"Reserved (downlink only)"
+
+VALTAB 	VAL_guar_br_dl
+VAL 	0 	QOS_GUAR_BR_DL_SUB 	"Subscribed guaranteed downlink data rate (uplink only)"
+VAL 	0 	QOS_GUAR_BR_DL_RES_DL 	"Reserved (downlink only)"
+
+VALTAB 	VAL_pfi_val
+VAL 	0 	PFI_BEST_EFFORT 	"Best effort"
+VAL 	1 	PFI_SIGNALLING 	"Signalling"
+VAL 	2 	PFI_SMS 	"SMS"
+
+VALTAB 	VAL_pdp_type_org
+VAL 	DEF 	 	"ETSI allocated address (PPP)"
+VAL 	0 	ETSI_ORG 	"ETSI allocated address (PPP)"
+VAL 	1 	IETF_ORG 	"IETF allocated address"
+VAL 	15 	PDP_MT 	"Dynamic PDP addressing is applied, (uplink only)"
+
+VALTAB 	VAL_pdp_type_no
+VAL 	DEF 	 	"IPv4 address"
+VAL 	0b00000001 	PPP_TYPE 	"PDP type PPP"
+VAL 	0b00100001 	IP4_TYPE 	"IPv4 address"
+VAL 	0b01010111 	IP6_TYPE 	"IPv6 address"
+
+VALTAB 	VAL_radio_prio_val
+VAL 	DEF 	 	"priority level 4 (lowest)"
+VAL 	1 	RADIO_PRIO_1 	"priority level 1 (highest)"
+VAL 	2 	RADIO_PRIO_2 	"priority level 2"
+VAL 	3 	RADIO_PRIO_3 	"priority level 3"
+VAL 	4 	RADIO_PRIO_4 	"priority level 4 (lowest)"
+
+VALTAB 	VAL_sm_cause_val
+VAL 	DEF 	 	"Service option temporarily out of order"
+VAL 	0b00011001 	CAUSE_LLC_OR_SNDCP_FAILURE 	"LLC or SNDCP failure"
+VAL 	0b00011010 	CAUSE_INSUFFICIENT_RESOURCES 	"Insufficient resources"
+VAL 	0b00011011 	CAUSE_MISSING_OR_UNKNOWN_APN 	"Missing or unknown APN"
+VAL 	0b00011100 	CAUSE_UNKNOWN_PDP_ADDR_OR_TYPE 	"Unknown PDP address or PDP type"
+VAL 	0b00011101 	CAUSE_USER_AUTH_FAILED 	"User Aauthentication failed"
+VAL 	0b00011110 	CAUSE_ACTIVATE_REJECTED_BY_GGSN 	"Activation rejected by GGSN"
+VAL 	0b00011111 	CAUSE_ACTIVATE_REJECTED_UNSPEC 	"Activation rejected, unspecified"
+VAL 	0b00100000 	CAUSE_SERVICE_NOT_SUPPORTED 	"Service option not supported"
+VAL 	0b00100001 	CAUSE_SERVICE_NOT_SUBSCRIBED 	"Requested service option not subscribed"
+VAL 	0b00100010 	CAUSE_SERVICE_TEMP_OUT_OF_ORDER 	"Service option temporarily out of order"
+VAL 	0b00100011 	CAUSE_NSAPI_IN_USE 	"NSAPI already used"
+VAL 	0b00100100 	CAUSE_REGULAR_DEACTIVATION 	"Regular deactivation"
+VAL 	0b00100101 	CAUSE_QOS_NOT_ACCEPTED 	"QoS not accepted"
+VAL 	0b00100110 	CAUSE_NETWORK_FAILURE 	"Network failure"
+VAL 	0b00100111 	CAUSE_REACTIVATION_REQUESTED 	"Reactivation requested"
+VAL 	0b00101000 	CAUSE_FEATURE_NOT_SUPPORTED 	"Feature not supported (context activation)"
+VAL 	0b00101001 	CAUSE_SEMANTIC_TFT_ERROR 	"Semantic error in TFT operation"
+VAL 	0b00101010 	CAUSE_SYNTACTIC_TFT_ERROR 	"Syntactical error in TFT operation"
+VAL 	0b00101011 	CAUSE_UNKNOWN_LINKED_TI 	"Unknown PDP context (identified by linked TI)"
+VAL 	0b00101100 	CAUSE_SEMANTIC_TFT_FILTER_ERROR 	"Semantic error in packet filter"
+VAL 	0b00101101 	CAUSE_SYNTACTIC_TFT_FILTER_ERROR 	"Syntactical error in packet filter"
+VAL 	0b00101110 	CAUSE_CONTEXT_NEEDS_TFT 	"PDP context without TFT already activated"
+VAL 	0b01010001 	CAUSE_INVALID_TI 	"Invalid transaction identifier value"
+VAL 	0b01011111 	CAUSE_SEMANTIC_ERROR_IN_MSG 	"Semantically incorrect message"
+VAL 	0b01100000 	CAUSE_INVALID_MANDATORY_ELEMENT 	"Invalid mandatory information"
+VAL 	0b01100001 	CAUSE_MSG_TYPE_NOT_IMPL 	"Message type non-existent or not implemented"
+VAL 	0b01100010 	CAUSE_MSG_TYPE_INCOMPATIBLE_WITH_STATE 	"Message type not compatible with the protocol state"
+VAL 	0b01100011 	CAUSE_IE_NOT_IMPLEMENTED 	"Information element non-existent or not implemented"
+VAL 	0b01100100 	CAUSE_CONDITIONAL_IE_ERROR 	"Conditional IE error"
+VAL 	0b01100101 	CAUSE_MSG_INCOMPATIBLE_WITH_STATE 	"Message not compatible with the protocol state"
+VAL 	0b01101111 	CAUSE_PROTOCOL_ERROR_UNSPEC 	"Protocol error, unspecified"
+
+VALTAB 	VAL_tft_opcode
+VAL 	DEF 	 	"Reserved"
+VAL 	0 	TFT_OPCODE_SPARE 	"Spare"
+VAL 	1 	TFT_OPCODE_CREATE_TFT 	"Create new TFT"
+VAL 	2 	TFT_OPCODE_DELETE_TFT 	"Delete existing TFT"
+VAL 	3 	TFT_OPCODE_ADD_FILTERS 	"Add packet filters to existing TFT"
+VAL 	4 	TFT_OPCODE_REPLACE_FILTERS 	"Replace packet filters in existing TFT"
+VAL 	5 	TFT_OPCODE_DELETE_FILTERS 	"Delete packet filters from existing TFT"
+
+
+
+
+VAR 	nsapi_val 	"NSAPI value" 	
+ 	4
+
+VAL 	@m_sm - VAL_nsapi_val@ 	
+
+VAR 	delay 	"delay class" 	
+ 	3
+
+VAL 	@m_sm - VAL_delay@ 	
+
+VAR 	reliability 	"reliability class" 	
+ 	3
+
+VAL 	@m_sm - VAL_reliability@ 	
+
+VAR 	msg_type 	"message type" 	
+ 	8
+
+
+VAR 	sapi 	"SAPI" 	
+ 	4
+
+VAL 	@m_sm - VAL_sapi@ 	
+
+VAR 	peak 	"peak throughput" 	
+ 	4
+
+VAL 	@m_sm - VAL_peak@ 	
+
+VAR 	precedence 	"Precedence class" 	
+ 	3
+
+VAL 	@m_sm - VAL_precedence@ 	
+
+VAR 	mean 	"Mean throughput" 	
+ 	5
+
+VAL 	@m_sm - VAL_mean@ 	
+
+VAR 	tc 	"traffic class" 	
+ 	3
+
+VAL 	@m_sm - VAL_tc@ 	
+
+VAR 	order 	"delivery order" 	
+ 	2
+
+VAL 	@m_sm - VAL_order@ 	
+
+VAR 	del_err_sdu 	"deliver erroneous SDUs" 	
+ 	3
+
+VAL 	@m_sm - VAL_del_err_sdu@ 	
+
+VAR 	max_sdu 	"maximum SDU size" 	
+ 	8
+
+VAL 	@m_sm - VAL_max_sdu@ 	
+
+VAR 	max_br_ul 	"maximum uplink bit-rate" 	
+ 	8
+
+VAL 	@m_sm - VAL_max_br_ul@ 	
+
+VAR 	max_br_dl 	"maximum downlink bit-rate" 	
+ 	8
+
+VAL 	@m_sm - VAL_max_br_dl@ 	
+
+VAR 	ber 	"residual BER" 	
+ 	4
+
+VAL 	@m_sm - VAL_ber@ 	
+
+VAR 	sdu_err_ratio 	"SDU error ratio" 	
+ 	4
+
+VAL 	@m_sm - VAL_sdu_err_ratio@ 	
+
+VAR 	xfer_delay 	"transfer delay" 	
+ 	6
+
+VAL 	@m_sm - VAL_xfer_delay@ 	
+
+VAR 	handling_pri 	"Traffic handling priority" 	
+ 	2
+
+VAL 	@m_sm - VAL_handling_pri@ 	
+
+VAR 	guar_br_ul 	"guaranteed bit-rate uplink" 	
+ 	8
+
+VAL 	@m_sm - VAL_guar_br_ul@ 	
+
+VAR 	guar_br_dl 	"guaranteed bit-rate downlink" 	
+ 	8
+
+VAL 	@m_sm - VAL_guar_br_dl@ 	
+
+VAR 	apn_value 	"access point name value" 	
+ 	8
+
+
+VAR 	pfi_val 	"packet flow identifier value" 	
+ 	7
+
+VAL 	@m_sm - VAL_pfi_val@ 	
+
+VAR 	pdp_type_org 	"PDP type organisation" 	
+ 	4
+
+VAL 	@m_sm - VAL_pdp_type_org@ 	
+
+VAR 	pdp_type_no 	"PDP type number" 	
+ 	8
+
+VAL 	@m_sm - VAL_pdp_type_no@ 	
+
+VAR 	radio_prio_val 	"Radio priority value" 	
+ 	3
+
+VAL 	@m_sm - VAL_radio_prio_val@ 	
+
+VAR 	sm_cause_val 	"SM cause value" 	
+ 	8
+
+VAL 	@m_sm - VAL_sm_cause_val@ 	
+
+VAR 	add_info 	"adress information" 	
+ 	8
+
+
+VAR 	tear_down_flag 	"tear down flag" 	
+ 	1
+
+
+VAR 	ti_flag 	"TI flag" 	
+ 	1
+
+
+VAR 	ti_val 	"Extended TI value" 	
+ 	3
+
+
+VAR 	ti_ext_flag 	"Extended TI flag" 	
+ 	1
+
+
+VAR 	ti_ext_val 	"Extended TI value" 	
+ 	7
+
+
+VAR 	pco_value 	"protocol config value" 	
+ 	8
+
+
+VAR 	tlv_len 	"TLV length information" 	
+ 	8
+
+
+VAR 	tft_opcode 	"TFT operation code" 	
+ 	3
+
+VAL 	@m_sm - VAL_tft_opcode@ 	
+
+VAR 	tft_filter_count 	"TFT filter count" 	
+ 	4
+
+
+VAR 	tft_filter_id 	"TFT packet filter ID" 	
+ 	8
+
+
+VAR 	tft_filter_prio 	"TFT packet filter precedence/prioroty" 	
+ 	8
+
+
+VAR 	src_addr 	"IP address" 	
+ 	8
+
+
+VAR 	addr_mask 	"IP address" 	
+ 	8
+
+
+VAR 	tft_protocol_val 	"IPv4 protocol/IPv6 next header" 	
+ 	8
+
+
+VAR 	low_limit 	"low limit" 	
+ 	16
+
+
+VAR 	high_limit 	"high limit" 	
+ 	16
+
+
+VAR 	ipsec_spi_value 	"IPSec SPI value" 	
+ 	32
+
+
+VAR 	tos_value 	"type of service value" 	
+ 	8
+
+
+VAR 	tos_mask 	"type of service mask" 	
+ 	8
+
+
+VAR 	flow_label_value 	"IPv6 flow label" 	
+ 	24
+
+
+
+
+
+COMP 	nsapi 	"network service access point identifier"
+{
+ 	.0000  ; spare
+ 	 	nsapi_val 	 ; NSAPI value
+}
+
+
+
+COMP 	llc_sapi 	"LLC service access point identifier"
+{
+ 	.0000  ; spare
+ 	 	sapi 	 ; LLC SAPI value
+}
+
+
+
+COMP 	qos_r97 	"quality of service R97"
+{
+ 	.00  ; spare
+ 	 	delay 	 ; delay class
+ 	 	reliability 	 ; reliability class
+ 	 	peak 	 ; peak throughput
+ 	.0  ; spare
+ 	 	precedence 	 ; precedence class
+ 	.000  ; spare
+ 	 	mean 	 ; mean throughput
+}
+
+
+
+COMP 	qos_r99 	"quality of service R99"
+{
+ 	 	tc 	 ; traffic class
+ 	 	order 	 ; delivery order
+ 	 	del_err_sdu 	 ; delivery of erroneous SDU
+ 	 	max_sdu 	 ; maximum SDU size
+ 	 	max_br_ul 	 ; maximum uplink bit-rate
+ 	 	max_br_dl 	 ; maximum downlink bit-rate
+ 	 	ber 	 ; residual BER
+ 	 	sdu_err_ratio 	 ; SDU error ratio
+ 	 	xfer_delay 	 ; transfer delay
+ 	 	handling_pri 	 ; traffic handling priority
+ 	 	guar_br_ul 	 ; guaranteed upink bit-rate
+ 	 	guar_br_dl 	 ; guaranteed downlink bit-rate
+}
+
+
+
+COMP 	qos 	"quality of service"
+{
+ 	NO_CODE  	tlv_len 	 ; Length of IE
+ 	GSM3_V  	qos_r97 	 ; QoS R97
+ 	< (tlv_len > SIZE_R99_QOS - 1) 	GSM3_V  	qos_r99 	> 	 ; QoS R99
+}
+
+
+
+COMP 	address 	"packet data protocol address"
+{
+ 	.0000  ; spare
+ 	 	pdp_type_org 	 ; PDP type organisation
+ 	 	pdp_type_no 	 ; PDP type number
+ 	 	add_info 	[0..16] 	 ; address information
+}
+
+
+
+COMP 	apn 	"access point name"
+{
+ 	 	apn_value 	[3..102] 	 ; access point name value
+}
+
+
+
+COMP 	pco 	"protocol information options"
+{
+ 	 	pco_value 	[2..253] 	 ; options
+}
+
+
+
+COMP 	radio_prio 	"radio priority"
+{
+ 	.0  ; spare
+ 	 	radio_prio_val 	 ; radio priority value
+}
+
+
+
+COMP 	linked_ti 	"linked TI"
+{
+ 	 	ti_flag 	 ; TI flag
+ 	 	ti_val 	 ; TI value
+ 	.0000  ; spare
+ 	< (ti_val=7) 	 	ti_ext_flag 	> 	 ; TI ext flag
+ 	< (ti_val=7) 	 	ti_ext_val 	> 	 ; extended TI value
+}
+
+
+
+COMP 	tear_down 	"tear down indicator"
+{
+ 	.000  ; spare
+ 	 	tear_down_flag 	 ; TDI flag
+}
+
+
+
+COMP 	sm_cause 	"SM cause"
+{
+ 	 	sm_cause_val 	 ; SM cause value
+}
+
+
+
+COMP 	pfi 	"packet flow identifier"
+{
+ 	.0  ; spare
+ 	 	pfi_val 	 ; packet  flow identifier value
+}
+
+
+
+COMP 	tft_ipv4_addr_mask 	"IPv4 Source Address and Mask"
+{
+ 	 	src_addr 	[4] 	 ; source address
+ 	 	addr_mask 	[4] 	 ; address mask
+}
+
+
+
+COMP 	tft_ipv6_addr_mask 	"IPv6 Source Address and Mask"
+{
+ 	 	src_addr 	[16] 	 ; source address
+ 	 	addr_mask 	[16] 	 ; address mask
+}
+
+
+
+COMP 	tft_protocol 	"IPv4 Protocol / IPv6 Next Header"
+{
+ 	 	tft_protocol_val 	 ; IPv4 Protocol / IPv6 Next Header
+}
+
+
+
+COMP 	tft_dest_port_range 	"destination port range"
+{
+ 	 	low_limit 	 ; low limit
+ 	 	high_limit 	 ; high limit
+}
+TYPEDEF COMP tft_dest_port_range 	tft_src_port_range 	"source port range"
+
+
+
+COMP 	tft_dest_port 	"single destination port"
+{
+ 	 	low_limit 	 ; low limit
+}
+TYPEDEF COMP tft_dest_port 	tft_src_port 	"single source port"
+
+
+
+COMP 	tft_ipsec_spi 	"IPSec SPI"
+{
+ 	 	ipsec_spi_value 	 ; IPSec SPI value
+}
+
+
+
+COMP 	tft_tos_and_mask 	"Type of service/mask"
+{
+ 	 	tos_value 	 ; type of service
+ 	 	tos_mask 	 ; mask
+}
+
+
+
+COMP 	tft_flow_label 	"flow label"
+{
+ 	 	flow_label_value 	 ; flow label value
+}
+
+
+
+COMP 	tft_filter_entry 	"traffic flow template"
+{
+ 	GSM3_TV  	tft_ipv4_addr_mask 	0x10 	 ; IPv4 src addr/mask
+ 	GSM3_TV  	tft_ipv6_addr_mask 	0x20 	 ; IPv6 src addr/mask
+ 	GSM3_TV  	tft_protocol 	0x30 	 ; protocol/next hdr
+ 	GSM3_TV  	tft_dest_port_range 	0x40 	 ; destination port range
+ 	GSM3_TV  	tft_dest_port 	0x41 	 ; single destination port
+ 	GSM3_TV  	tft_src_port_range 	0x50 	 ; source port range
+ 	GSM3_TV  	tft_src_port 	0x51 	 ; single source port
+ 	GSM3_TV  	tft_ipsec_spi 	0x60 	 ; IPSec SPI
+ 	GSM3_TV  	tft_tos_and_mask 	0x70 	 ; Type of Service/mask
+ 	GSM3_TV  	tft_flow_label 	0x80 	 ; IPv6 flow label
+}
+
+
+
+COMP 	tft_filter 	"traffic flow template packet filter"
+{
+ 	 	tft_filter_id 	 ; packet filter identifier
+ 	 	tft_filter_prio 	 ; evaluation precedence
+ 	GSM4_LV  	tft_filter_entry 	 ; packet filters entry
+}
+
+
+
+COMP 	tft 	"traffic flow template"
+{
+ 	 	tft_opcode 	 ; TFT operation code
+ 	.0  ; spare
+ 	 	tft_filter_count 	 ; packet filters count
+ 	< (tft_opcode=TFT_OPCODE_DELETE_FILTERS) 	 	tft_filter_id 	[tft_filter_count..8] 	> 	 ; packet filter identifiers
+ 	< (tft_opcode=TFT_OPCODE_CREATE_TFT OR tft_opcode=TFT_OPCODE_ADD_FILTERS OR tft_opcode=TFT_OPCODE_REPLACE_FILTERS) 	GSM3_V  	tft_filter 	[tft_filter_count..8] 	> 	 ; packet filter list
+}
+
+
+
+
+
+
+MSG 	activate_pdp_context_request 	uplink 	65 ; activate PDP context request
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_V  	nsapi 	 ; requested NSAPI
+ 	GSM3_V  	llc_sapi 	 ; requested LLC sapi
+ 	GSM4_LV  	qos 	 ; requested QoS
+ 	GSM4_LV  	address 	 ; requested PDP address
+ 	GSM4_TLV  	apn 	0x28 	 ; access point name
+ 	GSM4_TLV  	pco 	0x27 	 ; protocol configuration options
+}
+
+
+
+MSG 	activate_pdp_context_accept 	downlink 	66 ; activate PDP context accept
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_V  	llc_sapi 	 ; negotiated LLC SAPI
+ 	GSM4_LV  	qos 	 ; negotiated QoS
+ 	GSM1_V  	radio_prio 	 ; radio priority
+ 	.0000  ; spare half octet
+ 	GSM4_TLV  	address 	0x2B 	 ; packet data protocol address
+ 	GSM4_TLV  	pco 	0x27 	 ; protocol configuration options
+ 	GSM4_TLV  	pfi 	0x34 	 ; packet flow identifier
+}
+
+
+
+MSG 	activate_pdp_context_reject 	downlink 	67 ; activate PDP context reject
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_V  	sm_cause 	 ; SM cause
+ 	GSM4_TLV  	pco 	0x27 	 ; protocol configuration options
+}
+
+
+
+MSG 	activate_secondary_pdp_context_request 	uplink 	77 ; activate secondary PDP context request
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_V  	nsapi 	 ; requested NSAPI
+ 	GSM3_V  	llc_sapi 	 ; requested LLC sapi
+ 	GSM4_LV  	qos 	 ; requested QoS
+ 	GSM4_LV  	linked_ti 	 ; linked TI
+ 	GSM4_TLV  	tft 	0x36 	 ; traffic flow template
+}
+
+
+
+MSG 	activate_secondary_pdp_context_accept 	downlink 	78 ; activate secondary PDP context accept
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_V  	llc_sapi 	 ; negotiated LLC SAPI
+ 	GSM4_LV  	qos 	 ; negotiated QoS
+ 	GSM1_V  	radio_prio 	 ; radio priority
+ 	.0000  ; spare half octet
+ 	GSM4_TLV  	pfi 	0x34 	 ; packet flow identifier
+}
+
+
+
+MSG 	activate_secondary_pdp_context_reject 	downlink 	79 ; activate secondary PDP context reject
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_V  	sm_cause 	 ; SM cause
+}
+
+
+
+MSG 	request_pdp_context_activation 	downlink 	68 ; request PDP context activation
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM4_LV  	address 	 ; offered PDP address
+ 	GSM4_TLV  	apn 	0x28 	 ; access point name
+}
+
+
+
+MSG 	request_pdp_context_activation_reject 	uplink 	69 ; request PDP context activation reject
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_V  	sm_cause 	 ; SM cause
+}
+
+
+
+MSG 	D_modify_pdp_context_request 	downlink 	72 ; Modify PDP context request
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM1_V  	radio_prio 	 ; radio priority
+ 	.0000  ; spare half octet
+ 	GSM3_V  	llc_sapi 	 ; requested LLC sapi
+ 	GSM4_LV  	qos 	 ; new QoS
+ 	GSM4_TLV  	address 	0x2b 	 ; PDP address
+ 	GSM4_TLV  	pfi 	0x34 	 ; packet flow identifier
+}
+
+
+
+MSG 	U_modify_pdp_context_request 	uplink 	74 ; Modify PDP context request (MO)
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_TV  	llc_sapi 	0x32 	 ; requested LLC sapi
+ 	GSM4_TLV  	qos 	0x30 	 ; requested QoS
+ 	GSM4_TLV  	tft 	0x31 	 ; new traffic flow template
+}
+
+
+
+MSG 	U_modify_pdp_context_accept 	uplink 	73 ; Modify PDP context accept
+{
+ 	GSM3_V  	msg_type 	 ; Message type
+}
+
+
+
+MSG 	D_modify_pdp_context_accept 	downlink 	75 ; Modify PDP context accept (MO)
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM4_TLV  	qos 	0x30 	 ; negotiated QoS
+ 	GSM3_TV  	llc_sapi 	0x32 	 ; negotiated LLC SAPI
+ 	GSM1_TV  	radio_prio 	0x8 	 ; radio priority
+ 	GSM4_TLV  	pfi 	0x34 	 ; packet flow identifier
+}
+
+
+
+MSG 	modify_pdp_context_reject 	downlink 	76 ; modify PDP context reject
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_V  	sm_cause 	 ; SM cause
+}
+
+
+
+MSG 	deactivate_pdp_context_request 	both 	70 ; deactivate PDP context request
+{
+ 	GSM3_V  	msg_type 	 ; Message type
+ 	GSM3_V  	sm_cause 	 ; SM cause
+ 	GSM1_TV  	tear_down 	0x9 	 ; Tear down indicator
+}
+
+
+
+MSG 	deactivate_pdp_context_accept 	both 	71 ; deactivate PDP context accept
+{
+ 	GSM3_V  	msg_type 	 ; message type
+}
+
+
+
+MSG 	sm_status 	both 	85 ; SM status
+{
+ 	GSM3_V  	msg_type 	 ; message type
+ 	GSM3_V  	sm_cause 	 ; SM cause
+}
+
+
+
+
+
+

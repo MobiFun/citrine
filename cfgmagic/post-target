@@ -1,0 +1,150 @@
+# This shell script fragment is sourced after the selected target.
+# Here we'll put code that logically goes with the target hw-related
+# stuff, but which we wish to avoid duplicating in every target.*
+# fragment.
+
+# The per-target fragment must have defined CONFIG_IRAM_SIZE, CONFIG_XRAM_SIZE
+# and CONFIG_FWFLASH_SIZE.
+if [ -z "$CONFIG_IRAM_SIZE" ]
+then
+	echo "Error: target.$TARGET failed to define CONFIG_IRAM_SIZE" 1>&2
+	exit 1
+fi
+
+if [ -z "$CONFIG_XRAM_SIZE" ]
+then
+	echo "Error: target.$TARGET failed to define CONFIG_XRAM_SIZE" 1>&2
+	exit 1
+fi
+
+if [ -z "$CONFIG_FWFLASH_SIZE" ]
+then
+	echo "Error: target.$TARGET failed to define CONFIG_FWFLASH_SIZE" 1>&2
+	exit 1
+fi
+
+# export them to C and to the m4-based ld script generation logic
+export_to_c	CONFIG_IRAM_SIZE
+export_to_m4	CONFIG_IRAM_SIZE
+export_to_c	CONFIG_XRAM_SIZE
+export_to_m4	CONFIG_XRAM_SIZE
+export_to_c	CONFIG_FWFLASH_SIZE
+export_to_m4	CONFIG_FWFLASH_SIZE
+
+# Because we'll be using a lot of TI's code that is very liberally sprinkled
+# with conditionals on their voodoo numbers for CHIPSET etc, we really have
+# no choice but to continue using these nasty numbers, at least where
+# possible.
+
+if [ -z "$DBB_type" ]
+then
+	echo "Error: target.$TARGET failed to define DBB_type" 1>&2
+	exit 1
+fi
+
+case "$DBB_type" in
+	751992*)
+		# This chip is Calypso C035 with DSP version 36 in the ROM
+		CHIPSET=10
+		DSP=36
+		# Thanks to the Sotovik find, we now have authoritative
+		# knowledge that these numbers are correct.
+		;;
+	751749*)
+		# Calypso Lite appears to be exactly the same as Calypso C035,
+		# but has only 256 KiB of IRAM instead of 512 KiB.  Yet TI's
+		# firmware sources give it a different CHIPSET number.
+		# Let's try playing along...
+		CHIPSET=11
+		DSP=36
+		;;
+	*)
+		echo "Error: unknown DBB_type=$DBB_type" 1>&2
+		exit 1
+		;;
+esac
+export_to_c	CHIPSET
+export_to_c	DSP
+
+if [ -z "$ABB_type" ]
+then
+	echo "Error: target.$TARGET failed to define ABB_type" 1>&2
+	exit 1
+fi
+
+case "$ABB_type" in
+	Iota*)
+		ANALOG=2
+		;;
+	Syren*)
+		ANALOG=3
+		;;
+	*)
+		echo "Error: unknown ABB_type=$ABB_type" 1>&2
+		exit 1
+		;;
+esac
+export_to_c	ANALOG
+
+if [ -z "$RF_type" ]
+then
+	echo "Error: target.$TARGET failed to define RF_type" 1>&2
+	exit 1
+fi
+
+case "$RF_type" in
+	Rita*)
+		RF_FAM=12
+		RF_PG=2
+		;;
+	*)
+		echo "Error: unknown RF_type=$RF_type" 1>&2
+		exit 1
+		;;
+esac
+export_to_c	RF_FAM
+export_to_c	RF_PG
+
+if [ -z "$RF_PA" ]
+then
+	echo "Error: target.$TARGET failed to define RF_PA" 1>&2
+	exit 1
+fi
+export_to_c	RF_PA
+
+if [ -z "$Flash_type" ]
+then
+	echo "Error: target.$TARGET failed to define Flash_type" 1>&2
+	exit 1
+fi
+
+case "$Flash_type" in
+	AMD-multi*)
+		FLASH_IS_AMD_MULTIBANK=1
+		export_to_c	FLASH_IS_AMD_MULTIBANK
+		;;
+	Intel-single* | Intel-one*)
+		FLASH_IS_INTEL_ONEBANK=1
+		export_to_c	FLASH_IS_INTEL_ONEBANK
+		export_to_mk	FLASH_IS_INTEL_ONEBANK
+		;;
+	*)
+		echo "Error: unknown Flash_type=$Flash_type" 1>&2
+		exit 1
+		;;
+esac
+
+# !!! Dirty hack !!!
+#
+# All targets which we currently support or have realistic prospects of
+# supporting are derived from TI's D-sample and/or Leonardo reference designs.
+# TI's voodoo BOARD number for D-sample is 41, and Leonardo apparently
+# shared D-sample's number instead of having its own.
+# My initial hope was to keep those BOARD conditionals out of our code,
+# but they are sprinkled so liberally throughout TI's code that it's
+# too much extra work to reshape them into something cleaner.
+# So for now let's export a #define BOARD 41 for all targets
+# and leave it be.
+
+BOARD=41
+export_to_c	BOARD

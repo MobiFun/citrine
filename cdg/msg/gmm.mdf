@@ -1,0 +1,1069 @@
+;********************************************************************************
+;*** File           : gmm.mdf
+;*** Creation       : Thu Jun 19 15:32:09 CST 2008
+;*** XSLT Processor : Apache Software Foundation / http://xml.apache.org/xalan-j / supports XSLT-Ver: 1
+;*** Copyright      : (c) Texas Instruments AG, Berlin Germany 2002
+;********************************************************************************
+;*** Document Type  : Air Interface Message Specification
+;*** Document Name  : gmm
+;*** Document No.   : 8441.603.02.013
+;*** Document Date  : 2003-08-18
+;*** Document Status: BEING_PROCESSED
+;*** Document Author: TLS
+;********************************************************************************
+
+
+
+PRAGMA 	SRC_FILE_TIME 	"Wed Nov 28 10:18:48 2007"
+PRAGMA 	LAST_MODIFIED 	"2003-08-18"
+PRAGMA 	ID_AND_VERSION 	"8441.603.02.013"
+
+
+
+CONST 	L3MAX 	251 	; maximum size of a L3 buffer
+CONST 	MAX_N_PDU_NUMBER_LIST 	11 	; maximum size of N-PDU number list
+
+
+
+VALTAB 	VAL_tmsi_flag
+VAL 	0 	NO 	"not present"
+VAL 	1 	YES 	"present"
+
+VALTAB 	VAL_key_sequence
+RANGE 	0 .. 6 	"Possible values for the ciphering key sequence number"
+VAL 	7 	NO_KEY 	"No key is available (MS to network); Reserved (network to MS)"
+
+VALTAB 	VAL_imeisv_request_value
+VAL 	DEF 	 	"IMEISV not requested"
+VAL 	0 	IMEISV_NOT_REQUESTED 	"IMEISV not requested"
+VAL 	1 	IMEISV_REQUESTED 	"IMEISV requested"
+
+VALTAB 	VAL_type_of_algorithm
+VAL 	DEF 	 	"reserved"
+VAL 	0 	NO_CIPHERING 	"ciphering not used"
+VAL 	1 	GEA_1 	"GPRS Encryption Algorithm GEA/1"
+VAL 	2 	GEA_2 	"GPRS Encryption Algorithm GEA/2"
+VAL 	3 	GEA_3 	"GPRS Encryption Algorithm GEA/3"
+VAL 	4 	GEA_4 	"GPRS Encryption Algorithm GEA/4"
+VAL 	5 	GEA_5 	"GPRS Encryption Algorithm GEA/5"
+VAL 	6 	GEA_6 	"GPRS Encryption Algorithm GEA/6"
+VAL 	7 	GEA_7 	"GPRS Encryption Algorithm GEA/7"
+
+VALTAB 	VAL_update_type_value
+VAL 	DEF 	 	"reserved"
+VAL 	0 	RAU 	"RA updating"
+VAL 	1 	COMBINED_RAU 	"combined RA/LA updating"
+VAL 	2 	COMBINED_RAU_IMSI_ATTACH 	"combined RA/LA updating with IMSI attach"
+VAL 	3 	PERIODIC_RAU 	"Periodic updating"
+
+VALTAB 	VAL_result_value
+VAL 	DEF 	 	"reserved"
+VAL 	0 	NORMAL_UPDATED 	"normal RA updated"
+VAL 	1 	NORMAL_ATTACHED 	"normal attached or combined RA/LA updated"
+VAL 	3 	COMBINED_ATTACHED 	"combined  attached"
+
+VALTAB 	VAL_odd_even
+VAL 	0 	EVEN 	"even number of identity digits and also when the TMSI or P-TMSI is used"
+VAL 	1 	ODD 	"odd number of identity digits"
+
+VALTAB 	VAL_cause_value
+RANGE 	48 .. 63 	"retry upon entry into a new cell"
+VAL 	DEF 	 	"Protocol error, unspecified"
+VAL 	2 	ERRCS_IMSI_UNKNOWN 	"IMSI unknown in HLR"
+VAL 	3 	ERRCS_ILLEGAL_MS 	"Illegal MS"
+VAL 	4 	ERRCS_IMEI_NOT_ACCEPTED 	"IMEI not accepted"
+VAL 	6 	ERRCS_ILLEGAL_ME 	"Illegal ME"
+VAL 	7 	ERRCS_GPRS_NOT_ALLOWED 	"GPRS services not allowed"
+VAL 	8 	ERRCS_GSM_GPRS_NOT_ALLOWED 	"GPRS services and non-GPRS services not allowed"
+VAL 	9 	ERRCS_NO_MS_ID 	"MS identity cannot be derived by the network"
+VAL 	10 	ERRCS_IMPLICIT_DETACHED 	"Implicitly detached"
+VAL 	11 	ERRCS_PLMN_NOT_ALLOWED 	"PLMN not allowed"
+VAL 	12 	ERRCS_LA_NOT_ALLOWED 	"Location Area not allowed"
+VAL 	13 	ERRCS_ROAMING_NOT_ALLOWED 	"Roaming not allowed in this location area"
+VAL 	14 	ERRCS_GPRS_NOT_ALLOWED_IN_PLMN 	"GPRS services not allowed in this PLMN"
+VAL 	15 	ERRCS_NO_SUITABLE_CELL_IN_LA 	%REL99% 	"Find another allowed location area in the same PLMN"
+VAL 	16 	ERRCS_MSC_TEMP_NOT_REACHABLE 	"MSC temporarily not reachable"
+VAL 	17 	ERRCS_NET_FAIL 	"Network failure"
+VAL 	22 	ERRCS_CONGESTION 	"Congestion"
+VAL 	95 	ERRCS_SEMANTIC_INCORRECT 	"Semantically incorrect message"
+VAL 	96 	ERRCS_INVALID_M_INFO 	"Invalid mandatory information"
+VAL 	97 	ERRCS_TYPE_INVALID 	"Message type non-existent or not implemented"
+VAL 	98 	ERRCS_TYPE_INCOMPATIBLE 	"Message type not compatible with the protocol state"
+VAL 	99 	ERRCS_IE_INVALID 	"Information element non-existent or not implemented"
+VAL 	100 	ERRCS_COND_IE_ERROR 	"Conditional IE error"
+VAL 	101 	ERRCS_MESSAGE_INVALID 	"Message not compatible with the protocol state"
+VAL 	111 	ERRCS_PROTOCOL_ERROR 	"Protocol error, unspecified"
+
+VALTAB 	VAL_gea_1
+VAL 	0 	GEA_1_NO 	"GEA/1 not available"
+VAL 	1 	GEA_1_YES 	"GEA/1 available"
+
+VALTAB 	VAL_sm_capabilities_gsm
+VAL 	0 	SM_CAP_GSM_NO 	"SM capability not present"
+VAL 	1 	SM_CAP_GSM_YES 	"SM capability present"
+
+VALTAB 	VAL_sm_capabilities_gprs
+VAL 	0 	SM_CAP_GPRS_NO 	"SM capability not present"
+VAL 	1 	SM_CAP_GPRS_YES 	"SM capability present"
+
+VALTAB 	VAL_ucs2_support
+VAL 	0 	UCS2_YES 	"preference for the default alphabet over UCS2"
+VAL 	1 	UCS2_NO 	"no preference for the default alphabet over UCS2"
+
+VALTAB 	VAL_type_of_identity
+VAL 	DEF 	 	"reserved"
+VAL 	0 	ID_TYPE_NO_IDENT 	"No Identity"
+VAL 	1 	ID_TYPE_IMSI 	"IMSI"
+VAL 	2 	ID_TYPE_IMEI 	"IMEI"
+VAL 	3 	ID_TYPE_IMEISV 	"IMEISV"
+VAL 	4 	ID_TYPE_TMSI 	"TMSI/P-TMSI"
+
+VALTAB 	VAL_type_of_identity_2
+VAL 	DEF 	 	"IMSI"
+VAL 	1 	ID2_TYPE_IMSI 	"IMSI"
+VAL 	2 	ID2_TYPE_IMEI 	"IMEI"
+VAL 	3 	ID2_TYPE_IMEISV 	"IMEISV"
+VAL 	4 	ID2_TYPE_TMSI 	"TMSI"
+
+VALTAB 	VAL_type_of_attach
+VAL 	DEF 	 	"GPRS attach"
+VAL 	1 	AT_GPRS 	"GPRS attach"
+VAL 	2 	AT_WHILE_IMSI_AT 	"GPRS attach while IMSI attached"
+VAL 	3 	AT_COMB 	"Combined GPRS/IMSI attach"
+
+VALTAB 	VAL_u_type_of_detach
+VAL 	DEF 	 	"Combined GPRS/IMSI detach"
+VAL 	1 	DT_GPRS 	"GPRS detach"
+VAL 	2 	DT_IMSI 	"IMSI detach"
+VAL 	3 	DT_COMB 	"Combined GPRS/IMSI detach"
+
+VALTAB 	VAL_d_type_of_detach
+VAL 	DEF 	 	"re-attach not required"
+VAL 	1 	DT_RE_ATTACH 	"re-attch required"
+VAL 	2 	DT_NO_RE_ATTACH 	"re-attach not required"
+VAL 	3 	DT_IMSI_DETACH 	"IMSI detach (after VLR failure)"
+
+VALTAB 	VAL_split_pg_cycle_code
+RANGE 	1 .. 64 	"1-64, respectively"
+RANGE 	65 .. 98 	""
+VAL 	DEF 	 	"reserved"
+VAL 	0 	DRX_NOT_USED 	"no DRX used by MS"
+
+VALTAB 	VAL_split_on_ccch
+VAL 	0 	SPLIT_NO 	"Spit on CCCH is not supported by the MS"
+VAL 	1 	SPLIT_YES 	"Spit on CCCH is supported by the MS"
+
+VALTAB 	VAL_non_drx_timer
+VAL 	0 	DRX_NO 	"no non-DRX mode after transfer state"
+VAL 	1 	DRX_1_SEC 	"max. 1 sec non-DRX mode after transfer"
+VAL 	2 	DRX_2_SEC 	"max. 2 sec non-DRX mode after transfer"
+VAL 	3 	DRX_4_SEC 	"max. 4 sec non-DRX mode after transfer"
+VAL 	4 	DRX_8_SEC 	"max. 8 sec non-DRX mode after transfer"
+VAL 	5 	DRX_16_SEC 	"max. 16 sec non-DRX mode after transfer"
+VAL 	6 	DRX_32_SEC 	"max. 32 sec non-DRX mode after transfer"
+VAL 	7 	DRX_64_SEC 	"max. 64 sec non-DRX mode after transfer"
+
+VALTAB 	VAL_timer_unit
+VAL 	DEF 	 	"value is incremented in multiples of 1 min"
+VAL 	0 	TIMER_2_SEC 	"value is incremented in multiples of 2 sec"
+VAL 	1 	TIMER_1_MIN 	"value is incremented in multiples of 1 min"
+VAL 	2 	TIMER_1_DH 	"value is incremented in multiples of 1 dh"
+VAL 	7 	TIMER_DEACT 	"timer is deactivated"
+
+VALTAB 	VAL_force_to_standby_value
+VAL 	DEF 	 	"reserved"
+VAL 	0 	STANDBY_NO 	"Force to standby not indicated"
+VAL 	1 	STANDBY_YES 	"Force to standby indicated"
+
+VALTAB 	VAL_radio_priority_level_value
+VAL 	DEF 	 	"priority level 4"
+VAL 	1 	RP_LEVEL_1 	"priority level 1"
+VAL 	2 	RP_LEVEL_2 	"priority level 2??????????"
+VAL 	3 	RP_LEVEL_3 	"priority level 3"
+VAL 	4 	RP_LEVEL_4 	"priority level 4"
+
+VALTAB 	VAL_power_off
+VAL 	0 	PO_NORMAL_DETACH 	"normal detach"
+VAL 	1 	PO_POWER_OFF 	"power switched off"
+
+VALTAB 	VAL_code
+VAL 	DEF 	 	"reserved"
+VAL 	0 	SMS 	"SMS Cell Broadcst coding scheme defined in GSM 03.38"
+VAL 	1 	USC2 	"UCS2 (16 bit)"
+
+VALTAB 	VAL_add_ci
+VAL 	0 	CI_NO 	"The MS shoule not add the letters for the Country's Initials to the text string"
+VAL 	1 	CI_ADD 	"The MS should add the letters for the Country's Initials and a separator"
+
+VALTAB 	VAL_nr_sparebits
+VAL 	DEF 	 	"bit 'value' to 8 (inclusive) are spare and set to '0' in octet n"
+VAL 	0 	SP_NULL 	"this field carries no information about the number of spare bits in octet n"
+
+VALTAB 	VAL_nsapi
+VAL 	DEF 	 	"reserved"
+VAL 	5 	NSAPI_5 	"NSAPI 5"
+VAL 	6 	NSAPI_6 	"NSAPI 6"
+VAL 	7 	NSAPI_7 	"NSAPI 7"
+VAL 	8 	NSAPI_8 	"NSAPI 8"
+VAL 	9 	NSAPI_9 	"NSAPI 9"
+VAL 	10 	NSAPI_10 	"NSAPI 10"
+VAL 	11 	NSAPI_11 	"NSAPI 11"
+VAL 	12 	NSAPI_12 	"NSAPI 12"
+VAL 	13 	NSAPI_13 	"NSAPI 13"
+VAL 	14 	NSAPI_14 	"NSAPI 14"
+VAL 	15 	NSAPI_15 	"NSAPI 15"
+
+VALTAB 	VAL_rev_level_ind
+VAL 	0 	REV_LEVEL_IND_99_NO 	"MS supports version(s) older than Release 1999"
+VAL 	1 	REV_LEVEL_IND_99_YES 	"MS supports Release 1999"
+
+VALTAB 	VAL_save_time_value 	%REL99%
+VAL 	0 	TIME_ADJ_NO 	%REL99% 	"No adjustment for Daylight Saving Time"
+VAL 	1 	TIME_ADJ_1 	%REL99% 	"+1 hour adjustment for Daylight Saving Time"
+VAL 	2 	TIME_ADJ_2 	%REL99% 	"+2 hours adjustment for Daylight Saving Time"
+
+
+
+
+VAR 	tmsi_flag 	"TMSI flag" 	
+ 	1
+
+VAL 	@m_gmm - VAL_tmsi_flag@ 	
+
+VAR 	solsa_capability 	"SoLSA Capability" 	
+ 	1
+
+VAL 	@m_gmm - VAL_tmsi_flag@ 	
+
+VAR 	pfc_feature_mode 	"PFC feature mode" 	
+ 	1
+
+VAL 	@m_gmm - VAL_tmsi_flag@ 	
+
+VAR 	gea_2 	"GEA/2" 	
+ 	1
+
+VAL 	@m_gmm - VAL_tmsi_flag@ 	
+
+VAR 	gea_3 	"GEA/3" 	
+ 	1
+
+VAL 	@m_gmm - VAL_tmsi_flag@ 	
+
+VAR 	gea_4 	"GEA/4" 	
+ 	1
+
+VAL 	@m_gmm - VAL_tmsi_flag@ 	
+
+VAR 	gea_5 	"GEA/5" 	
+ 	1
+
+VAL 	@m_gmm - VAL_tmsi_flag@ 	
+
+VAR 	gea_6 	"GEA/6" 	
+ 	1
+
+VAL 	@m_gmm - VAL_tmsi_flag@ 	
+
+VAR 	gea_7 	"GEA/7" 	
+ 	1
+
+VAL 	@m_gmm - VAL_tmsi_flag@ 	
+
+VAR 	sres_value 	"SRES value" 	
+ 	32
+
+
+VAR 	identity_digit 	"Identity digit" 	
+ 	4
+
+
+VAR 	key_sequence 	"key sequence" 	
+ 	3
+
+VAL 	@m_gmm - VAL_key_sequence@ 	
+
+VAR 	a_c_reference_number_value 	"A&C reference number value" 	
+ 	4
+
+
+VAR 	imeisv_request_value 	"IMEISV request value" 	
+ 	3
+
+VAL 	@m_gmm - VAL_imeisv_request_value@ 	
+
+VAR 	type_of_algorithm 	"Type of algorithm" 	
+ 	3
+
+VAL 	@m_gmm - VAL_type_of_algorithm@ 	
+
+VAR 	lac 	"Location Area Code" 	
+ 	16
+
+
+VAR 	rac 	"Routing Area Code" 	
+ 	8
+
+
+VAR 	update_type_value 	"Update type value" 	
+ 	3
+
+VAL 	@m_gmm - VAL_update_type_value@ 	
+
+VAR 	result_value 	"result value" 	
+ 	3
+
+VAL 	@m_gmm - VAL_result_value@ 	
+
+VAR 	msg_type 	"Message Type" 	
+ 	8
+
+
+VAR 	mcc 	"Mobile Country Code" 	
+ 	4
+
+
+VAR 	mnc 	"Mobile Network Code" 	
+ 	4
+
+
+VAR 	odd_even 	"Odd Even indication" 	
+ 	1
+
+VAL 	@m_gmm - VAL_odd_even@ 	
+
+VAR 	rand_value 	"RAND value" 	
+ 	8
+
+
+VAR 	cause_value 	"Cause value" 	
+ 	8
+
+VAL 	@m_gmm - VAL_cause_value@ 	
+
+VAR 	gea_1 	"GEA/1" 	
+ 	1
+
+VAL 	@m_gmm - VAL_gea_1@ 	
+
+VAR 	ss_screening_indicator 	"SS Screening Indicator" 	
+ 	2
+
+
+VAR 	sm_capabilities_gsm 	"Short message cap. via dedicated channels" 	
+ 	1
+
+VAL 	@m_gmm - VAL_sm_capabilities_gsm@ 	
+
+VAR 	sm_capabilities_gprs 	"Short message capability via GPRS channels" 	
+ 	1
+
+VAL 	@m_gmm - VAL_sm_capabilities_gprs@ 	
+
+VAR 	ucs2_support 	"UCS2 support" 	
+ 	1
+
+VAL 	@m_gmm - VAL_ucs2_support@ 	
+
+VAR 	type_of_identity 	"Type of identity" 	
+ 	3
+
+VAL 	@m_gmm - VAL_type_of_identity@ 	
+
+VAR 	type_of_identity_2 	"Type of identity 2" 	
+ 	3
+
+VAL 	@m_gmm - VAL_type_of_identity_2@ 	
+
+VAR 	tmsi 	"P-TMSI or TMSI" 	
+ 	32
+
+
+VAR 	p_tmsi_signature_value 	"P-TMSI signature value" 	
+ 	24
+
+
+VAR 	type_of_attach 	"Type of attach" 	
+ 	3
+
+VAL 	@m_gmm - VAL_type_of_attach@ 	
+
+VAR 	u_type_of_detach 	"Type of detach (uplink)" 	
+ 	3
+
+VAL 	@m_gmm - VAL_u_type_of_detach@ 	
+
+VAR 	d_type_of_detach 	"Type of detach (downlink)" 	
+ 	3
+
+VAL 	@m_gmm - VAL_d_type_of_detach@ 	
+
+VAR 	split_pg_cycle_code 	"SPLIT PG CYCLE CODE" 	
+ 	8
+
+VAL 	@m_gmm - VAL_split_pg_cycle_code@ 	
+
+VAR 	split_on_ccch 	"SPLIT on CCCH" 	
+ 	1
+
+VAL 	@m_gmm - VAL_split_on_ccch@ 	
+
+VAR 	non_drx_timer 	"non-DRX timer" 	
+ 	3
+
+VAL 	@m_gmm - VAL_non_drx_timer@ 	
+
+VAR 	timer_unit 	"timer unit" 	
+ 	3
+
+VAL 	@m_gmm - VAL_timer_unit@ 	
+
+VAR 	timer_value 	"timer value" 	
+ 	5
+
+
+VAR 	force_to_standby_value 	"Force to standby value" 	
+ 	3
+
+VAL 	@m_gmm - VAL_force_to_standby_value@ 	
+
+VAR 	radio_priority_level_value 	"Radio priority level value" 	
+ 	3
+
+VAL 	@m_gmm - VAL_radio_priority_level_value@ 	
+
+VAR 	power_off 	"Power off" 	
+ 	1
+
+VAL 	@m_gmm - VAL_power_off@ 	
+
+VAR 	code 	"Coding scheme" 	
+ 	3
+
+VAL 	@m_gmm - VAL_code@ 	
+
+VAR 	add_ci 	"Add CI" 	
+ 	1
+
+VAL 	@m_gmm - VAL_add_ci@ 	
+
+VAR 	nr_sparebits 	"Number of spare bits in last octet" 	
+ 	3
+
+VAL 	@m_gmm - VAL_nr_sparebits@ 	
+
+VAR 	year 	"Year" 	
+ 	4
+
+
+VAR 	month 	"Month" 	
+ 	4
+
+
+VAR 	day 	"Day" 	
+ 	4
+
+
+VAR 	hour 	"Hour" 	
+ 	4
+
+
+VAR 	minute 	"Minute" 	
+ 	4
+
+
+VAR 	second 	"Second" 	
+ 	4
+
+
+VAR 	time_zone_value 	"Time zone value" 	
+ 	8
+
+
+VAR 	nsapi 	"NSAPI" 	
+ 	4
+
+VAL 	@m_gmm - VAL_nsapi@ 	
+
+VAR 	receive_n_pdu_number_val 	"Receive N-PDU Number value" 	
+ 	8
+
+
+VAR 	text_string 	"Text string" 	
+ 	8
+
+
+VAR 	dmy 	"Dummy" 	
+ 	4
+
+
+VAR 	rev_level_ind 	"Revision level indicator" 	
+ 	1
+
+VAL 	@m_gmm - VAL_rev_level_ind@ 	
+
+VAR 	nsapi_set 	%REL99% 	"NSAPI set" 	
+ 	16
+
+
+VAR 	lsa_id 	%REL99% 	"LSA identifier" 	
+ 	8
+
+
+VAR 	save_time_value 	%REL99% 	"Daylight Saving Time" 	
+ 	2
+
+VAL 	@m_gmm - VAL_save_time_value@ 	
+
+
+
+
+COMP 	authentication_parameter_rand 	"Authentication parameter RAND"
+{
+ 	 	rand_value 	[16] 	 ; RAND value
+}
+
+
+
+COMP 	ciphering_key_sequence_number 	"Ciphering Key Sequence Number"
+{
+ 	.0  ; spare
+ 	 	key_sequence 	 ; Key Sequence
+}
+
+
+
+COMP 	a_c_reference_number 	"A&C reference number"
+{
+ 	 	a_c_reference_number_value 	 ; A&C reference number value
+}
+
+
+
+COMP 	imeisv_request 	"IMEISV request"
+{
+ 	.0  ; spare
+ 	 	imeisv_request_value 	 ; IMEISV request
+}
+
+
+
+COMP 	ciphering_algorithm 	"Ciphering algorithm"
+{
+ 	.0  ; spare
+ 	 	type_of_algorithm 	 ; Type of  algorithm
+}
+
+
+
+COMP 	authentication_parameter_sres 	"Authentication parameter SRES"
+{
+ 	 	sres_value 	 ; SRES value
+}
+
+
+
+COMP 	identity_type_2 	"Identity type 2"
+{
+ 	.0  ; spare
+ 	 	type_of_identity_2 	 ; Type of identity 2
+}
+
+
+
+COMP 	routing_area_identification 	"Routing Area Identification"
+{
+ 	BCD_NOFILL  	mcc 	[3] 	 ; Mobile Country Code
+ 	BCD_MNC  	mnc 	[2..3] 	 ; Mobile Network Code
+ 	 	lac 	 ; Location Area Code
+ 	 	rac 	 ; Routing Area Code
+}
+
+
+
+COMP 	update_type 	"Update type"
+{
+ 	.0  ; spare
+ 	 	update_type_value 	 ; Update type value
+}
+
+
+
+COMP 	result_gmm 	"Result"
+{
+ 	.0  ; spare
+ 	 	result_value 	 ; result value
+}
+
+
+
+COMP 	mobile_identity 	"Mobile Identity"
+{
+ 	 	type_of_identity 	(GETPOS,:,4,+,:,1,+,SETPOS) ; Type of identity
+ 	 	odd_even 	(SETPOS) ; Odd/ Even indicaction
+ 	< (type_of_identity # ID_TYPE_NO_IDENT AND type_of_identity # ID_TYPE_TMSI) 	BCDODD  	identity_digit 	[0..16] 	(SETPOS)> 	 ; Identity digit
+ 	< (type_of_identity = ID_TYPE_TMSI) 	.1111 (:,SETPOS,8,+)> 	 ; spare
+ 	< (type_of_identity = ID_TYPE_TMSI) 	 	tmsi 	[.32] 	(SETPOS)> 	 ; TMSI or P-TMSI
+ 	< (type_of_identity = ID_TYPE_NO_IDENT) 	 	dmy 	[0..16] 	(SETPOS)> 	 ; dummy
+}
+TYPEDEF COMP mobile_identity 	gmobile_identity 	"PTMSI mobile Identity"
+
+
+
+COMP 	attach_type 	"Attach type"
+{
+ 	.0  ; spare
+ 	 	type_of_attach 	 ; Type of attach
+}
+
+
+
+COMP 	d_detach_type 	"Detach type (downlink)"
+{
+ 	.0  ; spare
+ 	 	d_type_of_detach 	 ; Type of detach (downlink)
+}
+
+
+
+COMP 	u_detach_type 	"Detach type (uplink)"
+{
+ 	 	power_off 	 ; Power off
+ 	 	u_type_of_detach 	 ; Type of detach (uplink)
+}
+
+
+
+COMP 	drx_parameter 	"DRX parameter"
+{
+ 	 	split_pg_cycle_code 	 ; SPLIT PG CYCLE CODE
+ 	.0000  ; spare
+ 	 	split_on_ccch 	 ; SPLIT on CCCCH
+ 	 	non_drx_timer 	 ; non_DRX timer
+}
+
+
+
+COMP 	ready_timer 	"GPRS READY timer value"
+{
+ 	 	timer_unit 	 ; timer unit
+ 	 	timer_value 	 ; timer value
+}
+TYPEDEF COMP ready_timer 	rau_timer 	"GPRS RAU timer value"
+
+
+
+COMP 	t3302 	"T3302"
+{
+ 	 	timer_unit 	 ; timer unit
+ 	 	timer_value 	 ; timer value
+}
+
+
+
+COMP 	p_tmsi_signature 	"P-TMSI signature"
+{
+ 	 	p_tmsi_signature_value 	 ; P-TMSI signature value
+}
+
+
+
+COMP 	force_to_standby 	"Force to standby"
+{
+ 	.0  ; spare
+ 	 	force_to_standby_value 	 ; Force to standby value
+}
+
+
+
+COMP 	radio_priority 	"Radio priority"
+{
+ 	.0  ; spare
+ 	 	radio_priority_level_value 	 ; Radio priority level value
+}
+
+
+
+COMP 	gmm_cause 	"GMM cause"
+{
+ 	 	cause_value 	 ; Cause value
+}
+
+
+
+COMP 	receive_n_pdu_number_list_val 	"Receive N-PDU Number List value"
+{
+ 	 	nsapi 	 ; NSAPI
+ 	 	receive_n_pdu_number_val 	 ; Receive N-PDU Number value
+}
+
+
+
+COMP 	receive_n_pdu_number_list 	"Receive N-PDU Number List"
+{
+ 	 	receive_n_pdu_number_list_val 	[(LTAKE/12)..MAX_N_PDU_NUMBER_LIST] 	 ; Receive N-PDU Number List value
+ 	S_PADDING .00000000  ; Spare Padding
+}
+
+
+
+COMP 	full_network_name 	"Full network name"
+{
+ 	.1  ; ext 1
+ 	 	code 	 ; coding scheme
+ 	 	add_ci 	 ; Add CI
+ 	 	nr_sparebits 	 ; Number of spare bits in last octet
+ 	 	text_string 	[1..254] 	 ; Text String
+}
+TYPEDEF COMP full_network_name 	short_network_name 	"Short network name"
+
+
+
+COMP 	time_zone 	"Time Zone"
+{
+ 	 	time_zone_value 	 ; Time zone value
+}
+
+
+
+COMP 	time_zone_and_time 	"Net time and time zone"
+{
+ 	BCDEVEN  	year 	[2] 	 ; Year
+ 	BCDEVEN  	month 	[2] 	 ; Month
+ 	BCDEVEN  	day 	[2] 	 ; Day
+ 	BCDEVEN  	hour 	[2] 	 ; Hour
+ 	BCDEVEN  	minute 	[2] 	 ; Minute
+ 	BCDEVEN  	second 	[2] 	 ; Second
+ 	 	time_zone_value 	 ; Time zone value
+}
+
+
+
+COMP 	tmsi_status 	"TMSI status"
+{
+ 	.000  ; spare
+ 	 	tmsi_flag 	 ; TMSI flag
+}
+
+
+
+COMP 	ext_gea_bits 	"Extended GEA bits"
+{
+ 	 	gea_2 	 ; GEA/2
+ 	 	gea_3 	 ; GEA/3
+ 	 	gea_4 	 ; GEA/4
+ 	 	gea_5 	 ; GEA/5
+ 	 	gea_6 	 ; GEA/6
+ 	 	gea_7 	 ; GEA/7
+}
+
+
+
+COMP 	ms_network_capability 	"MS Network Capability"
+{
+ 	 	gea_1 	 ; GPRS Encryption Algorithm GEA/1
+ 	 	sm_capabilities_gsm 	 ; Short message cap. via dedicated channels
+ 	 	sm_capabilities_gprs 	 ; Short message capability via GPRS channels
+ 	 	ucs2_support 	 ; UCS2 support
+ 	 	ss_screening_indicator 	 ; SS Screening Indicator
+ 	 	solsa_capability 	 ; SoLSA Capability
+ 	 	rev_level_ind 	 ; Revision level indcator
+ 	 	pfc_feature_mode 	 ; PFC feature mode
+ 	 	ext_gea_bits 	 ; Extended GEA bits
+ 	.0  ; spare
+}
+
+
+
+COMP 	eqv_plmn 	"PLMN"
+{
+ 	BCD_NOFILL  	mcc 	[3] 	 ; Mobile Country Code
+ 	BCD_MNC  	mnc 	[2..3] 	 ; Mobile Network Code
+}
+
+
+
+COMP 	eqv_plmn_list 	"PLMN list"
+{
+ 	 	eqv_plmn 	[1..5] 	 ; PLMN
+}
+
+
+
+COMP 	cell_notification 	"Cell Notification"
+{
+}
+
+
+
+COMP 	p_tmsi_signature_2 	%REL99% 	"P-TMSI signature 2"
+{
+ 	 	p_tmsi_signature_value 	 ; P-TMSI signature value
+}
+
+
+
+COMP 	pdp_context_status 	%REL99% 	"PDP context status"
+{
+ 	 	nsapi_set 	 	%REL99% ; NSAPI set
+}
+
+
+
+COMP 	lsa_identifier 	%REL99% 	"LSA identifier"
+{
+ 	 	lsa_id 	[1..3] 	 	%REL99% ; LSA ID
+}
+
+
+
+COMP 	daylight_save_time 	%REL99% 	"Daylight Saving Time"
+{
+ 	.000000  	%REL99% ; Spare
+ 	 	save_time_value 	 	%REL99% ; Daylight Saving Time
+}
+
+
+
+
+
+
+MSG 	attach_request 	uplink 	1 ; attach request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	ms_network_capability 	 ; MS network capability
+ 	GSM1_V  	attach_type 	 ; Attach type
+ 	GSM1_V  	ciphering_key_sequence_number 	 ; Ciphering key sequence number
+ 	GSM3_V  	drx_parameter 	 ; DRX parameter
+ 	GSM4_LV  	gmobile_identity 	 ; P-TMSI or IMSI
+ 	GSM3_V  	routing_area_identification 	 ; Old routing area identification
+ 	GSM4_LV EXTERN @m_rr_com - ra_cap@ 	 	ra_cap 	 ; MS Radio Access capability
+ 	GSM3_TV  	p_tmsi_signature 	0x19 	 ; Old P-TMSI signature
+ 	GSM3_TV  	ready_timer 	0x17 	 ; Requested READY timer value
+ 	GSM1_TV  	tmsi_status 	0x9 	 ; TMSI status
+}
+
+
+
+MSG 	attach_accept 	downlink 	2 ; attach accept
+{
+ 	GSM3_V  	msg_type 	 ; Message type
+ 	GSM1_V  	result_gmm 	 ; result
+ 	GSM1_V  	force_to_standby 	 ; Force to standby
+ 	GSM3_V  	rau_timer 	 ; Periodic RA update timer
+ 	GSM1_V  	radio_priority 	 ; Radio priority for SMS
+ 	.0000  ; Spare half octet
+ 	GSM3_V  	routing_area_identification 	 ; Routing area identification
+ 	GSM3_TV  	p_tmsi_signature 	0x19 	 ; P-TMSI signature
+ 	GSM3_TV  	ready_timer 	0x17 	 ; Negotiated READY timer value
+ 	GSM4_TLV  	gmobile_identity 	0x18 	 ; Allocated P-TMSI
+ 	GSM4_TLV  	mobile_identity 	0x23 	 ; MS identity
+ 	GSM3_TV  	gmm_cause 	0x25 	 ; GMM  cause
+ 	GSM4_TLV  	t3302 	0x2A 	 ; T3302 value
+ 	GSM2_T  	cell_notification 	0x8C 	 ; Cell Notification
+ 	GSM4_TLV  	eqv_plmn_list 	0x4A 	 ; Equivalent PLMNs
+}
+
+
+
+MSG 	attach_complete 	uplink 	3 ; Attach complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	attach_reject 	downlink 	4 ; Attach reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	gmm_cause 	 ; GMM  cause
+ 	GSM4_TLV  	t3302 	0x2A 	 	%REL99% ; T3302 value
+}
+
+
+
+MSG 	d_detach_request 	downlink 	5 ; Detach request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	d_detach_type 	 ; Detach type (downlink)
+ 	GSM1_V  	force_to_standby 	 ; Force to standby
+ 	GSM3_TV  	gmm_cause 	0x25 	 ; GMM  cause
+}
+
+
+
+MSG 	u_detach_request 	uplink 	5 ; Detach request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	u_detach_type 	 ; Detach type (uplink)
+ 	.0000  ; Spare half octet
+ 	GSM4_TLV  	gmobile_identity 	0x18 	 	%REL99% ; P TMSI
+ 	GSM4_TLV  	p_tmsi_signature_2 	0x19 	 	%REL99% ; P-TMSI signature 2
+}
+
+
+
+MSG 	u_detach_accept 	uplink 	6 ; Detach accept
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	d_detach_accept 	downlink 	6 ; Detach accept
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	force_to_standby 	 ; Force to standby
+ 	.0000  ; Spare half octet
+}
+
+
+
+MSG 	routing_area_update_request 	uplink 	8 ; Routing area update request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	update_type 	 ; Update type
+ 	GSM1_V  	ciphering_key_sequence_number 	 ; Ciphering key sequence number
+ 	GSM3_V  	routing_area_identification 	 ; Old routing area identification
+ 	GSM4_LV EXTERN @m_rr_com - ra_cap@ 	 	ra_cap 	 ; MS Radio Access capability
+ 	GSM3_TV  	p_tmsi_signature 	0x19 	 ; Old P-TMSI signature
+ 	GSM3_TV  	ready_timer 	0x17 	 ; Requested READY timer value
+ 	GSM3_TV  	drx_parameter 	0x27 	 ; DRX parameter
+ 	GSM1_TV  	tmsi_status 	0x9 	 ; TMSI status
+ 	GSM4_TLV  	gmobile_identity 	0x18 	 	%REL99% ; P-TMSI
+ 	GSM4_TLV  	ms_network_capability 	0x31 	 ; MS network capability
+ 	GSM4_TLV  	pdp_context_status 	0x32 	 	%REL99% ; PDP context status
+}
+
+
+
+MSG 	routing_area_update_accept 	downlink 	9 ; Routing area update accept
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	force_to_standby 	 ; Force to standby
+ 	GSM1_V  	result_gmm 	 ; Update result
+ 	GSM3_V  	rau_timer 	 ; Periodic RA update timer
+ 	GSM3_V  	routing_area_identification 	 ; Routing area identification
+ 	GSM3_TV  	p_tmsi_signature 	0x19 	 ; P-TMSI signature
+ 	GSM4_TLV  	gmobile_identity 	0x18 	 ; Allocated P-TMSI
+ 	GSM4_TLV  	mobile_identity 	0x23 	 ; MS identity
+ 	GSM4_TLV  	receive_n_pdu_number_list 	0x26 	 ; Receive N-PDU Number List
+ 	GSM3_TV  	ready_timer 	0x17 	 ; Negotiated READY timer value
+ 	GSM3_TV  	gmm_cause 	0x25 	 ; GMM cause
+ 	GSM4_TLV  	t3302 	0x2A 	 ; T3302 value
+ 	GSM2_T  	cell_notification 	0x8C 	 ; Cell Notification
+ 	GSM4_TLV  	eqv_plmn_list 	0x4A 	 ; Equivalent PLMNs
+}
+
+
+
+MSG 	routing_area_update_complete 	uplink 	10 ; Routing area update complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	receive_n_pdu_number_list 	0x26 	 ; Receive N-PDU Number List
+}
+
+
+
+MSG 	routing_area_update_reject 	downlink 	11 ; Routing area update reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	gmm_cause 	 ; GMM  cause
+ 	GSM1_V  	force_to_standby 	 ; Force to standby
+ 	.0000  ; Spare half octet
+ 	GSM4_TLV  	t3302 	0x2A 	 	%REL99% ; T3302 value
+}
+
+
+
+MSG 	p_tmsi_reallocation_command 	downlink 	16 ; P-TMSI reallocation command
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	gmobile_identity 	 ; Allocated P-TMSI
+ 	GSM3_V  	routing_area_identification 	 ; Routing area identification
+ 	GSM1_V  	force_to_standby 	 ; Force to standby
+ 	.0000  ; Spare half octet
+ 	GSM3_TV  	p_tmsi_signature 	0x19 	 ; P-TMSI signature
+}
+
+
+
+MSG 	p_tmsi_reallocation_complete 	uplink 	17 ; P-TMSI reallocation complete
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	authentication_and_ciphering_request 	downlink 	18 ; Authentication and ciphering request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	ciphering_algorithm 	 ; Ciphering algorithm
+ 	GSM1_V  	imeisv_request 	 ; IMEISV request
+ 	GSM1_V  	force_to_standby 	 ; Force to standby
+ 	GSM1_V  	a_c_reference_number 	 ; A&C reference number
+ 	GSM3_TV  	authentication_parameter_rand 	0x21 	 ; Authentication parameter RAND
+ 	GSM1_TV  	ciphering_key_sequence_number 	0x08 	 ; Ciphering key sequence number
+}
+
+
+
+MSG 	authentication_and_ciphering_response 	uplink 	19 ; Authentication and ciphering response
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	a_c_reference_number 	 ; A&C reference number
+ 	.0000  ; Spare half octet
+ 	GSM3_TV  	authentication_parameter_sres 	0x22 	 ; Authentication parameter SRES
+ 	GSM4_TLV  	gmobile_identity 	0x23 	 ; IMEISV
+}
+
+
+
+MSG 	authentication_and_ciphering_reject 	downlink 	20 ; Authentication and ciphering reject
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+}
+
+
+
+MSG 	identity_request 	downlink 	21 ; Identity request
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM1_V  	identity_type_2 	 ; Identity type
+ 	GSM1_V  	force_to_standby 	 ; Force to standby
+}
+
+
+
+MSG 	identity_response 	uplink 	22 ; Identity response
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_LV  	gmobile_identity 	 ; Mobile identity
+}
+
+
+
+MSG 	gmm_status 	both 	32 ; GMM Status
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM3_V  	gmm_cause 	 ; GMM  cause
+}
+
+
+
+MSG 	gmm_information 	downlink 	33 ; GMM Information
+{
+ 	GSM3_V  	msg_type 	 ; Message Type
+ 	GSM4_TLV  	full_network_name 	0x43 	 ; Full name for network
+ 	GSM4_TLV  	short_network_name 	0x45 	 ; Short name for network
+ 	GSM3_TV  	time_zone 	0x46 	 ; Network time zone
+ 	GSM3_TV  	time_zone_and_time 	0x47 	 ; Network time and time zone
+ 	GSM4_TLV  	lsa_identifier 	0x48 	 	%REL99% ; LSA identifier
+ 	GSM4_TLV  	daylight_save_time 	0x49 	 	%REL99% ; Message Item
+}
+
+
+
+
+
+

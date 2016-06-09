@@ -1,0 +1,501 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with SAPE SAP Editor -->
+<SAP xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="sap.xsd">
+    <DocInfoSection>
+        <DocName DocType="SAP">cl</DocName>
+        <DocNum Number="149" Project="8010"/>
+        <Description>
+            <Section>This document specifies the interface between GSM/GPRS/UMTS TI protocol stack modules and a common shared library of utility functions. The functionality of these functions includes object encapsulation of shared information.</Section>
+            <Section>Besides being the interface specification, this document is also the design and description of the functions in the ComLib as a one-function design is relatively small and can easily be part of the description of the function.</Section>
+            <Section>1.1 Principle of the ComLib</Section>
+            <Section>1.1.1 Naming convention</Section>
+            <Section>The naming convention follows the coding standard with the following extension:</Section>
+            <Section>cl_xxxx_function_name_reflecting_functionality()</Section>
+            <Section>where xxxx is short for a group of functionality within ComLib, for example a string handling library, str. The xxxx part is limited to a maximum of 4 characters.</Section>
+            <Section>All functions and parameters are sorted alphabetically in this SAP to ease the search for groups of functions. For example, it eases finding the entire group of cl_str_zzz functions.</Section>
+            <Section>Also it makes it easy to find all calls of any ComLib function in the entire TI protocol stack code space or a group of functions as the file names uses the same convention:</Section>
+            <Section>cl_xxxx.c</Section>
+            <Section>The file cl_xxxx.c holds all ComLib cl_xxxx functions. See section 1.1.4 for further information on file names and where to put ComLib functions.</Section>
+            <Section>1.1.2 Re-entrancy</Section>
+            <Section>All functions in the ComLib are re-entrant. This is because they are designed to be used by any task/module in the protocol stack at any time, no matter task priority. A high priority task can interrupt a low priority task and use the same specific ComLib function as the low priority task at the time of interruption.</Section>
+            <Section>Using of semaphores or mutex in order to ensure re-entrancy is illegal since it will affect task priorities in the stack.</Section>
+            <Section>Functions using a context that must be stored between calls to ComLib must have the context dependent parameters given in the function call itself. An example is the random generator function taking a seed. The seed is given to the random generator each time it is called but the entity using the ComLib does not worry about the context, it only stores it in permanent memory. The context can also be state variables (a ComLib function being a state machine), etc. The using entity decides by itself if the context is statically or dynamically allocated, but must transfer the context via a pointer to the ComLib function. Please note that the ComLib function will treat this memory area as if ComLib owned it and therefore will/may modify the contents of the context parameters during operation.</Section>
+            <Section>The rules for using context parameters are:</Section>
+            <Section>1. Only one context parameter in each function call to any ComLib function. If more than one parameter is used, they must be included in one structure for which a pointer is passed to the ComLib function.</Section>
+            <Section>2. The parameter must always be the first parameter in the call to any ComLib function utilizing context parameters.</Section>
+            <Section>3. Parameters that ComLib functions may modify must be transferred as pointers, not as direct stack parameters.</Section>
+            <Section>An example of a function taking having a context parameter is given in 4.2. In this case, the context parameter is a 32 bit integer passed as a pointer as the function will modify it. The function will not store the integer and expects the using entity to store, maintain and initialise the context. In this case, the ComLib does provide help for this.</Section>
+            <Section>If the context data is a complex data structure, the ComLib may provide utility functions for allocation of dynamically allocated context data, de-allocating, initialising, etc. In the example of the function in section 4.2, the function in section 4.3 is provided for context initialisation.</Section>
+            <Section>1.1.3 Shared information/stores</Section>
+            <Section>Some ComLib functions have the main purpose of sharing information between modules, like for example the classmark handling functions used by CC, MM and RR. In this case it is not as much a common library of functions, but more an object encapsulation of the classmark information shared between multiple protocol stack modules.</Section>
+            <Section>1.1.4 File names and distribution of ComLib functions to files</Section>
+            <Section>Generally, each ComLib function is located in a separate C-file and the h-file to use the ComLib function from protocol stack modules is generated from this SAP. This is to make it possible for most linkers to only include the code actually used, i.e. to save ROM and RAM space.</Section>
+            <Section>However, if a set of functions in the ComLib are closely linked or viewed as a sub-library in ComLib, these functions are allowed to share the same C-file, but still the h-file will be generated from this SAP.</Section>
+            <Section>Static or local support functions to specific ComLib functions, shared between global ComLib functions, are in separate C-files as well, but shares one h-file to be used by the global functions. If the static functions are only used by a small group of functions belonging to the same part of ComLib, the functions can share C-file with the ComLib global functions using them.</Section>
+            <Section>The ComLib header files are generated from the SAP. These files are the whole and only interface to the ComLib function library. All ComLib source files, local header files and the target build-job are held are located as any other protocol stack entity, i.e. in the \\view\g23m\condat\ms\src\cl directory. ComLib entity tests and related Visual C workspace and project files are located in a test sub-directory to the above mentioned source directory. The ComLib Visual C project used by other entities using ComLib during entity test is located similarly in \\view\g23m\condat\int\msdev\cl. The directory tree is shown in Figure 1.</Section>
+            <Section>Figure 1 - Directory structure for ComLib files.</Section>
+            <Section>1.2 Notes to ComLib functions</Section>
+            <Section>1.2.1 Random generator - notes</Section>
+            <Section>The random generator presented in this document is based upon [Numerical Recipes in C]. The book presents a number of choices for constants used in the algorithm, but it should be noted that not all of the values presented in the book would make a random generator when implemented on a 32-bit CPU. Choosing values for 32-bit overflow does not work in the implemented algorithm, the maximum working values tested are 31-bit overflow values.</Section>
+            <Section>Also, it should be noted that most compilers interpret constants as signed integers when operating on them. This will not work in the random algorithm unless they are forced to unsigned integers before usage.</Section>
+            <Section>The chosen constants are tested for randomness and presented in the following graphs using the same seed for all tests, 17204.</Section>
+            <Section>Figure 2 - Random generator distribution when generating random numbers between 1 and 8, 800 random numbers drawn.</Section>
+            <Section>Figure 3 - Random generator distribution when generating random numbers between 1 and 32, 3200 random numbers drawn.</Section>
+            <Section>Figure 4 - Random generator distribution when generating random numbers between 1 and 1000, 100000 random numbers drawn.</Section>
+            <Section>1.2.2 RFCAP notes</Section>
+            <Section>A number of functions are defined to get various protocol stack information, which is based on the RFCAP (i.e. UE capabilities) from the permanent configuration memory. The general concept is to avoid that this information is stored more than once in memory and to avoid misalignment between the protocol stack modules generation of the UE capabilities. COMLIB will store this information and copy it to the address provided as input to the function. The RFCAP information stored in COMLIB is initialised by ACI before the protocol stack is activated and reinitialised during any soft reboot.</Section>
+            <Section>One parameter can be changed runtime, which is the GSM activated bands setting. Change of the band setting is only allowed by ACI, which is why there is no COMLIB function to set/change the band setting. If the band setting is to be changed, ACI will check the existing band setting and detect if the new setting is different from the current setting. If this is the case, the protocol stack will be deactivated, the new setting written to permanent configuration memory, COMLIB re-initialised (due to changed UE capabilities) and then the protocol stack is activated again, i.e. a soft reboot is performed.</Section>
+            <Section>1.3 Testing COMLIB</Section>
+            <Section>To verify the functions in COMLIB, a primitive is defined for each function. This is to create an entity test of COMLIB. To perform an entity test a COMLIB task has been defined (for entity tests only). For details, see Figure 11.</Section>
+            <Section>The rules for generating the primitives are:</Section>
+            <Section>1. Two functions are generated for each function, one for calling the function and one for returning from the function call.</Section>
+            <Section>2. The parameters in the call and return primitives must be exactly the same with the exception of pointers being exchanged hold the full content of the parameter, not only a pointer. This is to have the content of the parameters given as pointers transferred to and from the test environment for verification and stimulation during testing.</Section>
+            <Section>1.4 Entity testing using COMLIB</Section>
+            <Section>Entities using the cl_rfcap_xxx() functions shall also include the COMLIB task which handles the CL_SET_RFCAP_REQ primitive, to initialise the rfcap PCM data for each test. For details, see Figure 12. The same primitives used for testing ComLib can be used to test the entity if the entity test of any given entity does not include ComLib in the test-environment.</Section>
+        </Description>
+        <DocHistory>
+            <DocVersion Number="001" Year="03"/>
+            <Date Day="23" Month="5" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Initial version.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="002" Year="03"/>
+            <Date Day="12" Month="6" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Ready for initial review.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="003" Year="03"/>
+            <Date Day="19" Month="6" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Added section to document the performance of the random generator and some important notes to users.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="004" Year="03"/>
+            <Date Day="21" Month="7" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Changed prim ID to 0x0000 as this is the only allowed multiple defined prim ID value.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="005" Year="03"/>
+            <Date Day="21" Month="7" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Updated after review, see 8010_149_03_003_review_report.doc for details.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="006" Year="03"/>
+            <Date Day="22" Month="7" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="APPROVED"/>
+            <Comment>Changed status to accepted after review.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="007" Year="03"/>
+            <Date Day="20" Month="8" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="BEING_PROCESSED"/>
+            <Comment>Updated with UE capability functions. Added dummy primitive for links to other SAPs.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="008" Year="03"/>
+            <Date Day="4" Month="9" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Updated after deskcheck</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="009" Year="03"/>
+            <Date Day="8" Month="9" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>Inserted informative MSCs for RFCAP chapters</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="010" Year="03"/>
+            <Date Day="23" Month="9" Year="2003"/>
+            <Author>KBS</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>TEST primitives inserted and QoS inputs aligned</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="011" Year="03"/>
+            <Date Day="25" Month="9" Year="2003"/>
+            <Author>BRY</Author>
+            <DocStatus State="SUBMITTED"/>
+            <Comment>8010.149.03.012 XBO 03 December, 2003 Being Processed Updating introduction text to reflect desc-review comments. See 8010_149_03_011_review_report.doc for details.</Comment>
+        </DocHistory>
+        <DocHistory>
+            <DocVersion Number="012" Year="04"/>
+            <Date Day="8" Month="6" Year="2004"/>
+            <Author>rpk</Author>
+            <DocStatus State="SUBMITTED"/>
+	    <Comment>Changing QoS reference from NAS include SAP to PS include SAP</Comment>
+        </DocHistory>
+    </DocInfoSection>
+    <PragmasSection>
+        <Description>
+            <Section>Constants used by the ComLib-SAP.</Section>
+        </Description>
+        <Pragma>
+            <Name>PREFIX</Name>
+            <Value ValueType="ALPHA">CL</Value>
+            <Comment>Prefix for this document</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ALLWAYS_ENUM_IN_VAL_FILE</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Adds enumerations in the .val file.</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>ENABLE_GROUP</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Enable h-file grouping</Comment>
+        </Pragma>
+        <Pragma>
+            <Name>COMPATIBILITY_DEFINES</Name>
+            <Value ValueType="ALPHA">NO</Value>
+            <Comment>Compatible to the old #defines</Comment>
+        </Pragma>
+        <History>
+            <Date Day="19" Month="12" Year="2003"/>
+            <Author>HB</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </PragmasSection>
+    <ConstantsSection>
+        <Description>
+            <Section>Constants used by the ComLib-SAP.</Section>
+        </Description>
+        <Constant>
+            <Alias>DUMMY</Alias>
+            <Value ValueType="HEX">FF</Value>
+            <Comment>Just for avoiding error</Comment>
+        </Constant>
+        <History>
+            <Date Day="18" Month="12" Year="2003"/>
+            <Author>HB</Author>
+            <Comment>Initial</Comment>
+        </History>
+    </ConstantsSection>
+    <PrimitivesSection PrimIDType="BIT32" SAPid="156">
+        <Description>
+            <Section>The primitives defined here are only test primitives which are used during Simulation testing in TDC environment.</Section>
+        </Description>
+        <Primitive>
+            <Description>
+                <Section>TEST PRIMITIVE. This primitive is used to test SGSN release part of the COMLIB itself. Also this primitive is used by the GRR test entity, to write the SGSN release information in the common library local context. This requires that the COMLIB test task be included in the PS build.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CL_NWRL_SET_SGSN_RELEASE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>PS</Sender>
+                    <Receiver>CL</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sgsn_rel</Name>
+                </ItemLink>
+                <Comment>Input: SGSN release</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="12" Year="2003"/>
+                <Author>HB</Author>
+                <Comment>Initial</Comment>
+	    </History>
+            <History>
+                <Date Day="3" Month="6" Year="2004"/>
+                <Author>HB</Author>
+                <Comment>sgsn_rel type is derived from 8010_152_ps_include SAP</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TEST PRIMITIVE. This primitive is used to test SGSN release part of the COMLIB itself. Also this primitive is sent by the COMLIB test entity to GRR, as a confirmation that the SGSN release information is written in the common library local context. This requires that the COMLIB test task be included in the PS build.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CL_NWRL_SET_SGSN_RELEASE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="0"/>
+                <PrimUsage>
+                    <Sender>CL</Sender>
+                    <Receiver>PS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="3" Month="12" Year="2003"/>
+                <Author>HB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TEST PRIMITIVE. This primitive is used to test SGSN release part of the COMLIB itself. Also this primitive is used by the GMM, SM test entities, to make a request to read the SGSN release information in the common library local context. This requires that the COMLIB test task be included in the PS build.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CL_NWRL_GET_SGSN_RELEASE_REQ</Name>
+                <PrimID Direction="UPLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>CL</Sender>
+                    <Receiver>PS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <History>
+                <Date Day="3" Month="12" Year="2003"/>
+                <Author>HB</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Primitive>
+        <Primitive>
+            <Description>
+                <Section>TEST PRIMITIVE. This primitive is used to test SGSN release part of the COMLIB itself. Also this primitive is sent by the COMLIB test entity, to return the SGSN release information in the common library local context to GMM, SM entities. This requires that the COMLIB test task be included in the PS build.</Section>
+            </Description>
+            <PrimDef>
+                <Name>CL_NWRL_GET_SGSN_RELEASE_CNF</Name>
+                <PrimID Direction="DOWNLINK" Number="1"/>
+                <PrimUsage>
+                    <Sender>CL</Sender>
+                    <Receiver>PS</Receiver>
+                </PrimUsage>
+            </PrimDef>
+            <PrimItem Presentation="MANDATORY">
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sgsn_rel</Name>
+                </ItemLink>
+                <Comment>Output: SGSN Release</Comment>
+            </PrimItem>
+            <History>
+                <Date Day="3" Month="12" Year="2003"/>
+                <Author>HB</Author>
+                <Comment>Initial</Comment>
+	    </History>
+            <History>
+                <Date Day="3" Month="6" Year="2004"/>
+                <Author>HB</Author>
+                <Comment>sgsn_rel type is derived from 8010_152_ps_include SAP</Comment>
+            </History>
+        </Primitive>
+    </PrimitivesSection>
+    <FunctionsSection>
+        <Description>
+            <Section>The functions are all derived from identified shared functionality between protocol stack modules and naming, etc. is described in section 1.1.</Section>
+        </Description>
+        <Function>
+            <Description>
+                <Section>This function is called to update the SGSN release information in the common library context. The SGSN release information has two valid values -1) SGSN release 98 or older 2) SGSN release 99 or later.  It will be broadcast, only if GPRS is supported in the cell. Also, the SGSN release information is relevant only for a GPRS MS.</Section>
+                <Section>RR and GRR protocol stack entities receive the SGSN release information in SI 13, PSI 1, PSI 13 and PSI 14 messages from the network. The SI13 message is sent to GRR each time it is received by RR for processing through the existing message RRGRR_SI13_IND in RRGRR SAP. Hence, there need not be any function call from RR to Common library for writing the SGSNR value. The SGSN release information from each of these messages would be updated in the local context of GRR, each time it is received. After the cell reselection is determined as successful or failure(in which case it returns to the old serving cell) , the SGSN release from the GRR context will be copied to common library context through this function call. Please note that these messages may be received periodically in the serving cell but the SGSN release information will be not be updated in the common library each time. Here, the assumption is that SGSN release information is fixed for a cell and will be updated only after a cell reselection. Since this IE is optional, default value of release 98 is assumed for SGSN release, if it is not received. The handling of this IE in PSI 14 is not done currently as DTM is not implemented and should be handled appropriately when it is done so.</Section>
+                <Section>The SGSN release information is set to invalid value (say 0xFF), when GRR entity is initialized for the first time after the Power ON, during cell reselection process and also when the cell is lost.  This is also done by calling the same function, but by passing the invalid value of SGSN release.</Section>
+                <Section>Please refer cl.gumle file for visualizing different scenarios.</Section>
+            </Description>
+            <FuncDef>
+                <Name>nwrl_set_sgsn_release</Name>
+                <FuncUsage>
+                    <Caller>PS</Caller>
+                    <Callee>CL</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sgsn_rel</Name>
+                </ItemLink>
+                <Comment>Input: SGSN release</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="2" Month="12" Year="2003"/>
+                <Author>HB</Author>
+                <Comment>Initial.</Comment>
+	    </History>
+            <History>
+                <Date Day="3" Month="6" Year="2004"/>
+                <Author>HB</Author>
+                <Comment>sgsn_rel type is derived from 8010_152_ps_include SAP, function name changed</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section>This function will be called by entities such as GMM, SM and may be other entities (in the future) to know the updated SGSN release information. This information will be used in these entities to change their behavior towards the network depending on the release and also to change their internal context status. This is not dealt with here and it is up to the individual entities to decide the utilization of this information. Here it is assumed that the entities that require this release information would not call this function when the serving cell does not support GPRS, during cell reselection process and also when the cell is lost, since the information is not really helpful. But provision has been made in the Common library to provide the SGSN release information (Invalid value) during these periods, in such a way that the entities still can make a good meaning of it.</Section>
+                <Section>Please refer cl.gumle file for visualizing different scenarios.</Section>
+            </Description>
+            <FuncDef>
+                <Name>nwrl_get_sgsn_release</Name>
+                <FuncUsage>
+                    <Caller>PS</Caller>
+                    <Callee>CL</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>sgsn_rel</Name>
+                </ItemLink>
+                <Comment>Output: SGSN release</Comment>
+            </FuncRet>
+            <History>
+                <Date Day="2" Month="12" Year="2003"/>
+                <Author>HB</Author>
+                <Comment>Initial.</Comment>
+	   </History>
+           <History>
+                <Date Day="3" Month="6" Year="2004"/>
+                <Author>HB</Author>
+                <Comment>sgsn_rel type is derived from 8010_152_ps_include SAP, function name changed</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section/>
+            </Description>
+            <FuncDef>
+                <Name>qos_convert_r99_to_r97</Name>
+                <FuncUsage>
+                    <Caller>PS</Caller>
+                    <Callee>CL</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">cl</DocName>
+                    <Name>qos_conv_res</Name>
+                </ItemLink>
+                <Comment>Function return value</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos_r99</Name>
+                </ItemLink>
+                <Alias>src_qos_r99</Alias>
+                <Control>PTR</Control>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos_r97</Name>
+                </ItemLink>
+                <Alias>dst_qos_r97</Alias>
+                <Control>PTR</Control>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="25" Month="02" Year="2004"/>
+                <Author>rpk</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="6" Year="2004"/>
+                <Author>rpk</Author>
+		<Comment>Changing qos reference from nas_include sap to ps_include sap.</Comment>
+            </History>
+        </Function>
+        <Function>
+            <Description>
+                <Section/>
+            </Description>
+            <FuncDef>
+                <Name>qos_convert_r97_to_r99</Name>
+                <FuncUsage>
+                    <Caller>PS</Caller>
+                    <Callee>CL</Callee>
+                </FuncUsage>
+            </FuncDef>
+            <FuncRet>
+                <ItemLink>
+                    <DocName DocType="SAP">cl</DocName>
+                    <Name>qos_conv_res</Name>
+                </ItemLink>
+                <Comment>Function return value</Comment>
+            </FuncRet>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos_r97</Name>
+                </ItemLink>
+                <Alias>src_qos_r97</Alias>
+                <Control>PTR</Control>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <FuncArg>
+                <ItemLink>
+                    <DocName DocType="SAP">8010_152_ps_include</DocName>
+                    <Name>qos_r99</Name>
+                </ItemLink>
+                <Alias>dst_qos_r99</Alias>
+                <Control>PTR</Control>
+                <Comment>Function argument</Comment>
+            </FuncArg>
+            <History>
+                <Date Day="25" Month="02" Year="2004"/>
+                <Author>rpk</Author>
+                <Comment>Initial</Comment>
+            </History>
+            <History>
+                <Date Day="8" Month="6" Year="2004"/>
+                <Author>rpk</Author>
+		<Comment>Changing qos reference from nas_include to ps_include sap.</Comment>
+            </History>
+        </Function>
+    </FunctionsSection>
+    <PrimBasicElementsSection>
+        <Description>
+            <Section>Parameters shall be part of the functions described beyond and if applied the parameters shall contain the values specified here.</Section>
+        </Description>
+        <PrimBasicElem>
+            <Description>
+                <Section/>
+            </Description>
+            <PrimBasicElemDef>
+                <Name>qos_conv_res</Name>
+                <Type>U8</Type>
+                <Comment>Result of qos conversion </Comment>
+            </PrimBasicElemDef>
+            <ValuesLink>
+                <DocName DocType="SAP">cl</DocName>
+                <Name>VAL_qos_conv_res</Name>
+            </ValuesLink>
+            <History>
+                <Date Day="25" Month="02" Year="2004"/>
+                <Author>rpk</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </PrimBasicElem>
+    </PrimBasicElementsSection>
+    <ValuesSection>
+        <Description>
+            <Section>This section contains all sets of values that are defined for the CL SAP</Section>
+        </Description>
+        <Values>
+            <Description>
+                <Section/>
+            </Description>
+            <ValuesDef>
+                <Name>VAL_qos_conv_res</Name>
+                <Comment>Values for QoS conversion result</Comment>
+            </ValuesDef>
+            <ValuesItem>
+                <Value ValueType="HEX">01</Value>
+                <Alias>CONV_OK</Alias>
+                <Comment>Conversion successful.</Comment>
+            </ValuesItem>
+            <ValuesItem>
+                <Value ValueType="HEX">00</Value>
+                <Alias>CONV_FAILED</Alias>
+                <Comment>Conversion failed</Comment>
+            </ValuesItem>
+            <History>
+                <Date Day="25" Month="02" Year="2004"/>
+                <Author>rpk</Author>
+                <Comment>Initial</Comment>
+            </History>
+        </Values>
+    </ValuesSection>
+</SAP>
