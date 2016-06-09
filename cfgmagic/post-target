@@ -86,6 +86,11 @@ case "$ABB_type" in
 esac
 export_to_c	ANALOG
 
+# Define ANLG_FAM as well as ANALOG to avoid needless diffs in L1 code
+# between our tree and tcs211-l1-reconst.
+ANLG_FAM=$ANALOG
+export_to_c	ANLG_FAM
+
 if [ -z "$RF_type" ]
 then
 	echo "Error: target.$TARGET failed to define RF_type" 1>&2
