@@ -9,9 +9,8 @@
 
 #define  L1_FUNC_C
 
-#include "config.h"
-#include "l1_confg.h"
 #include "l1_macro.h"
+#include "l1_confg.h"
 
 #if (CODE_VERSION == SIMULATION)
   #include <string.h>
@@ -104,7 +103,7 @@
     #include "l1aac_defty.h"
   #endif
   #include "l1_defty.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"
@@ -113,13 +112,13 @@
   #include "l1_ver.h"
   #include "tpudrv.h"
 
-  #include "../../bsp/mem.h"
-  #include "../../bsp/inth.h"
-  #include "../../bsp/clkm.h"
-  #include "../../bsp/rhea_arm.h"
-  #include "../../bsp/dma.h"
-  #include "../../bsp/ulpd.h"
-  #include "../dsp/leadapi.h"
+  #include "mem.h"
+  #include "inth.h"
+  #include "clkm.h"
+  #include "rhea_arm.h"
+  #include "dma.h"
+  #include "ulpd.h"
+  #include "leadapi.h"
 
   #if (OP_L1_STANDALONE)
   #if (CHIPSET == 4) || (CHIPSET == 7) || (CHIPSET == 8) || (CHIPSET == 10) || \
@@ -150,15 +149,15 @@
 
   /* DSP patch */
   #if (DWNLD == NO_DWNLD)
-    const UWORD8  patch_array[1] = {0};
-    const UWORD8  DspCode_array[1] = {0};
-    const UWORD8  DspData_array[1] = {0};
+    const UWORD8  patch_array[1];
+    const UWORD8  DspCode_array[1] ;
+    const UWORD8  DspData_array[1];
   #elif (DWNLD == PATCH_DWNLD)
     extern const UWORD8  patch_array[] ;
-    const UWORD8  DspCode_array[1] = {0};
-    const UWORD8  DspData_array[1] = {0};
+    const UWORD8  DspCode_array[1] ;
+    const UWORD8  DspData_array[1];
   #elif (DWNLD == DSP_DWNLD)
-    const UWORD8 patch_array[1] = {0};
+    const UWORD8 patch_array[1] ;
     extern const UWORD8 DspCode_array[] ;
     extern const UWORD8 DspData_array[];
   #else
@@ -168,9 +167,11 @@
   #endif
 
   extern const UWORD8  bootCode[] ;
-   UWORD32  fn_prev; // Added as a debug stage..
   /* DSP patch */
 
+#if ( FF_REPEATED_DL_FACCH == 1 )
+   UWORD32  fn_prev; // Added as a debug stage..
+#endif
 
 /*-------------------------------------------------------*/
 /* Prototypes of internal functions used in this file.   */
@@ -205,7 +206,7 @@ void LA_ReleaseLead(void);
 /*-------------------------------------------------------*/
 void dsp_power_on(void)
 {
-  UWORD16 dsp_start_address =0 ;//omaps00090550
+    UWORD16 dsp_start_address;
     UWORD16 param_size;
     #if IDS
       UWORD16 param_size2;
@@ -1107,9 +1108,6 @@ void l1s_increment_time(T_TIME_INFO *time, UWORD32 fn_offset)
     IncMod(time->t3, 1, 51);                // increment T3 % 51.
     IncMod(time->fn_mod42432, 1, 42432);    // increment FN % 42432.
     IncMod(time->fn_mod13, 1, 13);          // increment FN % 13.
-    IncMod(time->fn_mod13_mod4, 1, 4);      // increment (FN % 13) % 4.
-    if(time->fn_mod13 == 0)
-      time->fn_mod13_mod4 = 0;
 
     if(time->t3 == 0)
     // new FN is a multiple of 51.
@@ -1124,6 +1122,10 @@ void l1s_increment_time(T_TIME_INFO *time, UWORD32 fn_offset)
     #if (L1_GPRS)
       IncMod(time->fn_mod52, 1, 52);        // increment FN % 52.
       IncMod(time->fn_mod104, 1, 104);      // increment FN % 104.
+
+      IncMod(time->fn_mod13_mod4, 1, 4);      // increment (FN % 13) % 4.
+      if(time->fn_mod13 == 0)
+        time->fn_mod13_mod4 = 0;
 
       if((time->fn_mod13 == 0) || (time->fn_mod13 == 4) || (time->fn_mod13 == 8))
         IncMod(time->block_id, 1, MAX_BLOCK_ID);
@@ -1141,7 +1143,6 @@ void l1s_increment_time(T_TIME_INFO *time, UWORD32 fn_offset)
     time->tc = (time->fn / 51) % 8;        // TC = (FN div 51) % 8
     time->fn_mod42432 = time->fn % 42432;  // FN%42432.
     time->fn_mod13    = time->fn % 13;     // FN % 13.
-    time->fn_mod13_mod4 = time->fn_mod13 % 4; // FN % 13 % 4.
 
     #if (L1_GPRS)
       time->fn_mod104     = time->fn % 104;     // FN % 104.
@@ -1150,6 +1151,8 @@ void l1s_increment_time(T_TIME_INFO *time, UWORD32 fn_offset)
         time->fn_mod52    = time->fn_mod104 - 52;
       else
         time->fn_mod52    = time->fn_mod104;
+
+      time->fn_mod13_mod4 = time->fn_mod13 % 4; // FN % 13 % 4.
 
       time->block_id      = ((3 * (time->fn / 13)) + (time->fn_mod13 / 4));
     #endif
@@ -1320,7 +1323,7 @@ void l1s_reset_dedic_serving_meas(void)
 UWORD32 l1s_swap_iq_dl(UWORD16 radio_freq, UWORD8 task)
 {
   UWORD8   swap_iq;
-  UWORD32  task_tab= 0; //omaps00090550
+  UWORD32  task_tab;
 
 #if (L1_FF_MULTIBAND == 0)  
   if(((l1_config.std.id == DUAL) || (l1_config.std.id == DUALEXT) || (l1_config.std.id == DUAL_US)) &&
@@ -1366,7 +1369,7 @@ UWORD32 l1s_swap_iq_dl(UWORD16 radio_freq, UWORD8 task)
 UWORD32 l1s_swap_iq_ul(UWORD16 radio_freq, UWORD8 task)
 {
   UWORD8   swap_iq;
-  UWORD32  task_tab = 0; //omaps00090550
+  UWORD32  task_tab;
 
 #if (L1_FF_MULTIBAND == 0)
 
@@ -1724,7 +1727,12 @@ void l1s_amr_update_from_ratscch(API *a_ratscch_dl)
 #endif    // AMR
 
 
+/*
+ * FreeCalypso TCS211 reconstruction: the following l1_memcpy_16bit()
+ * function has been moved to l1_dyn_dwl_func.c.
+ */
 
+#if 0
 /*--------------------------------------------------------*/
 /* l1_memcpy_16bit()                                      */
 /*--------------------------------------------------------*/
@@ -1780,7 +1788,9 @@ void l1_memcpy_16bit(void *dst,void* src,unsigned int len)
   }
   return;
 }
+#endif
 
+#if (FF_L1_FAST_DECODING == 1)
 /*-----------------------------------------------------------------*/
 /* l1s_restore_synchro                                             */
 /*-----------------------------------------------------------------*/
@@ -1834,7 +1844,6 @@ void l1s_restore_synchro(void)
 #endif
 }
 
-#if (FF_L1_FAST_DECODING == 1)
 BOOL l1s_check_deferred_control(UWORD8 task, UWORD8 burst_id)
 {
   /* Control activities are performed only if:
@@ -2312,9 +2321,9 @@ UWORD8 l1_get_pwr_mngt()
 
 #endif 
 
+#if (L1_FF_MULTIBAND == 1)
 void l1_multiband_error_handler(UWORD16 radio_freq)
 {
     while(1);
 }
-
-
+#endif

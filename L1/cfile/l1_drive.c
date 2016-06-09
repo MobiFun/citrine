@@ -9,15 +9,16 @@
 
 #define  L1_DRIVE_C
 
-#include "config.h"
 #include "l1_confg.h"
 
 #if (RF_FAM == 61)
 #include "apc.h"
 #endif
 
-#if ((W_A_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE ==1)&&(W_A_DSP_PR20037 == 1))
-  #include "../../nucleus/nucleus.h"
+#define	W_A_DSP_PR20037	1	/* FreeCalypso */
+
+#if ((L1M_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE ==1)&&(W_A_DSP_PR20037 == 1))
+  #include "nucleus.h"
 #endif
 #include "l1_macro.h"
 #if (CODE_VERSION == SIMULATION)
@@ -106,7 +107,7 @@
   #endif
   #include "l1_defty.h"
   #include "l1_varex.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #include "l1_msgty.h"
   #if TESTMODE
     #include "l1tm_varex.h"
@@ -150,7 +151,7 @@
 #endif//#if ((REL99 == 1) && (FF_BHO == 1))
 
 void Cust_get_ramp_tab(API *a_ramp, UWORD8 txpwr_ramp_up, UWORD8 txpwr_ramp_down, UWORD16 radio_freq);
-#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3) || (RF_FAM == 61))
+#if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3) || (RF_FAM == 61))
   UWORD16 Cust_get_pwr_data(UWORD8 txpwr, UWORD16 radio_freq
   										  #if(REL99 && FF_PRF)
   										  ,UWORD8 number_uplink_timeslot
@@ -334,7 +335,7 @@ void l1ddsp_load_afc(API afc)
 #endif
     //######################## For DSP Rom #################################
     l1s_dsp_com.dsp_db_w_ptr->d_afc = afc;                      // Write new afc command.
-    #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3) || (RF_FAM == 61))
+    #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3) || (RF_FAM == 61))
     // NOTE: In Locosto AFC loading is w.r.t DRP not in ABB
       l1s_dsp_com.dsp_db_w_ptr->d_ctrl_abb |= (1 << B_AFC);     // Validate new afc value.
     #endif
@@ -376,7 +377,7 @@ For APCLEV (Loc), it is picked at every Tx, for dummy burst DSP would make it 0
 /*-------------------------------------------------------*/
 void l1ddsp_load_txpwr(UWORD8 txpwr, UWORD16 radio_freq)
 {
-  #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3) || (RF_FAM == 61))
+  #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3) || (RF_FAM == 61))
     UWORD16 pwr_data;
   #endif
 
@@ -399,7 +400,7 @@ void l1ddsp_load_txpwr(UWORD8 txpwr, UWORD16 radio_freq)
        #endif
     #endif
 
-    #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+    #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
       l1s_dsp_com.dsp_db_w_ptr->d_ctrl_abb |= ( (1 << B_RAMP) | (1 << B_BULRAMPDEL) | (1 << B_BULRAMPDEL2));
     #endif
 
@@ -441,7 +442,7 @@ freq_band = l1_multiband_radio_freq_convert_into_effective_band_id(radio_freq);
     if(txpwr == NO_TXPWR)
     {
        /*** No transmit ***/
-       #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+       #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
          l1s_dsp_com.dsp_db_w_ptr->d_power_ctl = 0x12; // AUXAPC initialization addr 9 pg 0 Omega
          l1s_dsp_com.dsp_db_w_ptr->d_ctrl_abb |= ( (1 << B_RAMP) | (1 << B_BULRAMPDEL)  | (1 << B_BULRAMPDEL2));
        #endif
@@ -464,7 +465,7 @@ freq_band = l1_multiband_radio_freq_convert_into_effective_band_id(radio_freq);
       									  );
 
       /*** Load power control level adding the APC address register ***/
-      #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+      #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
         l1s_dsp_com.dsp_db_w_ptr->d_power_ctl = ((pwr_data << 6) | 0x12);
         // AUXAPC initialization addr 9 pg 0 Omega
       #endif
@@ -494,7 +495,7 @@ freq_band = l1_multiband_radio_freq_convert_into_effective_band_id(radio_freq);
 		    #endif
           #endif
 
-          #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+          #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
 	    // Setting bit 3 of this register causes DSP to write to APCDEL1 register in Omega. However,
             // we are controlling this register from MCU through the SPI. Therefore, set it to 0.
             l1s_dsp_com.dsp_db_w_ptr->d_ctrl_abb |= ( (1 << B_RAMP) | (0 << B_BULRAMPDEL)  | (1 << B_BULRAMPDEL2));
@@ -528,7 +529,7 @@ freq_band = l1_multiband_radio_freq_convert_into_effective_band_id(radio_freq);
        #endif
       #endif
 
-      #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3) ||(RF_FAM == 61))
+      #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3) ||(RF_FAM == 61))
         l1s_dsp_com.dsp_db_w_ptr->d_ctrl_abb |= ( (1 << B_RAMP) | (1 << B_BULRAMPDEL)  | (1 << B_BULRAMPDEL2));
       #endif
     }
@@ -816,7 +817,7 @@ BOOL enable_tch_vocoder(BOOL vocoder)
       {
         l1a_l1s_com.dedic_set.start_vocoder = TCH_VOCODER_ENABLE_REQ;
 
-        #if ( W_A_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE ==1)
+        #if ( L1M_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE ==1)
           NU_Sleep(DSP_VOCODER_ON_TRANSITION); // DSP transition
         #endif
       }
@@ -934,13 +935,13 @@ void l1ddsp_stop_tch(void)
 /* Return     :                                          */
 /* Functionality :                                       */
 /*-------------------------------------------------------*/
-void l1ddsp_meas_read(UWORD8 nbmeas, UWORD16 *pm)
+void l1ddsp_meas_read(UWORD8 nbmeas, UWORD8 *pm)
 {
   UWORD8 i;
 
   for (i= 0; i < nbmeas; i++)
   {
-    pm[i] = ((l1s_dsp_com.dsp_db_r_ptr->a_pm[i] & 0xffff));
+    pm[i] = ((l1s_dsp_com.dsp_db_r_ptr->a_pm[i] & 0xffff) >> 5);
   }
 
   #if TESTMODE
@@ -1061,19 +1062,19 @@ void l1ddsp_end_scenario(UWORD8 type)
     #endif // AUDIO_SIMULATION
 
   #else // NOT_SIMULATION
-    UWORD32 dsp_task=0 ;//omaps00090550;
+    UWORD32 dsp_task;
     switch(type)
     {
       case GSM_CTL:
       // a DSP control for a GSM task
       //-----------------------------
       {
-      // set only GSM task and GSM page
-      dsp_task = B_GSM_TASK | l1s_dsp_com.dsp_w_page;
-      // change DSP page pointer for next controle
-      l1s_dsp_com.dsp_w_page  ^= 1;
-    }
-    break;
+        // set only GSM task and GSM page
+        dsp_task = B_GSM_TASK | l1s_dsp_com.dsp_w_page;
+        // change DSP page pointer for next controle
+        l1s_dsp_com.dsp_w_page  ^= 1;
+      }
+      break;
 
       case MISC_CTL:
       // a DSP control for a MISC task
@@ -1081,28 +1082,33 @@ void l1ddsp_end_scenario(UWORD8 type)
       {
         UWORD32  previous_page = l1s_dsp_com.dsp_w_page ^ 1;
 
-      // set only MISC task and reset MISC page
-      // (don't change GSM PAGE).
-      // set DSP communication Interrupt.
-      dsp_task = B_MISC_TASK | previous_page;
+        // set only MISC task and reset MISC page
+        // (don't change GSM PAGE).
+        // set DSP communication Interrupt.
+        dsp_task = B_MISC_TASK | previous_page;
 
-      // Rem: DSP makes the DB header feedback even in case
-      //      of MISC task (like TONES). This created some
-      //      side effect which are "work-around" passing
-      //      the correct DB page to the DSP.
-    }
-    break;
-
-    case GSM_MISC_CTL:
-    // a DSP control for a GSM and a MISC tasks
-    //-----------------------------------------
-    {
-      // set GSM task, MISC task and GSM page bit.....
-      dsp_task =  B_GSM_TASK | B_MISC_TASK | l1s_dsp_com.dsp_w_page;
-      // change DSP page pointer for next controle
-      l1s_dsp_com.dsp_w_page  ^= 1;
-    }
+        // Rem: DSP makes the DB header feedback even in case
+        //      of MISC task (like TONES). This created some
+        //      side effect which are "work-around" passing
+        //      the correct DB page to the DSP.
+      }
       break;
+
+      case GSM_MISC_CTL:
+      // a DSP control for a GSM and a MISC tasks
+      //-----------------------------------------
+      {
+        // set GSM task, MISC task and GSM page bit.....
+        dsp_task =  B_GSM_TASK | B_MISC_TASK | l1s_dsp_com.dsp_w_page;
+        // change DSP page pointer for next controle
+        l1s_dsp_com.dsp_w_page  ^= 1;
+      }
+      break;
+
+      #if 0	/* enable this after TCS211 reconstruction */
+      default:
+	dsp_task = 0;
+      #endif
     }
 
     // write dsp tasks.....
@@ -1202,7 +1208,7 @@ void l1dtpu_meas(UWORD16 radio_freq,
     if (win_id == 0)
   #endif
   {
-    #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+    #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
     // NOTE: In Locosto AFC is in DRP not in triton
         l1ddsp_load_afc(l1s.afc);
     #endif
@@ -1562,7 +1568,7 @@ void l1dtpu_serv_rx_nb(UWORD16 radio_freq, WORD8 agc, UWORD8 lna_off,
    #endif
  #endif
 
-  #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+  #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
       l1ddsp_load_afc(l1s.afc);
   #endif
   #if (RF_FAM == 61)
@@ -2074,12 +2080,8 @@ T_IQ_LOG_BUFFER iq_dump_buffer[IQ_DUMP_BUFFER_SIZE];
 UWORD32         iq_dump_buffer_log_index = 0;
 UWORD32         iq_overflow_ind=0;
 
-#endif
-
 void l1ddsp_read_iq_dump(UWORD8 task)
 {
-
-#if (L1_DEBUG_IQ_DUMP == 1)
   UWORD16 *p_dsp_iq_buffer_ptr;
   UWORD16 size;
   int i;
@@ -2119,8 +2121,5 @@ void l1ddsp_read_iq_dump(UWORD8 task)
       size*2*2); /* size * 2 (as size is in IQsample pair) * 2 (to convert to bytes) */
 
   iq_dump_buffer_log_index = iq_dump_buffer_log_index + 1;
-
-#endif
 }
-
-
+#endif

@@ -8,9 +8,8 @@
  ************* Revision Controle System Header *************/
 
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_START
-#include "config.h"
-#include "l1_confg.h"
 #include "l1_macro.h"
+#include "l1_confg.h"
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_END
 
 #if !((MOVE_IN_INTERNAL_RAM == 1) && (GSM_IDLE_RAM !=0))  // MOVE TO INTERNAL MEM IN CASE GSM_IDLE_RAM enabled
@@ -88,7 +87,7 @@
   #include "l1_const.h"
   #include "l1_time.h"
   #include "l1_signa.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #if TESTMODE
     #include "l1tm_defty.h"
     #include "l1tm_signa.h"
@@ -117,6 +116,7 @@
     #include "l1aac_signa.h"
   #endif
   #if (L1_DYN_DSP_DWNLD == 1)
+    #include <stdio.h>
     #include "l1_dyn_dwl_signa.h"
   #endif
 
@@ -141,10 +141,11 @@
     #if ((CHIPSET == 12) || (CHIPSET == 15))
         #include "sys_inth.h"
     #else
-        #include "../../bsp/iq.h"
-        #include "../../bsp/inth.h"
-        #include "../../bsp/mem.h"
+        #include "iq.h"
+        #include "inth.h"
+        #include "mem.h"
     #endif
+
   #endif
 
   #if (VCXO_ALGO == 1)
@@ -236,11 +237,7 @@ extern void tm_receive(UWORD8 *inbuf, UWORD16 size);
     // Speech recognition update-check process
     extern void l1a_mmi_sr_update_check_process (xSignalHeaderRec *msg);
   #endif
-  #if (L1_AEC == 1)
-    // AEC process
-    extern void l1a_mmi_aec_process             (xSignalHeaderRec *msg);
-  #endif
-  #if (L1_AEC == 2)
+  #if (AEC)
     // AEC process
     extern void l1a_mmi_aec_process             (xSignalHeaderRec *msg);
   #endif
@@ -616,11 +613,7 @@ void l1a_task(UWORD32 argc, void *argv)
         // Speech recognition update-check process
         l1a_mmi_sr_update_check_process(msg);
       #endif
-      #if (L1_AEC == 1)
-        // AEC process
-        l1a_mmi_aec_process(msg);
-      #endif
-      #if (L1_AEC == 2)
+      #if (AEC)
         // AEC process
         l1a_mmi_aec_process(msg);
       #endif
@@ -687,13 +680,16 @@ void l1a_task(UWORD32 argc, void *argv)
       #if(L1_BT_AUDIO ==1)
         l1a_mmi_bt_process(msg); 
       #endif // L1_VOCODER_IF_CHANGE == 1
-      /*
-       * FreeCalypso change: the following call to l1a_mmi_outen_cfg_process()
-       * (a function that doesn't exist in the Leonardo objects) has been
-       * moved inside the #if (AUDIO_TASK == 1) conditional, otherwise
-       * the link fails - it is definitely an audio function of some kind.
-       */
-      l1a_mmi_outen_cfg_process(msg);
+       /*
+	* FreeCalypso Frankenstein: the following call to
+	* l1a_mmi_outen_cfg_process() was totally unconditional
+	* in the LoCosto source we got, but no such function
+	* exists in TCS211.  To be investigated further when
+	* we reach the audio stuff.
+	*/
+      #if 0
+        l1a_mmi_outen_cfg_process(msg);
+      #endif
     #endif //AUDIO TASK
 
     // Only processes supported by GSM IDLE in Internal RAM
@@ -1845,10 +1841,7 @@ void l1a_neighbour_cell_bcch_reading_process(xSignalHeaderRec *msg)
 
         // Look for first free location within L1 structure.
         while((neigh_number < 6) && (l1a_l1s_com.bcchn.list[neigh_number].status != NSYNC_FREE))
-	{
-	    if(neigh_number != 5 )
           neigh_number++;
-	}
 
 
         // Download neighbour info from request message.
@@ -1863,8 +1856,6 @@ void l1a_neighbour_cell_bcch_reading_process(xSignalHeaderRec *msg)
         time_alignmt =time_alignmt_mem;
         fn_offset    =fn_offset_mem;
         l1a_sub_timeslot(&time_alignmt, &fn_offset, l1a_l1s_com.dl_tn);
-	if (neigh_number < 6 )
-	{
 
         l1a_l1s_com.bcchn.list[neigh_number].radio_freq    = ((T_MPHC_NCELL_BCCH_REQ *)(msg->SigP))->radio_freq;
         l1a_l1s_com.bcchn.list[neigh_number].fn_offset     = fn_offset;
@@ -1883,9 +1874,7 @@ void l1a_neighbour_cell_bcch_reading_process(xSignalHeaderRec *msg)
           l1a_l1s_com.bcchn.list[neigh_number].gprs_priority = NORMAL_PRIORITY;
         #endif
 
-	}
         // Enable L1S activity on this new neighbour task BCCH.
-     if (neigh_number < 6 )//OMAPS00090550
         l1a_l1s_com.bcchn.list[neigh_number].status  = NSYNC_PENDING;
 
         l1a_l1s_com.bcchn.current_list_size         += 1;
@@ -1984,15 +1973,7 @@ void l1a_neighbour_cell_bcch_reading_process(xSignalHeaderRec *msg)
                       (l1a_l1s_com.bcchn.list[j].status != NSYNC_FREE)) &&
                     (j < 6))
               {
-				if(j < 5 ) //OMAPS00090550
-				{
                 	j++;
-				}
-				else
-				{
-					j++;
-					break;
-				}
               }
 
               // If found, reset L1 structure for this carrier.
@@ -2153,7 +2134,6 @@ void l1a_idle_6strongest_monitoring_process(xSignalHeaderRec *msg)
 
           UWORD8  *state      = &l1a.state[I_6MP];
           UWORD32  SignalCode = msg->SignalCode;
-  static  UWORD8   sb_attempt;
 
 
 #if (L1_12NEIGH == 1)
@@ -3526,9 +3506,24 @@ void l1a_idle_serving_cell_bcch_reading_process(xSignalHeaderRec *msg)
 /* -----------------------  (MPHC_STOP_CCCH_CON)         */
 /*                                                       */
 /*-------------------------------------------------------*/
-//Nina added
+
+/*
+ * FreeCalypso Frankenstein: the source we got with LoCosto contains
+ * some logic, apparently designed to increase opportunities for
+ * deep sleep, marked with "Nina added" comments.  This addition by
+ * Nina showed up on our radar because it makes use of a new member
+ * in the l1s structure which is not present in the TCS211 version
+ * of this data structure, which we are not allowed to change while
+ * deblobbing L1 one module at a time.  I am going to turn Nina's
+ * addition into a conditional compilation option. -- Mychaela
+ */
+
+#define	NINA_ADDED	0
+
+#if NINA_ADDED
 INT8 last_page_mode = 2; //REORG;
-//End Nina added
+#endif
+
 void l1a_idle_serving_cell_paging_process(xSignalHeaderRec *msg)
 {
   enum states
@@ -3566,7 +3561,9 @@ void l1a_idle_serving_cell_paging_process(xSignalHeaderRec *msg)
 
         // No Paging  => no gauging => no Deep sleep
         //Nina modify to save power, not forbid deep sleep, only force gauging in next paging
+#if NINA_ADDED
         if(l1s.force_gauging_next_paging_due_to_CCHR == 0) // Force gauging next paging
+#endif
         l1s.pw_mgr.enough_gaug = FALSE;  // forbid Deep sleep
 
       }
@@ -3578,14 +3575,14 @@ void l1a_idle_serving_cell_paging_process(xSignalHeaderRec *msg)
         {
           // download page mode from message (msg)
           page_mode = ((T_MPHC_START_CCCH_REQ *)(msg->SigP))->page_mode;
-//Nina added
+#if NINA_ADDED
 if(((last_page_mode == NORMAL) && (page_mode == EXTENDED)) ||
 	((last_page_mode == EXTENDED) && (page_mode == NORMAL)))
 {
 l1s.force_gauging_next_paging_due_to_CCHR = 1;
 }
 			last_page_mode = page_mode;
-//End Nina added
+#endif
 
           if(page_mode == REORG)
           // Request to enter the PAGING REORGANIZATION paging mode.
@@ -3837,7 +3834,7 @@ l1s.force_gauging_next_paging_due_to_CCHR = 1;
         {
           // download paging mode from msg
           page_mode = ((T_MPHC_START_CCCH_REQ *)(msg->SigP))->page_mode;
-//Nina added
+#if NINA_ADDED
 
 			if(((last_page_mode == NORMAL) && (page_mode == EXTENDED)) ||
 				((last_page_mode == EXTENDED) && (page_mode == NORMAL)))
@@ -3845,7 +3842,7 @@ l1s.force_gauging_next_paging_due_to_CCHR = 1;
 			l1s.force_gauging_next_paging_due_to_CCHR = 1;
 			}
 			last_page_mode = page_mode;
-//End Nina added
+#endif
           if ((page_mode == NORMAL) || (page_mode == REORG))
           {
             // Step in state machine.
@@ -3973,7 +3970,9 @@ l1s.force_gauging_next_paging_due_to_CCHR = 1;
 
             // Paging parameters change => perform the gauging on the next paging
         //Nina modify to save power, not forbid deep sleep, only force gauging in next paging
+#if NINA_ADDED
 if(l1s.force_gauging_next_paging_due_to_CCHR == 0)
+#endif
 l1s.pw_mgr.enough_gaug = FALSE;  // forbid Deep sleep until next gauging
 //End Nina modify
 
@@ -4133,7 +4132,6 @@ void l1a_initial_network_sync_process(xSignalHeaderRec *msg)
   static WORD16   static_attempt_counter_1;
 
 
-  static UWORD8   static_first_synch_flag = TRUE;
   static UWORD8   static_sb_found_flag;
   static UWORD8   static_bsic;
   static UWORD32  static_fn_offset;
@@ -5127,10 +5125,10 @@ void l1a_idle_smscb_process(xSignalHeaderRec *msg)
   UWORD8                *state      = &l1a.state[I_SMSCB];
   UWORD32                SignalCode = msg->SignalCode;
 
-  UWORD32                first_block_0 =0;
-  UWORD32                first_block_1= 0;
-  BOOL                   extended_cbch =FALSE; //oamps00090550
-  T_CBCH_HEAD_SCHEDULE  *cbch_schedule_ptr= NULL ;
+  UWORD32                first_block_0;
+  UWORD32                first_block_1;
+  BOOL                   extended_cbch;
+  T_CBCH_HEAD_SCHEDULE  *cbch_schedule_ptr;
   UWORD8                 schedule_length;
 
   BOOL end_process = 0;
@@ -5446,9 +5444,10 @@ void l1a_idle_smscb_process(xSignalHeaderRec *msg)
             return;
           }
         }
-          else
-          if(SignalCode == L1C_DEDIC_DONE)
-          {
+#if 0	/* match TCS211 */
+        else
+        if(SignalCode == L1C_DEDIC_DONE)
+        {
             // Stop SMSCB task.
             l1a_l1s_com.l1s_en_task[SMSCB] = TASK_DISABLED;
 
@@ -5460,8 +5459,8 @@ void l1a_idle_smscb_process(xSignalHeaderRec *msg)
 
 	    // Step in state machine.
            *state = RESET;        
-
         }
+#endif
 
         else
         // No action in this machine for other messages.
@@ -5475,8 +5474,6 @@ void l1a_idle_smscb_process(xSignalHeaderRec *msg)
 
       case SET_SCHEDULE:
       {
-        if(cbch_schedule_ptr != NULL)
-        {
         UWORD8  i,j;
         UWORD8  mf51_offset;
 
@@ -5530,7 +5527,7 @@ void l1a_idle_smscb_process(xSignalHeaderRec *msg)
 
         // Step in state machine.
         *state = WAIT_RESULT;
-       }
+
         // End of process.
         return;
       }
@@ -5561,7 +5558,8 @@ void l1a_idle_smscb_process(xSignalHeaderRec *msg)
         }
 
         else
-        if((SignalCode == MPHC_STOP_CBCH_REQ)||(SignalCode == L1C_DEDIC_DONE))
+        //if((SignalCode == MPHC_STOP_CBCH_REQ)||(SignalCode == L1C_DEDIC_DONE))
+        if(SignalCode == MPHC_STOP_CBCH_REQ)
         // Request to (may be partially) STOP reading the CBCH.
         //-----------------------------------------------------
         {
@@ -5803,9 +5801,10 @@ void l1a_dedicated_process(xSignalHeaderRec *msg)
 {
   enum states
   {
-    RESET     = 0,
-    WAIT_INIT = 1,
-    WAIT_MSG  = 2
+    RESET          = 0,
+    WAIT_INIT      = 1,
+    WAIT_DYN_DWNLD = 2,
+    WAIT_MSG       = 3
   };
 
           T_DEDIC_SET  *free_set;
@@ -5941,18 +5940,46 @@ void l1a_dedicated_process(xSignalHeaderRec *msg)
             // Set "fset" pointer to the new parameter set.
             l1a_l1s_com.dedic_set.fset = free_set;
 
-            // Give new msg code to L1S.
-            l1a_l1s_com.dedic_set.SignalCode = MPHC_IMMED_ASSIGN_REQ;
+            /*
+             * FreeCalypso: the following logic related to dynamic DSP
+             * patching has been reconstructed from our only available
+             * binary object version.
+             */
+          #if (L1_DYN_DSP_DWNLD == 1)
+            if (l1a.dyn_dwnld.semaphore_vect[DEDI_STATE_MACHINE]==GREEN)
+          #endif
+            {
+              // Give new msg code to L1S.
+              l1a_l1s_com.dedic_set.SignalCode = MPHC_IMMED_ASSIGN_REQ;
 
-            #if (TRACE_TYPE==5) && FLOWCHART
-              trace_flowchart_dedic(l1a_l1s_com.dedic_set.SignalCode);
-            #endif
+              #if (TRACE_TYPE==5) && FLOWCHART
+                trace_flowchart_dedic(l1a_l1s_com.dedic_set.SignalCode);
+              #endif
 
-            // Set confirmation message name.
-            l1a.confirm_SignalCode = MPHC_IMMED_ASSIGN_CON;
+              // Set confirmation message name.
+              l1a.confirm_SignalCode = MPHC_IMMED_ASSIGN_CON;
 
-            // step in state machine.
-            *state = WAIT_MSG;
+              // step in state machine.
+              *state = WAIT_MSG;
+            }
+          #if (L1_DYN_DSP_DWNLD == 1)
+            else
+            {
+              *state = WAIT_DYN_DWNLD;
+              #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4) || (TRACE_TYPE == 5))
+                if((trace_info.current_config->l1_dyn_trace) & (1<<L1_DYN_TRACE_DYN_DWNLD))
+                {
+                  char str[30];
+                  sprintf(str,"DEDI SM blocked by DYN DWNLD\r\n");
+                  #if(CODE_VERSION == SIMULATION)
+                     trace_fct_simu_dyn_dwnld(str);
+                  #else
+                     rvt_send_trace_cpy((T_RVT_BUFFER)str,trace_info.l1_trace_user_id,strlen(str),RVT_ASCII_FORMAT);
+                  #endif
+                }
+              #endif    // (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
+            }
+          #endif
           }
           break;
 
@@ -6206,6 +6233,7 @@ void l1a_dedicated_process(xSignalHeaderRec *msg)
             free_set->cell_desc.meas.acc         = 0;
             free_set->cell_desc.meas.nbr_meas    = 0;
 
+#if 0	/* FreeCalypso TCS211 reconstruction */
 #if (L1_FF_MULTIBAND == 0) // TBD 
             free_set->cell_desc.traffic_meas_beacon = l1a_l1s_com.last_input_level[radio_freq - l1_config.std.radio_freq_index_offset];
             free_set->cell_desc.traffic_meas        = l1a_l1s_com.last_input_level[radio_freq - l1_config.std.radio_freq_index_offset];
@@ -6218,6 +6246,7 @@ void l1a_dedicated_process(xSignalHeaderRec *msg)
             free_set->cell_desc.traffic_meas        = l1a_l1s_com.last_input_level[operative_radio_freq];
             
 #endif // #if (L1_FF_MULTIBAND == 1) else                    
+#endif
 
             // Download the message content.
             free_set->chan1.desc           = ((T_MPHC_SYNC_HO_REQ *)(msg->SigP))->handover_command.channel_desc_1;
@@ -6601,6 +6630,50 @@ void l1a_dedicated_process(xSignalHeaderRec *msg)
       }
       break;
 
+      /*
+       * FreeCalypso: the following logic related to dynamic DSP
+       * patching has been reconstructed from our only available
+       * binary object version.
+       */
+    #if (L1_DYN_DSP_DWNLD == 1)
+      case WAIT_DYN_DWNLD:
+      {
+        if((SignalCode==API_L1_DYN_DWNLD_FINISHED) && (l1a.dyn_dwnld.semaphore_vect[DEDI_STATE_MACHINE] == GREEN))
+        {
+          /* replicate the code that would have executed originally */
+
+          // Give new msg code to L1S.
+          l1a_l1s_com.dedic_set.SignalCode = MPHC_IMMED_ASSIGN_REQ;
+
+          #if (TRACE_TYPE==5) && FLOWCHART
+            trace_flowchart_dedic(l1a_l1s_com.dedic_set.SignalCode);
+          #endif
+
+          // Set confirmation message name.
+          l1a.confirm_SignalCode = MPHC_IMMED_ASSIGN_CON;
+
+          #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4) || (TRACE_TYPE == 5))
+            if((trace_info.current_config->l1_dyn_trace) & (1<<L1_DYN_TRACE_DYN_DWNLD))
+            {
+              char str[30];
+              sprintf(str,"DEDI SM un-blocked\r\n");
+              #if(CODE_VERSION == SIMULATION)
+                 trace_fct_simu_dyn_dwnld(str);
+              #else
+                 rvt_send_trace_cpy((T_RVT_BUFFER)str,trace_info.l1_trace_user_id,strlen(str),RVT_ASCII_FORMAT);
+              #endif
+            }
+          #endif    // (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
+
+          // step in state machine.
+          *state = WAIT_MSG;
+        }
+        // End process
+        end_process = 1;
+      }
+      break;
+    #endif
+
       case WAIT_MSG:
       {
         switch(SignalCode)
@@ -6764,7 +6837,7 @@ void l1a_dedicated_process(xSignalHeaderRec *msg)
             //         0   |    1   speech decoder
             //         0   |    0   no test
 
-            #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3) || (ANALOG == 11))
+            #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3) || (ANLG_FAM == 11))
               vbctl3 = ( (l1s_dsp_com.dsp_ndb_ptr ->d_dai_onoff & 0xE7FF) |
                        (dai_vbctl3[((T_OML1_START_DAI_TEST_REQ *)(msg->SigP))->tested_device] << 11) );
               l1s_dsp_com.dsp_ndb_ptr ->d_dai_onoff = vbctl3 | TRUE;
@@ -6793,7 +6866,7 @@ void l1a_dedicated_process(xSignalHeaderRec *msg)
             // DAI test is stopped "on fly".
             l1a_l1s_com.dedic_set.aset->dai_mode = 0;
 
-             #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+             #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
               // program vbctl3
               vbctl3 = (l1s_dsp_com.dsp_ndb_ptr ->d_dai_onoff & 0xE7FF);
               l1s_dsp_com.dsp_ndb_ptr ->d_dai_onoff = vbctl3 | TRUE;
@@ -7882,10 +7955,6 @@ void l1a_dedic6_process(xSignalHeaderRec *msg)
   UWORD8  *state      = &l1a.state[DEDIC_6];
   UWORD32  SignalCode = msg->SignalCode;
 
- // use only in packet transfer mode
-  // these variables memorize this SBCNF parameters.
-  static UWORD32  time_alignmt_mem;
-  static UWORD32  fn_offset_mem;
   //#if !L1_R99
   static UWORD8   nb_fb_attempt;
   //#endif
@@ -7981,8 +8050,8 @@ void l1a_dedic6_process(xSignalHeaderRec *msg)
       case NSYNC_CONFIG:
       {
         UWORD8   neigh_id = l1a_l1s_com.nsync.first_in_list;
-        UWORD32  time_alignmt =0; //omaps00090550
-        UWORD32  fn_offset=0; //omaps00090550;
+        UWORD32  time_alignmt;
+        UWORD32  fn_offset;
 
         // Request to acquire FB/SB or to confirm FB or SB from one ncell.
         //----------------------------------------------------------------
@@ -8268,6 +8337,12 @@ void l1a_dedic6_process(xSignalHeaderRec *msg)
 
         // disable all tasks
         l1a_l1s_com.l1s_en_task[NSYNC] = TASK_DISABLED;
+        l1a_l1s_com.l1s_en_task[FB51]  = TASK_DISABLED; 
+        l1a_l1s_com.l1s_en_task[FB26]  = TASK_DISABLED; 
+        l1a_l1s_com.l1s_en_task[SB51]  = TASK_DISABLED; 
+        l1a_l1s_com.l1s_en_task[SB26]  = TASK_DISABLED; 
+        l1a_l1s_com.l1s_en_task[SBCNF26]  = TASK_DISABLED; 
+        l1a_l1s_com.l1s_en_task[SBCNF51]  = TASK_DISABLED; 
 
         // Set semaphores for all neighbor relative task.
         l1a_l1s_com.task_param[NSYNC]= SEMAPHORE_SET;     // Set NSYNC   task semaphore.
@@ -8900,6 +8975,12 @@ void l1a_dedic6_process(xSignalHeaderRec *msg)
 
           // Disable neighbor sync. tasks.
           l1a_l1s_com.l1s_en_task[NSYNC] = TASK_DISABLED;
+          l1a_l1s_com.l1s_en_task[FB51]  = TASK_DISABLED; 
+          l1a_l1s_com.l1s_en_task[FB26]  = TASK_DISABLED; 
+          l1a_l1s_com.l1s_en_task[SB51]  = TASK_DISABLED; 
+          l1a_l1s_com.l1s_en_task[SB26]  = TASK_DISABLED; 
+          l1a_l1s_com.l1s_en_task[SBCNF26]  = TASK_DISABLED; 
+          l1a_l1s_com.l1s_en_task[SBCNF51]  = TASK_DISABLED; 
 
           if(array_size != NBR_NEIGHBOURS)
           {
@@ -8922,8 +9003,10 @@ void l1a_dedic6_process(xSignalHeaderRec *msg)
               {
                 l1a_l1s_com.nsync.list[j].status = NSYNC_FREE;
                 l1a_l1s_com.nsync.current_list_size --;
-				if (l1a_l1s_com.nsync.list[l1a_l1s_com.nsync.active_fb_id].radio_freq == radio_freq)
-                  l1a_l1s_com.l1s_en_task[FB26]  = TASK_DISABLED;
+                #if 0	/* FreeCalypso: match TCS211 object */
+                  if (l1a_l1s_com.nsync.list[l1a_l1s_com.nsync.active_fb_id].radio_freq == radio_freq)
+                    l1a_l1s_com.l1s_en_task[FB26]  = TASK_DISABLED;
+                #endif
               }
             }
           }
@@ -9000,6 +9083,7 @@ void l1a_dedic6_process(xSignalHeaderRec *msg)
                 (l1a.confirm_SignalCode == MPHC_ASYNC_HO_CON) ||
                 (l1a.confirm_SignalCode == MPHC_HANDOVER_FAIL_CON)) )
               {
+              #if 0	/* LoCosto L1 code, doesn't match TCS211 */
                 l1a_l1s_com.l1s_en_task[NSYNC] = TASK_DISABLED;
                 l1a_l1s_com.l1s_en_task[FB51]  = TASK_DISABLED;
                 l1a_l1s_com.l1s_en_task[FB26]  = TASK_DISABLED;
@@ -9057,6 +9141,17 @@ void l1a_dedic6_process(xSignalHeaderRec *msg)
                   // Enable neighbour sync task.
                   l1a_l1s_com.l1s_en_task[NSYNC] = TASK_ENABLED;
                 } // if
+              #else
+                /* code from TSM30 version, matches TCS211 object */
+                #if (L1_EOTD ==1)
+                  // FN and time reference are WRONG for remaining neigbours....
+                  // --> abort all.
+                  l1a_l1s_com.nsync.eotd_meas_session = FALSE;
+                #endif
+                // Step in state machine.
+                *state = STOP_NSYNC;                
+                break;
+              #endif
               } // if
 
             else
@@ -9391,6 +9486,8 @@ void l1a_dedic_ba_list_meas_process(xSignalHeaderRec *msg)
 
       case WAIT_INIT:
       {
+#if 0	/* FreeCalypso: match TCS211 object */
+
 #if (OP_SAP == 0)
         if (SignalCode == MPHC_UPDATE_BA_LIST)
 #else
@@ -9447,14 +9544,17 @@ void l1a_dedic_ba_list_meas_process(xSignalHeaderRec *msg)
           *state = WAIT_RESULT;
         }
         else
+#endif	/* FreeCalypso TCS211 reconstruction */
 
         if(SignalCode == L1C_DEDIC_DONE)
         // We enter DEDICATED mode.
         //-------------------------
         {
+#if 0	/* FreeCalypso: match TCS211 object */
 #if (CODE_VERSION == NOT_SIMULATION)
           if (l1a_l1s_com.ba_list.nbr_carrier == 0)
              return;
+#endif
 #endif
 
           // Set parameter synchro semaphore for D_BAMS task.

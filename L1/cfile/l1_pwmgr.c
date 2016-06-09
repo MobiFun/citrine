@@ -7,81 +7,22 @@
  *
  ************* Revision Controle System Header *************/
 
-// pinghua add these programe code section to put some sleep code into internal ram.
-/*
- * FreeCalypso: the Leonardo binary object version puts all of l1_pwmgr
- * into the regular run-from-flash text section, so we'll do the same
- * for now.
- */
-#if 0
-#pragma CODE_SECTION(l1s_sleep_manager,".emifconf")
-#pragma CODE_SECTION(EMIF_SetConfReg,".emifconf")
-#pragma CODE_SECTION(audio_madc_sleep,".emifconf")
-#pragma CODE_SECTION(Check_Peripheral_App,".emifconf")
-#pragma CODE_SECTION(DBB_Configure_DS,".emifconf")
-#pragma CODE_SECTION(DBB_Wakeup_DS,".emifconf")
-#pragma CODE_SECTION(l1ctl_pgm_clk32,".emifconf")
-#pragma CODE_SECTION(l1ctl_gauging,".emifconf")
-#pragma CODE_SECTION(GAUGING_Handler,".emifconf")
-#pragma CODE_SECTION(l1s_get_HWTimers_ticks,".emifconf")
-#pragma CODE_SECTION(l1s_adapt_traffic_controller,".emifconf")
-#pragma CODE_SECTION(l1s_wakeup,".emifconf")
-#pragma CODE_SECTION(l1s_wakeup_adjust,".emifconf")
-#pragma CODE_SECTION(l1s_compute_wakeup_ticks,".emifconf")
-#pragma CODE_SECTION(l1s_recover_Frame,".emifconf")
-#pragma CODE_SECTION(l1s_recover_HWTimers,".emifconf")
-#pragma CODE_SECTION(l1s_get_next_gauging_in_Packet_Idle,".emifconf")
-#pragma CODE_SECTION(l1s_gauging_decision_with_PNP,".emifconf")
-#pragma CODE_SECTION(l1s_gauging_decision_with_NP,".emifconf")
-#pragma CODE_SECTION(l1s_gauging_task,".emifconf")
-#pragma CODE_SECTION(l1s_gauging_task_end,".emifconf")
-// 2-03-2007 pinghua added end
-#endif
-
 #define  L1_PWMGR_C
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_START
 
-#include "config.h"
+#include "timer/timer2.h"
+#include "armio/armio.h"
+
+//omaps00090550 #include "l1_macro.h"
 #include "l1_confg.h"
 
-//sajal added .....................................
-  #if (CODE_VERSION == SIMULATION)
-  //#include "l1_pwmgr.h"
-//omaps00090550 #303 warning removal 	typedef unsigned char  UWORD_8;
-
-//	typedef volatile unsigned short REG_UWORD16; //omaps00090550
-//	#define REG16(A)    (*(REG_UWORD16*)(A))  //omaps00090550
-//	typedef volatile unsigned short REGISTER_UWORD16;  //omaps00090550
-
-	#define MAP_ULPD_REG	                0xFFFE2000	//ULPD registers start address            (CS4)
-	#define ULPD_SETUP_CLK13_REG   	       (*(REGISTER_UWORD16*)((REGISTER_UWORD16 *)(MAP_ULPD_REG) + 14))
-	#define ULPD_SETUP_SLICER_REG	       (*(REGISTER_UWORD16*)((REGISTER_UWORD16 *)(MAP_ULPD_REG) + 15))
-	#define ULPD_SETUP_VTCXO_REG           (*(REGISTER_UWORD16*)((REGISTER_UWORD16 *)(MAP_ULPD_REG) + 16))
-
-	#define MAP_CLKM_REG	          0xFFFFFD00	 //CLOCKM         registers start address  (CS31)
-	#define CLKM_CNTL_CLK_OFFSET         0x02
-	#define CLKM_CNTL_CLK_REG            REG16 (MAP_CLKM_REG + CLKM_CNTL_CLK_OFFSET)
-
-	#define EMIF_CONFIG_PWD_POS                      0
-	#define EMIF_CONFIG_PDE_POS                      1
-	#define EMIF_CONFIG_PREFETCH_POS                3
-	#define EMIF_CONFIG_FLUSH_PREFETCH_POS          5
-	#define EMIF_CONFIG_WP_POS                      6
-
-	#define            EMIF_CONFIG                              REG16(EMIF_CONFIG_BASE_ADDR+EMIF_CONFIG_REG_OFFSET)
-	#define EMIF_CONFIG_BASE_ADDR      0xFFFFFB00      //External Memory inter registers address (CS31)   (NEW)
-	#define EMIF_CONFIG_REG_OFFSET          0x02    // Emif configuration register
-
+#if (OP_L1_STANDALONE == 1)
+  #include "uart/serialswitch_core.h"
+#else
+  #include "uart/serialswitch.h"
 #endif
-//sajal added till here......
 
-
-
-#include "../../bsp/timer2.h"
-#include "../../bsp/armio.h"
-#include "../../serial/serialswitch.h"
-
-#if 0 //(OP_L1_STANDALONE == 0)
+#if (OP_L1_STANDALONE == 0)
   #include "sim/sim.h"
   #include "rv_swe.h"
 #endif
@@ -166,8 +107,8 @@
   #include "l1_types.h"
   #include "l1_const.h"
 
-  #include "../../bsp/abb+spi/abb.h"
-  /* #include "dma/sys_dma.h" */
+  #include "abb/abb.h"
+  #include "dma/sys_dma.h"
 
   #if (OP_BT == 1)
     #include "hci_ll_simul.h"
@@ -204,148 +145,26 @@
   #include "l1_tabs.h"
   #include "sys_types.h"
   #include "tpudrv.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #include "l1_msgty.h"
   #include "l1_proto.h"
   #include "l1_trace.h"
-  #include "../../bsp/timer.h"
-
-  #include "l1_pwmgr.h"
+  #include "timer/timer.h"
 
   #if (CHIPSET == 12) || (CHIPSET == 15)
     #include "timer/timer_sec.h"
     #include "inth/sys_inth.h"
 
-
-
-  #if(CHIPSET == 15)
-	#include "l1_pwmgr.h"
-  #if (OP_L1_STANDALONE == 0)
-        #include "lcc/lcc_api.h"
-  #endif
-
-	/* If NAND is enabled */
-	#if defined(RVM_DATALIGHT_SWE) || defined(RVM_NAN_SWE)
-		unsigned int temp_NAND_Reg1;
-		unsigned int temp_NAND_Reg2;
-		unsigned int temp_NAND_Reg3;
-	#endif
-
-
-
-
-
-	#if (OP_L1_STANDALONE == 1)
-
-	       const 	t_peripheral_interface  Peripheral_interface [MAX_PERIPHERAL]=
-		{
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			madc_outen_check,             /* MADC_AS_ID = 8 */
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-		};
-
-		const t_application_interface  Application_interface [MAX_APPLICATIONS] =
-		{
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-		};
-	#else  // For integrated Build
-		const t_peripheral_interface  Peripheral_interface [MAX_PERIPHERAL]=
-		{
-			uart_pwr_interface,
-#ifdef RVM_USB_SWE
-			usb_pwr_interface,
-#else
-            f_peripheral_interface_dummy,
-#endif
-			usim_pwr_interface,
-			i2c_pwr_interface,
-			lcd_pwr_interface,
-#ifdef RVM_CAMD_SWE
-#if (OP_L1_STANDALONE == 0)
-				camera_pwr_interface,
-#endif
-#else
-                f_peripheral_interface_dummy,
-#endif
-			backlight_pwr_interface,
-			f_peripheral_interface_dummy,
-			audio_madc_sleep,				/* MADC_AS_ID = 8 */
-			lcc_pwr_interface,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-			f_peripheral_interface_dummy,
-		};
-
-		const t_application_interface  Application_interface [MAX_APPLICATIONS] =
-		{
-#ifdef BTS
-
-			BTHAL_PM_HandleSleepManagerReq,
-#else
-			f_application_interface_dummy,
-#endif
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-			f_application_interface_dummy,
-		};
-
-
-	   #endif // (OP_L1_STANDALONE == 1)
-
-    #endif // omaps00090550 #14 -d removal (CHIPSET = 15)
-
+    /* FreeCalypso: massive #if (CHIPSET == 15) chunk removed */
 
   #else  //(CHIPSET == 12) || (CHIPSET == 15)
-    #include "../../bsp/iq.h"
-    #include "../../bsp/inth.h"
+    #include "inth/iq.h"
+    #include "inth/inth.h"
   #endif
 //  #include "timer1.h"
-  #include "../../bsp/ulpd.h"
-  #include "../../bsp/clkm.h"
-  #include "../../bsp/mem.h"
+  #include "ulpd/ulpd.h"
+  #include "clkm/clkm.h"
+  #include "memif/mem.h"
   #if L2_L3_SIMUL
     #include "hw_debug.h"
   #endif
@@ -413,7 +232,7 @@ extern T_DRP_REGS_STR  *drp_regs;
 #endif
 
 #if L1_GPRS
-  UWORD32 l1s_get_next_gauging_in_Packet_Idle(void);
+  WORD32 l1s_get_next_gauging_in_Packet_Idle(void);
 #endif
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_END
 
@@ -439,10 +258,17 @@ extern T_DRP_REGS_STR  *drp_regs;
   frac = (UWORD32)(((HF - (root*LF)) << 16) / LF);
 
 // previous ratio with frac + 0.5
+#if 0	/* original LoCosto code */
 #define RATIO2(HF,LF, root, frac)         \
 if(LF){                                       \
  root = (UWORD32)(HF/LF);                           \
   frac = (UWORD32)((((HF - (root*LF)) << 16) + 0.5*LF) / LF);}
+#else	/* FreeCalypso TCS211 reconstruction */
+#define RATIO2(HF,LF, root, frac)	\
+{					\
+  root = (UWORD32)(HF/LF);                           \
+  frac = (UWORD32)((((HF - (root*LF)) << 16) + 0.5*LF) / LF);}
+#endif
 
 #define HFTHEO(LF, root, frac, hftheo) \
   hftheo = root*LF + ((frac*LF) >>16);
@@ -456,620 +282,12 @@ if(LF){                                       \
   }
 
 
-
-#if (CODE_VERSION!=SIMULATION)
+#if 0	/* FreeCalypso TCS211 reconstruction */
 T_PWMGR_DEBUG l1_pwmgr_debug;
-#endif // NOT SIMULATION
-
-#if(CHIPSET == 15)
-
-/************************************************************/
-/* Configure EMIF for optimal consumption                   */
-/************************************************************/
-
-
-    void EMIF_SetConfReg(const UWORD8 wp,const UWORD8 flush_prefetch,const UWORD8 Prefetch_mode,const UWORD8 pde,const UWORD8 pwd_en)
-	{
-    UWORD16 Emif_config_Reg;
-    Emif_config_Reg  = (pwd_en << EMIF_CONFIG_PWD_POS | pde << EMIF_CONFIG_PDE_POS | Prefetch_mode << EMIF_CONFIG_PREFETCH_POS | flush_prefetch << EMIF_CONFIG_FLUSH_PREFETCH_POS | wp << EMIF_CONFIG_WP_POS);
-    /*p_Emifreg -> EMIF_Config =  (Emif_config_Reg & EMIF_CONFIG_REG_MASK );*/
-    EMIF_CONFIG              = Emif_config_Reg;
-	} // End of  EMIF_SetConfReg
-
-
-
-#if (OP_L1_STANDALONE == 1)  // API for Audio and MADC
-
-
-
-	T_AUDIO_OUTEN_REG audio_outen_pm;
-
-// L1 Standalone function for Configuring Audio registers.
-// Argument CLK_MASK checks if Audio path is active
-// Argument SLEEP_CMD configures Audio registers for optimal consumption
-// Argument WAKE_CMD reconfigure audio registers after wakeup
-
-	Uint8 madc_outen_check(Uint8 cmd)  {
-		BspTwl3029_ReturnCode returnVal = BSP_TWL3029_RETURN_CODE_FAILURE;
-	   /* I2C array */
-		Bsp_Twl3029_I2cTransReqArray i2cTransArray;
-		Bsp_Twl3029_I2cTransReqArrayPtr i2cTransArrayPtr= &i2cTransArray;
-
-		/* twl3029 I2C reg info struct */
-		BspTwl3029_I2C_RegisterInfo regInfo[8] ;
-		BspTwl3029_I2C_RegisterInfo* regInfoPtr = regInfo;
-		BspTwl3029_I2C_RegData shadow_pwronstatus, ston_bit;
-		Uint8 count = 0;//OMAPS90550-new
-
-
-		switch( cmd )  {
-
-			case CLK_MASK:
-				  returnVal = BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_PWRONSTATUS_OFFSET,
-									 &shadow_pwronstatus);
-				  ston_bit = (shadow_pwronstatus & (1 << BSP_TWL3029_LLIF_AUDIO_PWRONSTATUS_STON_OFFSET));
-
-				  if (ston_bit == 1) return DCXO_CLOCK;
-				  else return NO_CLOCK;
- // omaps00090550 		break;
-
-			case SLEEP_CMD:
-				/* store the output enable 1 register  */
-				returnVal = BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN1_OFFSET,
-									 &audio_outen_pm.outen1);
-
-				/* store the output enable 2 register  */
-				returnVal = BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN2_OFFSET,
-									 &audio_outen_pm.outen2);
-
-				/* store the output enable 3 register  */
-				returnVal = BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN3_OFFSET,
-								 &audio_outen_pm.outen3);
-
-
-				/* write default values into OUTEN1,OUTEN2 & OUTEN3 */
-				returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN1_OFFSET,
-	  											 BSP_TWL_3029_MAP_AUDIO_OUTEN1_DEFAULT,regInfoPtr++);
-				count++;
-
-				/* store the output enable 2 register  */
-				returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN2_OFFSET,
-	 											 BSP_TWL_3029_MAP_AUDIO_OUTEN2_DEFAULT,regInfoPtr++);
-				count++;
-
-				/* store the output enable 3 register  */
-				returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN3_OFFSET,
-								 BSP_TWL_3029_MAP_AUDIO_OUTEN3_DEFAULT,regInfoPtr++);
-				count++;
-
-
-				/* now request to I2C manager to write to Triton registers */
-				if (returnVal != BSP_TWL3029_RETURN_CODE_FAILURE)
-				{
-							returnVal = BspTwl3029_I2c_regInfoSend(regInfo,(Uint16)count,NULL,
-						   (BspI2c_TransactionRequest*)i2cTransArrayPtr);
-				}
-
-				if (returnVal == BSP_TWL3029_RETURN_CODE_SUCCESS) return SUCCESS;
-				else return FAILURE;
-
- // omaps00090550 		break;
-
-			case WAKE_CMD:
-				/* write default values into OUTEN1,OUTEN2 & OUTEN3 */
-				returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN1_OFFSET,
-	  											 audio_outen_pm.outen1,regInfoPtr++);
-				count++;
-
-				/* store the output enable 2 register  */
-				returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN2_OFFSET,
-	 											 audio_outen_pm.outen2,regInfoPtr++);
-				count++;
-
-				/* store the output enable 3 register  */
-				returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN3_OFFSET,
-								 audio_outen_pm.outen3,regInfoPtr++);
-				count++;
-
-
-
-				/* now request to I2C manager to write to Triton registers */
-				if (returnVal != BSP_TWL3029_RETURN_CODE_FAILURE)
-				{
-							returnVal = BspTwl3029_I2c_regInfoSend(regInfo,(Uint16)count,NULL,
-						   (BspI2c_TransactionRequest*)i2cTransArrayPtr);
-				}
-
-  				if (returnVal == BSP_TWL3029_RETURN_CODE_SUCCESS) return SUCCESS;
-  					else return FAILURE;
- // omaps00090550 			break;
-		}
-		return SUCCESS;//omaps00090550
-	}
-#else  // Integrated build  API for Audio and MADC
-
-// Full PS build function for Configuring Audio registers.
-// Argument CLK_MASK checks if Audio path is active
-// Argument SLEEP_CMD configures Audio registers for optimal consumption
-// Argument WAKE_CMD reconfigure audio registers after wakeup
-
-
-	T_AUDIO_OUTEN_REG audio_outen_pm;
-	BspTwl3029_I2C_RegData audio_ctrl3;
-
-	Uint8 audio_madc_sleep(Uint8 cmd)  {
-		BspTwl3029_ReturnCode returnVal = BSP_TWL3029_RETURN_CODE_FAILURE;
-	   /* I2C array */
-		//Bsp_Twl3029_I2cTransReqArray i2cTransArray;
-		//Bsp_Twl3029_I2cTransReqArrayPtr i2cTransArrayPtr= &i2cTransArray;
-
-		/* twl3029 I2C reg info struct */
-		//BspTwl3029_I2C_RegisterInfo regInfo[8] ;
-		//BspTwl3029_I2C_RegisterInfo* regInfoPtr = regInfo;
-		BspTwl3029_I2C_RegData shadow_pwronstatus, ston_bit;
-
-
-		Uint8 count = 0;
-
-
-		switch( cmd )  {
-
-			case CLK_MASK:
-				  returnVal = BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_PWRONSTATUS_OFFSET,
-									 &shadow_pwronstatus);
-				  ston_bit = (shadow_pwronstatus & (1 << BSP_TWL3029_LLIF_AUDIO_PWRONSTATUS_STON_OFFSET));
-
-				  if (ston_bit == 1) return DCXO_CLOCK;
-				  else return NO_CLOCK;
-//omaps00090550			break;
-
-			case SLEEP_CMD:
-    #if 0
-				/* store the output enable 1 register  */
-				returnVal = BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN1_OFFSET,
-									 &audio_outen_pm.outen1);
-
-				/* store the output enable 2 register  */
-				returnVal = BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN2_OFFSET,
-									 &audio_outen_pm.outen2);
-
-				/* store the output enable 3 register  */
-				returnVal = BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN3_OFFSET,
-								 &audio_outen_pm.outen3);
-
-				returnVal = BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN3_OFFSET,
-								 &audio_ctrl3);
-
-				if( audio_outen_pm.outen1 )
-				{
-					/* write default values into OUTEN1,OUTEN2 & OUTEN3 */
-					returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN1_OFFSET,
-	  											 BSP_TWL_3029_MAP_AUDIO_OUTEN1_DEFAULT,regInfoPtr++);
-					count++;
-				}
-
-				if( audio_outen_pm.outen2 )
-				{
-
-					/* store the output enable 2 register  */
-					returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN2_OFFSET,
-	 											 BSP_TWL_3029_MAP_AUDIO_OUTEN2_DEFAULT,regInfoPtr++);
-					count++;
-				}
-
-				if( audio_outen_pm.outen3 )
-				{
-					/* store the output enable 3 register  */
-					returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN3_OFFSET,
-								 BSP_TWL_3029_MAP_AUDIO_OUTEN3_DEFAULT,regInfoPtr++);
-					count++;
-				}
-
-				/* Selectively checking if INMODE is set or not. Write is queued only when INMODE(0-3)
-					is non-zero */
-				if( audio_ctrl3 & 0xf)
-				{
-					/* store the output enable 3 register  */
-					returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_CTRL3_OFFSET,
-								 BSP_TWL_3029_MAP_AUDIO_CTRL3_DEFAULT,regInfoPtr++);
-					count++;
-				}
-
-			    returnVal =  BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUX,BSP_TWL3029_MAP_AUX_REG_TOGGLE1_OFFSET,
-								1 << BSP_TWL3029_LLIF_AUX_REG_TOGGLE1_MADCR_OFFSET, regInfoPtr++);
-			    count++;
-
-                //Turn off the USB leakage currrent
-
-               // returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_PAGE0, BSP_TWL_3029_MAP_CKG_TESTUNLOCK_OFFSET,0xb6,regInfoPtr++);
-               // count++;
-
-                //returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_PAGE2, BSP_TWL3029_MAP_USB_PSM_EN_TEST_SET_OFFSET,0x80,regInfoPtr++);
-                //count++;
-
-             //   returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_PAGE2,BSP_TWL3029_MAP_USB_VBUS_EN_TEST_OFFSET,0x00,regInfoPtr++);
-             //   count++;
-
-                //returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_PAGE0, BSP_TWL_3029_MAP_CKG_TESTUNLOCK_OFFSET,0x00,regInfoPtr++);
-                //count++;
-
-				// now request to I2C manager to write to Triton registers
-				//if (returnVal != BSP_TWL3029_RETURN_CODE_FAILURE && !is_i2c_bus_locked())
-				if (returnVal != BSP_TWL3029_RETURN_CODE_FAILURE)
-				{
-					returnVal = BspTwl3029_I2c_regInfoSend(regInfo,(Uint16)count,NULL,
-						   (BspI2c_TransactionRequest*)i2cTransArrayPtr);
-				}
-
-				if (returnVal == BSP_TWL3029_RETURN_CODE_SUCCESS) return SUCCESS;
-				else return FAILURE;
-
 #endif
 
-//omaps00090550			break;
 
-			case WAKE_CMD:
-#if 0
-
-				if( audio_outen_pm.outen1 )
-				{
-					/* write default values into OUTEN1,OUTEN2 & OUTEN3 */
-					returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN1_OFFSET,
-	  											 audio_outen_pm.outen1,regInfoPtr++);
-					count++;
-				}
-
-				if( audio_outen_pm.outen2 )
-				{
-
-					/* store the output enable 2 register  */
-					returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN2_OFFSET,
-	 											 audio_outen_pm.outen2,regInfoPtr++);
-					count++;
-				}
-
-				if( audio_outen_pm.outen3 )
-				{
-					/* store the output enable 3 register  */
-					returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_OUTEN3_OFFSET,
-								 audio_outen_pm.outen3,regInfoPtr++);
-					count++;
-				}
-
-				/* Selectively checking if INMODE is set or not. Write is queued only when INMODE(0-3)
-					is non-zero */
-				if( audio_ctrl3 & 0xf)
-				{
-					/* store the output enable 3 register  */
-					returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUD, BSP_TWL_3029_MAP_AUDIO_CTRL3_OFFSET,
-								 audio_ctrl3,regInfoPtr++);
-					count++;
-				}
-
-
-				//wake up mode: Enable MADC
-				returnVal =  BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_AUX,BSP_TWL3029_MAP_AUX_REG_TOGGLE1_OFFSET,
-								1 << BSP_TWL3029_LLIF_AUX_REG_TOGGLE1_MADCS_OFFSET, regInfoPtr++);
-
-				count++;		//TI_SH added to set the madc on correctly
-
-                //Enable the USB leakage current after wake up
-
-              //  returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_PAGE0,BSP_TWL_3029_MAP_CKG_TESTUNLOCK_OFFSET,0xb6,regInfoPtr++);
-               // count++;
-
-               // returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_PAGE2,BSP_TWL3029_MAP_USB_VBUS_EN_TEST_OFFSET,0x0F,regInfoPtr++);
-               // count++;
-
-                //returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_PAGE2,BSP_TWL3029_MAP_USB_PSM_EN_TEST_CLR_OFFSET,0x80,regInfoPtr++);
-                //count++;
-
-               // returnVal = BspTwl3029_I2c_regQueWrite(BSP_TWL3029_I2C_PAGE0,BSP_TWL_3029_MAP_CKG_TESTUNLOCK_OFFSET,0x00,regInfoPtr++);
-               // count++;
-
-								// now request to I2C manager to write to Triton registers
-				//if (returnVal != BSP_TWL3029_RETURN_CODE_FAILURE && !is_i2c_bus_locked())
-				if (returnVal != BSP_TWL3029_RETURN_CODE_FAILURE)
-				{
-							returnVal = BspTwl3029_I2c_regInfoSend(regInfo,(Uint16)count,NULL,
-						   (BspI2c_TransactionRequest*)i2cTransArrayPtr);
-				}
-
-  				if (returnVal == BSP_TWL3029_RETURN_CODE_SUCCESS) return SUCCESS;
-  					else return FAILURE;
-#endif
-	break;
-		}
-	return SUCCESS;
-	}
-#endif  // API for Audio and MADC
-
-
-
-//Function to check status of Backlight Only Argument 0 is valid
-
-
-	Uint8 backlight_pwr_interface(Uint8 cmd)
-	{
-		BspTwl3029_I2C_RegData regData;
-
-
-		if(cmd == 0)
-		{
-			BspTwl3029_I2c_shadowRegRead(BSP_TWL3029_I2C_PAGE0,PWDNSTATUS,&regData);
-			if((regData) & 0x70)
-			{
-				return(DCXO_CLOCK);
-			}
-			else
-			{
-				return(NO_CLOCK);
-			}
-
-		}
-		else
-		{
-			return(SUCCESS);
-		}
-	}
-
-//Dummy Function for peripheral check to populate Function pointer table for unused APIs
-
-
-	Uint8  f_peripheral_interface_dummy(Uint8 cmd)
-	{
-		if(cmd == 0)
-		{
-			return(NO_CLOCK);
-		}
-		else
-		{
-			return(SUCCESS);
-		}
-
-	}
-
-//Dummy Function for Application check to populate Function pointer table for unused APIs
-
-	Uint8 f_application_interface_dummy(Uint8 cmd)
-	{
-		if(cmd == 0)
-		{
-			return(PM_INACTIVE);
-		}
-		else
-		{
-			return(SUCCESS);
-		}
-	}
-
-//Function not used as of now //OMAPS00090550
-	void Update_Sleep_Status( Uint8 ID, Uint8 state)
-	{
-		if(state)
-		{
-			SLEEP_STATE |= (state << ID); //omaps00090550 ! was present before
-		}
-		else
-		{
-			SLEEP_STATE &=((Uint8)~1 <<ID);  //omaps00090550
-		}
-	}
-
-//Function polls the status of the following peripherals to take
-//Sleep Decision:
-//UART, USB, I2C, LCD, Camera, Backlight, Audio Stereo path,
-//Bluetooth and USIM.
-//All peripherals either cause Deep Sleep or No Sleep.
-//Only USIM can also cause Big Sleep.
-
-
-
-	UWORD32 Check_Peripheral_App(void)
-	{
- #if (CODE_VERSION!=SIMULATION)
-    UWORD8 ret_value;
-		/* Check Peripherals */
-    ret_value = Peripheral_interface[UART_ID](CLK_MASK);
-    if(ret_value)
-    {
-      l1_pwmgr_debug.fail_id = UART_ID;
-      l1_pwmgr_debug.fail_ret_val = ret_value;
-      return(DO_NOT_SLEEP);
-    }
-    ret_value = Peripheral_interface[USB_ID](CLK_MASK);
-    if(ret_value)
-    {
-      l1_pwmgr_debug.fail_id = USB_ID;
-      l1_pwmgr_debug.fail_ret_val = ret_value;
-      return(DO_NOT_SLEEP);
-    }
-    ret_value = Peripheral_interface[I2C_ID](CLK_MASK);
-    if(ret_value)
-    {
-      l1_pwmgr_debug.fail_id = I2C_ID;
-      l1_pwmgr_debug.fail_ret_val = ret_value;
-      return(DO_NOT_SLEEP);
-    }
-    ret_value = Peripheral_interface[LCD_ID](CLK_MASK);
-    if(ret_value)
-    {
-      l1_pwmgr_debug.fail_id = LCD_ID;
-      l1_pwmgr_debug.fail_ret_val = ret_value;
-      return(DO_NOT_SLEEP);
-    }
-    ret_value = Peripheral_interface[CAMERA_ID](CLK_MASK);
-    if(ret_value)
-    {
-      l1_pwmgr_debug.fail_id = CAMERA_ID;
-      l1_pwmgr_debug.fail_ret_val = ret_value;
-      return(DO_NOT_SLEEP);
-    }
-    ret_value = Peripheral_interface[BACKLIGHT_ID](CLK_MASK);
-    if(ret_value)
-    {
-      l1_pwmgr_debug.fail_id = BACKLIGHT_ID;
-      l1_pwmgr_debug.fail_ret_val = ret_value;
-      return(DO_NOT_SLEEP);
-    }
-    ret_value = Peripheral_interface[MADC_AS_ID](CLK_MASK);
-    if(ret_value)
-    {
-      l1_pwmgr_debug.fail_id = MADC_AS_ID;
-      l1_pwmgr_debug.fail_ret_val = ret_value;
-			return(DO_NOT_SLEEP);
-		}
-/* check battery charger */
-	ret_value = Peripheral_interface[BCI_ID](CLK_MASK);
-	if(ret_value)
-	{
-	      l1_pwmgr_debug.fail_id = BCI_ID;
-	      l1_pwmgr_debug.fail_ret_val = ret_value;
-	      return(DO_NOT_SLEEP);
-	}
-
-		/* Check Applications */
-    ret_value = Application_interface[BT_Stack_ID](APP_ACTIVITY);
-    if(ret_value)
-    {
-      // L1_APPLICATION_OFFSET is added to distinguish Application interface
-      l1_pwmgr_debug.fail_id = BT_Stack_ID + (L1_PWMGR_APP_OFFSET);
-      l1_pwmgr_debug.fail_ret_val = ret_value;
-      return(DO_NOT_SLEEP);
-    }
-    ret_value = Peripheral_interface[USIM_ID](CLK_MASK);
-    if(ret_value)
-    {
-      l1_pwmgr_debug.fail_id = USIM_ID;
-      l1_pwmgr_debug.fail_ret_val = ret_value;
-			l1s.pw_mgr.why_big_sleep = BIG_SLEEP_DUE_TO_SIM;
-			return(FRAME_STOP);
-		}
-		else
-		{
-			return(CLOCK_STOP);
-		}
-   #endif //NOT SIMULATION
-	}
-
-//This function Configures  DBB for optimal Power Consumption
-//during Deep Sleep
-
-
-
-	void DBB_Configure_DS()
-	{
-	// FDP enabling and disabling of burst configuration in flash not required in Locosto
-       // Hardware Settings as per Power Bench
-
-		// Stop RNG oscillators
-		RNG_CONFIG &= 0xF03F;
-
-
-		/* Set GPIOs 19 to 22 as outputs to avoid floating pins */
-		GPIO1_CNTL_REG &= ~0x0078;
-
-		/* Set PD on VDR and VFSRX for VSP bus to avoid floating pins */
-		CONF_VDR	|= 0x0008;
-		CONF_VFSRX  |= 0x0008;
-
-		/* Set HASH in auto-idle */
-	    SHA_MASK = 0x0001;
-
-		/* Set DES in auto-idle */
-		DES_MASK = 0x0001;
-
-		/* Set RNG in auto-idle */
-		RNG_MASK = 0x0001;
-
-
-	/*	uart_in_pull_down(); */
-
-	#if defined(RVM_DATALIGHT_SWE) || defined(RVM_NAN_SWE)
-
-
-		temp_NAND_Reg1 = COMMAND_REG;
-		temp_NAND_Reg2 = CONTROL_REG;
-		temp_NAND_Reg3 = STATUS_IT_REG;
-
-		COMMAND_REG	 = 0x06;
-		CONTROL_REG	 = 0x0;
-		STATUS_IT_REG = 0x0;
-
-	#endif
-		// RANGA: All these bit fields should be replaced by macros
-		// Set DPLL in idle mode
-		// Cut C-PORT (new), IRQ, BRIDGE and TIMER clocks
-		/* Set DPLL in idle mode */
-		/* Cut C-PORT (new), IRQ, BRIDGE and TIMER clocks */
-		CLKM_CNTL_CLK_REG &= ~0x0010 ;
-		CLKM_CNTL_CLK_REG |= 0x000F ;
-
-		CNTL_APLL_DIV_CLK &= ~0x0001;  /* Disable APLL */
-
-         // Statements below are not required for the current hardware version.
-		 // This was done to solve the problem of DCXO taking 10 frames
-		 // to wake-up from Deep Sleep in older hardware versions.
-
-		 //DCXO_THRESH_L  = 0xC040;  // Setting DCXO Thresholds
-		 //DCXO_THRESH_H  = 0x051F;  // to solve Deep Sleep problem
-	}
-
-//This function Restores  DBB after wakeup from Deep Sleep
-
-
-	void DBB_Wakeup_DS()
-	{
-// FDP re-enabling and burst re-configuration are not required if FDP is disabled
-	//	during deep-sleep
-
-	  CLKM_CNTL_CLK_REG |= 0x0010 ; // Enable CPORT Clock
-
-	  CNTL_APLL_DIV_CLK |= 0x0001;  // Enable APLL clock
-
-		#if defined(RVM_DATALIGHT_SWE) || defined(RVM_NAN_SWE)
-
-		  // Restoring NAND
-			COMMAND_REG  = temp_NAND_Reg1;
-			CONTROL_REG  = temp_NAND_Reg2;
-			STATUS_IT_REG  = temp_NAND_Reg3;
-		  // Restoring NAND
-		#endif
-
-
-	}
-
-
-//This function shuts down APC Bandgap.Cannot be used for PG 1.0 Can be used only for PG 2.0
-
-
-void Disable_APC_BG()  //omaps00090550
-{
-	while (RHSW_ARM_CNF & DSP_PERIPH_LOCK)
-    RHSW_ARM_CNF |= ARM_PERIPH_LOCK;
-	APCCTRL2 &= ~BGEN;
-	return;
-}
-
-//This function enables APC Bandgap.Cannot be used for PG 1.0 Can be used only for PG 2.0
-
-void Enable_APC_BG() //omaps00090550
-{
-	while (RHSW_ARM_CNF & DSP_PERIPH_LOCK)
-    RHSW_ARM_CNF |= ARM_PERIPH_LOCK;
-	APCCTRL2 |= BGEN;
-	return;
-}
-
-#endif  //CHIPSET = 15
-
-
-
-
-
-
-
-
+/* FreeCalypso: massive #if (CHIPSET == 15) chunk removed */
 
 
 // l1ctl_pgm_clk32()
@@ -1087,7 +305,7 @@ void l1ctl_pgm_clk32(UWORD32 nb_hf, UWORD32 nb_32khz)
     // that's why nb_hf is divided by 3*l1_config.dpll
     // RATIO2(nb_hf/(3*l1_config.dpll),nb_32khz,inc_sixteen,inc_frac);
     // this line above is equal to the ligne below:
-    lf=(UWORD32)((UWORD32)(3*((UWORD32)((UWORD32)(l1_config.dpll)*nb_32khz))));  //OMAPS00090550
+    lf=(UWORD32)(3*l1_config.dpll*nb_32khz);
     RATIO2(nb_hf,lf,inc_sixteen,inc_frac);
 
     // integer part
@@ -1128,7 +346,7 @@ void l1ctl_gauging ( UWORD32 nb_32khz, UWORD32 nb_hf)
     static UWORD8  nb_gaug;                // number of gauging in ACQUIS
     static UWORD8  idx,i;                  // index
     static UWORD32 root, frac;             // ratio of HF and LF average
-    UWORD32 sumLF=0 , sumHF=0;                  // sum of HF and LF counts
+    UWORD32 sumLF, sumHF;                  // sum of HF and LF counts
     double nbHF_theo;
 
 
@@ -1185,15 +403,21 @@ void l1ctl_gauging ( UWORD32 nb_32khz, UWORD32 nb_hf)
 
 
         // allow [-500ppm,+100ppm] derive on 32Khz at startup.
-// Commenting section below for OMAPS00148004
-       /* if ( 
+#if 0	/* really old code, apparently */
+       if ( 
              (root > l1s.pw_mgr.c_clk_min || 
              (root == l1s.pw_mgr.c_clk_min &&
               frac >= l1s.pw_mgr.c_clk_init_min) ) &&
              (root < l1s.pw_mgr.c_clk_max || 
              (root == l1s.pw_mgr.c_clk_max &&
               frac <= l1s.pw_mgr.c_clk_init_max ) )
-			  */
+#elif 1	/* TCS211 reconstruction */
+       if (
+             (root == l1s.pw_mgr.c_clk_min &&
+                frac >= l1s.pw_mgr.c_clk_init_min ) ||
+             (root == l1s.pw_mgr.c_clk_max &&
+                frac <= l1s.pw_mgr.c_clk_init_max )
+#else	/* LoCosto code */
 	       if (
 	             (  l1s.pw_mgr.c_clk_min == l1s.pw_mgr.c_clk_max &&
 	                frac >= l1s.pw_mgr.c_clk_init_min &&
@@ -1206,6 +430,7 @@ void l1ctl_gauging ( UWORD32 nb_32khz, UWORD32 nb_hf)
                   root < l1s.pw_mgr.c_clk_max ) ||
                  (root == l1s.pw_mgr.c_clk_max &&
                   frac <= l1s.pw_mgr.c_clk_init_max ) ) )
+#endif
 	   )
         {
           l1s.pw_mgr.histo[idx  ][0] = nb_32khz; // init histo with the number of 32kHz
@@ -1326,10 +551,12 @@ void l1ctl_gauging ( UWORD32 nb_32khz, UWORD32 nb_hf)
     // WARNING WARNING, this case gauging_state == UPDATE modify the algo.
     // In case of trace the parameter root and frac are refresh.
     // it is not the case if no trace and it seems there is  mistake
+  #if 0	/* FreeCalypso TCS211 reconstruction */
     if (gauging_state == UPDATE)
     {
       RATIO2(sumHF,sumLF,root,frac);
     }
+  #endif
     //End of Warning.
     l1s.pw_mgr.hf = nb_hf ;
     l1s.pw_mgr.root = root ;
@@ -1337,8 +564,6 @@ void l1ctl_gauging ( UWORD32 nb_32khz, UWORD32 nb_hf)
   #endif // End Trace gauging
   }
 }
-
-
 
 
 /* GAUGING_Handler()                                     */
@@ -1383,8 +608,6 @@ void GAUGING_Handler(void)
 }
 
 
-
-
 // l1s_get_HWTimers_ticks()
 // Description:
 // evaluate the loading of the HW Timers for dep sleep
@@ -1396,8 +619,6 @@ void GAUGING_Handler(void)
 WORD32 l1s_get_HWTimers_ticks(void)
 {
 #if (CODE_VERSION != SIMULATION)
-  if (l1_config.pwr_mngt == PWR_MNGT)
-  {
     WORD32  timer1,timer2,watchdog,HWTimer;
     #if (CHIPSET == 12) || (CHIPSET == 15)
       WORD32  watchdog_sec;
@@ -1420,7 +641,9 @@ WORD32 l1s_get_HWTimers_ticks(void)
       cntlreg =  Dtimer1_Get_cntlreg();   // AND 0x1F
       if ( (cntlreg & D_TIMER_RUN) == D_TIMER_RUN)
       {
-        cntlreg = cntlreg&0x1F;
+        #if 0	/* match TCS211 object */
+          cntlreg = cntlreg&0x1F;
+        #endif
 	cntlreg >>= 2;   // take PTV
         cntlreg = 1 << (cntlreg+1);
         timer1 = (WORD32) ( ((Dtimer1_ReadValue()+1) * cntlreg * 0.0012308)  / 4.615 );
@@ -1432,7 +655,9 @@ WORD32 l1s_get_HWTimers_ticks(void)
       cntlreg =  Dtimer2_Get_cntlreg();
       if ( (cntlreg & D_TIMER_RUN) == D_TIMER_RUN)
       {
-        cntlreg = cntlreg&0x1F;
+        #if 0	/* match TCS211 object */
+          cntlreg = cntlreg&0x1F;
+        #endif
 	cntlreg >>= 2;   // take PTV
         cntlreg = 1 << (cntlreg+1);
         timer2 = (WORD32) ( ((Dtimer2_ReadValue()+1) * cntlreg * 0.0012308)  / 4.615 );
@@ -1481,11 +706,9 @@ WORD32 l1s_get_HWTimers_ticks(void)
       #endif
 
       return (HWTimer);
-  }
 #else // simulation part
   return (-1);  // no HW timer in simulation
 #endif
-return(-1); //omaps00090550
 }
 
 #if (GSM_IDLE_RAM != 0)  // Compile only if GSM_IDLE_RAM enabled
@@ -1523,6 +746,11 @@ return(-1); //omaps00090550
  }
 #endif
 
+UWORD32 last_wakeup = 0;
+UWORD8  wakeup_type;        // Type of the interrupt
+UWORD8  why_big_sleep;      // Type of the big sleep
+
+extern UWORD16 int_id;
 
 // l1s_sleep_manager()
 // Description:
@@ -1545,54 +773,35 @@ void l1s_sleep_manager()
     UWORD32 sleep_time = l1s.actual_time.fn;
   #endif
 
-#if(CHIPSET == 15)
-	Uint8   sleep_status;
-#endif
-
-#if (GSM_IDLE_RAM != 0)
-    T_L1S_GSM_IDLE_INTRAM * gsm_idle_ram_ctl;
-    BOOL flag_traffic_controller_state = 0;
-    gsm_idle_ram_ctl = &(l1s.gsm_idle_ram_ctl);
-
-    #if (AUDIO_TASK == 1)
-        gsm_idle_ram_ctl->l1s_full_exec = l1s.l1_audio_it_com;
-    #endif
-
-    if (gsm_idle_ram_ctl->l1s_full_exec == TRUE)
-      return;
-#endif
-
   if (l1_config.pwr_mngt == PWR_MNGT)
   {
 // Power management is enabled
-    WORD32   min_time, OSload, HWtimer,wake_up_time,min_time_gauging;
-    UWORD32  sleep_mode;
-    #if (ANALOG != 11)
+    WORD32   min_time, HWtimer,wake_up_time,min_time_gauging;
     WORD32   afc_fix;
-    #endif
-    UWORD32  uw32_store_next_time;
-   #if (CHIPSET != 15)
-    static UWORD32 previous_sleep = FRAME_STOP;
-   #endif
+    static UWORD32 previous_sleep = CLOCK_STOP;
     #if (W_A_CALYPSO_PLUS_SPR_19599 == 1)
       BOOL     extended_page_mode_state = 0;       //Store state of extended page mode
     #endif
-    #if (CHIPSET != 15)
     WORD32 time_from_last_wakeup=0;
-    #endif
+    UWORD32  sleep_mode;
 
     #if (OP_BT == 1)
       WORD32   hci_ll_status;
     #endif
 
     // init for trace and debug
-    l1s.pw_mgr.why_big_sleep = BIG_SLEEP_DUE_TO_UNDEFINED;
-    l1s.pw_mgr.wakeup_type   = WAKEUP_FOR_UNDEFINED;
+    why_big_sleep = BIG_SLEEP_DUE_TO_UNDEFINED;
+    wakeup_type   = WAKEUP_FOR_UNDEFINED;
 
-#if (CHIPSET != 15)
-    time_from_last_wakeup = (sleep_time - l1s.pw_mgr.wakeup_time + 42432) % 42432;
-#endif
+    time_from_last_wakeup = (sleep_time - last_wakeup + 42432) % 42432;
 
+    //=================================================
+    // check System (SIM, UART, LDC ..... )
+    //=================================================
+    sleep_mode =  Cust_check_system();
+
+    if (sleep_mode == DO_NOT_SLEEP)
+      return;
 
     #if (CODE_VERSION != SIMULATION)
 	      //=================================================
@@ -1606,83 +815,16 @@ void l1s_sleep_manager()
 	      //=================================================
 	      INT_DisableIRQ();
     #endif // NOT SIMULATION
-    //=================================================
-    // check System (SIM, UART, LDC ..... )
-    //=================================================
-#if (CHIPSET == 15)
-    #if (WCP_PROF == 0)
-	sleep_mode = Check_Peripheral_App();  /* For Locosto */
-    #else
-	sleep_mode = DO_NOT_SLEEP; //Check_Peripheral_App();  /* For Locosto */
-    #endif
-#else
-    sleep_mode =  Cust_check_system();
-#endif
 
-    #if (GSM_IDLE_RAM != 0)
-    //=================================================
-    // check System (SIM, UART, LDC ..... )
-    //=================================================
-    gsm_idle_ram_ctl->sleep_mode = sleep_mode;
-    #endif
-
-    if (sleep_mode == DO_NOT_SLEEP)
-      {
-        OS_system_Unprotect();
-        // free System structure
-        // Enable all IRQ
-        //l1_pwmgr_irq_dis_flag = 0;
-      #if (CODE_VERSION!=SIMULATION)
-        INT_EnableIRQ();
-        l1_trace_fail_sleep(FAIL_SLEEP_PERIPH_CHECK, l1_pwmgr_debug.fail_id, l1_pwmgr_debug.fail_ret_val);
-      #endif
-    #if (GSM_IDLE_RAM != 0)
-    gsm_idle_ram_ctl->os_load = 0;
-    gsm_idle_ram_ctl->hw_timer = 0;
-    #endif // GSM_IDLE_RAM
-    return;
-      }
-
-
-#if (OP_L1_STANDALONE == 0)
-    /*GC_Sleep(); 	OMAPS00134004*/
-#endif
     //=================================================
     // check OS loading
     //=================================================
-    OSload = OS_get_inactivity_ticks();
-  #if (CODE_VERSION!=SIMULATION)
-    if ((OSload >= 0) && (OSload <= MIN_SLEEP_TIME)){
-      l1_pwmgr_debug.fail_id = FAIL_SLEEP_DUE_TO_OSLOAD;
-      l1_pwmgr_debug.fail_ret_val = OSload;
-    }
-  #endif //NOT SIMULATION
+    min_time = OS_get_inactivity_ticks();
 
     //=================================================
     // check HW Timers loading
     //=================================================
     HWtimer= l1s_get_HWTimers_ticks();
-    #if (CODE_VERSION!=SIMULATION)
-    if (HWtimer == 0){
-      l1_pwmgr_debug.fail_id = FAIL_SLEEP_DUE_TO_HWTIMER;
-      l1_pwmgr_debug.fail_ret_val = 0;
-    }
-    #endif //NOT SIMULATION
-
-    #if (GSM_IDLE_RAM != 0)
-    //=================================================
-    // check OS loading
-    //=================================================
-    gsm_idle_ram_ctl->os_load = OSload;
-
-    //=================================================
-    // check HW Timers loading
-    //=================================================
-    gsm_idle_ram_ctl->hw_timer = HWtimer;
-    #endif // GSM_IDLE_RAM
-
-    if ((OSload > 0) && (OSload <= MIN_SLEEP_TIME))
-      OSload =0;
 
     //=================================================
     // check next gauging task for Packet Idle
@@ -1692,13 +834,6 @@ void l1s_sleep_manager()
     #else
       min_time_gauging = -1;   // not used
     #endif
-    #if (CODE_VERSION!=SIMULATION)
-    if (min_time_gauging == 0){
-      l1_pwmgr_debug.fail_id = FAIL_SLEEP_DUE_TO_MINTIMEGAUGING;
-      l1_pwmgr_debug.fail_ret_val = 0;
-    }
-    #endif // NOT SIMULATION
-
 
     #if (OP_BT == 1)
       hci_ll_status = hci_ll_ok_for_sleep();
@@ -1708,12 +843,10 @@ void l1s_sleep_manager()
     // in case big sleep is choosen (sleep mode == FRAME_STOP) because of UART or SIM,
     // return and wait end of this activity (few TDMA frames) then check on next TDMA frames
     // if MS can go in deep sleep
-    if (    !OSload
+    if (    !min_time
          || !HWtimer
          || !min_time_gauging
-		#if (CHIPSET != 15)
-         || ((sleep_mode != CLOCK_STOP) && ((l1s.pw_mgr.why_big_sleep == BIG_SLEEP_DUE_TO_UART) || (l1s.pw_mgr.why_big_sleep == BIG_SLEEP_DUE_TO_SIM)))
-		#endif
+         || (sleep_mode != CLOCK_STOP)
        #if (OP_BT == 1)
          || !hci_ll_status
        #endif
@@ -1721,80 +854,38 @@ void l1s_sleep_manager()
     {
 
 
-
-#if (OP_L1_STANDALONE == 0)
-	/*GC_Wakeup(); 	OMAPS00134004*/
-#endif
-
 #if (CODE_VERSION != SIMULATION)
         OS_system_Unprotect();
         // free System structure
         // Enable all IRQ
         INT_EnableIRQ();
         // Wake up UART
-#if (GSM_IDLE_RAM != 0)
-        // Traffic controller has to be enabled before calling SER_WakeUpUarts
-        // as this function can access the external RAM.
-        // Reset the flag that will indicates if an interrup will put the traffic
-        // controller ON during that time.
-        l1s.gsm_idle_ram_ctl.trff_ctrl_enable_cause_int = FALSE;
-        if (!READ_TRAFFIC_CONT_STATE)
-        {
-          flag_traffic_controller_state = 1;
-          CSMI_TrafficControllerOn();
-        }
-#endif
 
-#if (CHIPSET != 15)
         SER_WakeUpUarts();  // Wake up Uarts
-#else
-	// To be checked if this needs a change
-#endif
 
-#if (GSM_IDLE_RAM != 0)
-        // The traffic controller state shall be restored as it was before
-        // calling SER_WakeUpUarts. Do not disable it if an interrup occured
-        // in between and activated the traffic controller.
-        if ((flag_traffic_controller_state == 1) && (l1s.gsm_idle_ram_ctl.trff_ctrl_enable_cause_int == FALSE))
-        {
-          CSMI_TrafficControllerOff();
-        }
-        flag_traffic_controller_state = 0;
 #endif
-#endif
-      #if (CODE_VERSION!=SIMULATION)
-      l1_trace_fail_sleep(FAIL_SLEEP_OSTIMERGAUGE, l1_pwmgr_debug.fail_id, l1_pwmgr_debug.fail_ret_val);
-      #endif
       return;
     }
     //=================================================
     // Select sleep duration ....
     //=================================================
     // remember: -1 means no activity planned
-    min_time = OSload;
     //l1a_l1s_com.time_to_next_l1s_task is UW32, min_time is W32. Max value of l1a_l1s_com.time_to_next_l1s_task will be 2p31
     //and ,min_time max value will be 2p30. If min_time > l1a_l1s_com.time_to_next_l1s_task,
     //means MSB of l1a_l1s_com.time_to_next_l1s_task is zero. so, we can use- uw32_store_next_time & 0x7FFFFFFF
-    uw32_store_next_time = l1a_l1s_com.time_to_next_l1s_task;
 
-    if (min_time == -1) min_time = (WORD32)uw32_store_next_time;
-    //else                        MIN(min_time, (WORD32)l1a_l1s_com.time_to_next_l1s_task)
-    else
-    {
-     if(min_time > l1a_l1s_com.time_to_next_l1s_task) min_time = uw32_store_next_time & 0x7FFFFFFF;
-     //else min_time = min_time;
-    }
+    if (min_time == -1) min_time = l1a_l1s_com.time_to_next_l1s_task;
+    else		MIN(min_time, l1a_l1s_com.time_to_next_l1s_task)
     if (HWtimer != -1)          MIN(min_time, HWtimer)
     if (min_time_gauging != -1) MIN(min_time, min_time_gauging)
 
     #if (TRACE_TYPE !=0 ) && (TRACE_TYPE != 2) && (TRACE_TYPE != 3)
       // to trace the Wake up source
       // depending of min_time choose the wakeup_type
-      l1s.pw_mgr.wakeup_type = WAKEUP_FOR_L1_TASK;
-      if (min_time == l1a_l1s_com.time_to_next_l1s_task) l1s.pw_mgr.wakeup_type = WAKEUP_FOR_L1_TASK;
-      if (min_time == HWtimer)                           l1s.pw_mgr.wakeup_type = WAKEUP_FOR_HW_TIMER_TASK;
-      if (min_time == min_time_gauging)                  l1s.pw_mgr.wakeup_type = WAKEUP_FOR_GAUGING_TASK;
-      if (min_time == OSload)                            l1s.pw_mgr.wakeup_type = WAKEUP_FOR_OS_TASK;
+      wakeup_type = WAKEUP_FOR_OS_TASK;
+      if (min_time == l1a_l1s_com.time_to_next_l1s_task) wakeup_type = WAKEUP_FOR_L1_TASK;
+      if (min_time == HWtimer)                           wakeup_type = WAKEUP_FOR_HW_TIMER_TASK;
+      if (min_time == min_time_gauging)                  wakeup_type = WAKEUP_FOR_GAUGING_TASK;
     #endif
 
     //=================================================
@@ -1820,165 +911,34 @@ void l1s_sleep_manager()
          {
            // BIG SLEEP is chosen : check the reason
            l1s.pw_mgr.sleep_performed = FRAME_STOP;
-           if ((l1s.pw_mgr.enough_gaug != TRUE) && (l1a_l1s_com.mode != CS_MODE0))
-             l1s.pw_mgr.why_big_sleep = BIG_SLEEP_DUE_TO_GAUGING;
+           if (l1s.pw_mgr.enough_gaug != TRUE)
+             why_big_sleep = BIG_SLEEP_DUE_TO_GAUGING;
            else
-             l1s.pw_mgr.why_big_sleep = BIG_SLEEP_DUE_TO_DSP_TRACES;
+             why_big_sleep = BIG_SLEEP_DUE_TO_DSP_TRACES;
          }
       }
       if (l1s.pw_mgr.mode_authorized == BIG_SLEEP)
-        l1s.pw_mgr.why_big_sleep = BIG_SLEEP_DUE_TO_SLEEP_MODE;
+        why_big_sleep = BIG_SLEEP_DUE_TO_SLEEP_MODE;
 
       if ( ((l1s.pw_mgr.mode_authorized == BIG_SLEEP) && (sleep_mode >= FRAME_STOP)) ||
            ((l1s.pw_mgr.mode_authorized >= DEEP_SLEEP) && (sleep_mode == FRAME_STOP)) )
         l1s.pw_mgr.sleep_performed = FRAME_STOP;
 
 
-
-#if (CHIPSET != 15)
       if ((previous_sleep == CLOCK_STOP) && (time_from_last_wakeup < 7))
       {
 		#if (CODE_VERSION != SIMULATION)
-				  OS_system_Unprotect();    // free System structure
-				  INT_EnableIRQ();          // Enable all IRQ
-			#if (GSM_IDLE_RAM != 0)
-					  // Traffic controller has to be enabled before calling SER_WakeUpUarts
-					  // as this function can access the external RAM.
-					  // Reset the flag that will indicates if an interrup will put the traffic
-					  // controller ON during that time.
-					  l1s.gsm_idle_ram_ctl.trff_ctrl_enable_cause_int = FALSE;
-					  if (!READ_TRAFFIC_CONT_STATE)
-					  {
-						flag_traffic_controller_state = 1;
-						CSMI_TrafficControllerOn();
-					  }
-			#endif
+			  OS_system_Unprotect();    // free System structure
+			  INT_EnableIRQ();          // Enable all IRQ
 
+			  SER_WakeUpUarts();  // Wake up Uarts
 
-				SER_WakeUpUarts();  // Wake up Uarts
-
-
-
-			#if (GSM_IDLE_RAM != 0)
-					  // The traffic controller state shall be restored as it was before
-					  // calling SER_WakeUpUarts. Do not disable it if an interrup occured
-					  // in between and activated the traffic controller.
-					  if ((flag_traffic_controller_state == 1) && (l1s.gsm_idle_ram_ctl.trff_ctrl_enable_cause_int == FALSE))
-					  {
-						CSMI_TrafficControllerOff();
-					  }
-					  flag_traffic_controller_state = 0;
-			#endif
 		#endif // NOT SIMULATION
         return;
       }
-#else   // CHIPSET == 15
 
-
-
-	  if (l1s.pw_mgr.sleep_performed == CLOCK_STOP)
-	  {
-
-     #if (CODE_VERSION != SIMULATION)
-      UWORD8 local_sleep_status;
-
-
-     local_sleep_status = Peripheral_interface[UART_ID](SLEEP_CMD);
-     sleep_status = local_sleep_status;
-     if(local_sleep_status == 0)
-     {
-       l1_pwmgr_debug.fail_id = UART_ID;
-       l1_pwmgr_debug.fail_ret_val = sleep_status;
-     }
-
-     OS_system_Unprotect();
-     local_sleep_status = Peripheral_interface[MADC_AS_ID](SLEEP_CMD);  /* Call MADC & Stereo Sleep before I2C */
-     OS_system_protect();
-     sleep_status &= local_sleep_status;
-     if(local_sleep_status == 0)
-     {
-       l1_pwmgr_debug.fail_id = MADC_AS_ID;
-       l1_pwmgr_debug.fail_ret_val = sleep_status;
-     }
-
-     local_sleep_status = Peripheral_interface[USB_ID](SLEEP_CMD);
-     sleep_status &= local_sleep_status;
-     if(local_sleep_status == 0)
-     {
-       l1_pwmgr_debug.fail_id = USB_ID;
-       l1_pwmgr_debug.fail_ret_val = sleep_status;
-     }
-
-     local_sleep_status = Peripheral_interface[USIM_ID](SLEEP_CMD);
-     sleep_status &= local_sleep_status;
-     if(local_sleep_status == 0)
-     {
-       l1_pwmgr_debug.fail_id = USIM_ID;
-       l1_pwmgr_debug.fail_ret_val = sleep_status;
-     }
-
-     local_sleep_status = Peripheral_interface[I2C_ID](SLEEP_CMD);
-     sleep_status &= local_sleep_status;
-     if(local_sleep_status == 0)
-     {
-       l1_pwmgr_debug.fail_id = I2C_ID;
-       l1_pwmgr_debug.fail_ret_val = sleep_status;
-     }
-
-     local_sleep_status = Peripheral_interface[LCD_ID](SLEEP_CMD);
-     sleep_status &= local_sleep_status;
-     if(local_sleep_status == 0)
-     {
-       l1_pwmgr_debug.fail_id = LCD_ID;
-       l1_pwmgr_debug.fail_ret_val = sleep_status;
-     }
-
-     local_sleep_status = Peripheral_interface[CAMERA_ID](SLEEP_CMD);
-     sleep_status &= local_sleep_status;
-     if(local_sleep_status == 0)
-     {
-       l1_pwmgr_debug.fail_id = CAMERA_ID;
-       l1_pwmgr_debug.fail_ret_val = sleep_status;
-     }
-local_sleep_status = Peripheral_interface[BCI_ID](SLEEP_CMD);
-	 sleep_status &= local_sleep_status;
-	 if(local_sleep_status == 0)
-	 {
-	   l1_pwmgr_debug.fail_id = BCI_ID;
-	   l1_pwmgr_debug.fail_ret_val = sleep_status;
-     }
-
-    #endif // NOT SIMULATION
-		 if(!sleep_status)
-		 {
-
-	 #if (OP_L1_STANDALONE == 0)
-		/*GC_Wakeup(); 	OMAPS00134004*/
-	 #endif
-
-            #if (CODE_VERSION != SIMULATION)
-			OS_system_Unprotect();
-      l1_trace_fail_sleep(FAIL_SLEEP_PERIPH_SLEEP, l1_pwmgr_debug.fail_id, l1_pwmgr_debug.fail_ret_val);
-	        #endif // NOT SIMULATION
-			local_sleep_status = Peripheral_interface[UART_ID](WAKE_CMD); //OMAPS00090550
-			local_sleep_status = Peripheral_interface[USB_ID](WAKE_CMD); //OMAPS00090550
-			local_sleep_status = Peripheral_interface[USIM_ID](WAKE_CMD); //OMAPS00090550
-			local_sleep_status = Peripheral_interface[I2C_ID](WAKE_CMD);//OMAPS00090550
-			local_sleep_status = Peripheral_interface[LCD_ID](WAKE_CMD);//OMAPS00090550
-			local_sleep_status = Peripheral_interface[CAMERA_ID](WAKE_CMD);//OMAPS00090550
-			local_sleep_status = Peripheral_interface[MADC_AS_ID](WAKE_CMD);//OMAPS00090550
-            local_sleep_status = Peripheral_interface[BCI_ID](WAKE_CMD);     //wake up for battery charger interface//OMAPS00090550
-			INT_EnableIRQ();
-			return;
-		 }
-	  }
-
-#endif  // CHIPSET == 15
-
-#if (CHIPSET != 15)
      // update previous sleep
        previous_sleep = l1s.pw_mgr.sleep_performed;
-#endif
 
 
       #if (CODE_VERSION != SIMULATION)
@@ -2014,43 +974,9 @@ local_sleep_status = Peripheral_interface[BCI_ID](SLEEP_CMD);
            // (used when the MS lost the network: in this case the deep sleep may be used)
            if (l1a_l1s_com.mode == CS_MODE0)
            {
-              l1ctl_pgm_clk32(DEFAULT_HFMHZ_VALUE*8,DEFAULT_32KHZ_VALUE);
+              l1ctl_pgm_clk32(DEFAULT_HFMHZ_VALUE, DEFAULT_32KHZ_VALUE);
            }
-
-			#if (CHIPSET == 15)
-
-
-				/* These APIs are to be provided by BSP */
-			   // Disable_APC_BG();
-		        gpio_sleep();  //LCD_Floating Pin Fix
-			    DBB_Configure_DS();
-
-				//gpio_sleep();  //LCD_Floating Pin Fix
-
-			#endif
-
-
        }
-	   #if (CHIPSET == 15)
-	   else
-	   {
-		   //DBB_Configure_BS();  // Not used
-	   }
-	   #endif
-
-
-	     #if (CHIPSET == 15)
-          // The following command writes '0' into CKM_OCPCLK register in DRP;
-          // This is done before disabling DPLL
-          // CKM_OCPCLK (R/W) = Address 0xFFFF040C
-          //   Bit 0:    0 ?OCP clock is the DCXO clock.
-          //             1 ?OCP clock is the divided DSP clock
-          //   Bit 31:1  Not Used
-          (drp_regs->CKM_OCPCLKL) &= (~(0x1));
-          asm(" NOP");
-		      asm(" NOP");
-        #endif
-
 
 
        //==============================================
@@ -2058,17 +984,13 @@ local_sleep_status = Peripheral_interface[BCI_ID](SLEEP_CMD);
        //==============================================
        #if ((CHIPSET ==4) || (CHIPSET == 7) || (CHIPSET == 8) || (CHIPSET == 10) || (CHIPSET == 11) || (CHIPSET == 12) || (CHIPSET == 15))
          // disable DPLL (do not provide clk to DSP & RIF (Bridge))
-         ( * (volatile SYS_UWORD16 *) CLKM_CNTL_CLK) |= CLKM_DPLL_DIS ; /* CLKM_BRIDGE_DIS removed by Ranga*/
+         ( * (volatile SYS_UWORD16 *) CLKM_CNTL_CLK) |= CLKM_DPLL_DIS | CLKM_BRIDGE_DIS;
        #endif
 
        //==============================================
        // if CLOCK_STOP or FRAME-STOP : Asleep OMEGA (ABB)
        //==============================================
-       #if (ANALOG != 11)
        afc_fix = ABB_sleep(l1s.pw_mgr.sleep_performed, l1s.afc);
-       #else
-       // Nothing to be done as it should be handled by BSP_TWL3029_Configure_DS/BS
-       #endif
 
        #if (OP_BT == 1)
          hci_ll_go_to_sleep();
@@ -2077,9 +999,7 @@ local_sleep_status = Peripheral_interface[BCI_ID](SLEEP_CMD);
        // STop SPI .....
        //=================================================
 
-	#if(CHIPSET != 15)
-		*((volatile UWORD16 *)MEM_SPI)&=0xFFFE;  // SPI CLK DISABLED
-	#endif
+	*((volatile UWORD16 *)MEM_SPI)&=0xFFFE;  // SPI CLK DISABLED
      #endif // NOT SIMULATION
 
 
@@ -2109,12 +1029,7 @@ local_sleep_status = Peripheral_interface[BCI_ID](SLEEP_CMD);
       if ( l1s.pw_mgr.sleep_performed == CLOCK_STOP )
       {
         // DEEP SLEEP -> need time to setup afc and rf
-         wake_up_time = min_time - l1_config.params.rf_wakeup_tpu_scenario_duration;
-	 #if (CODE_VERSION == NOT_SIMULATION)
-	// Sleep one more TDMA - this is done as part of merging init and TPU control
-	      wake_up_time += 1;
-	 #endif
-
+         wake_up_time = min_time - l1_config.params.setup_afc_and_rf;
       }
       else
         // BIG SLEEP
@@ -2171,24 +1086,7 @@ local_sleep_status = Peripheral_interface[BCI_ID](SLEEP_CMD);
             #if (W_A_CALYPSO_BUG_01435 == 1)
               f_arm_sleep_cmd(DEEP_SLEEP);
             #else
-			  	//EMIF_SetConfReg ( 0, 0, 2 ,1 ,0);
-				asm(" NOP");
-				asm(" NOP");
-				asm(" NOP");
-				asm(" NOP");
             *((volatile UWORD16 *)CLKM_ARM_CLK) &= ~(CLKM_DEEP_SLEEP);  // set deep sleep mode
-				asm(" NOP");
-				asm(" NOP");
-				asm(" NOP");
-				asm(" NOP");
-// set deep sleep mode in case it is not set back by hardware
-                               *((volatile UWORD16 *)CLKM_ARM_CLK) |= (CLKM_DEEP_SLEEP);
-
-			    //EMIF_SetConfReg ( 0, 0, 2 ,0 ,0);
-            //  *((volatile UWORD16 *)CLKM_ARM_CLK) &= 0xFFFF;  // set deep sleep mode
-           //   *((volatile UWORD16 *)CLKM_ARM_CLK) &= ~(CLKM_MCLK_EN);     // For Debug only
-
-
             #endif
           #endif // OP_WCP
         }
@@ -2200,16 +1098,12 @@ local_sleep_status = Peripheral_interface[BCI_ID](SLEEP_CMD);
             //Shut down PERIPHERALS clocks UWIRE and ARMIO if authorized
             //==========================================================
 
-	  #if(CHIPSET != 15)
-		UWORD16  clocks_stopped; //OMAPS90550- new
+	    UWORD16  clocks_stopped; //OMAPS90550- new
             clocks_stopped = (l1s.pw_mgr.clocks & l1s.pw_mgr.modules_status);
             if((clocks_stopped & ARMIO_CLK_CUT) == ARMIO_CLK_CUT)
               *((volatile UWORD16 *)ARMIO_CNTL_REG) &= ~(ARMIO_CLOCKEN);
             if((clocks_stopped & UWIRE_CLK_CUT) == UWIRE_CLK_CUT)
               *((volatile UWORD16 *)(MEM_UWIRE + 0x8)) &= ~(0x0001);
-	  #else
-	     // Nothing to be done as it is taken care by Locosto_Configure_BS
-	  #endif
 
           #if (W_A_CALYPSO_BUG_01435 == 1)
             f_arm_sleep_cmd(BIG_SLEEP);
@@ -2244,25 +1138,13 @@ local_sleep_status = Peripheral_interface[BCI_ID](SLEEP_CMD);
       #endif
 
 
-	l1s_wakeup();
+      l1s_wakeup();
 
-       #if (CHIPSET == 15)
-         // The following command writes '1' into CKM_OCPCLK register in DRP;
-         // This is done after the DPLL is up
-         // CKM_OCPCLK (R/W) = Address 0xFFFF040C
-         //   Bit 0:    0 ?OCP clock is the DCXO clock.
-         //             1 ?OCP clock is the divided DSP clock
-         //   Bit 31:1  Not Used
-         (drp_regs->CKM_OCPCLKL) |= (0x1);
-     	   asm(" NOP");
-         asm(" NOP");
-       #endif
+      last_wakeup = l1s.actual_time.fn_mod42432;
 
-      l1s.pw_mgr.wakeup_time = l1s.actual_time.fn_mod42432;
-
-      if (l1s.pw_mgr.wakeup_time == sleep_time)
+      if (last_wakeup == sleep_time)
       // sleep duration == 0 -> wakeup in the same frame as sleep
-        l1s.pw_mgr.wakeup_type = WAKEUP_ASYNCHRONOUS_SLEEP_DURATION_0;
+        wakeup_type = WAKEUP_ASYNCHRONOUS_SLEEP_DURATION_0;
 
 #if (GSM_IDLE_RAM != 0)
 // Update counters with sleep duration -> will be used case expiration in next wake up phase before traffic controller is enabled by msg sending
@@ -2286,37 +1168,6 @@ if (l1s.pw_mgr.wakeup_type != WAKEUP_FOR_L1_TASK)
             // (*(volatile UWORD16 *)l1s_tpu_com.reg_cmd) = TPU_CTRL_CLK_EN;
 		UWORD8 local_sleep_status;
 
-
-			#if (CHIPSET == 15)
-
-               DBB_Wakeup_DS();
-
-			   gpio_wakeup(); //LCD_Floating Pin Fix
-
-				/* These APIs to be provided by BSP */
-				//Enable_APC_BG();
-				//BT_Wakeup();
-				//IRDA_Wakeup();
-				local_sleep_status = Peripheral_interface[UART_ID](WAKE_CMD); //OMAPS00090550
-				local_sleep_status = Peripheral_interface[USB_ID](WAKE_CMD);//OMAPS00090550
-				local_sleep_status = Peripheral_interface[USIM_ID](WAKE_CMD);//OMAPS00090550
-				local_sleep_status = Peripheral_interface[I2C_ID](WAKE_CMD);//OMAPS00090550
-				local_sleep_status = Peripheral_interface[LCD_ID](WAKE_CMD);//OMAPS00090550
-				local_sleep_status = Peripheral_interface[CAMERA_ID](WAKE_CMD);//OMAPS00090550
-
-				OS_system_Unprotect();
-				local_sleep_status = Peripheral_interface[MADC_AS_ID](WAKE_CMD);//OMAPS00090550
-				local_sleep_status = Peripheral_interface[BCI_ID](WAKE_CMD);  //wake up for battery charger//OMAPS00090550
-          			OS_system_protect();
- //added for OMAPS00090550 warning removal
-     if(local_sleep_status == 0)
-     {
-       l1_pwmgr_debug.fail_ret_val = local_sleep_status;
-     }
-     //upto this OMAPS00090550
-
-
-			#endif
             l1dmacro_RF_wakeup();
 
         }
@@ -2334,18 +1185,12 @@ if (l1s.pw_mgr.wakeup_type != WAKEUP_FOR_L1_TASK)
         //=================================================
         //if CLOCK_STOP or FRAME-STOP : ReStart SPI
         //=================================================
-	#if(CHIPSET != 15)
-		*((volatile UWORD16 *)MEM_SPI)|=0x0001;  // SPI CLK ENABLED
-	#endif
+	*((volatile UWORD16 *)MEM_SPI)|=0x0001;  // SPI CLK ENABLED
 
         //=================================================
         // Wake up ABB
         //=================================================
-        #if (ANALOG != 11)
         ABB_wakeup(l1s.pw_mgr.sleep_performed, l1s.afc);
-        #else
-        // Nothing to be done here as it will be handled by BSP_TWL3029_Wakeup_DS/BS
-        #endif
 
         #if (OP_BT == 1)
           hci_ll_wake_up();
@@ -2376,15 +1221,14 @@ if (l1s.pw_mgr.wakeup_type != WAKEUP_FOR_L1_TASK)
          if (l1a_l1s_com.mode != CS_MODE0) // in this mode the trace prevent from going to deep sleep due to UART activity
          {
            #if (GSM_IDLE_RAM == 0)
-             l1_trace_sleep(sleep_time,l1s.actual_time.fn_mod42432,l1s.pw_mgr.sleep_performed,l1s.pw_mgr.wakeup_type,l1s.pw_mgr.why_big_sleep, l1s.pw_mgr.wake_up_int_id);
+             l1_trace_sleep(sleep_time, l1s.actual_time.fn_mod42432, l1s.pw_mgr.sleep_performed, wakeup_type, why_big_sleep);
            #else
-             l1_trace_sleep_intram(sleep_time,l1s.actual_time.fn_mod42432,l1s.pw_mgr.sleep_performed,l1s.pw_mgr.wakeup_type,l1s.pw_mgr.why_big_sleep, l1s.pw_mgr.wake_up_int_id);
+             l1_trace_sleep_intram(sleep_time, l1s.actual_time.fn_mod42432, l1s.pw_mgr.sleep_performed, wakeup_type, why_big_sleep);
              #if (TRACE_TYPE==1) || (TRACE_TYPE==4)
                l1s_trace_mftab();
              #endif
            #endif
          }
-         l1s.pw_mgr.wake_up_int_id = 0;
        #endif
 
        #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
@@ -2427,12 +1271,7 @@ if (l1s.pw_mgr.wakeup_type != WAKEUP_FOR_L1_TASK)
 #endif
 
 
-
-#if (CHIPSET != 15)
         SER_WakeUpUarts();  // Wake up Uarts
-#else
-	// To be checked if this needs a change
-#endif
 
 
 #if (GSM_IDLE_RAM != 0)
@@ -2474,13 +1313,13 @@ void l1s_wakeup(void)
       #endif
 
       #if (CHIPSET == 12) || (CHIPSET == 15)
-        l1s.pw_mgr.wake_up_int_id = ((* (SYS_UWORD16 *) C_INTH_B_IRQ_REG) & C_INTH_SRC_NUM);// For debug: Save IRQ that causes the waking up
-        if ( l1s.pw_mgr.wake_up_int_id >= 256 )
-          l1s.pw_mgr.wake_up_int_id = ((* (SYS_UWORD16 *) C_INTH_B_FIQ_REG) & C_INTH_SRC_NUM)+100;
+        int_id = ((* (SYS_UWORD16 *) C_INTH_B_IRQ_REG) & C_INTH_SRC_NUM);// For debug: Save IRQ that causes the waking up
+        if ( int_id >= 256 )
+          int_id = ((* (SYS_UWORD16 *) C_INTH_B_FIQ_REG) & C_INTH_SRC_NUM)+100;
       #else
-        l1s.pw_mgr.wake_up_int_id = ((* (SYS_UWORD16 *) INTH_B_IRQ_REG) & INTH_SRC_NUM);// For debug: Save IRQ that causes the waking up
-        if ( l1s.pw_mgr.wake_up_int_id >= 256 )
-          l1s.pw_mgr.wake_up_int_id = ((* (SYS_UWORD16 *) INTH_B_FIQ_REG) & INTH_SRC_NUM)+100;
+        int_id = ((* (SYS_UWORD16 *) INTH_B_IRQ_REG) & INTH_SRC_NUM);// For debug: Save IRQ that causes the waking up
+        if ( int_id >= 256 )
+          int_id = ((* (SYS_UWORD16 *) INTH_B_FIQ_REG) & INTH_SRC_NUM)+100;
       #endif
 
       // clear pending IQ_FRAME it and unmask it
@@ -2564,7 +1403,7 @@ void l1s_wakeup(void)
 
       #if (TRACE_TYPE !=0 ) && (TRACE_TYPE != 2) && (TRACE_TYPE != 3)
         if ((l1s.pw_mgr.frame_adjust == TRUE))
-          l1s.pw_mgr.wakeup_type = WAKEUP_BY_ASYNC_INTERRUPT;
+          wakeup_type = WAKEUP_BY_ASYNC_INTERRUPT;
       #endif
 
 
@@ -2672,8 +1511,6 @@ BOOL l1s_compute_wakeup_ticks(void)
 {
  UWORD16 temp_clear_intr;
 #if (CODE_VERSION != SIMULATION)
-  if (l1_config.pwr_mngt == PWR_MNGT)
-  {
      // read current value of count down counter
      l1s.pw_mgr.sleep_duration  = READ_ULDP_TIMER_VALUE;
 
@@ -2684,12 +1521,12 @@ BOOL l1s_compute_wakeup_ticks(void)
        l1s.pw_mgr.sleep_duration  = READ_ULDP_TIMER_INIT;
        // INTH is different from the ULPD interrupt -> aynchronous wakeup
      #if (CHIPSET == 12) || (CHIPSET == 15)
-       if (l1s.pw_mgr.wake_up_int_id != C_INTH_TGSM_IT)
+       if (int_id != C_INTH_TGSM_IT)
      #else
-       if (l1s.pw_mgr.wake_up_int_id != IQ_TGSM)
+       if (int_id != IQ_TGSM)
      #endif
-            {
-         l1s.pw_mgr.wakeup_type = WAKEUP_ASYNCHRONOUS_ULPD_0;
+       {
+         wakeup_type = WAKEUP_ASYNCHRONOUS_ULPD_0;
          // RESET IT_ULPD in ULPD module
         // The ULDP_GSM_TIMER_IT_REG is a read only register and is cleared on reading the register
         temp_clear_intr =(* (volatile UWORD16 *) ULDP_GSM_TIMER_IT_REG) & ULPD_IT_TIMER_GSM;
@@ -2698,13 +1535,13 @@ BOOL l1s_compute_wakeup_ticks(void)
            F_INTH_RESET_ONE_IT(C_INTH_TGSM_IT);
            // RESET IQ_FRAME in IT register
            F_INTH_RESET_ONE_IT(C_INTH_FRAME_IT);
-           l1s.pw_mgr.wake_up_int_id = C_INTH_TGSM_IT;
+           int_id = C_INTH_TGSM_IT;
          #else
            // RESET IQ_TGSM (IT_ULPD) in IT register
            INTH_RESETONEIT(IQ_TGSM);
            // RESET IQ_FRAME in IT register
            INTH_RESETONEIT(IQ_FRAME);
-           l1s.pw_mgr.wake_up_int_id = IQ_TGSM;
+           int_id = IQ_TGSM;
          #endif
          return(FALSE);
        }
@@ -2717,9 +1554,9 @@ BOOL l1s_compute_wakeup_ticks(void)
        l1s.pw_mgr.sleep_duration  = READ_ULDP_TIMER_INIT - l1s.pw_mgr.sleep_duration;
        return(TRUE);
      }
-  }
-#endif
+#else
  return(FALSE);//omaps00090550
+#endif
 }
 
 /*-------------------------------------------------------*/
@@ -2817,16 +1654,6 @@ void l1s_recover_HWTimers(void)
     double duration;
 
 
-
-
-
-
-
-
-
-
-
-
     //WORD32 old;- OMAPS 90550 new
 
     // read Hercules Timers & Watchdog
@@ -2839,14 +1666,18 @@ void l1s_recover_HWTimers(void)
     cntlreg = Dtimer1_Get_cntlreg();
     if ( (cntlreg & D_TIMER_RUN) == D_TIMER_RUN)
     {
-      cntlreg = cntlreg&0x1F;
+      #if 0	/* match TCS211 object */
+        cntlreg = cntlreg&0x1F;
+      #endif
       cntlreg >>= 2;   // take PTV
       cntlreg = 1 << (cntlreg+1);  // compute 2^(PTV+1)
       // convert sleep duration in HWTimers ticks....
       duration = (l1s.pw_mgr.sleep_duration * 4.615 - (DELTA_TIME/32.768)) / (cntlreg * 0.0012308);
-      if (duration < 0.0){
-        duration = 0.0; // This needs to be done for all the timers
-      }
+      #if 0	/* match TCS211 object */
+        if (duration < 0.0){
+          duration = 0.0; // This needs to be done for all the timers
+        }
+      #endif
       timer1 = Dtimer1_ReadValue() - (UWORD16) duration;
 
       Dtimer1_Start(0);
@@ -2857,14 +1688,18 @@ void l1s_recover_HWTimers(void)
     cntlreg = Dtimer2_Get_cntlreg();
     if ( (cntlreg & D_TIMER_RUN) == D_TIMER_RUN)
     {
-      cntlreg = cntlreg&0x1F;
+      #if 0	/* match TCS211 object */
+        cntlreg = cntlreg&0x1F;
+      #endif
       cntlreg >>= 2;   // take PTV
       cntlreg = 1 << (cntlreg+1);
       // convert sleep duration in HWTimers ticks....
       duration = (l1s.pw_mgr.sleep_duration * 4.615 - (DELTA_TIME/32.768)) / (cntlreg * 0.0012308);
-      if (duration < 0.0){
-        duration = 0.0; // This needs to be done for all the timers
-      }
+      #if 0	/* match TCS211 object */
+        if (duration < 0.0){
+          duration = 0.0; // This needs to be done for all the timers
+        }
+      #endif
       timer2 = Dtimer2_ReadValue() - (UWORD16) duration;
       Dtimer2_Start(0);
       Dtimer2_WriteValue(timer2);
@@ -2924,19 +1759,21 @@ void l1s_recover_HWTimers(void)
 /*  return -1 means no activity planned                  */
 /*-------------------------------------------------------*/
 #if L1_GPRS
-  UWORD32 l1s_get_next_gauging_in_Packet_Idle(void)
+  UWORD32 next_gauging_scheduled_for_PNP; // gauging for Packet Idle
+
+  WORD32 l1s_get_next_gauging_in_Packet_Idle(void)
   {
     WORD32 next_gauging;
 
     // gauging performed with Normal Paging (we are in Idle mode)
     if (l1a_l1s_com.l1s_en_task[NP] == TASK_ENABLED)
-      return ((UWORD32)(-1)); // no activity planned   //omaps00090550
+      return (-1); // no activity planned
 
     // we are not in Packet Idle Mode
     if (l1a_l1s_com.l1s_en_task[PNP] != TASK_ENABLED)
-      return ((UWORD32)(-1)); // no activity planned   //omaps00090550
+      return (-1); // no activity planned
 
-    next_gauging = l1s.next_gauging_scheduled_for_PNP - l1s.actual_time.fn ;
+    next_gauging = next_gauging_scheduled_for_PNP - l1s.actual_time.fn ;
     if (next_gauging < 0)
       next_gauging+=MAX_FN;
 
@@ -2957,20 +1794,13 @@ void l1s_recover_HWTimers(void)
 #if L1_GPRS
   BOOL l1s_gauging_decision_with_PNP(void)
   {
-  #define TWO_SECONDS_IN_FRAME (UWORD16)(2000/4.615)
-  WORD32  time_to_next_gauging=0;  //changed to WORD32- sajal
-    // It's time to perform the next gauging
-  time_to_next_gauging = l1s.next_gauging_scheduled_for_PNP - l1s.actual_time.fn;
-  if (time_to_next_gauging < 0)
-  {
-    time_to_next_gauging += MAX_FN;
-  }
+    #define TWO_SECONDS_IN_FRAME (UWORD16)(2000/4.615)
 
-  if( (time_to_next_gauging == 0) || (time_to_next_gauging > TWO_SECONDS_IN_FRAME))
-  {
-
-      l1s.next_gauging_scheduled_for_PNP = l1s.actual_time.fn + TWO_SECONDS_IN_FRAME;
-      if (l1s.next_gauging_scheduled_for_PNP >= MAX_FN) l1s.next_gauging_scheduled_for_PNP -= MAX_FN;
+    /* reconstructed TCS211 code */
+    if (l1s.actual_time.fn >= next_gauging_scheduled_for_PNP)
+    {
+      next_gauging_scheduled_for_PNP = l1s.actual_time.fn + TWO_SECONDS_IN_FRAME;
+      if (next_gauging_scheduled_for_PNP >= MAX_FN) next_gauging_scheduled_for_PNP -= MAX_FN;
       return (TRUE);
     }
 
@@ -2998,7 +1828,8 @@ BOOL l1s_gauging_decision_with_NP(void)
     // A gauging session is needed : start gauging session with this paging bloc !
 
         //Nina modify to save power, not forbid deep sleep, only force gauging in next paging
-#if 0
+	// FreeCalypso TCS211 reconstruction: Nina's change reverted
+#if 1
 	if (l1s.pw_mgr.enough_gaug != TRUE)
     time_to_gaug = 0;
 #else
@@ -3207,6 +2038,3 @@ void l1s_gauging_task_end(void)
 
 //#pragma GSM_IDLE_DUPLICATE_FOR_INTERNAL_RAM_END
 #endif
-
-
-

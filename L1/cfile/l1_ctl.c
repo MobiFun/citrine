@@ -9,9 +9,8 @@
 
 #define  L1_CTL_C
 
-#include "config.h"
-#include "l1_confg.h"
 #include "l1_macro.h"
+#include "l1_confg.h"
 
 #if (CODE_VERSION == SIMULATION)
   #include <string.h>
@@ -104,7 +103,7 @@
     #include "l1aac_defty.h"
   #endif
   #include "l1_defty.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"
@@ -147,6 +146,18 @@ extern WORD16 drp_gain_correction(UWORD16 arfcn, UWORD8 lna_off, UWORD16 agc);
 /************************************/
 /* Automatic frequency compensation */
 /************************************/
+
+/*
+ * FreeCalypso TCS211 reconstruction: the following 3 functions
+ * have been added in the LoCosto version of this module.
+ * We have conditioned them out in order to match the original
+ * TCS211 object; their uses have been conditioned out as well.
+ *
+ * These functions will need to re-enabled when their uses are
+ * re-enabled.
+ */
+
+#if 0
 
 #define L1_WORD16_POS_MAX (32767)
 #define L1_WORD16_NEG_MAX (-32768)
@@ -225,7 +236,7 @@ INLINE WORD32 Sat_Mult_20sign_16unsign(WORD32 val1, UWORD32 val2)
   }
   return(result);
 }
-
+#endif
 
 INLINE WORD32 Add_40b( WORD32 guard1guard2, WORD32 lvar1, WORD32 lvar2, WORD16 *guardout )
 {
@@ -395,7 +406,9 @@ WORD16 l1ctl_afc (UWORD8 phase, UWORD32 *frame_count, WORD16 angle, WORD32 snr, 
     static UWORD32 M_Count;
     static WORD32  psi_avg[C_PSI_AVG_SIZE_D+1]; // Data history array
     static WORD16  B_Count;                     // Counter for consecutive SNR below C_thr_snr
-    UWORD16 L = 10433;                          // Gain algo2
+    #if 0	/* LoCosto added var */
+      UWORD16 L = 10433;                          // Gain algo2
+    #endif
     static UWORD16 first_avg;
     static UWORD16 good_snr;
 
@@ -409,13 +422,13 @@ WORD16 l1ctl_afc (UWORD8 phase, UWORD32 *frame_count, WORD16 angle, WORD32 snr, 
     UWORD8 physical_band_id;
 #endif
 
-
+#if 0	/* LoCosto added var init */
 //Set AFC close loop gain for ALGO_AFC_LQG_PREDICTOR.
 if(l1_mode==I_MODE)//MS is in Idle mode
 L = 41732; //F0.20 L=41732/2^20 = 0.04
 else //All other modes than Idle
 L = 10433; //F0.20 L=10433/2^20 = 0.01
-
+#endif
 
 #if (L1_FF_MULTIBAND == 0)
 
@@ -656,9 +669,7 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
      } /* end else AFC_INIT*/
 
      *frame_count=0;
-//Locosto
-//     return(Psi_quant[C_N_del]>>3); /* F16.0 */
-     return(CONVERT_PSI_QUANT(Psi_quant[C_N_del])); /* F16.0 to 14.2 or 13.3 */
+     return(Psi_quant[C_N_del]>>3); /* F16.0 */
 
 #else
 
@@ -678,10 +689,12 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
             case AFC_INIT_MIN     :
             quant_avg = 0;
             M_Count = 0;
-                for (i = 0; i <= C_PSI_AVG_SIZE_D ; i++)  //omaps00090550
-                    psi_avg[i] = 0;
-                first_avg = 1;
-                good_snr = 0;
+#if 0	/* present in LoCosto but not in TCS211 */
+            for (i = 0; i <= C_PSI_AVG_SIZE_D ; i++)  //omaps00090550
+                psi_avg[i] = 0;
+#endif
+            first_avg = 1;
+            good_snr = 0;
 
             // DAC search algorithm is as follows - up to 12 attempts are made
             // DAC search algorithm uses three values : DAC_center -> DAC_max -> DAC_min ->
@@ -752,11 +765,21 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
                     ((WORD32) (((WORD32)(var_32 + (1<<18))) / (1<<19)));
                 var_16 = var_16 * 8;
 #endif
+
+              #if 0	/* LoCosto code with saturation */
                 if (var_16 > C_max_step)
                     psi_quant = Add_Sat_sign_16b(psi_quant,C_max_step);
                 else if (var_16 < C_min_step)
                     psi_quant = Add_Sat_sign_16b(psi_quant,C_min_step);
                 else psi_quant = Add_Sat_sign_16b(psi_quant,var_16); /* F13.3 */
+              #else	/* matching TCS211 */
+                if (var_16 > C_max_step)
+                    psi_quant += C_max_step;
+                else if (var_16 < C_min_step)
+                    psi_quant += C_min_step;
+                else psi_quant += var_16; /* F13.3 */
+              #endif
+
                 /* F0.32 * F13.3 = F5.35    */
                 psi_past[C_N_del]=Mult_40b(l1_config.params.psi_st_32,psi_quant, &guardout);
                 /*  (F13.3<<16 )+(F5.35>>16) = F13.19 */
@@ -846,11 +869,18 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
                     /* Phi = angle - Phi_32*/
                     Phi_32 = ((WORD32) angle << 4) - Phi_32;
                     /* F1.15 * 4 = F13.19 */
-		    Phi = (WORD16)((WORD32)((WORD32)(Phi_32 + (1<<3)))/ (1<<4)); /* F17.15 */
+                    #if 0	/* LoCosto code */
+                      Phi = (WORD16)((WORD32)((WORD32)(Phi_32 + (1<<3)))/ (1<<4)); /* F17.15 */
+                    #else	/* TCS211 reconstruction */
+                      Phi = Phi_32 >> 4;
+                    #endif
                     /* (F0.20 * F1.15) >> 16 = F13.19 */
-                    var_32 = (L * Phi + (1<<15)) >> 16;
-                    psi_past[C_N_del] = Add_Sat_sign_32b(psi_past[C_N_del],var_32);
-
+                    #if 0	/* LoCosto code with saturation and L */
+                      var_32 = (L * Phi + (1<<15)) >> 16;
+                      psi_past[C_N_del] = Add_Sat_sign_32b(psi_past[C_N_del],var_32);
+                    #else	/* matching TCS211 */
+                      psi_past[C_N_del] += (10433 * Phi) >> 16;
+                    #endif
 
                 }
                 else
@@ -884,9 +914,14 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
                             // Predict with 1st order estimation
                             if (l1_config.params.rgap_algo >= 1)
                             {
+                            #if 0	/* LoCosto code with saturation */
                                  psi_past[C_N_del] = Add_Sat_sign_32b(psi_past[C_N_del],
                                      ((quant_avg * (l1_config.params.rgap_bad_snr_count_B))/(C_MSIZE))
                                      );
+                            #else	/* matching TCS211 */
+                                 psi_past[C_N_del] +=
+                                     ((quant_avg * (l1_config.params.rgap_bad_snr_count_B))/(C_MSIZE));
+                            #endif
                             }
 
                             B_Count= B_Count - l1_config.params.rgap_bad_snr_count_B;
@@ -906,7 +941,11 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
                 /* Quantize psi value */
 
                 /* F0.19 * 16.0 = F16.19 */
-                var_32 = Sat_Mult_20sign_16unsign(psi_past[C_N_del],l1_config.params.psi_st_inv);
+                #if 0	/* LoCosto code */
+                  var_32 = Sat_Mult_20sign_16unsign(psi_past[C_N_del],l1_config.params.psi_st_inv);
+                #else	/* TCS211 reconstruction */
+		  var_32 = psi_past[C_N_del] * l1_config.params.psi_st_inv;
+                #endif
 
 #if(RF_FAM == 61)
                 /* In order to implement the NINT function for a F13.3,*/
@@ -932,9 +971,7 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
 
         *frame_count = 0;
 
-//Locosto
-//        return (psi_quant >> 3); /* F16.0 */
-     return(CONVERT_PSI_QUANT(psi_quant)); /* F16.0 to 14.2 or 13.3 */
+        return (psi_quant >> 3); /* F16.0 */
     } /* end case algo 2 */
 
     /* algo1 + init + estimator/predictor */
@@ -949,10 +986,12 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
 
         quant_avg = 0;
         M_Count = 0;
-            for (i = 0; i <=C_PSI_AVG_SIZE_D ; i++)   //omaps00090550
-                psi_avg[i] = 0;
-            first_avg = 1;
-            good_snr = 0;
+#if 0	/* present in LoCosto but not in TCS211 */
+        for (i = 0; i <=C_PSI_AVG_SIZE_D ; i++)   //omaps00090550
+            psi_avg[i] = 0;
+#endif
+        first_avg = 1;
+        good_snr = 0;
 
         // DAC search algorithm is as follows - up to 12 attempts are made
         // DAC search algorithm uses three values : DAC_center -> DAC_max -> DAC_min ->
@@ -1027,14 +1066,20 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
           quotient=(WORD16)((WORD32)(((WORD32)(var_32+(1<<18)))/(1<<19)));
           var_16=quotient*8;
 #endif
+
+#if 0	/* LoCosto code with saturation */
           if (var_16>C_max_step)
             Psi_quant[C_N_del]=Add_Sat_sign_16b(Psi_quant[C_N_del],C_max_step);
-           else
-           if(var_16<C_min_step)
-             Psi_quant[C_N_del]=Add_Sat_sign_16b(Psi_quant[C_N_del],C_min_step);
-           else Psi_quant[C_N_del]=Add_Sat_sign_16b(Psi_quant[C_N_del],var_16);     /* F13.3                  */
-
-
+          else if (var_16<C_min_step)
+            Psi_quant[C_N_del]=Add_Sat_sign_16b(Psi_quant[C_N_del],C_min_step);
+          else Psi_quant[C_N_del]=Add_Sat_sign_16b(Psi_quant[C_N_del],var_16);     /* F13.3                  */
+#else	/* matching TCS211 */
+          if (var_16>C_max_step)
+            Psi_quant[C_N_del] += C_max_step;
+          else if (var_16<C_min_step)
+            Psi_quant[C_N_del] += C_min_step;
+          else Psi_quant[C_N_del] += var_16;     /* F13.3                  */
+#endif
 
                  /* F0.32 * F13.3 = F5.35    */
          Psi=Mult_40b(l1_config.params.psi_st_32,Psi_quant[C_N_del], &guardout);
@@ -1153,7 +1198,11 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
            var1=(WORD32)var1<<8;
            /* var2 is an unsigned variable, var1 contains signed guard*/
            /* bits.                                                   */
-           var2=  ((WORD32)(denom)/(num));  //omaps00090550
+           #if 0	/* fixed LoCosto code */
+             var2=  ((WORD32)(denom)/(num));  //omaps00090550
+           #else	/* matching TCS211 */
+             var2=  denom / num;
+           #endif
            K = (var1+var2)<<1;             /* F1.39 / F12.20 = F13.19 */
                                            /* F13.19 << 1 = F12.20    */
 
@@ -1275,12 +1324,10 @@ L = 10433; //F0.20 L=10433/2^20 = 0.01
 
 
        }/*end AFC_CLOSE_LOOP*/
-     } /* end else AFC_INIT*/
+    } /* end else AFC_INIT*/
 
-        *frame_count = 0;
-//Locosto
-//     return(Psi_quant[C_N_del]>>3); /* F16.0 */
-     return(((CONVERT_PSI_QUANT(Psi_quant[C_N_del]))&0x3FFF)); /* F16.0 to 14.2 or 13.3 */
+       *frame_count = 0;
+       return(Psi_quant[C_N_del]>>3); /* F16.0 */
     } /* end case algo 3 */
 #endif
 
@@ -1630,19 +1677,25 @@ WORD16 l1ctl_toa_update(UWORD32 *TOASP, UWORD32 l1_mode)
   }
   else
   {
-    UWORD32 TOA_divisor = 0;
+#if 0	/* fix added in LoCosto, not present in TCS211 */
+    UWORD32 TOA_divisor;
+#endif
     TOA_estimated=(TOASP[IZW]*IZW)+(TOASP[IZW-1]*(IZW-1)>>C_GEW);
     TOA_estimated *= 8; //F13.3 in order to have qBit precision
+#if 0
     TOA_divisor = TOASP[IZW]+(TOASP[IZW-1] >> C_GEW);
     if (TOA_divisor!=0)
+#endif
     {
-    TOA_estimated/= TOASP[IZW]+(TOASP[IZW-1] >> C_GEW);
-    TOA_estimated /= 2; // unit in QBit ("/8" then "*4" = "/2")
-  }
+      TOA_estimated /= TOASP[IZW]+(TOASP[IZW-1] >> C_GEW);
+      TOA_estimated /= 2; // unit in QBit ("/8" then "*4" = "/2")
+    }
+#if 0
     else
     {
       TOA_estimated = 0;
     }
+#endif
   }
 
   if (Trans_active)
@@ -1830,6 +1883,8 @@ UWORD8 l1ctl_txpwr(UWORD8 target_txpwr, UWORD8 current_txpwr)
 #if(L1_FF_MULTIBAND == 0)
 WORD8 l1ctl_encode_delta1(UWORD16 radio_freq)
 {
+  WORD8 freq_band;
+
   switch(l1_config.std.id)
   {
     case GSM:
@@ -1837,17 +1892,18 @@ WORD8 l1ctl_encode_delta1(UWORD16 radio_freq)
     case DCS1800:
     case PCS1900:
     case GSM850:
-      return(l1_config.std.cal_freq1_band1);
+      freq_band = l1_config.std.cal_freq1_band1;
+      break;
     case DUAL:
     case DUALEXT:
     case DUAL_US:
       if(radio_freq >= l1_config.std.first_radio_freq_band2)
-        return(l1_config.std.cal_freq1_band2);
+        freq_band = l1_config.std.cal_freq1_band2;
       else
-        return(l1_config.std.cal_freq1_band1);
+        freq_band = l1_config.std.cal_freq1_band1;
+      break;
   }
-return 0;//omaps00090550
-
+  return(freq_band);
 }
 #endif
 /*-------------------------------------------------------*/
@@ -1927,16 +1983,18 @@ void l1ctl_encode_lna( UWORD8   input_level,
 /*-------------------------------------------------------*/
 UWORD8 l1ctl_csgc(UWORD8 pm, UWORD16 radio_freq)
 {
-   WORD16   current_IL, current_calibrated_IL =0;  //omaps00090550
+   WORD16   current_IL, current_calibrated_IL;
    WORD8    delta1_freq, delta2_freq;
    WORD16   delta_drp_gain=0;
    UWORD32  index;
    UWORD16  g_magic;
-   UWORD16  arfcn;
+   #if (RF_FAM == 61) && (L1_FF_MULTIBAND == 0)
+     UWORD16  arfcn;
+   #endif 
    UWORD16 dco_algo_ctl_pw_temp = 0;
    UWORD8 if_ctl = 0;
    #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
-   UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
+     UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
    #endif
 
 #if (L1_FF_MULTIBAND == 0)
@@ -1955,7 +2013,8 @@ UWORD8 l1ctl_csgc(UWORD8 pm, UWORD16 radio_freq)
    delta2_freq = l1ctl_encode_delta2(radio_freq);
 
    g_magic = l1ctl_get_g_magic(radio_freq);
-#if (L1_FF_MULTIBAND == 0)
+
+#if (RF_FAM == 61) && (L1_FF_MULTIBAND == 0)
    arfcn = Convert_l1_radio_freq(radio_freq);
 #endif 
 
@@ -1967,7 +2026,7 @@ UWORD8 l1ctl_csgc(UWORD8 pm, UWORD16 radio_freq)
 #if(RF_FAM == 61)
    #if (CODE_VERSION != SIMULATION)
 
-#if (PWMEAS_IF_MODE_FORCE == 0)
+     #if (PWMEAS_IF_MODE_FORCE == 0)
        cust_get_if_dco_ctl_algo(&dco_algo_ctl_pw_temp, &if_ctl, (UWORD8) L1_IL_INVALID ,
            0,
            radio_freq,if_threshold);
@@ -1976,11 +2035,11 @@ UWORD8 l1ctl_csgc(UWORD8 pm, UWORD16 radio_freq)
        dco_algo_ctl_pw_temp = DCO_IF_0KHZ;
      #endif
 
-#if (L1_FF_MULTIBAND == 0)
-	 delta_drp_gain = drp_gain_correction(arfcn, LNA_ON, (l1_config.params.high_agc << 1));    // F7.1 format
-#else
-     delta_drp_gain = drp_gain_correction(radio_freq, LNA_ON, (l1_config.params.high_agc << 1));    // F7.1 format
-#endif // MULTIBAND == 0 else
+     #if (L1_FF_MULTIBAND == 0)
+       delta_drp_gain = drp_gain_correction(arfcn, LNA_ON, (l1_config.params.high_agc << 1));    // F7.1 format
+     #else
+       delta_drp_gain = drp_gain_correction(radio_freq, LNA_ON, (l1_config.params.high_agc << 1));    // F7.1 format
+     #endif // MULTIBAND == 0 else
 
      if(if_ctl == IF_100KHZ_DSP){
        delta_drp_gain += SCF_ATTENUATION_LIF_100KHZ;
@@ -2045,7 +2104,10 @@ UWORD8 l1ctl_csgc(UWORD8 pm, UWORD16 radio_freq)
                         &(l1a_l1s_com.last_input_level[index].lna_off),
                         radio_freq);
 
-       l1a_l1s_com.last_input_level[index].input_level = (UWORD8)current_IL;
+       l1a_l1s_com.last_input_level[index].input_level = (UWORD8)current_IL +
+	 l1ctl_get_lna_att(radio_freq) *
+	   l1a_l1s_com.last_input_level[index].lna_off;
+
        l1a_l1s_com.full_list.sat_flag[l1a_l1s_com.full_list.next_to_read] = 0;
      }
    }
@@ -2057,11 +2119,11 @@ UWORD8 l1ctl_csgc(UWORD8 pm, UWORD16 radio_freq)
        #if (CODE_VERSION != SIMULATION)
         cust_get_if_dco_ctl_algo(&dco_algo_ctl_pw_temp, &if_ctl, (UWORD8) L1_IL_INVALID,
             0,radio_freq,if_threshold);
-#if (L1_FF_MULTIBAND == 0)       
-         delta_drp_gain = drp_gain_correction(arfcn, LNA_ON, (l1_config.params.low_agc << 1));    // F7.1 format
-#else
-        delta_drp_gain = drp_gain_correction(radio_freq, LNA_ON, (l1_config.params.low_agc << 1));    // F7.1 format
-#endif 
+        #if (L1_FF_MULTIBAND == 0)       
+          delta_drp_gain = drp_gain_correction(arfcn, LNA_ON, (l1_config.params.low_agc << 1));    // F7.1 format
+        #else
+          delta_drp_gain = drp_gain_correction(radio_freq, LNA_ON, (l1_config.params.low_agc << 1));    // F7.1 format
+        #endif 
         if(if_ctl == IF_100KHZ_DSP){
           delta_drp_gain += SCF_ATTENUATION_LIF_100KHZ;
         }
@@ -2089,7 +2151,9 @@ UWORD8 l1ctl_csgc(UWORD8 pm, UWORD16 radio_freq)
                       &(l1a_l1s_com.last_input_level[index].lna_off),
                       radio_freq);
 
-     l1a_l1s_com.last_input_level[index].input_level = (UWORD8)current_IL;
+     l1a_l1s_com.last_input_level[index].input_level = (UWORD8)current_IL +
+	l1ctl_get_lna_att(radio_freq) *
+	  l1a_l1s_com.last_input_level[index].lna_off;
 
      l1a_l1s_com.full_list.sat_flag[l1a_l1s_com.full_list.next_to_read] = 0;
    }
@@ -2116,11 +2180,13 @@ UWORD8 l1ctl_pgc(UWORD8 pm, UWORD8 last_known_il,
    WORD8   delta1_freq, delta2_freq;
    WORD16  delta_drp_gain=0;
    WORD32  index, lna_value;
-   UWORD16 arfcn;
+   #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+     UWORD16 arfcn;
+   #endif
    UWORD16 dco_algo_ctl_pw_temp = 0;
    UWORD8 if_ctl = 0;
    #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
-   UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
+     UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
    #endif
 
 #if (L1_FF_MULTIBAND == 0)
@@ -2139,17 +2205,20 @@ UWORD8 l1ctl_pgc(UWORD8 pm, UWORD8 last_known_il,
 
    lna_value = lna_off * l1ctl_get_lna_att(radio_freq);
 
-   last_known_agc = (Cust_get_agc_from_IL(radio_freq, last_known_il >> 1, PWR_ID, lna_off)) << 1;
+   last_known_agc = (Cust_get_agc_from_IL(radio_freq, last_known_il >> 1, PWR_ID)) << 1;
    // F7.1 in order to be compatible with
    // pm and IL formats [-20,+140 in F7.1]
    // contain the input_level value we use
    // in the associated CTL task to build
    // the agc used in this CTL.
-#if (L1_FF_MULTIBAND == 0)  
+
+#if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+#if (L1_FF_MULTIBAND == 0)
   arfcn = Convert_l1_radio_freq(radio_freq);
 #else
-  arfcn=radio_freq;
-#endif 
+  arfcn = radio_freq;
+#endif
+#endif
 
 #if(RF_FAM == 61)
    #if (CODE_VERSION != SIMULATION)
@@ -2175,7 +2244,7 @@ UWORD8 l1ctl_pgc(UWORD8 pm, UWORD8 last_known_il,
 #endif
 
    if (0==pm)  // Check and filter illegal pm value by using last valid IL
-     current_IL = l1a_l1s_com.last_input_level[index].input_level ;
+     current_IL = l1a_l1s_com.last_input_level[index].input_level - lna_value;
    else
      current_IL = -(pm - (last_known_agc - delta_drp_gain) + lna_value - l1ctl_get_g_magic(radio_freq));
 
@@ -2192,7 +2261,9 @@ UWORD8 l1ctl_pgc(UWORD8 pm, UWORD8 last_known_il,
                     &(l1a_l1s_com.last_input_level[index].lna_off),
                     radio_freq);
 
-   l1a_l1s_com.last_input_level[index].input_level = (UWORD8)current_IL;
+   l1a_l1s_com.last_input_level[index].input_level = (UWORD8)current_IL +
+      l1ctl_get_lna_att(radio_freq) *
+	l1a_l1s_com.last_input_level[index].lna_off;
 
    return((UWORD8)current_calibrated_IL);
 }
@@ -2217,11 +2288,13 @@ void l1ctl_pgc2(UWORD8 pm_high_agc, UWORD8 pm_low_agc, UWORD16 radio_freq)
    WORD16   delta_low_drp_gain=0;
    WORD32   index;
    UWORD16  g_magic;
-   UWORD16  arfcn;
+   #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+     UWORD16  arfcn;
+   #endif
    UWORD16 dco_algo_ctl_pw_temp = 0;
    UWORD8 if_ctl = 0;
    #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
-   UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
+     UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
    #endif
 
 #if (L1_FF_MULTIBAND == 0)
@@ -2244,11 +2317,13 @@ void l1ctl_pgc2(UWORD8 pm_high_agc, UWORD8 pm_low_agc, UWORD16 radio_freq)
    // lna_off was set to 0 during CTRL, so lna_value = 0 do not appear in the following
    // formula.
 
-#if (L1_FF_MULTIBAND == 0)  
+#if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+#if (L1_FF_MULTIBAND == 0)
   arfcn = Convert_l1_radio_freq(radio_freq);
 #else
-  arfcn=radio_freq;
-#endif 
+  arfcn = radio_freq;
+#endif
+#endif
 
    if ((0==pm_high_agc) || (0==pm_low_agc))  // Check and filter illegal pm value(s) by using last valid IL
      new_IL      = l1a_l1s_com.last_input_level[index].input_level;
@@ -2341,7 +2416,9 @@ void l1ctl_pgc2(UWORD8 pm_high_agc, UWORD8 pm_low_agc, UWORD16 radio_freq)
                     &(l1a_l1s_com.last_input_level[index].lna_off),
                     radio_freq);
 
-   l1a_l1s_com.last_input_level[index].input_level = (UWORD8)new_IL;
+   l1a_l1s_com.last_input_level[index].input_level = (UWORD8)new_IL +
+      l1ctl_get_lna_att(radio_freq) *
+	l1a_l1s_com.last_input_level[index].lna_off;
 }
 
 
@@ -2395,12 +2472,14 @@ UWORD8 l1ctl_pagc(UWORD8 pm, UWORD16 radio_freq, T_INPUT_LEVEL *IL_info_ptr)
    WORD32  current_IL, current_calibrated_IL;
    UWORD8  i;
    WORD32  lna_value;
-   UWORD16 arfcn;
+   #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+     UWORD16 arfcn;
+   #endif
    UWORD8  lna_off;
    UWORD16 dco_algo_ctl_pw_temp = 0;
    UWORD8 if_ctl = 0;
    #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
-   UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
+     UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
    #endif
 
    delta1_freq = l1ctl_encode_delta1(radio_freq);
@@ -2416,18 +2495,20 @@ UWORD8 l1ctl_pagc(UWORD8 pm, UWORD16 radio_freq, T_INPUT_LEVEL *IL_info_ptr)
    lna_value = l1a_l1s_com.Scell_used_IL_dd.lna_off * l1ctl_get_lna_att(radio_freq);
 
    // Compute applied agc for this pm
-   last_known_agc = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, MAX_ID,l1a_l1s_com.Scell_used_IL_dd.lna_off )) << 1;
+   last_known_agc = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, MAX_ID)) << 1;
                                   // F7.1 in order to be compatible
                                   // with pm and IL formats
                                   // contain the input_level value we use
                                   // in the associated CTL task to build
                                   // the agc used in this CTL.
 
-#if (L1_FF_MULTIBAND == 0)  
+#if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+#if (L1_FF_MULTIBAND == 0)
   arfcn = Convert_l1_radio_freq(radio_freq);
 #else
-  arfcn=radio_freq;
-#endif 
+  arfcn = radio_freq;
+#endif
+#endif
 
 #if(RF_FAM == 61)
    #if (CODE_VERSION != SIMULATION)
@@ -2448,7 +2529,7 @@ UWORD8 l1ctl_pagc(UWORD8 pm, UWORD16 radio_freq, T_INPUT_LEVEL *IL_info_ptr)
 #endif
 
    if (0==pm)  // Check and filter illegal pm value by using last valid IL
-     current_IL = IL_info_ptr->input_level;
+     current_IL = IL_info_ptr->input_level - lna_value;
    else
      current_IL = -(pm - (last_known_agc - delta_drp_gain) + lna_value - l1ctl_get_g_magic(radio_freq));
 
@@ -2469,12 +2550,13 @@ UWORD8 l1ctl_pagc(UWORD8 pm, UWORD16 radio_freq, T_INPUT_LEVEL *IL_info_ptr)
                      &(IL_info_ptr->lna_off),
                      radio_freq );
 
-   IL_info_ptr->input_level = IL_max;
+   IL_info_ptr->input_level = IL_max + l1ctl_get_lna_att(radio_freq) *
+					IL_info_ptr->lna_off;
 
    #if L2_L3_SIMUL
      #if (DEBUG_TRACE==BUFFER_TRACE_PAGC)
        buffer_trace(4,IL_info_ptr->input_level,last_known_agc,
-                      l1a_l1s_com.Scell_used_IL_dd.input_level,Cust_get_agc_from_IL(radio_freq, IL_max >> 1, MAX_ID, l1a_l1s_com.Scell_used_IL_dd.lna_off));
+                      l1a_l1s_com.Scell_used_IL_dd.input_level,Cust_get_agc_from_IL(radio_freq, IL_max >> 1, MAX_ID));
      #endif
    #endif
 
@@ -2505,12 +2587,14 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
   UWORD8      *tab_ptr;
   T_DEDIC_SET *aset;
   WORD32       lna_value;
-  UWORD16      arfcn;
+  #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+    UWORD16      arfcn;
+  #endif
   UWORD8       lna_off;
   UWORD16 dco_algo_ctl_pw_temp = 0;
   UWORD8 if_ctl = 0;
   #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
-  UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
+    UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
   #endif
 
   delta1_freq = l1ctl_encode_delta1(radio_freq);
@@ -2539,10 +2623,10 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
   #endif
     {
       #if DPAGC_MAX_FLAG
-        last_known_agc  = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, MAX_ID,l1a_l1s_com.Scell_used_IL_dd.lna_off)) << 1;
+        last_known_agc  = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, MAX_ID)) << 1;
         // F7.1 in order to be compatible with pm and IL formats
       #else
-        last_known_agc  = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, AV_ID,l1a_l1s_com.Scell_used_IL_dd.lna_off)) << 1;
+        last_known_agc  = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, AV_ID)) << 1;
         // F7.1 in order to be compatible with pm and IL formats
       #endif
       // input_level_dd : contain the input_level value we use
@@ -2551,11 +2635,13 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
       lna_value = l1a_l1s_com.Scell_used_IL_dd.lna_off * l1ctl_get_lna_att(radio_freq);
     }
 
-#if (L1_FF_MULTIBAND == 0)  
+#if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+#if (L1_FF_MULTIBAND == 0)
   arfcn = Convert_l1_radio_freq(radio_freq);
 #else
-  arfcn=radio_freq;
-#endif 
+  arfcn = radio_freq;
+#endif
+#endif
 
 #if(RF_FAM == 61)
    #if (CODE_VERSION != SIMULATION)
@@ -2576,7 +2662,7 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
 #endif
 
   if (0==pm)  // Check and filter illegal pm value by using last valid IL
-    new_IL    = IL_info_ptr->input_level;
+    new_IL    = IL_info_ptr->input_level - lna_value;
   else
     new_IL    = -(pm - (last_known_agc - delta_drp_gain) + lna_value - l1ctl_get_g_magic(radio_freq));
 
@@ -2663,12 +2749,13 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
                     &(IL_info_ptr->lna_off),
                     radio_freq );
 
-  IL_info_ptr->input_level = (UWORD8)new_IL ;
+  IL_info_ptr->input_level = (UWORD8)new_IL + l1ctl_get_lna_att(radio_freq) *
+					IL_info_ptr->lna_off;
 
   #if L2_L3_SIMUL
     #if (DEBUG_TRACE==BUFFER_TRACE_DPAGC)
       buffer_trace(4,IL_info_ptr->input_level,last_known_agc,
-                     l1a_l1s_com.Scell_used_IL_dd.input_level,Cust_get_agc_from_IL(radio_freq, new_IL >> 1, MAX_ID,l1a_l1s_com.Scell_used_IL_dd.lna_off));
+                     l1a_l1s_com.Scell_used_IL_dd.input_level,Cust_get_agc_from_IL(radio_freq, new_IL >> 1, MAX_ID));
     #endif
   #endif
 
@@ -2696,7 +2783,9 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
     UWORD8       *tab_ptr, *tab_amr_ptr;
     T_DEDIC_SET *aset;
     WORD32       lna_value;
-    UWORD16      arfcn;
+    #if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+	UWORD16  arfcn;
+    #endif
     UWORD8       lna_off;
     UWORD16 dco_algo_ctl_pw_temp = 0;
     UWORD8 if_ctl = 0;
@@ -2734,10 +2823,10 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
     #endif
       {
         #if DPAGC_MAX_FLAG
-          last_known_agc  = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, MAX_ID,l1a_l1s_com.Scell_used_IL_dd.lna_off)) << 1;
+          last_known_agc  = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, MAX_ID)) << 1;
           // F7.1 in order to be compatible with pm and IL formats
         #else
-          last_known_agc  = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, AV_ID,l1a_l1s_com.Scell_used_IL_dd.lna_off)) << 1;
+          last_known_agc  = (Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.Scell_used_IL_dd.input_level >> 1, AV_ID)) << 1;
           // F7.1 in order to be compatible with pm and IL formats
         #endif
         // input_level_dd : contain the input_level value we use
@@ -2746,11 +2835,13 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
         lna_value = l1a_l1s_com.Scell_used_IL_dd.lna_off * l1ctl_get_lna_att(radio_freq);
       }
 
-#if (L1_FF_MULTIBAND == 0)  
+#if (RF_RAM == 61) && (CODE_VERSION != SIMULATION)
+#if (L1_FF_MULTIBAND == 0)
   arfcn = Convert_l1_radio_freq(radio_freq);
 #else
-  arfcn=radio_freq;
-#endif 
+  arfcn = radio_freq;
+#endif
+#endif
 
 #if(RF_FAM == 61)
    #if (CODE_VERSION != SIMULATION)
@@ -2769,7 +2860,7 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
 #endif
 
     if (0==pm)  // Check and filter illegal pm value by using last valid IL
-      new_IL    = IL_info_ptr->input_level;
+      new_IL    = IL_info_ptr->input_level - lna_value;
     else
       new_IL    = -(pm - (last_known_agc - delta_drp_gain) + lna_value - l1ctl_get_g_magic(radio_freq));
 
@@ -2871,12 +2962,13 @@ UWORD8 l1ctl_dpagc(BOOL dtx_on, BOOL beacon, UWORD8 pm, UWORD16 radio_freq, T_IN
     l1ctl_encode_lna( (UWORD8)(current_calibrated_IL>>1),
                       &(IL_info_ptr->lna_off),
                       radio_freq );
-    IL_info_ptr->input_level = (UWORD8)new_IL ;
+    IL_info_ptr->input_level = (UWORD8)new_IL + l1ctl_get_lna_att(radio_freq) *
+						IL_info_ptr->lna_off;
 
     #if L2_L3_SIMUL
       #if (DEBUG_TRACE==BUFFER_TRACE_DPAGC)
         buffer_trace(4,IL_info_ptr->input_level,last_known_agc,
-                       l1a_l1s_com.Scell_used_IL_dd.input_level,Cust_get_agc_from_IL(radio_freq, new_IL >> 1, MAX_ID,l1a_l1s_com.Scell_used_IL_dd.lna_off));
+                       l1a_l1s_com.Scell_used_IL_dd.input_level,Cust_get_agc_from_IL(radio_freq, new_IL >> 1, MAX_ID));
       #endif
     #endif
 
@@ -2942,7 +3034,7 @@ UWORD16 l1ctl_get_lna_att(UWORD16 radio_freq)
 /* Return     :                                          */
 /* Functionality :                                       */
 /*-------------------------------------------------------*/
-UWORD16 l1ctl_update_TPU_with_toa(void)
+void l1ctl_update_TPU_with_toa(void)
 {
   #if (TOA_ALGO != 0)
     WORD16 toa_shift;
@@ -3006,7 +3098,6 @@ UWORD16 l1ctl_update_TPU_with_toa(void)
       #endif
     }
   #endif
-return 0; //omaps00090550
 }
 
 

@@ -9,9 +9,8 @@
 
 #define  L1_AFUNC_C
 
-#include "config.h"
-#include "l1_confg.h"
 #include "l1_macro.h"
+#include "l1_confg.h"
 
 #if (CODE_VERSION == SIMULATION)
   #include <string.h>
@@ -85,7 +84,7 @@
     #include "l1aac_defty.h"
   #endif
   #include "l1_defty.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"
@@ -107,7 +106,7 @@
 
 
 #if (OP_L1_STANDALONE == 1)
-#if (ANALOG == 11)
+#if (ANLG_FAM == 11)
 #include "bspTwl3029_Madc.h"
 #endif
 #endif
@@ -120,7 +119,7 @@
 #include <string.h>
 extern T_DRP_SRM_API* drp_srm_api;
 #endif
-#if (ANALOG == 11)
+#if (ANLG_FAM == 11)
 BspTwl3029_MadcResults l1_madc_results;
 void l1a_madc_callback(void);
 #endif
@@ -1112,7 +1111,7 @@ UWORD8 l1a_clip_txpwr (UWORD8 supplied_txpwr, UWORD16 radio_freq)
 
 #if (L1_MADC_ON == 1)
 #if (OP_L1_STANDALONE == 1)
-#if (ANALOG == 11)
+#if (ANLG_FAM == 11)
 void   l1a_madc_callback(void)
 {
 	char str[40];
@@ -1159,7 +1158,7 @@ void   l1a_madc_callback(void)
    os_send_sig(adc_msg, RRM1_QUEUE);
 #endif
 }
-#endif // ANALOG == 11
+#endif // ANLG_FAM == 11
 #endif //OP_L1_STANDALONE
 #endif // L1_MADC_ON
 

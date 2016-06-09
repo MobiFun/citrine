@@ -10,9 +10,8 @@
 
 #define  L1_MFMGR_C
 
-#include "config.h"
-#include "l1_confg.h"
 #include "l1_macro.h"
+#include "l1_confg.h"
 
 #if (CODE_VERSION == SIMULATION)
   #include <string.h>
@@ -73,7 +72,7 @@
     #include "l1aac_defty.h"
   #endif
   #include "l1_defty.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"

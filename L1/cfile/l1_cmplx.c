@@ -11,9 +11,8 @@
 
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_START
 
-#include "config.h"
-#include "l1_confg.h"
 #include "l1_macro.h"
+#include "l1_confg.h"
 
 #if (CODE_VERSION == SIMULATION)
   #include <string.h>
@@ -74,7 +73,7 @@
   extern T_hw FAR hw;
 
 #else
-  #include "../../bsp/abb+spi/abb.h"
+  #include "abb.h"
   #include <string.h>
   #include "l1_types.h"
   #include "sys_types.h"
@@ -109,7 +108,7 @@
     #include "l1aac_defty.h"
   #endif
   #include "l1_defty.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"
@@ -148,7 +147,7 @@ extern UWORD8 old_sacch_DSP_bug;
   #include "l1tm_signa.h"
   #include "l1tm_varex.h"
   void l1tm_fill_burst (UWORD16 pattern, UWORD16 *TM_ul_data);
-  #if (ANALOG != 11)
+  #if (ANLG_FAM != 11)
   void ABB_Write_Uplink_Data(SYS_UWORD16 *TM_ul_data);
   #else
   // TODO
@@ -213,13 +212,13 @@ void l1dtpu_serv_rx_nb       (UWORD16 radio_freq, WORD8 agc, UWORD8 lna_off,
                               );
 #endif /* RF_FAM == 61*/
 
-void l1ddsp_meas_read        (UWORD8 nbmeas, UWORD16 *pm);
+void l1ddsp_meas_read        (UWORD8 nbmeas, UWORD8 *pm);
 
 #if L1_GPRS
 void l1pddsp_synchro         (UWORD8 switch_mode, UWORD8  camp_timeslot);
 void l1pddsp_load_bcchn_task (UWORD8 tsq,UWORD16 radio_freq);
 void l1pddsp_meas_ctrl       (UWORD8 nbmeas, UWORD8 pm_pos);
-void l1pddsp_meas_read       (UWORD8 nbmeas, UWORD16 *a_pm);
+void l1pddsp_meas_read       (UWORD8 nbmeas, UWORD8 *a_pm);
 #if FF_L1_IT_DSP_USF
 void l1pddsp_idle_rx_nb      (UWORD8 burst_nb, UWORD8 tsq, UWORD16 radio_freq,
                               UWORD8 timeslot_no, BOOL ptcch_dl, BOOL usf_interrupt);
@@ -234,11 +233,6 @@ void   cust_get_if_dco_ctl_algo (UWORD16* dco_algo_ctl, UWORD8* if_ctl,
   UWORD8 input_level_flag, UWORD8 input_level, UWORD16 radio_freq, UWORD8 if_threshold);
 #endif
 
-#if FEATURE_TCH_REROUTE
-extern BOOL tch_reroute_downlink;
-extern void tch_send_downlink_bits(API *dsp_buffer);
-extern void tch_substitute_uplink(API *dsp_buffer);
-#endif
 
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_END
 
@@ -455,11 +449,13 @@ void l1s_new_synchro(UWORD8 param1, UWORD8 param2)
   l1a_l1s_com.l1s_en_task[SYNCHRO] = TASK_DISABLED;
   l1s.task_status[SYNCHRO].current_status = INACTIVE;
 
+  #if 0	/* FreeCalypso TCS211 reconstruction */
   #if L1_GPRS
   //Change of mode when synchro is executed when switching from idle to transfer
   //In this case, PDTCH task has been enabled in transfer mode manager, but the mode is still not PACKET_TRANSFER_MODE
   if((l1a_l1s_com.l1s_en_task[PDTCH] == TASK_ENABLED) && (l1a_l1s_com.mode != PACKET_TRANSFER_MODE))
     l1a_l1s_com.mode = PACKET_TRANSFER_MODE;
+  #endif
   #endif
 
   // Compute timeshift.
@@ -544,7 +540,11 @@ void l1s_new_synchro(UWORD8 param1, UWORD8 param2)
 
   // the FN was changed: it could have an impact on the gauging algorithm
         //Nina modify to save power, not forbid deep sleep, only force gauging in next paging
+	/* FreeCalypso Frankenstein: see l1_async.c regarding Nina's change */
+#define	NINA_ADDED	0
+#if NINA_ADDED
 if(l1s.force_gauging_next_paging_due_to_CCHR != 1)
+#endif
 {
 l1s.pw_mgr.enough_gaug = FALSE;  // forbid Deep sleep until next gauging
 }
@@ -1116,10 +1116,10 @@ void l1s_ctrl_fb(UWORD8 task, UWORD8 param2)
     // ********************************
 #if (L1_FF_MULTIBAND == 0)
 
+    // Get AGC to be applied.
+    agc = Cust_get_agc_from_IL(cell_info_ptr->radio_freq,l1a_l1s_com.last_input_level[cell_info_ptr->radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, AV_ID);
     // lna_off flag is updated ONLY in case of l1ctl_pgc2 control algo
     lna_off = l1a_l1s_com.last_input_level[cell_info_ptr->radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
-    // Get AGC to be applied.
-    agc = Cust_get_agc_from_IL(cell_info_ptr->radio_freq,l1a_l1s_com.last_input_level[cell_info_ptr->radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, AV_ID, lna_off);
 
 #else // L1_FF_MULTIBAND = 1 below
 
@@ -1127,7 +1127,7 @@ void l1s_ctrl_fb(UWORD8 task, UWORD8 param2)
     // lna_off flag is updated ONLY in case of l1ctl_pgc2 control algo
     lna_off = l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;
     // Get AGC to be applied.
-    agc = Cust_get_agc_from_IL(cell_info_ptr->radio_freq,l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, AV_ID, lna_off);
+    agc = Cust_get_agc_from_IL(cell_info_ptr->radio_freq,l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, AV_ID);
     
 #endif // #if (L1_FF_MULTIBAND == 0) else
 
@@ -1270,7 +1270,7 @@ void l1s_ctrl_fbsb(UWORD8 task, UWORD8 param2)
   lna_off = l1a_l1s_com.last_input_level[l1a_l1s_com.nsync_fbsb.radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
 
   // Get AGC to be applied.
-  agc = Cust_get_agc_from_IL(l1a_l1s_com.nsync_fbsb.radio_freq, l1a_l1s_com.last_input_level[l1a_l1s_com.nsync_fbsb.radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, AV_ID, lna_off);
+  agc = Cust_get_agc_from_IL(l1a_l1s_com.nsync_fbsb.radio_freq, l1a_l1s_com.last_input_level[l1a_l1s_com.nsync_fbsb.radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, AV_ID);
 
 #else // L1_FF_MULTIBAND = 1 below
 
@@ -1282,7 +1282,7 @@ void l1s_ctrl_fbsb(UWORD8 task, UWORD8 param2)
 
   // Get AGC to be applied.
   agc = 
-    Cust_get_agc_from_IL(l1a_l1s_com.nsync_fbsb.radio_freq, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, AV_ID, lna_off);
+    Cust_get_agc_from_IL(l1a_l1s_com.nsync_fbsb.radio_freq, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, AV_ID);
 
 #endif // #if (L1_FF_MULTIBAND == 0) else 
 
@@ -1526,10 +1526,10 @@ void l1s_ctrl_sbgen(UWORD8 task, UWORD8 attempt)
     // ********************************
 #if (L1_FF_MULTIBAND == 0)
     
+    // Get AGC to be applied.
+    agc = Cust_get_agc_from_IL(cell_info_ptr->radio_freq, input_level >> 1, AV_ID);
     // lna_off flag is ONLY updated in case of l1ctl_pgc2 control algorithm
     lna_off = l1a_l1s_com.last_input_level[cell_info_ptr->radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
-    // Get AGC to be applied.
-    agc = Cust_get_agc_from_IL(cell_info_ptr->radio_freq, input_level >> 1, AV_ID,lna_off);
 
 #else // L1_FF_MULTIBAND = 0 below
 
@@ -1539,7 +1539,7 @@ void l1s_ctrl_sbgen(UWORD8 task, UWORD8 attempt)
     lna_off = l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;
     // Get AGC to be applied.
     agc = 
-      Cust_get_agc_from_IL(cell_info_ptr->radio_freq, input_level >> 1, AV_ID,lna_off);
+      Cust_get_agc_from_IL(cell_info_ptr->radio_freq, input_level >> 1, AV_ID);
 
 #endif // #if (L1_FF_MULTIBAND == 0) else
 
@@ -1701,9 +1701,9 @@ void l1s_ctrl_fb26(UWORD8 param1, UWORD8 param2)
     // ****************************
 #if (L1_FF_MULTIBAND == 0)
     
-    lna_off = l1a_l1s_com.last_input_level[radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
     // agc is just computed from last stored IL
-    agc     = Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.last_input_level[radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, AV_ID, lna_off);
+    agc     = Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.last_input_level[radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, AV_ID);
+    lna_off = l1a_l1s_com.last_input_level[radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
 
 #else // L1_FF_MULTIBAND = 1 below
 
@@ -1712,7 +1712,7 @@ void l1s_ctrl_fb26(UWORD8 param1, UWORD8 param2)
     lna_off = l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;
     // agc is just computed from last stored IL
     agc     = 
-    Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, AV_ID, lna_off);
+    Cust_get_agc_from_IL(radio_freq, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, AV_ID);
 
 #endif // #if (L1_FF_MULTIBAND == 1) else
 
@@ -1840,7 +1840,7 @@ void l1s_ctrl_sb26(UWORD8 task, UWORD8 param2)
     UWORD16  radio_freq = 0;
     UWORD32  time_alignmt = 0;
 #if (L1_12NEIGH ==1)
-    T_NCELL_SINGLE *cell_info_ptr = NULL;
+    T_NCELL_SINGLE *cell_info_ptr;
 
     if (task == SB26)
        cell_info_ptr = &l1a_l1s_com.nsync.list[l1a_l1s_com.nsync.active_sb_id];
@@ -1867,11 +1867,8 @@ void l1s_ctrl_sb26(UWORD8 task, UWORD8 param2)
        cell_info_ptr = &l1a_l1s_com.nsync.list[l1a_l1s_com.nsync.active_sbconf_id];
 
     }
-if(cell_info_ptr != NULL)//OMAPS00090550
-{
     radio_freq   = cell_info_ptr->radio_freq;
     time_alignmt = cell_info_ptr->time_alignmt;
-}
 
 #else
     // Get the cell information.
@@ -1905,8 +1902,6 @@ if(cell_info_ptr != NULL)//OMAPS00090550
     // ********************************
   temp = (UWORD32)(l1_config.params.fb26_anchoring_time - EPSILON_SYNC);
   #if (L1_12NEIGH ==1)
-  if(cell_info_ptr != NULL)//OMAPS00090550
-  {
       if((cell_info_ptr->sb26_offset == 1) &&
          (time_alignmt >= temp)) //omaps00090550
   #else
@@ -1920,16 +1915,13 @@ if(cell_info_ptr != NULL)//OMAPS00090550
     {
       nb_nop = 1;
     }
-   #if (L1_12NEIGH ==1)
-	}
-   #endif
 
 #if (L1_FF_MULTIBAND == 0)
 
     // agc is just computed from last stored IL
     input_level = l1a_l1s_com.last_input_level[radio_freq - l1_config.std.radio_freq_index_offset].input_level;
+    agc     = Cust_get_agc_from_IL(radio_freq, input_level >> 1, AV_ID);
     lna_off = l1a_l1s_com.last_input_level[radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
-    agc     = Cust_get_agc_from_IL(radio_freq, input_level >> 1, AV_ID, lna_off);
 
 #else // L1_FF_MULTIBAND = 1 below
 
@@ -1938,7 +1930,7 @@ if(cell_info_ptr != NULL)//OMAPS00090550
     // agc is just computed from last stored IL
     input_level = l1a_l1s_com.last_input_level[operative_radio_freq].input_level;
     lna_off = l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;    
-    agc     = Cust_get_agc_from_IL(radio_freq, input_level >> 1, AV_ID, lna_off);    
+    agc     = Cust_get_agc_from_IL(radio_freq, input_level >> 1, AV_ID);    
 
 #endif // #if (L1_FF_MULTIBAND == 0) else
 
@@ -2067,7 +2059,9 @@ void l1s_ctrl_smscb(UWORD8 task, UWORD8 burst_id)
   UWORD32  dsp_task;
   static   WORD32 new_tpu_offset;
   static   BOOL   change_synchro;
+#if 0	/* FreeCalypso TCS211 reconstruction */
   UWORD8 input_level;
+#endif
 #if (L1_FF_MULTIBAND == 1)
   UWORD16 operative_radio_freq;
 #endif
@@ -2076,12 +2070,12 @@ void l1s_ctrl_smscb(UWORD8 task, UWORD8 burst_id)
   UWORD8 saic_flag=0;
 #endif /* NEW_SNR_THRESHOLD */
 #if (RF_FAM == 61)
-    UWORD16 dco_algo_ctl_nb = 0;
-    UWORD8 if_ctl = 0;
-	UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
-#endif
+  UWORD16 dco_algo_ctl_nb = 0;
+  UWORD8 if_ctl = 0;
+  UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
   // By default we choose the hardware filter
   UWORD8 csf_filter_choice = L1_SAIC_HARDWARE_FILTER;
+#endif
 
   // Needed for simulated DSP GRPS scheduler
   #if (CODE_VERSION == SIMULATION)
@@ -2190,12 +2184,18 @@ void l1s_ctrl_smscb(UWORD8 task, UWORD8 burst_id)
     if (offset_smscb >= TPU_CLOCK_RANGE)
       offset_smscb -= TPU_CLOCK_RANGE;
 
-#if (L1_FF_MULTIBAND == 0)
+#if 1	/* FreeCalypso match TCS211 */
+
+    // agc is set with the input_level computed from PAGC algo
+    agc     = Cust_get_agc_from_IL(l1a_l1s_com.Scell_info.radio_freq, l1a_l1s_com.last_input_level[l1a_l1s_com.Scell_info.radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, MAX_ID);
+    lna_off = l1a_l1s_com.last_input_level[l1a_l1s_com.Scell_info.radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
+
+#elif (L1_FF_MULTIBAND == 0)
 
     // agc is set with the input_level computed from PAGC algo
     input_level =  l1a_l1s_com.last_input_level[l1a_l1s_com.Scell_info.radio_freq - l1_config.std.radio_freq_index_offset].input_level;
+    agc     = Cust_get_agc_from_IL(l1a_l1s_com.Scell_info.radio_freq,input_level >> 1, MAX_ID);
     lna_off = l1a_l1s_com.last_input_level[l1a_l1s_com.Scell_info.radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
-    agc     = Cust_get_agc_from_IL(l1a_l1s_com.Scell_info.radio_freq,input_level >> 1, MAX_ID, lna_off);
 
 #else // L1_FF_MULTIBAND = 1 below
 
@@ -2203,7 +2203,7 @@ void l1s_ctrl_smscb(UWORD8 task, UWORD8 burst_id)
       l1_multiband_radio_freq_convert_into_operative_radio_freq(l1a_l1s_com.Scell_info.radio_freq); 
     input_level =  l1a_l1s_com.last_input_level[operative_radio_freq].input_level;
     lna_off = l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;
-    agc     = Cust_get_agc_from_IL(l1a_l1s_com.Scell_info.radio_freq,input_level >> 1, MAX_ID, lna_off);
+    agc     = Cust_get_agc_from_IL(l1a_l1s_com.Scell_info.radio_freq,input_level >> 1, MAX_ID);
 
 
 #endif // #if (L1_FF_MULTIBAND == 0) else
@@ -2218,7 +2218,12 @@ void l1s_ctrl_smscb(UWORD8 task, UWORD8 burst_id)
 
     // Store IL used for current CTRL in order to be able to buil IL from pm
     // in READ phase.
-#if (L1_FF_MULTIBAND == 0)
+#if 1	/* FreeCalypso match TCS211 */
+
+    l1a_l1s_com.Scell_used_IL.input_level = l1a_l1s_com.last_input_level[l1a_l1s_com.Scell_info.radio_freq - l1_config.std.radio_freq_index_offset].input_level;
+    l1a_l1s_com.Scell_used_IL.lna_off     = l1a_l1s_com.last_input_level[l1a_l1s_com.Scell_info.radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
+
+#elif (L1_FF_MULTIBAND == 0)
 
     l1a_l1s_com.Scell_used_IL.input_level = input_level;
     l1a_l1s_com.Scell_used_IL.lna_off     = l1a_l1s_com.last_input_level[l1a_l1s_com.Scell_info.radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
@@ -2315,7 +2320,9 @@ void l1s_ctrl_smscb(UWORD8 task, UWORD8 burst_id)
 #if !((MOVE_IN_INTERNAL_RAM == 1) && (GSM_IDLE_RAM !=0))  // MOVE TO INTERNAL MEM IN CASE GSM_IDLE_RAM enabled
 //#pragma GSM_IDLE_DUPLICATE_FOR_INTERNAL_RAM_START         // KEEP IN EXTERNAL MEM otherwise
 
+#if 0	/* FreeCalypso TCS211 reconstruction */
 UWORD32 qual_acc_idle1[2];
+#endif
 
 /*-------------------------------------------------------*/
 /* l1s_ctrl_snb_dl()                                     */
@@ -2425,27 +2432,30 @@ void l1s_ctrl_snb_dl(UWORD8 task, UWORD8 burst_id)
   UWORD8          tsc;
   T_INPUT_LEVEL  *IL_info_ptr;
   UWORD32         dsp_task;
-  //static  BOOL    change_synchro;
+  static  BOOL    change_synchro;
   UWORD8          adc_active = INACTIVE;
 #if (L1_FF_MULTIBAND == 1)
   UWORD16 operative_radio_freq;
 #endif /*L1_FF_MULTIBAND*/
   
 #if L1_GPRS
+  static  BOOL    algo_change_synchro_active = FALSE;
   static  BOOL    BCCHS_in_transfert = FALSE;
-  static  BOOL    change_synchro;//OMAPS90550-new
 #endif
-UWORD8 input_level = 0; //omaps00090550
+#if 0	/* FreeCalypso match TCS211 */
+  UWORD8 input_level = 0; //omaps00090550
+#endif
 #if (RF_FAM == 61)
-    UWORD16 dco_algo_ctl_nb = 0;
-    UWORD8 if_ctl = 0;
-	UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
+  UWORD16 dco_algo_ctl_nb = 0;
+  UWORD8 if_ctl = 0;
+  UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
+  // By default we choose the hardware filter
+  UWORD8 csf_filter_choice = L1_SAIC_HARDWARE_FILTER;
 #endif
 #if (NEW_SNR_THRESHOLD == 1)
   UWORD8 saic_flag=0;
 #endif /* NEW_SNR_THRESHOLD */
-  // By default we choose the hardware filter
-  UWORD8 csf_filter_choice = L1_SAIC_HARDWARE_FILTER;
+
 #if (FF_L1_FAST_DECODING == 1)
   BOOL fast_decoding_authorized = FALSE;
 
@@ -2490,53 +2500,53 @@ UWORD8 input_level = 0; //omaps00090550
 
       // Set CIPHERING reduced frame number.
 #if (AMR == 1)
-#if (FF_L1_TCH_VOCODER_CONTROL == 1)
+  #if (FF_L1_TCH_VOCODER_CONTROL == 1)
       l1ddsp_load_tch_param(&(l1s.next_time),
         SIG_ONLY_MODE,
         l1a_l1s_com.dedic_set.aset->achan_ptr->desc_ptr->channel_type,
-                              #if !FF_L1_IT_DSP_DTX
-        0, 0, 0, 0, 0, 0);
-#else
-                                0, 0, 0, 0, 0, 0, 0);
-                              #endif
+        #if !FF_L1_IT_DSP_DTX
+          0, 0, 0, 0, 0, 0);
         #else
-      l1ddsp_load_tch_param(&(l1s.next_time),
-        SIG_ONLY_MODE,
-        l1a_l1s_com.dedic_set.aset->achan_ptr->desc_ptr->channel_type,
-                              #if !FF_L1_IT_DSP_DTX
-        0, 0, 0, 0);
-                              #else
-                                0, 0, 0, 0, 0);
-#endif
+          0, 0, 0, 0, 0, 0, 0);
         #endif
-#else
-#if (FF_L1_TCH_VOCODER_CONTROL == 1)
+  #else
       l1ddsp_load_tch_param(&(l1s.next_time),
         SIG_ONLY_MODE,
         l1a_l1s_com.dedic_set.aset->achan_ptr->desc_ptr->channel_type,
-                              #if !FF_L1_IT_DSP_DTX
-        0, 0, 0, 0, 0);
-#else
-                                0, 0, 0, 0, 0, 0);
-                              #endif
+        #if !FF_L1_IT_DSP_DTX
+          0, 0, 0, 0);
         #else
+          0, 0, 0, 0, 0);
+        #endif
+  #endif
+#else
+  #if (FF_L1_TCH_VOCODER_CONTROL == 1)
       l1ddsp_load_tch_param(&(l1s.next_time),
         SIG_ONLY_MODE,
         l1a_l1s_com.dedic_set.aset->achan_ptr->desc_ptr->channel_type,
-                              #if !FF_L1_IT_DSP_DTX
-        0, 0, 0);
-                              #else
-                                0, 0, 0, 0);
+        #if !FF_L1_IT_DSP_DTX
+          0, 0, 0, 0, 0);
+        #else
+          0, 0, 0, 0, 0, 0);
+        #endif
+  #else
+      l1ddsp_load_tch_param(&(l1s.next_time),
+        SIG_ONLY_MODE,
+        l1a_l1s_com.dedic_set.aset->achan_ptr->desc_ptr->channel_type,
+        #if !FF_L1_IT_DSP_DTX
+          0, 0, 0);
+        #else
+          0, 0, 0, 0);
+        #endif
+  #endif
 #endif
-#endif
-#endif
-      lna_off = IL_info_ptr->lna_off;
       // for SDCCH we use DPAGC algorithm.
 #if DPAGC_MAX_FLAG
-      agc = Cust_get_agc_from_IL(rx_radio_freq, IL_info_ptr->input_level >> 1, MAX_ID, lna_off);
+      agc = Cust_get_agc_from_IL(rx_radio_freq, IL_info_ptr->input_level >> 1, MAX_ID);
 #else
-      agc = Cust_get_agc_from_IL(rx_radio_freq, IL_info_ptr->input_level >> 1, AV_ID, lna_off);
+      agc = Cust_get_agc_from_IL(rx_radio_freq, IL_info_ptr->input_level >> 1, AV_ID);
 #endif
+      lna_off = IL_info_ptr->lna_off;
 
 
 
@@ -2553,11 +2563,20 @@ UWORD8 input_level = 0; //omaps00090550
 
       // for PCH/E_PCH/Serving BCCH and All CCCH we use
       // PAGC algorithm.
-#if (L1_FF_MULTIBAND == 0)
+#if 1	/* FreeCalypso match TCS211 */
+
+      agc     = Cust_get_agc_from_IL(rx_radio_freq, l1a_l1s_com.last_input_level[rx_radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, MAX_ID);
+      lna_off = l1a_l1s_com.last_input_level[rx_radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
+
+      // Store input_level and lna_off fields used for current CTRL in order to be able
+      // to build IL from pm in READ phase.
+      l1a_l1s_com.Scell_used_IL = l1a_l1s_com.last_input_level[rx_radio_freq - l1_config.std.radio_freq_index_offset];
+
+#elif (L1_FF_MULTIBAND == 0)
 
       input_level = l1a_l1s_com.last_input_level[rx_radio_freq - l1_config.std.radio_freq_index_offset].input_level ;
       lna_off = l1a_l1s_com.last_input_level[rx_radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
-      agc     = Cust_get_agc_from_IL(rx_radio_freq, input_level >> 1, MAX_ID, lna_off);
+      agc     = Cust_get_agc_from_IL(rx_radio_freq, input_level >> 1, MAX_ID);
 
 
       // Store input_level and lna_off fields used for current CTRL in order to be able
@@ -2571,7 +2590,7 @@ UWORD8 input_level = 0; //omaps00090550
 
       input_level = l1a_l1s_com.last_input_level[operative_radio_freq].input_level ;
       lna_off = l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;
-      agc     = Cust_get_agc_from_IL(rx_radio_freq, input_level >> 1, MAX_ID, lna_off);
+      agc     = Cust_get_agc_from_IL(rx_radio_freq, input_level >> 1, MAX_ID);
 
 
       // Store input_level and lna_off fields used for current CTRL in order to be able
@@ -2599,7 +2618,7 @@ UWORD8 input_level = 0; //omaps00090550
           ,&saic_flag
       #endif
           );
-   #endif  //L!SAIC != 0
+   #endif  //L1_SAIC != 0
 
     // ADC measurement
     // ***************
@@ -2733,9 +2752,9 @@ UWORD8 input_level = 0; //omaps00090550
         l1s.forbid_meas = TASK_ROM_MFTAB[task].size;
 
       if (new_offset >= 4)
-        l1s.algo_change_synchro_active = TRUE;
+        algo_change_synchro_active = TRUE;
 
-      if (l1s.algo_change_synchro_active)
+      if (algo_change_synchro_active)
       {
         // compute TPU offset for "current timeslot + 4 timeslot"
         new_synchro = l1s.tpu_offset + (4 * TN_WIDTH);
@@ -2894,7 +2913,7 @@ UWORD8 input_level = 0; //omaps00090550
          (l1a_l1s_com.l1s_en_task[PDTCH]  == TASK_ENABLED) ||
          (l1a_l1s_com.l1s_en_task[SINGLE] == TASK_ENABLED)))
     {
-        if((burst_id == BURST_4) && l1s.algo_change_synchro_active)
+        if((burst_id == BURST_4) && algo_change_synchro_active)
         {
 
             // Slide synchro back to mach current serving timeslot.
@@ -2909,7 +2928,7 @@ UWORD8 input_level = 0; //omaps00090550
             l1s.tpu_ctrl_reg |= CTRL_SYCB;
             l1s.dsp_ctrl_reg |= CTRL_SYNC;
             l1s.ctrl_synch_before = FALSE;
-            l1s.algo_change_synchro_active = FALSE;
+            algo_change_synchro_active = FALSE;
 
             #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
               trace_fct(CST_L1S_ADJUST_TIME, (UWORD32)(-1));//OMAPS00090550
@@ -3527,9 +3546,9 @@ void l1s_ctrl_nnb(UWORD8 task, UWORD8 param2)
     // is restored at the end of the 4 burst reading.
 #if (L1_FF_MULTIBAND == 0)
 
-    lna_off = l1a_l1s_com.last_input_level[cell_info_ptr->radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
     // agc is computed from PGC2 algo result.
-    agc     = Cust_get_agc_from_IL(cell_info_ptr->radio_freq, l1a_l1s_com.last_input_level[cell_info_ptr->radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, AV_ID, lna_off);
+    agc     = Cust_get_agc_from_IL(cell_info_ptr->radio_freq, l1a_l1s_com.last_input_level[cell_info_ptr->radio_freq - l1_config.std.radio_freq_index_offset].input_level >> 1, AV_ID);
+    lna_off = l1a_l1s_com.last_input_level[cell_info_ptr->radio_freq - l1_config.std.radio_freq_index_offset].lna_off;
 
 #else // L1_FF_MULTIBAND = 1 below
 
@@ -3538,7 +3557,7 @@ void l1s_ctrl_nnb(UWORD8 task, UWORD8 param2)
     lna_off = l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;
     input_level = l1a_l1s_com.last_input_level[operative_radio_freq].input_level;
     // agc is computed from PGC2 algo result.
-    agc     = Cust_get_agc_from_IL(cell_info_ptr->radio_freq, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, AV_ID, lna_off);
+    agc     = Cust_get_agc_from_IL(cell_info_ptr->radio_freq, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, AV_ID);
 
 #endif // #if (L1_FF_MULTIBAND == 0) else
 
@@ -4145,12 +4164,12 @@ void l1s_ctrl_tchth(UWORD8 task, UWORD8 param2)
   UWORD32                 fn_mod_52;
   UWORD8 input_level;
 #if (RF_FAM == 61)
-    UWORD16 dco_algo_ctl_nb = 0;
-    UWORD8 if_ctl = 0;
-	UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
-#endif
+  UWORD16 dco_algo_ctl_nb = 0;
+  UWORD8 if_ctl = 0;
+  UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
   // By default we choose the hardware filter
   UWORD8 csf_filter_choice = L1_SAIC_HARDWARE_FILTER;
+#endif
 #if FF_L1_IT_DSP_DTX
   BOOL                    dtx_dsp_interrupt=FALSE; //omaps00090550
 #endif
@@ -4223,13 +4242,13 @@ void l1s_ctrl_tchth(UWORD8 task, UWORD8 param2)
   /*--------------------------------------------*/
   /* Program TPU...                             */
   /*--------------------------------------------*/
-  lna_off = IL_info_ptr->lna_off;
   // for TCHTH we use DPAGC algorithm.
   #if DPAGC_MAX_FLAG
-    agc = Cust_get_agc_from_IL(radio_freq, input_level >> 1, MAX_ID, lna_off);
+    agc = Cust_get_agc_from_IL(radio_freq, input_level >> 1, MAX_ID);
   #else
-    agc = Cust_get_agc_from_IL(radio_freq, input_level >> 1, AV_ID, lna_off);
+    agc = Cust_get_agc_from_IL(radio_freq, input_level >> 1, AV_ID);
   #endif
+  lna_off = IL_info_ptr->lna_off;
 
 
   // Store input_level and lna_off fields used for current CTRL in order to be able
@@ -4723,12 +4742,12 @@ void l1s_ctrl_tchtf(UWORD8 task, UWORD8 param2)
   UWORD32                 dsp_task;
   UWORD32                 fn_mod_104;
 #if (RF_FAM == 61)
-    UWORD16 dco_algo_ctl_nb;
+  UWORD16 dco_algo_ctl_nb;
   UWORD8 if_ctl =0 ; //omaps00090550
   UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
-#endif
   // By default we choose the hardware filter
   UWORD8 csf_filter_choice = L1_SAIC_HARDWARE_FILTER;
+#endif
 #if FF_L1_IT_DSP_DTX
   BOOL                    dtx_dsp_interrupt = FALSE;
 #endif
@@ -4809,13 +4828,13 @@ void l1s_ctrl_tchtf(UWORD8 task, UWORD8 param2)
   /* Program TPU...                             */
   /*--------------------------------------------*/
 
-  lna_off = IL_info_ptr->lna_off;
   // for TCHTF we use DPAGC algorithm.
   #if DPAGC_MAX_FLAG
-    agc = Cust_get_agc_from_IL(radio_freq, IL_info_ptr->input_level >> 1, MAX_ID, lna_off);
+    agc = Cust_get_agc_from_IL(radio_freq, IL_info_ptr->input_level >> 1, MAX_ID);
   #else
-    agc = Cust_get_agc_from_IL(radio_freq, IL_info_ptr->input_level >> 1, AV_ID, lna_off);
+    agc = Cust_get_agc_from_IL(radio_freq, IL_info_ptr->input_level >> 1, AV_ID);
   #endif
+  lna_off = IL_info_ptr->lna_off;
 
 
   // Store input_level and lna_off fields used for current CTRL in order to be able
@@ -4941,11 +4960,14 @@ void l1s_ctrl_tchtf(UWORD8 task, UWORD8 param2)
         // In ETM test mode, the protocol stack is not active and hence we do not require any FACCH data from L23
         // But this change is applicable only when ETM scripts are run with PS-builds. In case of L1-SA,
         // dll_read_dcch() is called which is just a stub function (It just returns a NULL ptr for L1 SA)
+	/* FreeCalypso: this logic is not present in TCS211 */
+	#if 0
         #if TESTMODE
         #if (OP_L1_STANDALONE == 0)
          if(!l1_config.TestMode)
         #endif // (OP_L1_STANDALONE == 0)
         #endif // TESTMODE
+	#endif
          {
         tx_data = dll_read_dcch(channel_mode);
          }
@@ -5093,10 +5115,6 @@ void l1s_ctrl_tchtf(UWORD8 task, UWORD8 param2)
           }
           #endif
         }
-#if FEATURE_TCH_REROUTE
-        else
-          tch_substitute_uplink(l1s_dsp_com.dsp_ndb_ptr->a_du_1);
-#endif
       }
     }
 
@@ -5448,12 +5466,12 @@ void l1s_ctrl_tcha(UWORD8 task, UWORD8 param2)
   UWORD8                 adc_active_ul = INACTIVE;
   UWORD8                 adc_active_dl = INACTIVE;
 #if (RF_FAM == 61)
-       UWORD16 dco_algo_ctl_nb = 0;
-       UWORD8 if_ctl = 0;
-	   UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
-#endif
+  UWORD16 dco_algo_ctl_nb = 0;
+  UWORD8 if_ctl = 0;
+  UWORD8 if_threshold = C_IF_ZERO_LOW_THRESHOLD_GSM;
   // By default we choose the hardware filter
   UWORD8 csf_filter_choice = L1_SAIC_HARDWARE_FILTER;
+#endif
 #if (NEW_SNR_THRESHOLD == 1)
   UWORD8 saic_flag=0;
 #endif /*NEW_SNR_THRESHOLD */
@@ -5536,13 +5554,13 @@ void l1s_ctrl_tcha(UWORD8 task, UWORD8 param2)
       /*--------------------------------------------*/
       /* Program TPU...                             */
       /*--------------------------------------------*/
-      lna_off = IL_info_ptr->lna_off;
       // for TCHA we use DPAGC algorithm.
       #if DPAGC_MAX_FLAG
-        agc = Cust_get_agc_from_IL(radio_freq, IL_info_ptr->input_level >> 1, MAX_ID, lna_off);
+        agc = Cust_get_agc_from_IL(radio_freq, IL_info_ptr->input_level >> 1, MAX_ID);
       #else
-        agc = Cust_get_agc_from_IL(radio_freq, IL_info_ptr->input_level >> 1, AV_ID, lna_off);
+        agc = Cust_get_agc_from_IL(radio_freq, IL_info_ptr->input_level >> 1, AV_ID);
       #endif
+      lna_off = IL_info_ptr->lna_off;
 
 
 
@@ -5619,9 +5637,18 @@ void l1s_ctrl_tcha(UWORD8 task, UWORD8 param2)
   // RACH is not allowed on SACCH therefore TX is avoided by setting
   // the txpwr to NO_TXPWR !!!
   {
+#if 0	/* LoCosto code */
     // NOTE: The spec says RACH bursts on SACCH UL is optional. hence it should not be counted
     // Refer spec 04.08
     l1s_ctrl_rach(RAHO,NO_PAR);
+#else	/* TCS211 reconstruction, code taken from TSM30 */
+    // Set TXPWR.
+    l1ddsp_load_txpwr(NO_TXPWR, radio_freq);
+ 
+    #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
+      RTTL1_FILL_UL_NB(task, l1a_l1s_com.dedic_set.aset->timing_advance, NO_TXPWR)
+    #endif
+#endif
   }
   else
   // TCH/UL is a normal burst.
@@ -5652,6 +5679,9 @@ void l1s_ctrl_tcha(UWORD8 task, UWORD8 param2)
             l1a_l1s_com.adc_cpt = 0;
           }
 
+#if 1	/* FreeCalypso TCS211 reconstruction */
+  } // End of "TCH/UL is a normal burst"
+#endif
 
     // In any case (normal TX or no TX due to Handover Access process)
     // the full TCHA task must be controled for TPU and DSP.
@@ -5806,7 +5836,9 @@ void l1s_ctrl_tcha(UWORD8 task, UWORD8 param2)
             }
     }
 
+#if 0	/* FreeCalypso TCS211 reconstruction */
   } // End of "TCH/UL is a normal burst"
+#endif
 
   /*----------------------------------------------*/
   /* Common for Dedicated mode: DSP parameters... */
@@ -5881,8 +5913,10 @@ void l1s_ctrl_tcha(UWORD8 task, UWORD8 param2)
   l1a_l1s_com.dedic_set.reset_sacch = FALSE;
 #endif
 
+#if 0	/* FreeCalypso TCS211 reconstruction */
   if(l1a_l1s_com.dedic_set.aset->ho_acc_to_send == 0)
   {
+#endif
     // Set tpu window identifier for Power meas or FS/SB search.
     l1s.tpu_win = (3 * BP_SPLIT) + l1_config.params.tx_nb_load_split + l1_config.params.rx_synth_load_split;
 
@@ -5913,8 +5947,10 @@ void l1s_ctrl_tcha(UWORD8 task, UWORD8 param2)
       if (l1_config.TestMode && (l1_config.tmode.rf_params.tmode_continuous != TM_NO_CONTINUOUS))
         l1_config.tmode.rf_params.tmode_continuous = TM_CONTINUOUS;
     #endif
-  }
 
+#if 0	/* FreeCalypso TCS211 reconstruction */
+  }
+#endif
 }
 
 #if (MOVE_IN_INTERNAL_RAM == 0) // Must be followed by the pragma used to duplicate the funtion in internal RAM
@@ -6053,7 +6089,11 @@ void l1s_hopping_algo(UWORD8 task, UWORD8 param2)
       // To review (is there any better solution?)...........
       next_neighbor_time_fn = l1s.next_time.fn + l1pa_l1ps_com.pbcchn.fn_offset;
 
+      #if 0	/* correct code (corrected by TI for LoCosto) */
       if (next_neighbor_time_fn > ((WORD32)MAX_FN))//OMAPS00090550
+      #else	/* wrong code to match TCS211 disassembly */
+      if (next_neighbor_time_fn > MAX_FN)
+      #endif
         next_neighbor_time.fn = (UWORD32) (next_neighbor_time_fn - MAX_FN);
       else if (next_neighbor_time_fn < 0)
         next_neighbor_time.fn = (UWORD32) (next_neighbor_time_fn + MAX_FN);
@@ -6144,7 +6184,7 @@ void l1s_hopping_algo(UWORD8 task, UWORD8 param2)
       UWORD8  i = 0;
       UWORD8  m;
       UWORD8  mp;
-      UWORD8  nbin =0; //omaps00090550
+      UWORD8  nbin;
       UWORD8  tp;
       UWORD8  s;
       UWORD8  t1r = (UWORD8)(time_ptr->t1 % 64);
@@ -6298,7 +6338,7 @@ void l1s_read_msagc(UWORD8 task, UWORD8 param2)
 {
   BOOL      en_task;
   BOOL      task_param;
-  UWORD16   pm_level[2]={0}; //omaps00090550
+  UWORD8    pm_level[2];
 #if (L1_FF_MULTIBAND == 1)
   UWORD16  operative_radio_freq;
 #endif
@@ -6401,10 +6441,7 @@ void l1s_read_msagc(UWORD8 task, UWORD8 param2)
     l1_check_pm_error(pm_level[0], MS_AGC_ID);
     l1_check_pm_error(pm_level[1], MS_AGC_ID);
 
-    pm_level[0] = pm_level[0] >> 5;
-    pm_level[1] = pm_level[1] >> 5;
-
-    l1ctl_pgc2(((UWORD8 )(pm_level[0])),((UWORD8 )(pm_level[1])),cell_info_ptr->radio_freq);
+    l1ctl_pgc2(pm_level[0], pm_level[1], cell_info_ptr->radio_freq);
 
     #if L2_L3_SIMUL
       #if (DEBUG_TRACE == BUFFER_TRACE_LNA)
@@ -6612,7 +6649,7 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
     /* Frequency burst detection result...               */
     /*---------------------------------------------------*/
     {
-      if((en_task))
+      if((en_task) && !(task_param))
       // Check the task semaphore and the task enable bit. The reading
       // task body is executed only when the task semaphore is 0 and the
       // task is still enabled.
@@ -6621,7 +6658,7 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
       {
         flag  = l1s_dsp_com.dsp_ndb_ptr->d_fb_det              & 0xffff; //  1 means FOUND.
         toa   = l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_TOA]   & 0xffff; //  Unit is BIT.
-        pm    = (l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM]   & 0xffff);
+        pm    = (l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM]   & 0xffff) >> 5;
                                                                          //  WARNING... to be used!!!
         #if TESTMODE
           pm_fullres = l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM] & 0xffff;  // F26.6
@@ -6649,7 +6686,6 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
         }
 
 //       l1_check_pm_error(pm, task);
-         pm  = pm >> 5;
 
         #if TRACE_TYPE==3
           stats_samples_fb(flag,toa,pm,angle,snr);
@@ -6738,9 +6774,11 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
         l1s_clear_mftab(l1s.mftab.frmlst);
         l1s.frame_count = 0;
 
+#if 0	/* FreeCalypso TCS211 reconstruction */
         // This task is not compatible with Neigh. Measurement.
         // Clear "forbid_meas" to indicate when the task is complete.
         l1s.forbid_meas = 0;
+#endif
       }
     }
     break;
@@ -6755,7 +6793,7 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
       // read cell identifier.
       neigh_id = l1a_l1s_com.nsync.active_fb_id;
 
-      if((en_task))
+      if((en_task) && !(task_param))
       // Check the task semaphore and the task enable bit. The reading
       // task body is executed only when the task semaphore is 0 and the
       // task is still enabled.
@@ -6764,7 +6802,7 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
       {
         flag  = l1s_dsp_com.dsp_ndb_ptr->d_fb_det              & 0xffff; //  1 means FOUND.
         toa   = l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_TOA]   & 0xffff; //  Unit is BIT.
-        pm    = (l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM]   & 0xffff);
+        pm    = (l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM]   & 0xffff) >> 5;
                                                                          //  WARNING... to be used!!!
         #if TESTMODE
           pm_fullres = l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM] & 0xffff;  // F10.6
@@ -6772,7 +6810,6 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
 
         // CQ 19836: do not check PM on FB26
         //l1_check_pm_error(pm, task);
-        pm = pm >> 5;
 
         angle = l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_ANGLE] & 0xffff; //  WARNING... to be used!!!
         snr   = l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_SNR]   & 0xffff; //  WARNING... to be used!!!
@@ -6820,7 +6857,7 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
       {
         flag  = !(((l1s_dsp_com.dsp_ndb_ptr->a_sch26[0] & 0xffff) & (1<<B_SCH_CRC)) >> B_SCH_CRC); //  1 means ERROR.
         toa   = l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_TOA]   & 0xffff;  //  Unit is BIT.
-        pm    = (l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM]   & 0xffff);
+        pm    = (l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM]   & 0xffff) >> 5;
                                                                           //  WARNING... to be used!!!
         #if TESTMODE
           pm_fullres = l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM] & 0xffff;  // F26.6
@@ -6831,7 +6868,6 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
         data  = &(l1s_dsp_com.dsp_ndb_ptr->a_sch26[3]);                   // Set data block pointer (skip header).
 
         l1_check_pm_error(pm, task);
-	pm = pm >> 5;
 
         // Call SB report function (send report msg to L1A).
         #if TESTMODE
@@ -6883,7 +6919,7 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
 
         flag  = !(((l1s_dsp_com.dsp_db_r_ptr->a_sch[0] & 0xffff) & (1<<B_SCH_CRC)) >> B_SCH_CRC); //  1 means ERROR.
         toa   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_TOA]   & 0xffff;  //  Unit is BIT.
-        pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff);
+        pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff) >> 5;
                                                                            //  WARNING... to be used!!!
         #if TESTMODE
           pm_fullres = l1s_dsp_com.dsp_ndb_ptr->a_sync_demod[D_PM] & 0xffff;  // F26.6
@@ -6893,16 +6929,24 @@ void l1s_read_mon_result(UWORD8 task, UWORD8 attempt)
         snr   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_SNR]   & 0xffff;
         data  = &(l1s_dsp_com.dsp_db_r_ptr->a_sch[3]);                     // Set data block pointer (skip header).
 
-        l1ddsp_read_iq_dump(task);
+        #if (L1_DEBUG_IQ_DUMP == 1)
+          l1ddsp_read_iq_dump(task);
+        #endif
 
         l1_check_pm_error(pm, task);
-	pm = pm >> 5;
 
         // CQ30474. In case SNR is too low, the SB shall be considered as failed.
         // This is valuable for code running on target with DSP 3606.
+
+	/*
+	 * FreeCalypso: despite the above comment,
+	 * this code is NOT present in TCS211.
+	 */
+#if 0
 #if (CODE_VERSION == NOT_SIMULATION)
        if ( snr < MIN_ACCEPTABLE_SNR_FOR_SB )
          flag = FALSE;
+#endif
 #endif
 
         #if L2_L3_SIMUL
@@ -7307,26 +7351,25 @@ void l1s_read_snb_dl(UWORD8 task, UWORD8 burst_id)
       if (l1a_l1s_com.dsp_scheduler_mode == GSM_SCHEDULER)
       {
         toa   =  l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_TOA]   & 0xffff;
-        pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]    & 0xffff);
+        pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]    & 0xffff) >> 5;
         angle =  l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_ANGLE] & 0xffff;
         snr   =  l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_SNR]   & 0xffff;
       }
       else
       {
         toa   =  l1ps_dsp_com.pdsp_db_r_ptr->a_burst_toa_gprs[0]   & 0xffff;
-        pm    = (l1ps_dsp_com.pdsp_db_r_ptr->a_burst_pm_gprs[0]    & 0xffff);
+        pm    = (l1ps_dsp_com.pdsp_db_r_ptr->a_burst_pm_gprs[0]    & 0xffff) >> 5;
         angle =  l1ps_dsp_com.pdsp_db_r_ptr->a_burst_angle_gprs[0] & 0xffff;
         snr   =  l1ps_dsp_com.pdsp_db_r_ptr->a_burst_snr_gprs[0]   & 0xffff;
       }
     #else
         toa   =  l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_TOA]   & 0xffff;
-        pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]    & 0xffff);
+        pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]    & 0xffff) >> 5;
         angle =  l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_ANGLE] & 0xffff;
         snr   =  l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_SNR]   & 0xffff;
     #endif
 
     l1_check_pm_error(pm, task);
-    pm = pm >> 5;
 
     // Update AGC: Call PAGC algorithm
     radio_freq = l1a_l1s_com.Scell_info.radio_freq;
@@ -7509,7 +7552,7 @@ void l1s_read_snb_dl(UWORD8 task, UWORD8 burst_id)
     #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
       RTTL1_FILL_DL_BURST(angle, snr, l1s.afc, task, pm, toa, l1a_l1s_com.Scell_IL_for_rxlev)
     #endif
-    #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
+    #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4)) && HAVE_L1_TRACE_BURST_PARAM
       l1_trace_burst_param(angle, snr, l1s.afc, task, pm, toa, l1a_l1s_com.Scell_IL_for_rxlev);
     #endif
     #if (BURST_PARAM_LOG_ENABLE == 1)
@@ -7532,6 +7575,7 @@ void l1s_read_snb_dl(UWORD8 task, UWORD8 burst_id)
           toa_tab[burst_id] = toa;
   }
 
+#if 0	/* FreeCalypso TCS211 reconstruction */
 // added Enhanced RSSI
    if(l1s_dsp_com.dsp_ndb_ptr->a_cd[2] != 0xffff)
    {
@@ -7539,6 +7583,7 @@ void l1s_read_snb_dl(UWORD8 task, UWORD8 burst_id)
         //RX Qual value reporting- total number of decoded bits
          qual_acc_idle1[1] += 1;
    }
+#endif
 
 #if (FF_L1_FAST_DECODING == 1)
     /* Perform the reporting if
@@ -7663,7 +7708,10 @@ void l1s_read_snb_dl(UWORD8 task, UWORD8 burst_id)
 #endif /* #if (FF_L1_FAST_DECODING == 1) */
   }
 
-  l1ddsp_read_iq_dump(task);
+  #if (L1_DEBUG_IQ_DUMP == 1)
+    l1ddsp_read_iq_dump(task);
+  #endif
+
   // Flag the use of the MCU/DSP dual page read interface.
   // ******************************************************
 
@@ -7807,7 +7855,9 @@ void l1s_read_nnb(UWORD8 task, UWORD8 param)
 
     // the mean power level is impossible for the neighbor bloc, so the las input level is used.
     neigh_radio_freq = l1a_l1s_com.bcchn.list[active_neigh_id].radio_freq;
-#if (L1_FF_MULTIBAND == 0)
+#if 1	/* FreeCalypso TCS211 reconstruction */
+    pwr_level = l1a_l1s_com.last_input_level[neigh_radio_freq].input_level;
+#elif (L1_FF_MULTIBAND == 0)
     pwr_level = l1a_l1s_com.last_input_level[neigh_radio_freq - l1_config.std.radio_freq_index_offset].input_level;
 #else
     operative_radio_freq = l1_multiband_radio_freq_convert_into_operative_radio_freq(neigh_radio_freq);
@@ -7858,7 +7908,9 @@ void l1s_read_nnb(UWORD8 task, UWORD8 param)
   // End of task -> task must become INACTIVE.
   l1s.task_status[task].current_status = INACTIVE;
 
-  l1ddsp_read_iq_dump(task);
+  #if (L1_DEBUG_IQ_DUMP == 1)
+    l1ddsp_read_iq_dump(task);
+  #endif
 
   // Flag the use of the MCU/DSP dual page read interface.
   // ******************************************************
@@ -8024,7 +8076,7 @@ void l1s_read_dedic_dl(UWORD8 task, UWORD8 burst_id)
   // Traces and debug.
   // ******************
   #if (TRACE_TYPE!=0) && (TRACE_TYPE !=5)
-      trace_fct(CST_L1S_READ_DEDIC_DL, 1);//omaps00090550
+      trace_fct(CST_L1S_READ_DEDIC_DL, -1);
   #endif
 
   #if (TRACE_TYPE!=0)
@@ -8099,12 +8151,11 @@ void l1s_read_dedic_dl(UWORD8 task, UWORD8 burst_id)
 
       // Read control information.
       toa   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_TOA]   & 0xffff;
-      pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff);
+      pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff) >> 5;
       angle = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_ANGLE] & 0xffff;
       snr   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_SNR]   & 0xffff;
 
       l1_check_pm_error(pm, task);
-      pm = pm >> 5;
 
       // Update AGC: Call DPAGC algorithm
       IL_for_rxlev = l1ctl_dpagc(0,beacon,(UWORD8)pm,radio_freq,IL_info_ptr); // dtx_on = 0
@@ -8145,25 +8196,31 @@ void l1s_read_dedic_dl(UWORD8 task, UWORD8 burst_id)
             if(l1s.toa_snr_mask == 0)
           #endif
           {
-            UWORD32 snr_temp;
-            snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
-            #if (TOA_ALGO == 2)
-              l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+            #if 1	/* FreeCalypso TCS211 reconstruction */
+              if (IL_for_rxlev < IL_FOR_RXLEV_SNR)
+                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr, toa, &l1s.toa_update, &l1s.toa_period_count);
+              else
+                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, 0, toa, &l1s.toa_update, &l1s.toa_period_count);
             #else
-              l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
-#if (FF_L1_FAST_DECODING ==1)
-                  ,0
-#endif
-                  );
+              UWORD32 snr_temp;
+              snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
+              #if (TOA_ALGO == 2)
+                l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+              #else
+                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
+                #if (FF_L1_FAST_DECODING ==1)
+                    ,0
+                #endif
+                    );
+              #endif
             #endif
-
           }
       #endif
 
        #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
          RTTL1_FILL_DL_BURST(angle, snr, l1s.afc, task, pm, toa, IL_for_rxlev)
        #endif
-       #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
+       #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4)) && HAVE_L1_TRACE_BURST_PARAM
          l1_trace_burst_param(angle, snr, l1s.afc, task, pm, toa, IL_for_rxlev);
        #endif
        #if (BURST_PARAM_LOG_ENABLE == 1)
@@ -8245,12 +8302,11 @@ void l1s_read_dedic_dl(UWORD8 task, UWORD8 burst_id)
 
       // Read control information.
       toa   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_TOA]   & 0xffff;
-      pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff);
+      pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff) >> 5;
       angle = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_ANGLE] & 0xffff;
       snr   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_SNR]   & 0xffff;
 
       l1_check_pm_error(pm, task);
-      pm = pm >> 5;
 
       #if TRACE_TYPE==3
         stats_samples_tch(toa,pm,angle,snr);
@@ -8395,18 +8451,24 @@ void l1s_read_dedic_dl(UWORD8 task, UWORD8 burst_id)
             if(l1s.toa_snr_mask == 0)
           #endif
           {
-            UWORD32 snr_temp;
-            snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
-            #if (TOA_ALGO == 2)
-              l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1_mode, snr_temp, toa);
+            #if 1	/* FreeCalypso TCS211 reconstruction */
+              if (IL_for_rxlev < IL_FOR_RXLEV_SNR)
+                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1_mode, snr, toa, &l1s.toa_update, &l1s.toa_period_count);
+              else
+                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1_mode, 0, toa, &l1s.toa_update, &l1s.toa_period_count);
             #else
-              l1s.toa_shift = l1ctl_toa(TOA_RUN, l1_mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
-#if (FF_L1_FAST_DECODING == 1)
-                  ,0
-#endif
-                  );
+              UWORD32 snr_temp;
+              snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
+              #if (TOA_ALGO == 2)
+                l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1_mode, snr_temp, toa);
+              #else
+                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1_mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
+                #if (FF_L1_FAST_DECODING == 1)
+                    ,0
+                #endif
+                    );
+              #endif
             #endif
-
           }
         #endif
       } // if(((channel_mode == TCH_HS_MODE) && (subchannel == 0) &&
@@ -8432,7 +8494,7 @@ void l1s_read_dedic_dl(UWORD8 task, UWORD8 burst_id)
       #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
         RTTL1_FILL_DL_BURST(angle, snr, l1s.afc, task, pm, toa, IL_for_rxlev)
       #endif
-      #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
+      #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4)) && HAVE_L1_TRACE_BURST_PARAM
         l1_trace_burst_param(angle, snr, l1s.afc, task, pm, toa, IL_for_rxlev);
       #endif
       #if (BURST_PARAM_LOG_ENABLE == 1)
@@ -8897,16 +8959,23 @@ if((rx_type==SPEECH_GOOD) || (rx_type==SPEECH_DEGRADED) || (rx_type==SPEECH_BAD)
               if(l1s.toa_snr_mask == 0)
             #endif
             {
-              UWORD32 snr_temp;
-              snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
-              #if (TOA_ALGO == 2)
-                l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+              #if 1	/* FreeCalypso TCS211 reconstruction */
+                if (IL_for_rxlev < IL_FOR_RXLEV_SNR)
+                  l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr, toa, &l1s.toa_update, &l1s.toa_period_count);
+                else
+                  l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, 0, toa, &l1s.toa_update, &l1s.toa_period_count);
               #else
-                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
-#if (FF_L1_FAST_DECODING == 1)
-                    ,0
-#endif
-                    );
+                UWORD32 snr_temp;
+                snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
+                #if (TOA_ALGO == 2)
+                  l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+                #else
+                  l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
+                  #if (FF_L1_FAST_DECODING == 1)
+                      ,0
+                  #endif
+                      );
+                #endif
               #endif
             }
           #endif
@@ -9004,12 +9073,11 @@ if((rx_type==SPEECH_GOOD) || (rx_type==SPEECH_DEGRADED) || (rx_type==SPEECH_BAD)
 
       // Read control information.
       toa   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_TOA]   & 0xffff;
-      pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff);
+      pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff) >> 5;
       angle = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_ANGLE] & 0xffff;
       snr   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_SNR]   & 0xffff;
 
       l1_check_pm_error(pm, task);
-      pm = pm >> 5;
 
       #if TRACE_TYPE==3
         stats_samples_tch(toa,pm,angle,snr);
@@ -9132,16 +9200,23 @@ if((rx_type==SPEECH_GOOD) || (rx_type==SPEECH_DEGRADED) || (rx_type==SPEECH_BAD)
             if(l1s.toa_snr_mask == 0)
           #endif
           {
-            UWORD32 snr_temp;
-            snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
-            #if (TOA_ALGO == 2)
-              l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+            #if 1	/* FreeCalypso TCS211 reconstruction */
+              if (IL_for_rxlev < IL_FOR_RXLEV_SNR)
+                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr, toa, &l1s.toa_update, &l1s.toa_period_count);
+              else
+                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, 0, toa, &l1s.toa_update, &l1s.toa_period_count);
             #else
-              l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
-#if (FF_L1_FAST_DECODING == 1)
-                  ,0
-#endif
-                  );
+              UWORD32 snr_temp;
+              snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
+              #if (TOA_ALGO == 2)
+                l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+              #else
+                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
+                #if (FF_L1_FAST_DECODING == 1)
+                    ,0
+                #endif
+                    );
+              #endif
             #endif
           }
         #endif
@@ -9167,7 +9242,7 @@ if((rx_type==SPEECH_GOOD) || (rx_type==SPEECH_DEGRADED) || (rx_type==SPEECH_BAD)
       #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
         RTTL1_FILL_DL_BURST(angle, snr, l1s.afc, task, pm, toa, IL_for_rxlev)
       #endif
-      #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
+      #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4)) && HAVE_L1_TRACE_BURST_PARAM
         l1_trace_burst_param(angle, snr, l1s.afc, task, pm, toa, IL_for_rxlev);
       #endif
       #if (BURST_PARAM_LOG_ENABLE == 1)
@@ -9374,11 +9449,6 @@ if((rx_type==SPEECH_GOOD) || (rx_type==SPEECH_DEGRADED) || (rx_type==SPEECH_BAD)
                 os_send_sig(msg, L1C1_QUEUE);
                 DEBUGMSG(status,NU_SEND_QUEUE_ERR)
               }
-            #endif
-
-            #if FEATURE_TCH_REROUTE
-              if (tch_reroute_downlink)
-                tch_send_downlink_bits(l1s_dsp_com.dsp_ndb_ptr->a_dd_0);
             #endif
 
             if(channel_mode == TCH_24F_MODE)
@@ -9605,16 +9675,23 @@ l1s.repeated_facch.pipeline[0].buffer_empty=l1s.repeated_facch.pipeline[1].buffe
               if(l1s.toa_snr_mask == 0)
             #endif
             {
-              UWORD32 snr_temp;
-              snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
-              #if (TOA_ALGO == 2)
-                l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+              #if 1	/* FreeCalypso TCS211 reconstruction */
+                if (IL_for_rxlev < IL_FOR_RXLEV_SNR)
+                  l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr, toa, &l1s.toa_update, &l1s.toa_period_count);
+                else
+                  l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, 0, toa, &l1s.toa_update, &l1s.toa_period_count);
               #else
-                l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
-#if (FF_L1_FAST_DECODING == 1)
-                    ,0
-#endif
-                    );
+                UWORD32 snr_temp;
+                snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
+                #if (TOA_ALGO == 2)
+                  l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+                #else
+                  l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
+                  #if (FF_L1_FAST_DECODING == 1)
+                      ,0
+                  #endif
+                      );
+                #endif
               #endif
             }
           #endif
@@ -9681,7 +9758,7 @@ l1s.repeated_facch.pipeline[0].buffer_empty=l1s.repeated_facch.pipeline[1].buffe
 
       // Read control information.
       toa   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_TOA]   & 0xffff;
-      pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff);
+      pm    = (l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_PM]   & 0xffff) >> 5;
       angle = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_ANGLE] & 0xffff;
       snr   = l1s_dsp_com.dsp_db_r_ptr->a_serv_demod[D_SNR]   & 0xffff;
 
@@ -9708,7 +9785,6 @@ l1s.repeated_facch.pipeline[0].buffer_empty=l1s.repeated_facch.pipeline[1].buffe
         {
             l1_check_pm_error(pm, task);
         }
-	pm = pm >> 5;
 
       #if TRACE_TYPE==3
         stats_samples_tch_sacch(toa,pm,angle,snr);
@@ -9752,25 +9828,31 @@ l1s.repeated_facch.pipeline[0].buffer_empty=l1s.repeated_facch.pipeline[1].buffe
           if(l1s.toa_snr_mask == 0)
         #endif
         {
-          UWORD32 snr_temp;
-          snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
-          #if (TOA_ALGO == 2)
-            l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+          #if 1	/* FreeCalypso TCS211 reconstruction */
+            if (IL_for_rxlev < IL_FOR_RXLEV_SNR)
+              l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr, toa, &l1s.toa_update, &l1s.toa_period_count);
+            else
+              l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, 0, toa, &l1s.toa_update, &l1s.toa_period_count);
           #else
-            l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
-#if (FF_L1_FAST_DECODING == 1)
-                ,0
-#endif
-                );
+            UWORD32 snr_temp;
+            snr_temp = (IL_for_rxlev < IL_FOR_RXLEV_SNR)? snr: 0;
+            #if (TOA_ALGO == 2)
+              l1s.toa_var.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa);
+            #else
+              l1s.toa_shift = l1ctl_toa(TOA_RUN, l1a_l1s_com.mode, snr_temp, toa, &l1s.toa_update, &l1s.toa_period_count
+              #if (FF_L1_FAST_DECODING == 1)
+                  ,0
+              #endif
+                  );
+            #endif
           #endif
-
         }
       #endif
 
        #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
          RTTL1_FILL_DL_BURST(angle, snr, l1s.afc, task, pm, toa, IL_for_rxlev)
        #endif
-       #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
+       #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4)) && HAVE_L1_TRACE_BURST_PARAM
          l1_trace_burst_param(angle, snr, l1s.afc, task, pm, toa, IL_for_rxlev);
        #endif
        #if (BURST_PARAM_LOG_ENABLE == 1)
@@ -9830,7 +9912,10 @@ l1s.repeated_facch.pipeline[0].buffer_empty=l1s.repeated_facch.pipeline[1].buffe
     break;
   } // End switch...
 
-  l1ddsp_read_iq_dump(task);
+  #if (L1_DEBUG_IQ_DUMP == 1)
+    l1ddsp_read_iq_dump(task);
+  #endif
+
   // Flag the use of the MCU/DSP dual page read interface.
   // ******************************************************
 
@@ -9855,13 +9940,13 @@ void l1s_read_tx_result(UWORD8 task, UWORD8 burst_id)
     if(task==RAACC)
     {
       if((UWORD32)(l1s_dsp_com.dsp_db_r_ptr->d_task_ra & 0xffff) != (UWORD32)DSP_TASK_CODE[task])
-        trace_fct(CST_UL_TASKS_DO_NOT_CORRESPOND, 1);//OMAPS00090550
+        trace_fct(CST_UL_TASKS_DO_NOT_CORRESPOND, -1);
     }
     else
     {
       if(((UWORD32)(l1s_dsp_com.dsp_db_r_ptr->d_task_u & 0xffff) != (UWORD32)DSP_TASK_CODE[task]) &&
          ((UWORD32)(l1s_dsp_com.dsp_db_r_ptr->d_task_u & 0xffff) != TCH_DTX_UL))
-        trace_fct(CST_UL_TASKS_DO_NOT_CORRESPOND, 1);//OMAPS00090550
+        trace_fct(CST_UL_TASKS_DO_NOT_CORRESPOND, -1);
     }
   #endif
 
@@ -10902,8 +10987,8 @@ void l1s_read_fb(UWORD8 task, UWORD32 fb_flag, UWORD32 toa, UWORD32 attempt,
 {
   xSignalHeaderRec  *msg;
   WORD32             modif_toa = 0;
-  WORD32             ntdma  =0 ; //omaps000090550
-  UWORD32            fn_offset =0 ; //omaps000090550 ;
+  WORD32             ntdma;
+  UWORD32            fn_offset;
 
   // For detail of the here below equation cf. BUG1558
   #define MAX_TOA_FOR_SB (D_NSUBB_DEDIC*48)+DL_ABB_DELAY/4-(SB_BURST_DURATION+DL_ABB_DELAY+SB_MARGIN)/4-2
@@ -11135,7 +11220,6 @@ void l1s_read_sb(UWORD8 task, UWORD32 flag, API *data, UWORD32 toa, UWORD8 attem
     // "time_alignmt" must be corrected (use "modif_toa" from the SB read).
     // Check that "time_alignmt" do not become bigger than "TPU_CLOCK_RANGE".
     // If so, "fn_offset" must be decremented.
-    if(cell_ptr != NULL)//OMAPS00090550
     time_alignmt   = cell_ptr->time_alignmt + modif_toa;
     if(time_alignmt >= TPU_CLOCK_RANGE)
     {
@@ -11167,7 +11251,6 @@ void l1s_read_sb(UWORD8 task, UWORD32 flag, API *data, UWORD32 toa, UWORD8 attem
   DEBUGMSG(status,NU_ALLOC_ERR)
   msg->SignalCode   = SignalCode;
   ((T_MPHC_NCELL_SYNC_IND*)(msg->SigP))->sb_flag      = flag;
-  if(cell_ptr != NULL)//OMAPS00090550
   ((T_MPHC_NCELL_SYNC_IND*)(msg->SigP))->radio_freq   = cell_ptr->radio_freq;
   ((T_MPHC_NCELL_SYNC_IND*)(msg->SigP))->bsic         = bsic;
   ((T_MPHC_NCELL_SYNC_IND*)(msg->SigP))->fn_offset    = fn_offset;
@@ -11591,9 +11674,13 @@ void l1s_read_l3frm(UWORD8 pwr_level, API *info_address, UWORD32 task_rx)
       {
         // Data downloaded from a_dd_gprs[0][]...
         word32 = info_address[4 + i]; // Get info word, rem: skip info. header.
+        #if 0	/* FreeCalypso TCS211 reconstruction */
         if(j<23)
+        #endif
         ((T_MPHC_DATA_IND *)(msg->SigP))->l2_frame.A[j++] = (word32 & 0x000000ff);
+        #if 0	/* FreeCalypso TCS211 reconstruction */
         if(j<23)
+        #endif
         ((T_MPHC_DATA_IND *)(msg->SigP))->l2_frame.A[j++] = (word32 & 0x0000ff00) >> 8;
       }
 
@@ -11957,6 +12044,7 @@ void l1s_read_dcch_dl(API *info_address, UWORD32 task_rx)
 
 }
 
+#if (CHIPSET==15)
 /*-------------------------------------------------------*/
 /* l1s_reset_tx_ptr()                                    */
 /*-------------------------------------------------------*/
@@ -11971,7 +12059,6 @@ void l1s_read_dcch_dl(API *info_address, UWORD32 task_rx)
 
 void l1s_reset_tx_ptr(UWORD8 param1, UWORD8 param2)
 {
-#if (CHIPSET==15)
     volatile UWORD32 *ptr_drp_init32;
     ptr_drp_init32 = (UWORD32 *) (DRP_API_BASE_ADDRESS + DRP_REG_SRM_CW_ADDR); //0xFFFF1E00;
 
@@ -11980,6 +12067,5 @@ void l1s_reset_tx_ptr(UWORD8 param1, UWORD8 param2)
 
     // Reset the bit to zero as aslong as the bit is 1, pointers are in reset state
     (*ptr_drp_init32) = (*ptr_drp_init32)&(L1_DRP_TX_PTR_RESET_RESET);
-#endif
 }
-
+#endif

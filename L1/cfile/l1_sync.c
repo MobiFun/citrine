@@ -8,9 +8,8 @@
  ************* Revision Controle System Header *************/
 
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_START
-  #include "config.h"
-  #include "l1_confg.h"
   #include "l1_macro.h"
+  #include "l1_confg.h"
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_END
 
 #if !((MOVE_IN_INTERNAL_RAM == 1) && (GSM_IDLE_RAM !=0))  // MOVE TO INTERNAL MEM IN CASE GSM_IDLE_RAM enabled
@@ -130,7 +129,7 @@
   #endif
 
   #include "l1_defty.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"
@@ -143,10 +142,10 @@
     #include "hw_debug.h"
   #endif // L2_L3 SIMUL
 
-  #include "../../bsp/ulpd.h"
-  #include "../../bsp/mem.h"
-  #include "../../bsp/inth.h"
-  #include "../../bsp/iq.h"
+  #include "ulpd.h"
+  #include "mem.h"
+  #include "inth.h"
+  #include "iq.h"
 
   #if L1_GPRS
     #include "l1p_cons.h"
@@ -163,9 +162,8 @@
 #if(RF_FAM == 61)
 	#include "l1_rf61.h"
 #endif
-#if (CODE_VERSION!= SIMULATION)
-#include "l1_pwmgr.h"
-#endif //NOT SIMULATION
+
+#define	W_A_DSP_PR20037	1	/* FreeCalypso */
 
 #if (GSM_IDLE_RAM != 0)
 #if (OP_L1_STANDALONE == 1)
@@ -183,10 +181,11 @@
   #include "prf/prf_api.h"
 #endif
 
-
+#if 0	/* FreeCalypso TCS211 reconstruction */
 //Enhanced RSSI    -OMAPS00075410
 #define TOTAL_NO_OF_BITS_IDLE_MEAS    625
 extern UWORD32 qual_acc_idle1[2];
+#endif
 
 #if (RF_FAM == 61)
   #include "tpudrv61.h"
@@ -230,21 +229,17 @@ extern UWORD32 qual_acc_idle1[2];
 /*-------------------------------------------------------*/
 /* Prototypes of external functions used in this file.   */
 /*-------------------------------------------------------*/
-void l1ddsp_meas_read      (UWORD8 nbmeas, UWORD16 *pm);
+void l1ddsp_meas_read      (UWORD8 nbmeas, UWORD8 *pm);
 
 #if L1_GPRS
   void l1ps_transfer_mode_manager  (void);
   void l1ps_reset_db_mcu_to_dsp    (T_DB_MCU_TO_DSP_GPRS *page_ptr);
   void l1pddsp_meas_ctrl           (UWORD8 nbmeas, UWORD8 pm_pos);
-  void l1pddsp_meas_read           (UWORD8 nbmeas, UWORD16 *pm_read);
+  void l1pddsp_meas_read           (UWORD8 nbmeas, UWORD8 *pm_read);
   void l1ps_meas_manager           (void);
   void l1ps_transfer_meas_manager  (void);
   void l1ps_macs_rlc_downlink_call (void);
 #endif
-
-UWORD8 calc_num_pm_to_report(void);
-void update_num_pm_fp_table_for_rach(UWORD8 nbmeas,UWORD8 *p);
-void update_num_pm_table_for_rach(UWORD8 nbmeas,UWORD8 *p);
 
 #if (TRACE_TYPE==7) // CPU_LOAD
   extern void l1_cpu_load_start(void);
@@ -362,32 +357,12 @@ void update_num_pm_table_for_rach(UWORD8 nbmeas,UWORD8 *p);
   extern unsigned short       layer_1_sync_end_time;
   void hisr(void)
   {
-    #if (TRACE_TYPE == 4) && (TI_NUC_MONITOR != 1) && (WCP_PROF == 0)
-       if(trace_info.current_config->l1_dyn_trace & 1<<L1_DYN_TRACE_L1S_CPU_LOAD)
-       {
-          TM_ResetTimer (2, TIMER_RESET_VALUE, 0, 0);
-          TM_StartTimer (2);
-       }
-    #endif
-
-    #if (GSM_IDLE_RAM_DEBUG == 1)
-      (*( volatile unsigned short* )(0xFFFE4802)) |= (1 << 2);    // GPIO-2=1
-    #endif
-
-/*
- * FreeCalypso change: the conditioned-out GPIO twiddling below appears in
- * the LoCosto version of this L1 code without any conditionals around it.
- * Checking the disassembly of the Leonardo binary object confirms that
- * NO GPIO muck takes places in that version.  Needless to say, I am
- * disabling it for FreeCalypso - we don't want to wreak havoc on some
- * target that uses GPIO 0 for something else.
- */
-#if 0
-   // Configure GPIO0 pin as output - Reset Bit 0 i.e. set Bit 0 to 0
-   (*( volatile unsigned short* )(0xFFFE4804)) &= (~(1 << 0));    // GPIO-2=1
-   // write 1 in GPIO pin 0
-   (*( volatile unsigned short* )(0xFFFE4802)) |= (1 << 0);    // GPIO-2=1
-#endif
+    /*
+     * FreeCalypso TCS211 reconstruction: the LoCosto version
+     * of this function had a whole bunch of junk here
+     * which we have removed in order to match the TCS211
+     * binary object.
+     */
 
     // stop the gauging.This function must be called at the
     // begining of the HISR in order to have the IT_GAUGING
@@ -400,7 +375,7 @@ void update_num_pm_table_for_rach(UWORD8 nbmeas,UWORD8 *p);
       if (TPU_check_IT_DSP()==TRUE)
       {
         #if (GSM_IDLE_RAM == 0)
-         l1_trace_IT_DSP_error(IT_DSP_ERROR_CPU_OVERLOAD);
+         l1_trace_IT_DSP_error();
         #else
          l1_trace_IT_DSP_error_intram();
         #endif
@@ -471,6 +446,11 @@ void update_num_pm_table_for_rach(UWORD8 nbmeas,UWORD8 *p);
 
     l1s_synch();
 
+    /*
+     * The following double invokation of l1s_synch()
+     * is NOT present in the TCS211 version.
+     */
+    #if 0
     if(l1s.pw_mgr.sleep_performed == CLOCK_STOP &&
 	(l1s.pw_mgr.wakeup_type == WAKEUP_FOR_L1_TASK ||
 	 l1s.pw_mgr.wakeup_type == WAKEUP_ASYNCHRONOUS_ULPD_0 ||
@@ -480,6 +460,7 @@ void update_num_pm_table_for_rach(UWORD8 nbmeas,UWORD8 *p);
     {
 	l1s_synch();
     }
+    #endif
 
     // Be careful:in case of asynchronous wake-up after sleep
     // an IT_TDMA may be unmasked and executed just after l1s_sleep_manager();
@@ -499,7 +480,8 @@ void update_num_pm_table_for_rach(UWORD8 nbmeas,UWORD8 *p);
     #endif
 
 
-    #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
+    /* used to be #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4) in LoCosto */
+    #if (TRACE_TYPE == 1)	/* TSM30 code has it this way */
       // CPU load for TRACE_TYPE == 1 and 4 only
       if((trace_info.current_config->l1_dyn_trace & 1<<L1_DYN_TRACE_L1S_CPU_LOAD) &&
           (trace_info.sleep_performed == FALSE))
@@ -523,20 +505,6 @@ void update_num_pm_table_for_rach(UWORD8 nbmeas,UWORD8 *p);
     #if (TRACE_TYPE==7) // CPU_LOAD
       l1_cpu_load_stop();
     #endif
-
-    #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4)) && (DSP >= 38)
-      // DSP CPU load for TRACE_TYPE == 1 and 4 only
-      if(trace_info.current_config->l1_dyn_trace & 1<<L1_DYN_TRACE_DSP_CPU_LOAD)
-      {
-        // DSP CPU load measurement
-        l1_dsp_cpu_load_read();
-      }
-    #endif
-
-#if 0
-   // write 0 in GPIO pin 0
-   (*( volatile unsigned short* )(0xFFFE4802)) &= (~(1 << 0));    // GPIO-2=1
-#endif
 
   }
 
@@ -565,46 +533,6 @@ void update_num_pm_table_for_rach(UWORD8 nbmeas,UWORD8 *p);
 
 void l1s_synch()
 {
-
-   #if(L1_RF_KBD_FIX == 1)
-	static int prev_correction_ratio = 0; //omaps00090550
-
-        // Ratio Computation - Rounding Up to the Higher Integer if applicable
-
-    if (l1s.total_kbd_on_time !=0)
-        l1s.correction_ratio = ((FRAME_DURATION+((l1s.total_kbd_on_time-1)/2))/l1s.total_kbd_on_time);
-
-
-	    // Fix to change the Debounce Time value to 16 ms during Initial FB search
-    if ((l1a_l1s_com.mode == CS_MODE0)||(l1a_l1s_com.mode == CS_MODE))
-	{
-        l1s.correction_ratio = 4;
-        kpd_timer_modify(l1s.correction_ratio, l1s.actual_time.fn_mod42432);
-
-        #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
-           l1_trace_correction_ratio(l1s.correction_ratio);
-        #endif
-	    prev_correction_ratio=4;
-    }
-    else
-	{
-        if(prev_correction_ratio != l1s.correction_ratio)
-		{
-  	       kpd_timer_modify(l1s.correction_ratio, l1s.actual_time.fn_mod42432);
-
-           #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
-	       l1_trace_correction_ratio(l1s.correction_ratio);
-           #endif
-           prev_correction_ratio = l1s.correction_ratio;
-		}
-        else
-		{
-	       kpd_state_probe(l1s.actual_time.fn_mod42432);
-		}
-	}
-    l1s.total_kbd_on_time = FRAME_DURATION;
-	#endif
-
    #if (CODE_VERSION==SIMULATION)
       // increment time counter used for debug and by L3 scenario...
       l1s.debug_time ++;
@@ -638,7 +566,7 @@ void l1s_synch()
          l1a_l1s_com.time_to_next_l1s_task < MAX_FN)
         l1a_l1s_com.time_to_next_l1s_task--;
    #endif
-        l1s.tcr_prog_done=0;
+        /* l1s.tcr_prog_done=0; */
 #if (FF_L1_FAST_DECODING == 1)
       /* If a fast decoding IT is expected AND a deferred control is scheduled */
       /* then it means that a fast decoding IT is still awaited from previous  */
@@ -653,7 +581,7 @@ void l1s_synch()
 #endif /* #if (FF_L1_FAST_DECODING == 1) */
 
   #if L1_GPRS
-      l1s.tcr_prog_done=0;
+      /* l1s.tcr_prog_done=0; */
     // Increment TOA period counter used in packet tranfer mode
     if (l1a_l1s_com.mode == PACKET_TRANSFER_MODE)
     {
@@ -751,6 +679,15 @@ void l1s_synch()
   {
     BOOL l1s_task_allowed = TRUE;
 
+    /*
+     * FreeCalypso TCS211 reconstruction: the following code
+     * fails to compile because the wakeup_time structure member
+     * is not present in TCS211 headers.  Let's try omitting it
+     * so we can get a successful compile and start diffing the
+     * compilation results.
+     */
+#if 0
+
     /* This is not required in Locosto after merge of deep-sleep
      * initialization and control frame */
  #if (CHIPSET != 15)
@@ -777,6 +714,7 @@ void l1s_synch()
 #else
     l1s.pw_mgr.sleep_performed = DO_NOT_SLEEP; // In case l1s is executed, initialize sleep performed in order to avoid reentry in part above 42432 frames later
     l1s_task_allowed = TRUE;
+#endif
 #endif
 
     if (l1s_task_allowed == TRUE)
@@ -1138,7 +1076,7 @@ void l1s_synch()
           l1s_sleep_manager();
         }
     }
-	#if (CODE_VERSION!= SIMULATION)
+    #if 0	/* FreeCalypso TCS211 reconstruction */
     else{
       l1_trace_fail_sleep(FAIL_SLEEP_L1SYNCH,0,0);
     }
@@ -1231,7 +1169,8 @@ BOOL l1s_mftab_has_changed(void)
 /*-------------------------------------------------------*/
 void l1s_task_scheduler_process()
 {
-  WORD32 pending_task = NO_NEW_TASK;
+  WORD32 pending_task;
+
   // Call routine: SCHEDULE_TASKS.
   l1s_schedule_tasks(&pending_task);
 
@@ -1345,7 +1284,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
   // ADC task is ENABLED in CS_MODE0.
   //--------------------------------
   {
-    UWORD32  time_to_adc = 0 ; //omaps00090550
+    UWORD32  time_to_adc;
 
     if (l1a_l1s_com.adc_mode & ADC_NEXT_CS_MODE0)
     {
@@ -1514,7 +1453,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
         if(time_to_nbcchs >= modulus_times_51)
           time_to_nbcchs -= modulus_times_51;
 
-      if(time_to_nbcchs < (WORD32)min_time_to_nbcchs)
+      if(time_to_nbcchs < min_time_to_nbcchs)
         min_time_to_nbcchs = time_to_nbcchs;
     }
 
@@ -1676,7 +1615,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
                              MAX_FN -
                              l1s.actual_time.fn;
 
-        if(time_to_smscb_info >= (WORD32)MAX_FN) time_to_smscb_info -= MAX_FN;
+        if(time_to_smscb_info >= MAX_FN) time_to_smscb_info -= MAX_FN;
 
         // Check if passing 1 schedule position.
         if(time_to_smscb_info == 0)
@@ -1701,7 +1640,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
                                  MAX_FN -
                                  l1s.actual_time.fn;
 
-            if(time_to_norm_smscb >= (WORD32)MAX_FN) time_to_norm_smscb -= MAX_FN;
+            if(time_to_norm_smscb >= MAX_FN) time_to_norm_smscb -= MAX_FN;
 
             // Check if passing 1 schedule position.
             if(time_to_norm_smscb == 0)
@@ -1725,7 +1664,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
                                  MAX_FN -
                                  l1s.actual_time.fn;
 
-            if(time_to_norm_smscb >= (WORD32)MAX_FN) time_to_norm_smscb -= MAX_FN;
+            if(time_to_norm_smscb >= MAX_FN) time_to_norm_smscb -= MAX_FN;
 
             // Check for "CBCH continuous reading" starting frame number.
             if(time_to_norm_smscb == 0)
@@ -1765,7 +1704,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
                                  MAX_FN -
                                  l1s.actual_time.fn;
 
-            if(time_to_ext_smscb >= (WORD32)MAX_FN) time_to_ext_smscb -= MAX_FN;
+            if(time_to_ext_smscb >= MAX_FN) time_to_ext_smscb -= MAX_FN;
 
             // Check if passing 1 schedule position.
             if(time_to_ext_smscb == 0)
@@ -1789,7 +1728,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
                                  MAX_FN -
                                  l1s.actual_time.fn;
 
-            if(time_to_ext_smscb >= (WORD32 )MAX_FN) time_to_ext_smscb -= MAX_FN;
+            if(time_to_ext_smscb >= MAX_FN) time_to_ext_smscb -= MAX_FN;
 
             // Check for "CBCH continuous reading" starting frame number.
             if(time_to_ext_smscb == 0)
@@ -1820,7 +1759,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
       else
         min_time_to_smscb = time_to_ext_smscb;
 
-      if(time_to_smscb_info <(WORD32) min_time_to_smscb)
+      if(time_to_smscb_info < min_time_to_smscb)
         min_time_to_smscb = time_to_smscb_info;
 
       // Save scheduling result.
@@ -1970,7 +1909,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
             // memorize the next BCCHN according to its priority
             // (TOP_PRIORITY or HIGH_PRIORITY or NORMAL_PRIORITY )
             bcchn_priority = l1a_l1s_com.bcchn.list[i].gprs_priority ;
-            if(time_to_bcchn <(WORD32 ) min_time_to_bcchn[bcchn_priority])
+            if(time_to_bcchn < min_time_to_bcchn[bcchn_priority])
             {
               min_time_to_bcchn[bcchn_priority] = time_to_bcchn;
 
@@ -2037,7 +1976,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
             // memorize the next BCCHN according to its priority
             // (TOP_PRIORITY or HIGH_PRIORITY or NORMAL_PRIORITY )
             bcchn_priority = l1a_l1s_com.bcchn.list[i].gprs_priority;
-            if(time_to_bcchn < (WORD32)min_time_to_bcchn[bcchn_priority])
+            if(time_to_bcchn < min_time_to_bcchn[bcchn_priority])
             {
               min_time_to_bcchn[bcchn_priority] = time_to_bcchn;
 
@@ -2283,13 +2222,10 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
           // then PEP scheduling has to be computed with "m_for_pep = m_index - 1"
           if(l1a_l1s_com.task_param[PEP] == SEMAPHORE_SET)
           {
-           UWORD16 u16Temp;
             // PAGING GROUP computation:
 
-           u16Temp = (l1pa_l1ps_com.pccch.pg_offset + (((m_for_pep) * l1pa_l1ps_com.pccch.pg_blks_avail)
-                                / l1pa_l1ps_com.pccch.split_pg_value)) % l1pa_l1ps_com.pccch.pg_blks_avail;
-
-            paging_group    = u16Temp;
+            paging_group = (l1pa_l1ps_com.pccch.pg_offset + (((UWORD32)(m_for_pep) * (UWORD32)l1pa_l1ps_com.pccch.pg_blks_avail)
+                                / (UWORD32)l1pa_l1ps_com.pccch.split_pg_value)) % l1pa_l1ps_com.pccch.pg_blks_avail;
 
             // Computation of the MF52 for MS Packet Extented Paging
             mf52_for_ms_epg = ((paging_group + 3) / l1pa_l1ps_com.pccch.nb_ppch_per_mf52) % 64;
@@ -2426,7 +2362,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
             time_to_pbcchs += psi_period;
 
           // Save Min time to next PBCCHS block.
-          if(time_to_pbcchs < (WORD16)min_time_to_pbcchs)
+          if(time_to_pbcchs < min_time_to_pbcchs)
           {
             min_time_to_pbcchs = time_to_pbcchs;
             psi_index          = i;
@@ -3316,10 +3252,10 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
     #define MF26       2
 
     UWORD8                channel = 255;
-    UWORD8                start_time =0; //omaps00090550
+    UWORD8                start_time;
     UWORD8                fn_in_report_mod51 = l1s.next_time.fn_in_report % 51;
-    T_CHANNEL_DESCRIPTION *desc_ptr= NULL;
-    T_SDCCH_DESC          *sdcch_desc = NULL;//OMAPS00090550
+    T_CHANNEL_DESCRIPTION *desc_ptr;
+    T_SDCCH_DESC          *sdcch_desc;
 
     if(l1a_l1s_com.l1s_en_task[DEDIC] == TASK_ENABLED)
     //---------------------------------------------
@@ -3615,7 +3551,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
         } // End of "if / current_status"
       } // End of "if / NSYNC"
 
-      if((l1a_l1s_com.l1s_en_task[DDL] == TASK_ENABLED) && (sdcch_desc != NULL))
+      if (l1a_l1s_com.l1s_en_task[DDL] == TASK_ENABLED)
       //-------------------------
       // SDCCH DL task is ENABLED.
       //-------------------------
@@ -3631,7 +3567,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
         l1s.task_status[DDL].time_to_exec = time_to_ddl;
       }
 
-      if((l1a_l1s_com.l1s_en_task[DUL] == TASK_ENABLED) && (sdcch_desc != NULL))
+      if (l1a_l1s_com.l1s_en_task[DUL] == TASK_ENABLED)
       //-------------------------
       // SDCCH DUL task is ENABLED.
       //-------------------------
@@ -3647,7 +3583,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
         l1s.task_status[DUL].time_to_exec = time_to_dul;
       }
 
-      if((l1a_l1s_com.l1s_en_task[ADL] == TASK_ENABLED) && (sdcch_desc != NULL))
+      if (l1a_l1s_com.l1s_en_task[ADL] == TASK_ENABLED)
       //----------------------------------
       // SACCH DL (SDCCH) task is ENABLED.
       //----------------------------------
@@ -3663,7 +3599,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
         l1s.task_status[ADL].time_to_exec = time_to_adl;
       }
 
-      if((l1a_l1s_com.l1s_en_task[AUL] == TASK_ENABLED) && (sdcch_desc != NULL))
+      if (l1a_l1s_com.l1s_en_task[AUL] == TASK_ENABLED)
       //----------------------------------
       // SACCH UL (SDCCH) task is ENABLED.
       //----------------------------------
@@ -3700,7 +3636,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
       // Neigbour Cell Synchro task enabled for DEDIC TCH or PACKET
       //-----------------------------------------------------------
       {
-        T_CHANNEL_DESCRIPTION *desc_ptr = NULL; //OMAPS00090550
+        T_CHANNEL_DESCRIPTION *desc_ptr;
 
         if (l1a_l1s_com.l1s_en_task[DEDIC] == TASK_ENABLED)
         {
@@ -3762,7 +3698,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
                 {
                   UWORD32  min_time_to_fb = MAX_FN;
 
-                  if((l1a_l1s_com.l1s_en_task[DEDIC] == TASK_ENABLED) && (desc_ptr != NULL))
+                  if (l1a_l1s_com.l1s_en_task[DEDIC] == TASK_ENABLED)
                   //---------------------------------------------
                   // Dedicated mode tasks are enabled.
                   //---------------------------------------------
@@ -3819,7 +3755,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
                   BOOL check_fbcnf26 = 0;
                   UWORD32 min_time_to_fbconf = MAX_FN;
 
-                  if((l1a_l1s_com.l1s_en_task[DEDIC] == TASK_ENABLED) && (desc_ptr != NULL))
+                  if (l1a_l1s_com.l1s_en_task[DEDIC] == TASK_ENABLED)
                   //---------------------------------------------
                   // Dedicated mode tasks are enabled.
                   //---------------------------------------------
@@ -3987,7 +3923,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
                   BOOL check_sbcnf26 = 0;
                   UWORD32 min_time_to_sbconf = MAX_FN;
 
-                  if((l1a_l1s_com.l1s_en_task[DEDIC] == TASK_ENABLED) && (desc_ptr != NULL))
+                  if (l1a_l1s_com.l1s_en_task[DEDIC] == TASK_ENABLED)
                   //---------------------------------------------
                   // Dedicated mode tasks are enabled.
                   //---------------------------------------------
@@ -4695,7 +4631,7 @@ void l1s_schedule_tasks(WORD32 *best_pending_task)
     // ITMEAS task is ENABLED.
     //-------------------------
     {
-      UWORD8 time_to_itmeas =0 ; //omaps00090550
+      UWORD8 time_to_itmeas;
 
       // time to ITMEAS processing
       // ITMEAS must be scheduled 2 frames in advance (C W W R scheme)
@@ -4853,11 +4789,14 @@ void l1s_merge_manager(WORD32 pending_task)
            (l1s.task_status[SMSCB].current_status == INACTIVE)       &&
            (((l1a_l1s_com.mode != PACKET_TRANSFER_MODE) ||
                ((l1s.task_status[NBCCHS].current_status == INACTIVE) &&
-               (l1s.task_status[EBCCHS].current_status == INACTIVE) &&
-	       (l1s.task_status[PNP].current_status == INACTIVE) &&
-               (l1s.task_status[PEP].current_status == INACTIVE) &&
-               (l1s.task_status[NP].current_status == INACTIVE) &&
-               (l1s.task_status[EP].current_status == INACTIVE)))))
+               (l1s.task_status[EBCCHS].current_status == INACTIVE)
+           #if 0	/* FreeCalypso TCS211 reconstruction */
+	       && (l1s.task_status[PNP].current_status == INACTIVE)
+               && (l1s.task_status[PEP].current_status == INACTIVE)
+               && (l1s.task_status[NP].current_status == INACTIVE)
+               && (l1s.task_status[EP].current_status == INACTIVE)
+           #endif
+           ))))
 
        #else
          if (l1s.task_status[SMSCB].current_status == INACTIVE)
@@ -5292,7 +5231,7 @@ void l1s_execute_frame()
 /*-------------------------------------------------------*/
 void l1s_meas_manager(void)
 {
-  static static_s_rxlev_cntr = 0;
+  /* static static_s_rxlev_cntr = 0; */
   UWORD32  i;
   UWORD8   IL_for_rxlev;
   UWORD8   adc_active = INACTIVE;
@@ -5427,9 +5366,9 @@ void l1s_meas_manager(void)
   if((l1a_l1s_com.l1s_en_meas & FSMS_MEAS) && !(l1a_l1s_com.meas_param & FSMS_MEAS))
   {
     #if L1_GPRS
-      UWORD16   pm_read[NB_MEAS_MAX_GPRS]={0}; //omaps00090550
+      UWORD8   pm_read[NB_MEAS_MAX_GPRS];
     #else
-      UWORD16   pm_read[NB_MEAS_MAX];
+      UWORD8   pm_read[NB_MEAS_MAX];
     #endif
 
     UWORD8    nbmeas, max_nbmeas;
@@ -5503,7 +5442,6 @@ void l1s_meas_manager(void)
       #endif
 
       l1_check_pm_error(pm_read[i], FULL_LIST_MEAS_ID);
-      pm_read[i] = (pm_read[i] >> 5);
 
       #if (TRACE_TYPE==3)
         stats_samples_pm(pm_read[i]);
@@ -5955,7 +5893,8 @@ void l1s_meas_manager(void)
      * as the measurement can end in potentially 2 TDMA frames itself and an IBA_R message
      * when comes in certail TDMA frames of paging task, both static ctrl index and static
      * read index will be zero */
-    if((static_ctrl_index != 0) || (static_read_index != 0) || (pch_msg != NULL))
+    /* FreeCalypso TCS211 reconstruction: above change reverted */
+    if((static_ctrl_index != 0) || (static_read_index != 0))
     {
    
       // Paging process has been interrupted by a L3 message
@@ -5991,11 +5930,14 @@ void l1s_meas_manager(void)
     static UWORD8 static_nbmeas_to_report = 8;
     static UWORD8 static_nbmeas_ctrl_d  = 0;
     static UWORD8 static_nbmeas_ctrl_dd = 0;
+
+#if 0	/* FreeCalypso TCS211 reconstruction */
     static UWORD8 num_pm[4]={0,0,0,0};
 #if (FF_L1_FAST_DECODING == 1)
     static UWORD8 num_pm_fp[2]={0,0};
 #endif
     static UWORD8 num_pm_frames = 0; /* number of frames over which measurement is scheduled */
+#endif
 
     UWORD8   nbmeas_ctrl = 0;
 #if (FF_L1_FAST_DECODING == 1)
@@ -6025,9 +5967,8 @@ void l1s_meas_manager(void)
         #endif
 
         // Read power measurement result from DSP.
-        pm = (l1s_dsp_com.dsp_db_r_ptr->a_pm[i] & 0xffff);
+        pm = (l1s_dsp_com.dsp_db_r_ptr->a_pm[i] & 0xffff) >> 5;
         l1_check_pm_error(pm, I_BA_MEAS_ID);
-        pm = pm >> 5;
 
         #if (TRACE_TYPE==3)
           stats_samples_pm(pm);
@@ -6045,26 +5986,21 @@ void l1s_meas_manager(void)
         #endif
 
 
-        #if (GSM_IDLE_RAM != 1)
-
-			  //Check if the message is not empty, else allocate memory
-		if (pch_msg == NULL)
+#if 0	/* FreeCalypso TCS211 reconstruction */
+	//Check if the message is not empty, else allocate memory
+	if (pch_msg == NULL)
         {
           pch_msg = os_alloc_sig(sizeof(T_L1C_RXLEV_PERIODIC_DONE));
           DEBUGMSG(status,NU_ALLOC_ERR)
           pch_msg->SignalCode = L1C_RXLEV_PERIODIC_DONE;
         }
-          // Fill reporting message.
+#endif
 
-          ((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->
-            A[static_read_index].radio_freq_no = radio_freq_read;
-          ((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->
-            A[static_read_index].rxlev = l1s_encode_rxlev(IL_for_rxlev);
-        #elif (GSM_IDLE_RAM == 1)             // In this case the msg is not allocated yet -> save into internal variable
-          // Fill reporting message.
-          l1s.A[static_read_index].radio_freq_no = radio_freq_read;
-          l1s.A[static_read_index].rxlev = l1s_encode_rxlev(IL_for_rxlev);
-        #endif
+        // Fill reporting message.
+        ((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->
+          A[static_read_index].radio_freq_no = radio_freq_read;
+        ((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->
+          A[static_read_index].rxlev = l1s_encode_rxlev(IL_for_rxlev);
 
         // Increment the number of neighbor meas read.
         static_read_index ++;
@@ -6079,7 +6015,7 @@ void l1s_meas_manager(void)
       // Accumulate the new measurement with the partial result.
       // Compensate AGC for current measurement value.
       l1a_l1s_com.Scell_info.meas.acc += l1a_l1s_com.Scell_IL_for_rxlev;
-      static_s_rxlev_cntr++;
+      /* static_s_rxlev_cntr++; */
 
       // **********
       // Reporting
@@ -6121,7 +6057,7 @@ void l1s_meas_manager(void)
 //          ((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->s_rxlev = l1s_encode_rxlev(l1a_l1s_com.Scell_info.meas.acc/4);
 //#endif  /* #if (FF_L1_FAST_DECODING == 1) #else */
 
-((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->s_rxlev = l1s_encode_rxlev(l1a_l1s_com.Scell_info.meas.acc/(static_s_rxlev_cntr));
+((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->s_rxlev = l1s_encode_rxlev(l1a_l1s_com.Scell_info.meas.acc/4);
         // Fill "nbr_of_carriers" field, it is 7 when a RACH coincides with paging block, 8 otherwise.
         ((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->nbr_of_carriers = static_nbmeas_to_report;
 
@@ -6129,21 +6065,25 @@ void l1s_meas_manager(void)
         ((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->ba_id = l1a_l1s_com.ba_list.ba_id;
 // Enhanced RSSI
 
+	#if 0	/* FreeCalypso TCS211 reconstruction */
          ((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->qual_acc_idle =qual_acc_idle1[0] ;
 
          ((T_L1C_RXLEV_PERIODIC_DONE*)(pch_msg->SigP))->qual_nbr_meas_idle =qual_acc_idle1[1]* TOTAL_NO_OF_BITS_IDLE_MEAS;
+	#endif
 
         // send L1C_RXLEV_PERIODIC_IND message...
         os_send_sig(pch_msg, L1C1_QUEUE);
         DEBUGMSG(status,NU_SEND_QUEUE_ERR)
 
+	#if 0	/* FreeCalypso TCS211 reconstruction */
        // Reseting the value
        qual_acc_idle1[0]= 0;
        qual_acc_idle1[1] =0;
+	#endif
 
         // Reset pointer for debugg.
         pch_msg = NULL;
-	static_s_rxlev_cntr = 0;
+	/* static_s_rxlev_cntr = 0; */
       }
 
     }// end of READ
@@ -6160,7 +6100,7 @@ void l1s_meas_manager(void)
           pch_msg = os_alloc_sig(sizeof(T_L1C_RXLEV_PERIODIC_DONE));
           DEBUGMSG(status,NU_ALLOC_ERR)
           pch_msg->SignalCode = L1C_RXLEV_PERIODIC_DONE;
-	  static_s_rxlev_cntr = 0;
+	  /* static_s_rxlev_cntr = 0; */
         }
       #endif
       // Reset accumalator for serving measurements.
@@ -6173,136 +6113,14 @@ void l1s_meas_manager(void)
       l1a_l1s_com.ba_list.first_index = l1a_l1s_com.ba_list.next_to_ctrl;
 
       // Reset static variables for control of nbmeas per frame
-      static_nbmeas_to_report = calc_num_pm_to_report();
+      static_nbmeas_to_report = 8;
       static_nbmeas_ctrl_d  = 0;
       static_nbmeas_ctrl_dd = 0;
-
-            	switch(static_nbmeas_to_report)
-	        	{
-	  			case 1:     num_pm[0]=1;
-	        				num_pm[1]=0;
-	        				num_pm[2]=0;
-	        				num_pm[3]=0;
-                  num_pm_frames = 1;
-	        				break;
-	  			case 2:	    num_pm[0]=1;
-	        				num_pm[1]=1;
-	        				num_pm[2]=0;
-	        				num_pm[3]=0;
-                  num_pm_frames = 2;
-	        				break;
-	  			case 3:     num_pm[0]=1;
-	        			 	num_pm[1]=1;
-	        				num_pm[2]=1;
-	        				num_pm[3]=0;
-                  num_pm_frames = 3;
-	        				break;
-	  			case 4:     num_pm[0]=1;
-	        				num_pm[1]=1;
-	        				num_pm[2]=1;
-	        				num_pm[3]=1;
-                  num_pm_frames = 4;
-	        				break;
-	  			case 5:     num_pm[0]=2;
-	        				num_pm[1]=1;
-	        				num_pm[2]=1;
-	        				num_pm[3]=1;
-                  num_pm_frames = 4;
-	        				break;
-	  			case 6:     num_pm[0]=2;
-	        				num_pm[1]=2;
-	        				num_pm[2]=1;
-	        				num_pm[3]=1;
-                  num_pm_frames = 4;
-	        				break;
-	  			case 7:     num_pm[0]=2;
-	        				num_pm[1]=2;
-	        				num_pm[2]=2;
-	        				num_pm[3]=1;
-                  num_pm_frames = 4;
-	        				break;
-	  		}
-	  	#if (FF_L1_FAST_DECODING == 1)
-	        	switch(static_nbmeas_to_report)
-	        	{
-	  			case 1:     num_pm_fp[0]=1;
-	        				num_pm_fp[1]=0;
-                  num_pm_frames = 1;
-	        				break;
-	  			case 2:     num_pm_fp[0]=1;
-	        				num_pm_fp[1]=1;
-                  num_pm_frames = 2;
-	        				break;
-	  			case 3:     num_pm_fp[0]=2;
-	        				num_pm_fp[1]=1;
-                  num_pm_frames = 2;
-	        				break;
-	  			case 4:     num_pm_fp[0]=3;
-	        				num_pm_fp[1]=1;
-                  num_pm_frames = 2;
-	        				break;
-	  			case 5:     num_pm_fp[0]=4;
-	        				num_pm_fp[1]=1;
-                  num_pm_frames = 2;
-	        				break;
-	  			case 6:     num_pm_fp[0]=4;
-	        				num_pm_fp[1]=2;
-                  num_pm_frames = 2;
-	        				break;
-	  			case 7:     num_pm_fp[0]=4;
-	        				num_pm_fp[1]=3;
-                  num_pm_frames = 2;
-	        				break;
-	  		}
-	  	#endif
-
-
     }
 
     // A PCH burst has been controled, we must make the control of 1 or 2 new measurements.
-   #if (FF_L1_FAST_DECODING == 1)
-    schedule_measures = FALSE;
-
-    if ( (fast_decoding == TRUE)
-         &&
-         ( (l1a_l1s_com.ba_list.np_ctrl == 1) ||
-           (l1a_l1s_com.ba_list.np_ctrl == 2) )
-       )
-    {
-      /* Fast decoding enabled, current NP control on bursts 1 or 2 */
-      #if (GSM_IDLE_RAM!=1)
-      if (pch_msg != NULL)
-      #endif
-      {
-     
-      schedule_measures = TRUE;
-    }
-    }
-    else
-    if ( (fast_decoding == FALSE)
-         &&
-         ( (num_pm[l1a_l1s_com.ba_list.np_ctrl-1]!=0) && ((l1a_l1s_com.ba_list.np_ctrl >=1) && (l1a_l1s_com.ba_list.np_ctrl<=4)))
-       )
-    {
-      /* Fast decoding disabled, use legacy condition to schedule up to
-         2 power measurements */
-      #if (GSM_IDLE_RAM!=1)
-      if (pch_msg != NULL)
-      #endif
-      {
-
-      schedule_measures = TRUE;
-    }
-    }
-
-    if (schedule_measures == TRUE)
-#else /* #if (FF_L1_FAST_DECODING == 1) */
-    #if (GSM_IDLE_RAM!=1)      
-      if ((num_pm[l1a_l1s_com.ba_list.np_ctrl-1]!=0) && (pch_msg != NULL) && ((l1a_l1s_com.ba_list.np_ctrl >=1) && (l1a_l1s_com.ba_list.np_ctrl<=4)))
-    #else    
-    if( (num_pm[l1a_l1s_com.ba_list.np_ctrl-1]!=0) && ((l1a_l1s_com.ba_list.np_ctrl >=1) && (l1a_l1s_com.ba_list.np_ctrl<=4)))
-    #endif    
-#endif /* #if (FF_L1_FAST_DECODING == 1) #else*/
+    if ((static_ctrl_index == (l1a_l1s_com.ba_list.np_ctrl-1)*2) ||
+        (static_ctrl_index == (l1a_l1s_com.ba_list.np_ctrl-1)*2 - 1))
     {
       UWORD16  radio_freq_ctrl;
       UWORD8   ba_index_ctrl;
@@ -6311,44 +6129,12 @@ void l1s_meas_manager(void)
       // if YES only one PW measurement will be controlled and the number of meas to report is decremented by 1
       if (l1s.tpu_win >= (3 * BP_SPLIT + l1_config.params.tx_ra_load_split + l1_config.params.rx_synth_load_split))
       {
+        static_nbmeas_to_report--;
         nbmeas_ctrl = 1;
-        #if (FF_L1_FAST_DECODING == 1)
-        if (fast_decoding == TRUE)
-        {
-	       if(static_nbmeas_to_report > 5)
-	       static_nbmeas_to_report = 5;
-
-			if(l1a_l1s_com.ba_list.np_ctrl == 1)
-		  {
-		      	update_num_pm_fp_table_for_rach(static_nbmeas_to_report,num_pm_fp);
-		  }
-	   	}
-	   	else
-	   	{
-
-			    update_num_pm_table_for_rach(static_nbmeas_to_report,num_pm);
-
-		}
-		#else
-
-				update_num_pm_table_for_rach(static_nbmeas_to_report,num_pm);
-
-		#endif
       }
       else
       {
-       #if (FF_L1_FAST_DECODING == 1)
-        if (fast_decoding)
-        {
-        nbmeas_ctrl = num_pm_fp[l1a_l1s_com.ba_list.np_ctrl-1];
-        }
-        else
-        {
-          nbmeas_ctrl = num_pm[l1a_l1s_com.ba_list.np_ctrl-1];
-        }
-#else /* #if (FF_L1_FAST_DECODING == 1) */
-        nbmeas_ctrl = num_pm[l1a_l1s_com.ba_list.np_ctrl-1];
-#endif /* #if (FF_L1_FAST_DECODING == 1) #else */
+        nbmeas_ctrl = 2;
       }  /* end else no RACH */
 
       for(i=0; i<nbmeas_ctrl; i++)
@@ -6364,9 +6150,9 @@ void l1s_meas_manager(void)
 
 #if (L1_FF_MULTIBAND == 0)
 
-        lna_off = l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].lna_off;
         // Get AGC according to the last known IL.
-        agc     = Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].input_level >> 1, PWR_ID,lna_off);
+        agc     = Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].input_level >> 1, PWR_ID);
+        lna_off = l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].lna_off;
 
         // Memorize the IL used for AGC setting.
         l1a_l1s_com.ba_list.used_il[i]  = l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].input_level;
@@ -6380,7 +6166,7 @@ void l1s_meas_manager(void)
        lna_off = l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;
         // Get AGC according to the last known IL.
         agc     = 
-            Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, PWR_ID,lna_off);
+            Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, PWR_ID);
 
         // Memorize the IL used for AGC setting.
         l1a_l1s_com.ba_list.used_il[i]  = 
@@ -6546,9 +6332,8 @@ void l1s_meas_manager(void)
       #endif
 
       // Read power measurement result from DSP.
-      pm = (l1s_dsp_com.dsp_db_r_ptr->a_pm[0] & 0xffff);
+      pm = (l1s_dsp_com.dsp_db_r_ptr->a_pm[0] & 0xffff) >> 5;
       l1_check_pm_error(pm, D_BA_MEAS_ID);
-      pm = pm >> 5;
 
       #if (TRACE_TYPE==3)
         stats_samples_pm(pm);
@@ -6601,8 +6386,8 @@ void l1s_meas_manager(void)
 
 #if (L1_FF_MULTIBAND == 0)  
 
+          agc     = Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].input_level >> 1, PWR_ID);
           lna_off = l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].lna_off;
-          agc     = Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].input_level >> 1, PWR_ID, lna_off);
 
 
           // Store IL used for current CTRL in order to be able to build IL from pm
@@ -6618,7 +6403,7 @@ void l1s_meas_manager(void)
           lna_off = 
             l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;
           agc     = 
-            Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, PWR_ID, lna_off);
+            Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, PWR_ID);
 
 
           // Store IL used for current CTRL in order to be able to build IL from pm
@@ -6721,8 +6506,8 @@ void l1s_meas_manager(void)
 
 #if (L1_FF_MULTIBAND == 0)
           
+          agc     = Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].input_level >> 1, PWR_ID);
           lna_off = l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].lna_off;
-          agc     = Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[radio_freq_ctrl - l1_config.std.radio_freq_index_offset].input_level >> 1, PWR_ID,lna_off);
 
           // Store IL used for current CTRL in order to be able to build IL from pm
           // in READ phase.
@@ -6736,7 +6521,7 @@ void l1s_meas_manager(void)
           lna_off = 
             l1a_l1s_com.last_input_level[operative_radio_freq].lna_off;
           agc     = 
-            Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, PWR_ID,lna_off);
+            Cust_get_agc_from_IL(radio_freq_ctrl, l1a_l1s_com.last_input_level[operative_radio_freq].input_level >> 1, PWR_ID);
 
           // Store IL used for current CTRL in order to be able to build IL from pm
           // in READ phase.
@@ -7391,10 +7176,12 @@ void l1s_dedicated_mode_manager()
       || (  l1a_l1s_com.dedic_set.SignalCode == MPHC_CHANGE_FREQUENCY)  )
   // A new channel is given in fset...
   {
-    // Reset DTX AMR status
-#if (AMR == 1)
-    l1s.dtx_amr_dl_on=FALSE;
-#endif
+    #if 0	/* FreeCalypso TCS211 reconstruction */
+      // Reset DTX AMR status
+      #if (AMR == 1)
+        l1s.dtx_amr_dl_on=FALSE;
+      #endif
+    #endif
     // When a Dedicated mode request is pending, L1S must be ran every frame
     // to be able to cope with STI.
     l1a_l1s_com.time_to_next_l1s_task = 0;
@@ -7520,11 +7307,10 @@ void l1s_dedicated_mode_manager()
         l1a_l1s_com.dedic_set.stop_tch = TRUE;
 
 	/*
-	 * FreeCalypso change: this module was failing to compile without
-	 * AUDIO_TASK enabled because of the following code;
-	 * conditional has been added.
+	 * FreeCalypso TCS211 reconstruction: the following code
+	 * appears to be a LoCosto-ism, so let's take it out.
 	 */
-      #if AUDIO_TASK
+      #if 0
         // If audio enabling was forced by L1S because of a HO failure, do not force it anymore.
         // Restore it in the state required by the MMI if the feature is compiled.
         if (l1a_l1s_com.audio_forced_by_l1s == TRUE)
@@ -7633,14 +7419,14 @@ void l1s_dedicated_mode_manager()
             // AMR NSYNC bit: set to 0 by load_amr_param, set to 1 if HO from AMR cell to AMR cell, reset by DSP
             if ( (current_channel_mode == TCH_AFS_MODE) || (current_channel_mode == TCH_AHS_MODE) )
             {
-#if (FF_L1_TCH_VOCODER_CONTROL == 1)
+            #if (FF_L1_TCH_VOCODER_CONTROL == 1)
               if(l1a_l1s_com.dedic_set.vocoder_on == TRUE)
               {
                 l1s_dsp_com.dsp_ndb_ptr->a_amr_config[NSYNC_INDEX] |= (1 << NSYNC_SHIFT);
               }
-#else
+            #else
               l1s_dsp_com.dsp_ndb_ptr->a_amr_config[NSYNC_INDEX] |= (1 << NSYNC_SHIFT);
-#endif
+            #endif
             }
           #endif
 
@@ -7816,67 +7602,25 @@ void l1s_dedicated_mode_manager()
   // All channel must be aborted...
   {
     // Perform the functions below if there is active dedicated set.
-	// This check is to take care of race condition which can happen
-	// if MPHC_STOP_DEDICATED_REQ is receivedm before MPHC_HANDOVER_FAIL_REQ
-	if (l1a_l1s_com.dedic_set.aset!=NULL)
-	{
-
-    // Stop TCH/F and TCH/H (stop Omega) (used in SYNCHRO task).
-    UWORD8 channel_type = l1a_l1s_com.dedic_set.aset->chan1.desc.channel_type;
-    if((channel_type == TCH_F) || (channel_type == TCH_H))
+    // This check is to take care of race condition which can happen
+    // if MPHC_STOP_DEDICATED_REQ is receivedm before MPHC_HANDOVER_FAIL_REQ
+#if 0	/* FreeCalypso TCS211 reconstruction */
+    if (l1a_l1s_com.dedic_set.aset!=NULL)
     {
-      l1a_l1s_com.dedic_set.stop_tch = TRUE;
+#endif
 
-      /* FreeCalypso change: same situation as earlier in this function */
-    #if AUDIO_TASK
-      // If audio enabling was forced by L1S because of a HO failure, do not force it anymore.
-      // Restore it in the state required by the MMI if the feature is compiled.
-      if (l1a_l1s_com.audio_forced_by_l1s == TRUE)
+      // Stop TCH/F and TCH/H (stop Omega) (used in SYNCHRO task).
+      UWORD8 channel_type = l1a_l1s_com.dedic_set.aset->chan1.desc.channel_type;
+      if((channel_type == TCH_F) || (channel_type == TCH_H))
       {
-      #if (L1_EXTERNAL_AUDIO_VOICE_ONOFF == 1)
-        if (l1a_l1s_com.audio_onoff_task.parameters.onoff_value == FALSE)
+        l1a_l1s_com.dedic_set.stop_tch = TRUE;
+
+        /* FreeCalypso change: same situation as earlier in this function */
+      #if 0
+        // If audio enabling was forced by L1S because of a HO failure, do not force it anymore.
+        // Restore it in the state required by the MMI if the feature is compiled.
+        if (l1a_l1s_com.audio_forced_by_l1s == TRUE)
         {
-          l1s_dsp_com.dsp_ndb_ptr->d_toneskb_init |= (API) B_AUDIO_OFF_STOP;
-        }
-      #else // L1_EXTERNAL_AUDIO_VOICE_ONOFF
-        l1s_dsp_com.dsp_ndb_ptr->d_toneskb_init |= (API) B_AUDIO_OFF_STOP;
-      #endif // L1_EXTERNAL_AUDIO_VOICE_ONOFF
-        l1a_l1s_com.audio_forced_by_l1s = FALSE;
-      }
-    #endif
-
-   #if (AMR == 1)
-      // Reset DTX AMR status
-      l1s.dtx_amr_dl_on=FALSE;
-   #endif
-
-    }
-
-    // Clear ciphering setting in MCU-DSP com.
-    l1ddsp_load_ciph_param(0, &(l1a_l1s_com.dedic_set.aset->ciph_key));
-
-    // Reset the global dedicated enable flag.
-    l1a_l1s_com.l1s_en_task[DEDIC] = TASK_DISABLED;
-    l1a_l1s_com.l1s_en_task[DDL]   = TASK_DISABLED;
-    l1a_l1s_com.l1s_en_task[DUL]   = TASK_DISABLED;
-    l1a_l1s_com.l1s_en_task[ADL]   = TASK_DISABLED;
-    l1a_l1s_com.l1s_en_task[AUL]   = TASK_DISABLED;
-    l1a_l1s_com.l1s_en_task[TCHTH] = TASK_DISABLED;
-    l1a_l1s_com.l1s_en_task[TCHD]  = TASK_DISABLED;
-    l1a_l1s_com.l1s_en_task[TCHTF] = TASK_DISABLED;
-    l1a_l1s_com.l1s_en_task[TCHA]  = TASK_DISABLED;
-
-
-    // Reset active dedicated set.
-    l1a_l1s_com.dedic_set.aset = NULL;
-
-  }
-  else
-  {
-    /* FreeCalypso change: same AUDIO_TASK situation as earlier */
-    #if AUDIO_TASK
-      if (l1a_l1s_com.audio_forced_by_l1s == TRUE)
-      {
         #if (L1_EXTERNAL_AUDIO_VOICE_ONOFF == 1)
           if (l1a_l1s_com.audio_onoff_task.parameters.onoff_value == FALSE)
           {
@@ -7885,32 +7629,77 @@ void l1s_dedicated_mode_manager()
         #else // L1_EXTERNAL_AUDIO_VOICE_ONOFF
           l1s_dsp_com.dsp_ndb_ptr->d_toneskb_init |= (API) B_AUDIO_OFF_STOP;
         #endif // L1_EXTERNAL_AUDIO_VOICE_ONOFF
-        l1a_l1s_com.audio_forced_by_l1s = FALSE;
+          l1a_l1s_com.audio_forced_by_l1s = FALSE;
+        }
+      #endif
+
+      #if (AMR == 1)
+        // Reset DTX AMR status
+        l1s.dtx_amr_dl_on=FALSE;
+      #endif
+
       }
-    #endif
-    #if (AMR == 1)
-      // Reset DTX AMR status
-      l1s.dtx_amr_dl_on=FALSE;
-    #endif
-  }
 
-  // Clear d_ra_conf => default value
-  l1s_dsp_com.dsp_ndb_ptr->d_ra_conf = 0;
+      // Clear d_ra_conf => default value
+      l1s_dsp_com.dsp_ndb_ptr->d_ra_conf = 0;
 
-  // Reset input msg.
-  l1a_l1s_com.dedic_set.SignalCode = NULL;
- #if ((REL99 == 1) && (FF_BHO == 1))
-    // this is required in BHO as you need to retain the previous channel info.
-    //This is checked in HO_REQ to L1S.....In normal handover this does not happen
-    if(l1a_l1s_com.dedic_set.handover_type == NORMAL_HANDOVER)
-    {
-      // Reset active dedicated set.
-      l1a_l1s_com.dedic_set.aset = NULL;
+      // Clear ciphering setting in MCU-DSP com.
+      l1ddsp_load_ciph_param(0, &(l1a_l1s_com.dedic_set.aset->ciph_key));
+
+      // Reset the global dedicated enable flag.
+      l1a_l1s_com.l1s_en_task[DEDIC] = TASK_DISABLED;
+      l1a_l1s_com.l1s_en_task[DDL]   = TASK_DISABLED;
+      l1a_l1s_com.l1s_en_task[DUL]   = TASK_DISABLED;
+      l1a_l1s_com.l1s_en_task[ADL]   = TASK_DISABLED;
+      l1a_l1s_com.l1s_en_task[AUL]   = TASK_DISABLED;
+      l1a_l1s_com.l1s_en_task[TCHTH] = TASK_DISABLED;
+      l1a_l1s_com.l1s_en_task[TCHD]  = TASK_DISABLED;
+      l1a_l1s_com.l1s_en_task[TCHTF] = TASK_DISABLED;
+      l1a_l1s_com.l1s_en_task[TCHA]  = TASK_DISABLED;
+
+#if 0	/* FreeCalypso TCS211 reconstruction */
     }
-  #else
+    else
+    {
+      /* FreeCalypso change: same AUDIO_TASK situation as earlier */
+      #if 0
+        if (l1a_l1s_com.audio_forced_by_l1s == TRUE)
+        {
+          #if (L1_EXTERNAL_AUDIO_VOICE_ONOFF == 1)
+            if (l1a_l1s_com.audio_onoff_task.parameters.onoff_value == FALSE)
+            {
+              l1s_dsp_com.dsp_ndb_ptr->d_toneskb_init |= (API) B_AUDIO_OFF_STOP;
+            }
+          #else // L1_EXTERNAL_AUDIO_VOICE_ONOFF
+            l1s_dsp_com.dsp_ndb_ptr->d_toneskb_init |= (API) B_AUDIO_OFF_STOP;
+          #endif // L1_EXTERNAL_AUDIO_VOICE_ONOFF
+          l1a_l1s_com.audio_forced_by_l1s = FALSE;
+        }
+      #endif
+      #if (AMR == 1)
+        // Reset DTX AMR status
+        l1s.dtx_amr_dl_on=FALSE;
+      #endif
+
+      // Clear d_ra_conf => default value
+      l1s_dsp_com.dsp_ndb_ptr->d_ra_conf = 0;
+    }
+#endif	/* FreeCalypso TCS211 reconstruction */
+
+    // Reset input msg.
+    l1a_l1s_com.dedic_set.SignalCode = NULL;
+    #if ((REL99 == 1) && (FF_BHO == 1))
+      // this is required in BHO as you need to retain the previous channel info.
+      //This is checked in HO_REQ to L1S.....In normal handover this does not happen
+      if(l1a_l1s_com.dedic_set.handover_type == NORMAL_HANDOVER)
+      {
+        // Reset active dedicated set.
+        l1a_l1s_com.dedic_set.aset = NULL;
+      }
+    #else
       // Reset active dedicated set.
       l1a_l1s_com.dedic_set.aset = NULL;
-  #endif
+    #endif
 
     // SYNCHRO task and its associated parameters (tn_difference, dl_tn and
     // dsp_scheduler_mode) are not Enabled/Updated if we are in the specific case:
@@ -8195,7 +7984,7 @@ void l1s_dedicated_mode_manager()
 	/*
 	 * FreeCalypso change: same AUDIO_TASK conditional issue as earlier.
 	 */
-	#if AUDIO_TASK
+	#if 0
           // CQ: Force the Audio ON to avoid having the DSP reseting the VDLON and producing a pop noise
           // on single ended outputs.
           l1s_dsp_com.dsp_ndb_ptr->d_toneskb_init |= (API) B_AUDIO_ON_START;
@@ -8203,6 +7992,19 @@ void l1s_dedicated_mode_manager()
           l1a_l1s_com.audio_forced_by_l1s = TRUE;
 	#endif
         }
+
+	/*
+	 * FreeCalypso: the following code has been reconstructed from the
+	 * TCS211 binary object; it appears neither in the LoCosto nor
+	 * in the TSM30 source.
+	 */
+        #if (AEC)
+	  if((l1s.aec.aec_control & 0x0002) || (l1s.aec.aec_control & 0x0004)) {
+	    l1s.aec.aec_control = l1a_l1s_com.aec_task.parameters.aec_control
+				  | 0x0001;
+	    l1s_dsp_com.dsp_ndb_ptr->d_aec_ctrl = l1s.aec.aec_control;
+	  }
+        #endif
 
         // Clear ciphering setting in MCU-DSP com.
         l1ddsp_load_ciph_param(0, &(l1a_l1s_com.dedic_set.aset->ciph_key));
@@ -8537,233 +8339,3 @@ void l1_fast_decoding_apihisr(void)
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_END
 #endif // MOVE_IN_INTERNAL_RAM
 
-
-/* Added temporirly for RF_KEypad build */
-#if (L1_RF_KBD_FIX == 1)
-
-#if(OP_L1_STANDALONE == 1)
-
-/* Modify the KPD timer values */
-void kpd_timer_modify(UWORD8 ratio,UWORD32 frameNumber)
-{
-  UWORD32 debounce_time, long_key_time, timeout_time, temp_count, local_ratio;
-  WORD32 ptv_value;
-  UWORD16 keypad_state;
-
-  keypad_state = ((*(volatile UINT16*) KBR_STATE_MACHINE_STATUS) & 0x0f);
-
-  debounce_time = (*(volatile UINT16*) KBR_DEBOUNCING_TIME) & 0x3f;
-  local_ratio = KPD_DEBOUNCING_TIME / debounce_time;
-
-  if( keypad_state == 2 || keypad_state == 3 || keypad_state == 4)
-  {
-	ptv_value = KPD_CLOCK_DIVIDER;
-
-	if( ratio > 1)
-	{
-	    if( ratio % 2)
-     	    {
-         	ratio += 1;
-     	    }
-     	    if( !ratio )
-		ratio = 2;
-
-     	    for(temp_count = 0; ratio > 1 && temp_count < 7; temp_count++)
-     	    {
-		ratio /= 2;
-     	    }
-
-	    ptv_value -= temp_count;
-	}
-
-	if( local_ratio > 1)
-	{
-		if( ratio % 2)
-     		{
-         		ratio += 1;
-     		}
-     		if( !ratio )
-			ratio = 2;
-
-     		for(temp_count = 0; ratio > 1 && temp_count < 7; temp_count++)
-     		{
-			ratio /= 2;
-     		}
-
-		ptv_value += temp_count;
-	}
-
-	if( ptv_value < 0)
-		ptv_value = 0;
-
-	/* Change the PTV value */
-     	SetGroupBits16(*(volatile unsigned short *)(KBR_CTRL_REG), 2, 3, ptv_value);
-  }
-  else
-  {
-
-	debounce_time = ((*(volatile UINT16*) KBR_DEBOUNCING_TIME) & 0x3f) * local_ratio;
-  	long_key_time = ((*(volatile UINT16*)KBR_LONG_KEY_TIME) & 0xfff) * local_ratio;
-  	timeout_time = (*(volatile UINT16*) KBR_TIME_OUT) * local_ratio;
-//	kpd_env_ctrl_blk->long_time *= local_ratio;
-//        kpd_env_ctrl_blk->repeat_time *= local_ratio;
-        ptv_value = ((*(volatile UINT16*) KBR_CTRL_REG) &  0x1c) >> 2;
-
-	if( ptv_value != KPD_CLOCK_DIVIDER)
-	{
-		/* Change the PTV value */
-     		SetGroupBits16(*(volatile unsigned short *)(KBR_CTRL_REG), 2, 3, KPD_CLOCK_DIVIDER);
-	}
-
-	if( ratio > 0 )
-	{
-		(*(volatile UINT16*) KBR_DEBOUNCING_TIME) = debounce_time / ratio;
-		(*(volatile UINT16*) KBR_LONG_KEY_TIME) = long_key_time / ratio;
-		(*(volatile UINT16*)KBR_TIME_OUT) = timeout_time / ratio;
-//		kpd_env_ctrl_blk->long_time /= ratio;
-//		kpd_env_ctrl_blk->repeat_time /= ratio;
-	}
-  }
-
-}
-
-
-void kpd_state_probe(UWORD32 frameNumber)
-{
-	// not used in stand alone
-}
-
-#endif
-
-#endif/* #if (L1_RF_KBD_FIX == 1) */
-
-/* Added temporirly for RF_KEypad build */
-
-
-
-//This function calculates and returns the number of PM to scheduled during page block monitor
-UWORD8 calc_num_pm_to_report()
-{
-	UWORD8 time_for_balist_meas;
-	UWORD8 num_pms_drx;
-
-	time_for_balist_meas = ((((((5*l1a_l1s_com.ba_list.nbr_carrier)+6)/7)*l1a_l1s_com.bs_pa_mfrms /4)+1) > 5)?(((((5*l1a_l1s_com.ba_list.nbr_carrier)+6)/7)*l1a_l1s_com.bs_pa_mfrms /4)+1):5;
-
-	if(time_for_balist_meas == 5)
-	{
-		num_pms_drx = ((5*l1a_l1s_com.ba_list.nbr_carrier*l1a_l1s_com.bs_pa_mfrms*51*577*8)/(time_for_balist_meas*1000*1000))+1;
-	}
-	else
-	{
-		num_pms_drx = ((5*l1a_l1s_com.ba_list.nbr_carrier*28*51*577*8)/(((5*l1a_l1s_com.ba_list.nbr_carrier)+6)*1000*1000))+1;
-    }
-
-    return(num_pms_drx);
-}
-
-
-
-void update_num_pm_fp_table_for_rach(UWORD8 nbmeas,UWORD8 *p)
-{
-
-	switch(nbmeas)
-	{
-		case 1:
-		case 2: break;
-		case 3: p[0]=1;
-	      		p[1]=2;
-	      		break;
-		case 4: p[0]=1;
-	      		p[1]=3;
-	      		break;
-		case 5: p[0]=1;
-	      		p[1]=4;
-	      		break;
-		case 6: p[0]=1;
-	      		p[1]=4;
-	      		break;
-		case 7: p[0]=1;
-	      		p[1]=4;
-	      		break;
-	 }
-
-}
-
-
-
-void update_num_pm_table_for_rach(UWORD8 nbmeas,UWORD8 *p)
-{
-	  switch(nbmeas)
-	  {
-		case 1:
-		case 2:
-		case 3:
-		case 4: break;
-		case 5: if(l1a_l1s_com.ba_list.np_ctrl == 1)
-		        {
-		        	p[0]=1;
-					p[1]=2;
-					p[2]=1;
-					p[3]=1;
-				}
-				else if(l1a_l1s_com.ba_list.np_ctrl == 2)
-				{
-					p[0]=2;
-					p[1]=1;
-					p[2]=1;
-				    p[3]=1;
-				}
-				else if(l1a_l1s_com.ba_list.np_ctrl == 3)
-				{
-					p[0]=2;
-					p[1]=1;
-					p[2]=1;
-				    p[3]=1;
-				}
-				break;
-		case 6: if(l1a_l1s_com.ba_list.np_ctrl == 1)
-		        {
-		        	p[0]=1;
-					p[1]=2;
-					p[2]=2;
-					p[3]=1;
-				}
-				else if(l1a_l1s_com.ba_list.np_ctrl == 2)
-				{
-					p[0]=2;
-					p[1]=1;
-					p[2]=2;
-				    p[3]=1;
-				}
-				else if(l1a_l1s_com.ba_list.np_ctrl == 3)
-				{
-					p[0]=2;
-					p[1]=2;
-					p[2]=1;
-				    p[3]=1;
-				}
-				break;
-		case 7: if(l1a_l1s_com.ba_list.np_ctrl == 1)
-				{
-					p[0]=1;
-					p[1]=2;
-					p[2]=2;
-					p[3]=2;
-				}
-				else if(l1a_l1s_com.ba_list.np_ctrl == 2)
-				{
-					p[0]=2;
-					p[1]=1;
-					p[2]=2;
-				    p[3]=2;
-				}
-				else if(l1a_l1s_com.ba_list.np_ctrl == 3)
-				{
-					p[0]=2;
-					p[1]=2;
-					p[2]=1;
-				    p[3]=2;
-				}
-				break;
-	  }
-}

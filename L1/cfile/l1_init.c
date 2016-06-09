@@ -9,8 +9,9 @@
 
 #define  L1_INIT_C
 
-#include "config.h"
 #include "l1_confg.h"
+
+#define	W_A_DSP_PR20037	1	/* FreeCalypso */
 
 #if (CODE_VERSION == SIMULATION)
   #include <string.h>
@@ -83,10 +84,10 @@
 #else // NO SIMULATION
 
   #include <string.h>
-  /* #include "tm_defs.h" */
+  #include "tm_defs.h"
   #include "l1_types.h"
   #include "sys_types.h"
-  #include "../dsp/leadapi.h"
+  #include "leadapi.h"
   #include "l1_const.h"
   #include "l1_macro.h"
   #include "l1_time.h"
@@ -98,10 +99,10 @@
   #endif
 
 
-  #include "../../bsp/abb+spi/spi_drv.h"
-  #include "../../bsp/abb+spi/abb.h"
-  #if (ANALOG != 11)
-  #include "../../bsp/abb+spi/abb_core_inth.h"
+  #include "spi_drv.h"
+  #include "abb.h"
+  #if (ANLG_FAM != 11)
+  #include "abb_core_inth.h"
   #endif
 
   #if TESTMODE
@@ -129,7 +130,7 @@
   #endif
 
   #include "l1_defty.h"
-  #include "../../gpf/inc/cust_os.h"
+  #include "cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"
@@ -141,15 +142,15 @@
   #if (CHIPSET == 12) || (CHIPSET == 15)
     #include "sys_inth.h"
   #else
-    #include "../../bsp/mem.h"
-    #include "../../bsp/inth.h"
-    #include "../../bsp/dma.h"
-    #include "../../bsp/iq.h"
+    #include "mem.h"
+    #include "inth.h"
+    #include "dma.h"
+    #include "iq.h"
   #endif
 
-  #include "../../bsp/clkm.h"
-  #include "../../bsp/rhea_arm.h"
-  #include "../../bsp/ulpd.h"
+  #include "clkm.h"
+  #include "rhea_arm.h"
+  #include "ulpd.h"
 
   #include "l1_proto.h"
 
@@ -197,7 +198,7 @@
   #include <string.h>
   #include <stdio.h>
 
-#if (ANALOG == 11)
+#if (ANLG_FAM == 11)
   #include "bspTwl3029_I2c.h"
   #include "bspTwl3029_Aud_Map.h"
   #include "bspTwl3029_Madc.h"
@@ -209,7 +210,7 @@
 #include "drp_main.h" 
 #endif
 
-#if (ANALOG == 11)
+#if (ANLG_FAM == 11)
 #if (L1_MADC_ON == 1)
 extern BspTwl3029_MadcResults l1_madc_results;
 extern void l1a_madc_callback(void);
@@ -379,14 +380,14 @@ void l1_dsp_init(void)
     l1s_dsp_com.dsp_ndb_ptr->a_fd[2]          = 0xffff;        // NERR = 0xffff
     l1s_dsp_com.dsp_ndb_ptr->d_a5mode         = 0;
 
-    #if ((ANALOG == 1) || (ANALOG == 2)  || (ANALOG == 3) || (ANALOG == 11))
+    #if ((ANLG_FAM == 1) || (ANLG_FAM == 2)  || (ANLG_FAM == 3) || (ANLG_FAM == 11))
       l1s_dsp_com.dsp_ndb_ptr->d_tch_mode     = 0x0800;  // Analog base band selected = Nausica, Iota, Syren (bit 11)
     #endif
 
-    #if ((ANALOG == 1) || (ANALOG == 2)  || (ANALOG == 3))
+    #if ((ANLG_FAM == 1) || (ANLG_FAM == 2)  || (ANLG_FAM == 3))
       l1s_dsp_com.dsp_ndb_ptr->d_tch_mode    |= (((l1_config.params.guard_bits - 4) & 0x000F) << 7); //Bit 7..10: guard bits
     #endif
-    #if (ANALOG == 11)
+    #if (ANLG_FAM == 11)
       l1s_dsp_com.dsp_ndb_ptr->d_tch_mode    |= (((l1_config.params.guard_bits) & 0x000F) << 7); //Bit 7..10: guard bits
     #endif
 
@@ -414,7 +415,7 @@ void l1_dsp_init(void)
 
 #endif
 
-#if (DSP == 33) || (DSP == 34) || (DSP == 35) || (DSP == 36) || (DSP == 37) || (DSP == 38) || (DSP == 39)
+#if (DSP >= 33)
   // Initialize V42b variables
   l1s_dsp_com.dsp_ndb_ptr->d_v42b_nego0       = 0;
   l1s_dsp_com.dsp_ndb_ptr->d_v42b_nego1       = 0;
@@ -449,7 +450,7 @@ void l1_dsp_init(void)
       // Initialize the poll response buffer to "no poll request"
       l1ps_dsp_com.pdsp_ndb_ptr->a_pu_gprs[0][0]     = CS_NONE_TYPE;
     #else // L1_GPRS
-      #if ((DSP == 31) || (DSP == 32) || (DSP == 33) || (DSP == 34) || (DSP == 35) || (DSP == 36) || (DSP == 37) || (DSP == 38) || (DSP == 39))
+      #if (DSP >= 31)
         l1s_dsp_com.dsp_ndb_ptr->d_sched_mode_gprs_ovly = GSM_SCHEDULER;
       #endif
     #endif // L1_GPRS
@@ -475,14 +476,14 @@ void l1_dsp_init(void)
       #endif // DSP
     #endif // DCO_ALGO
 
-    #if ((DSP == 34) || (DSP == 35) || (DSP == 36) || (DSP == 37) || (DSP == 38)) || (DSP == 39)
+    #if (DSP >= 34)
       l1s_dsp_com.dsp_ndb_ptr->a_amr_config[0] = 0;
       l1s_dsp_com.dsp_ndb_ptr->a_amr_config[1] = 0;
       l1s_dsp_com.dsp_ndb_ptr->a_amr_config[2] = 0;
       l1s_dsp_com.dsp_ndb_ptr->a_amr_config[3] = 0;
     #endif
 
-    #if (DSP == 35) || (DSP == 36) || (DSP == 37) || (DSP == 38) || (DSP == 39)
+    #if (DSP >= 35)
       l1s_dsp_com.dsp_ndb_ptr->d_thr_onset_afs      = 400; // thresh detection ONSET AFS
       l1s_dsp_com.dsp_ndb_ptr->d_thr_sid_first_afs  = 150; // thresh detection SID_FIRST AFS
       l1s_dsp_com.dsp_ndb_ptr->d_thr_ratscch_afs    = 450; // thresh detection RATSCCH AFS
@@ -494,7 +495,7 @@ void l1_dsp_init(void)
       l1s_dsp_com.dsp_ndb_ptr->d_thr_soft_bits    = 0; // thresh detection SPEECH DEGRADED/NO_DATA
     #endif
 
-    #if ((DSP==36 || (DSP == 37) || (DSP == 38) || (DSP == 39))&&(W_A_AMR_THRESHOLDS==1))
+    #if ((DSP >= 36) && (AMR_THRESHOLDS_WORKAROUND == 1))
       // init of the afs thresholds parameters
       l1s_dsp_com.dsp_ndb_ptr->a_d_macc_thr_afs[0]=0;
       l1s_dsp_com.dsp_ndb_ptr->a_d_macc_thr_afs[1]=0;
@@ -503,7 +504,7 @@ void l1_dsp_init(void)
       l1s_dsp_com.dsp_ndb_ptr->a_d_macc_thr_afs[4]=0;
       l1s_dsp_com.dsp_ndb_ptr->a_d_macc_thr_afs[5]=0;
       l1s_dsp_com.dsp_ndb_ptr->a_d_macc_thr_afs[6]=0;
-      l1s_dsp_com.dsp_ndb_ptr->a_d_macc_thr_afs[7]=1950;
+      l1s_dsp_com.dsp_ndb_ptr->a_d_macc_thr_afs[7]=1500;
 
       // init of the ahs thresholds parameters
       l1s_dsp_com.dsp_ndb_ptr->a_d_macc_thr_ahs[0]=1500;
@@ -515,14 +516,16 @@ void l1_dsp_init(void)
     #endif
 
     // init of of the threshold for USF detection
-    #if (L1_FALSE_USF_DETECTION == 1)
+    #if 1	/* match TCS211 object */
+      l1s_dsp_com.dsp_ndb_ptr->d_thr_usf_detect = 2140;
+    #elif (L1_FALSE_USF_DETECTION == 1)
       l1s_dsp_com.dsp_ndb_ptr->d_thr_usf_detect = 2300;
     #else
       l1s_dsp_com.dsp_ndb_ptr->d_thr_usf_detect = 0;
     #endif
 
     #if (CHIPSET == 12) || (CHIPSET == 15)
-      #if (DSP == 35) || (DSP == 36) || (DSP == 37) || (DSP == 38) || (DSP == 39)
+      #if (DSP >= 35)
         l1s_dsp_com.dsp_ndb_ptr->d_cport_init  = 0;
       #endif
     #endif
@@ -760,7 +763,7 @@ void l1_abb_power_on(void)
   #endif
 
 
-    #if (ANALOG == 1)
+    #if (ANLG_FAM == 1)
       // Omega registers values will be programmed at 1st DSP communication interrupt
 
       dsp_ndb_ptr->d_debug1      = l1_config.params.debug1;      // Enable f_tx delay of 400000 cyc DEBUG
@@ -786,7 +789,7 @@ void l1_abb_power_on(void)
         dsp_ndb_ptr->d_apcdel2     = 0x0000;
       #endif
     #endif
-    #if (ANALOG == 2)
+    #if (ANLG_FAM == 2)
       // Iota registers values will be programmed at 1st DSP communication interrupt
 
       dsp_ndb_ptr->d_debug1      = l1_config.params.debug1;      // Enable f_tx delay of 400000 cyc DEBUG
@@ -807,7 +810,7 @@ void l1_abb_power_on(void)
       dsp_ndb_ptr->d_apcdel1     =l1_config.params.apcdel1;
       dsp_ndb_ptr->d_apcdel2     = l1_config.params.apcdel2;
     #endif
-    #if (ANALOG == 3)
+    #if (ANLG_FAM == 3)
       // Syren registers values will be programmed at 1st DSP communication interrupt
 
       dsp_ndb_ptr->d_debug1      = l1_config.params.debug1;      // Enable f_tx delay of 400000 cyc DEBUG
@@ -842,7 +845,7 @@ void l1_abb_power_on(void)
 
     #endif
 
-    #if (ANALOG == 11)
+    #if (ANLG_FAM == 11)
 // The following settings need to be done only in L1 StandALoen as PSP would
 // do in the case of full PS Build...
 
@@ -941,7 +944,9 @@ void l1_pwr_mgt_init(void)
   // flags for wake-up ....
   l1s.pw_mgr.Os_ticks_required = FALSE;
   l1s.pw_mgr.frame_adjust      = FALSE;
+#if 0	/* not present in TCS211 */
   l1s.pw_mgr.wakeup_time       = 0;
+#endif
 
   // variables for sleep ....
   l1s.pw_mgr.sleep_duration    = 0;
@@ -949,7 +954,7 @@ void l1_pwr_mgt_init(void)
   l1s.pw_mgr.modules_status    = 0;            // all clocks ON
   l1s.pw_mgr.paging_scheduled  = FALSE;
 
-#if 0	/* removed in FreeCalypso */
+#if 0	/* not present in TCS211 */
   // variable for afc bypass mode
   l1s.pw_mgr.afc_bypass_mode   = AFC_BYPASS_MODE;
 #endif
@@ -958,7 +963,9 @@ void l1_pwr_mgt_init(void)
   l1s.pw_mgr.gaug_count        = 0;
   l1s.pw_mgr.enough_gaug       = FALSE;
         //Nina modify to save power, not forbid deep sleep, only force gauging in next paging
+#if 0	/* not present in TCS211 */
   l1s.force_gauging_next_paging_due_to_CCHR = 0;
+#endif
   l1s.pw_mgr.gauging_task      = INACTIVE;
 
   // GAUGING duration
@@ -1018,17 +1025,27 @@ void l1_pwr_mgt_init(void)
     // 78000/32.7712768 = 2380.13308
     l1s.pw_mgr.c_clk_min      = (UWORD32)((l1_config.dpll*MCUCLK)/LF_100PPM);
     // 0.13308*2^16
-    l1s.pw_mgr.c_clk_init_min =(UWORD32) ((UWORD32)((UWORD32)(((UWORD32)(l1_config.dpll*MCUCLK))-
+    #if 0	/* LoCosto version */
+      l1s.pw_mgr.c_clk_init_min =(UWORD32) ((UWORD32)((UWORD32)(((UWORD32)(l1_config.dpll*MCUCLK))-
                                           (l1s.pw_mgr.c_clk_min*LF_100PPM))*
                                            65536)/LF_100PPM);  //omaps00090550
-
+    #else	/* TSM30 version */
+      l1s.pw_mgr.c_clk_init_min = (UWORD32)(((double)(l1_config.dpll*MCUCLK)-
+                                          (double)(l1s.pw_mgr.c_clk_min*LF_100PPM))*
+                                           65536)/LF_100PPM;
+    #endif
     // 78000/32.751616 = 2381.561875
     l1s.pw_mgr.c_clk_max      = (UWORD32)((l1_config.dpll*MCUCLK)/LF_500PPM); //omaps00090550
     // 0.561875*2^16
-    l1s.pw_mgr.c_clk_init_max =(UWORD32)((UWORD32)(((double)(l1_config.dpll*MCUCLK)-
+    #if 0	/* LoCosto version */
+      l1s.pw_mgr.c_clk_init_max =(UWORD32)((UWORD32)(((double)(l1_config.dpll*MCUCLK)-
                                          (double)(l1s.pw_mgr.c_clk_max*LF_500PPM))*
                                          65536)/LF_500PPM);//omaps00090550
-
+    #else	/* TSM30 version */
+      l1s.pw_mgr.c_clk_init_max =(UWORD32)(((double)(l1_config.dpll*MCUCLK)-
+                                         (double)(l1s.pw_mgr.c_clk_max*LF_500PPM))*
+                                         65536)/LF_500PPM;
+    #endif
     // remember hf is expressed in nbr of clock in hz (ex 65Mhz,104Mhz)
     l1s.pw_mgr.c_delta_hf_acquis =(UWORD32) (((GAUG_IN_32T/LF)-(GAUG_IN_32T/LF_50PPM))*(l1_config.dpll*MCUCLK));//omaps00090550
     l1s.pw_mgr.c_delta_hf_update =(UWORD32)( ((GAUG_IN_32T/LF)-(GAUG_IN_32T/LF_6PPM ))*(l1_config.dpll*MCUCLK));//omaps00090550
@@ -1078,7 +1095,9 @@ void l1_initialize_var(void)
   l1s.frame_count = 0;
   l1s.forbid_meas = 0;
 #if L1_GPRS
+#if 0	/* not present in TCS211 */
   l1s.tcr_prog_done=0;
+#endif
 #endif
 #if (AUDIO_DEBUG == 1)
   audio_reg_read_status=0;
@@ -1118,7 +1137,9 @@ void l1_initialize_var(void)
   #endif
 
 #if (L1_GPRS == 1)
+#if 0	/* not present in TCS211 */
    l1s.algo_change_synchro_active = FALSE;
+#endif
 #endif
 
 #if (L1_RF_KBD_FIX == 1)
@@ -1175,7 +1196,9 @@ l1s.correction_ratio = 1;
       l1s.next_plus_time = l1s.next_time;
       l1s_increment_time(&(l1s.next_plus_time),1);
       l1s.ctrl_synch_before = FALSE;
-      l1s.next_gauging_scheduled_for_PNP= 0;
+      #if 0	/* not present in TCS211 */
+        l1s.next_gauging_scheduled_for_PNP= 0;
+      #endif
     #endif
   }
 
@@ -1214,7 +1237,7 @@ l1s.correction_ratio = 1;
 
   l1s.version.mcu_tcs_program_release = PROGRAM_RELEASE_VERSION;
   l1s.version.mcu_tcs_internal        = INTERNAL_VERSION;
-  l1s.version.mcu_tcs_official        = MAINTENANCE_VERSION;
+  l1s.version.mcu_tcs_official        = OFFICIAL_VERSION;
 
   #if TESTMODE
     l1s.version.mcu_tm_version    = TESTMODEVERSION;
@@ -1392,21 +1415,21 @@ l1s.correction_ratio = 1;
   l1a_l1s_com.dedic_set.fset        = NULL;
   l1a_l1s_com.dedic_set.SignalCode  = 0;
   l1a_l1s_com.dedic_set.sync_tch    = 0;
-  l1a_l1s_com.dedic_set.stop_tch    = 0;
   l1a_l1s_com.dedic_set.reset_facch = FALSE;
+  l1a_l1s_com.dedic_set.stop_tch    = 0;
 #if (FF_L1_TCH_VOCODER_CONTROL)
   l1a_l1s_com.dedic_set.reset_sacch = FALSE;
-#if (L1_VOCODER_IF_CHANGE == 0)
-  l1a_l1s_com.dedic_set.vocoder_on = TRUE;
-  #if (W_A_DSP_PR20037 == 1)
-    l1a_l1s_com.dedic_set.start_vocoder = TCH_VOCODER_ENABLE_REQ;
-  #else // W_A_DSP_PR20037 == 0
-    l1a_l1s_com.dedic_set.start_vocoder = FALSE;
-  #endif // W_A_DSP_PR20037
-#else // L1_VOCODER_IF_CHANGE
+  #if (L1_VOCODER_IF_CHANGE == 0)
+    l1a_l1s_com.dedic_set.vocoder_on = TRUE;
+    #if (W_A_DSP_PR20037 == 1)
+      l1a_l1s_com.dedic_set.start_vocoder = TCH_VOCODER_ENABLE_REQ;
+    #else // W_A_DSP_PR20037 == 0
+      l1a_l1s_com.dedic_set.start_vocoder = FALSE;
+    #endif // W_A_DSP_PR20037
+  #else // L1_VOCODER_IF_CHANGE
     l1a_l1s_com.dedic_set.vocoder_on = FALSE;
     l1a_l1s_com.dedic_set.start_vocoder = TCH_VOCODER_RESET_COMMAND;
-#endif // L1_VOCODER_IF_CHANGE
+  #endif // L1_VOCODER_IF_CHANGE
 #endif // FF_L1_TCH_VOCODER_CONTROL
 
   l1a_l1s_com.dedic_set.radio_freq       = 0;
@@ -1611,13 +1634,12 @@ void l1_dpll_init_var(void) {
 
 /*-------------------------------------------------------------*/
 
+#if(RF_FAM == 61)
 void l1_drp_wrapper_init (void)
-  {
-  #if(RF_FAM == 61)
+{
     l1ddsp_apc_load_apcctrl2(l1_config.params.apcctrl2);
-  #endif
-
-  }
+}
+#endif
 
 /*-------------------------------------------------------------*/
 /* FUNCTION: l1_drp_init */
@@ -1766,11 +1788,13 @@ void l1_initialize(T_MMI_L1_CONFIG *mmi_l1_config)
 #endif
 
   l1_config.tx_pwr_code       = mmi_l1_config->tx_pwr_code;
-  #if IDS
-    l1_config.ids_enable      = mmi_l1_config->ids_enable;
+  #if 0	/* not present in TCS211 */
+    #if IDS
+      l1_config.ids_enable      = mmi_l1_config->ids_enable;
+    #endif
+    l1_config.facch_test.enable = mmi_l1_config->facch_test.enable;
+    l1_config.facch_test.period = mmi_l1_config->facch_test.period;
   #endif
-  l1_config.facch_test.enable = mmi_l1_config->facch_test.enable;
-  l1_config.facch_test.period = mmi_l1_config->facch_test.period;
   l1_config.dwnld             = mmi_l1_config->dwnld;
 
   #if TESTMODE
@@ -1851,13 +1875,10 @@ void l1_initialize(T_MMI_L1_CONFIG *mmi_l1_config)
   #if TRACE_TYPE==3
     reset_stats();
   #endif
-  #if(OP_L1_STANDALONE == 1 || L1_NAVC == 1 )//NAVC
+ #if(OP_L1_STANDALONE == 1 || L1_NAVC == 1 )//NAVC
     Cust_navc_ctrl_status(1);//start - NAVC
-  #endif//end of (OP_L1_STANDALONE == 1 || L1_NAVC == 1 )
+ #endif//end of (OP_L1_STANDALONE == 1 || L1_NAVC == 1 )
 
-  #if FEATURE_TCH_REROUTE
-    feature_tch_reroute_init();
-  #endif
 }
 
 /*-------------------------------------------------------*/
@@ -1888,7 +1909,9 @@ void l1_initialize(T_MMI_L1_CONFIG *mmi_l1_config)
       drp_efuse_init();
     #endif
     l1_tpu_init();
-    wait_ARM_cycles(convert_nanosec_to_cycles(11000000));  // wait of 5.5 msec
+    #if 0	/* not in TCS211 */
+      wait_ARM_cycles(convert_nanosec_to_cycles(11000000));  // wait of 5.5 msec
+    #endif
     l1_dsp_init();
     l1_initialize_var();
 
@@ -1911,6 +1934,3 @@ void l1_initialize(T_MMI_L1_CONFIG *mmi_l1_config)
 
   }
 #endif
-
-
-

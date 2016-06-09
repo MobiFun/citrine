@@ -7,16 +7,15 @@
  *
  ************* Revision Controle System Header *************/
 
-#include "config.h"
 #include "l1_confg.h"
-#include "../../nucleus/nucleus.h"
+#include "nucleus.h"
 #include "sys_types.h"
 #include "l1_types.h"
 #include "l1audio_cust.h"
 #include "l1audio_defty.h"
 #include "l1audio_const.h"
 #include "l1_const.h"
-#include "../../gpf/inc/cust_os.h"
+#include "cust_os.h"
 #include "l1tm_defty.h"
 #if (L1_GTT == 1)
   #include "l1gtt_const.h"
@@ -54,7 +53,7 @@
 #include "l1audio_signa.h"
 #include "l1_varex.h"
 #include "l1_macro.h"
-#include "../../bsp/mem.h"
+#include "mem.h"
 
 
 /*-------------------------------------------------------------*/
@@ -141,6 +140,8 @@ extern NU_HISR api_modemHISR;
 #endif // (L1_MP3 == 1) || (L1_MIDI == 1) || (L1_DYN_DSP_DWNLD == 1)
 #endif //(FF_L1_IT_DSP_USF == 1) || //(FF_L1_IT_DSP_DTX == 1)
 
+#if 0	/* FreeCalypso Frankenstein */
+/* This is the original LoCosto code */
 
 //When Fast USF is not enabled, then the API HISR needs to be called every time the DSP 
 //sends a HINT interrupt.
@@ -151,6 +152,18 @@ NU_Activate_HISR(&apiHISR);
 #endif
 //NU_Activate_HISR(&apiHISR); //hack remove
   return;
+
+#else
+
+/* reconstruction of what the TCS211 code was probably like */
+#if (L1_DYN_DSP_DWNLD == 1)
+  if( l1_apihisr.dyn_dwnld.running == TRUE )
+  {
+    NU_Activate_HISR(&apiHISR); 
+  }
+#endif
+
+#endif
 }
 
 /*-------------------------------------------------------------*/
@@ -193,6 +206,7 @@ void api_hisr(void)
 
 }
 
+#if 0	/* FreeCalypso */
 /*-------------------------------------------------------------*/
 /* api_modem_hisr()                                            */
 /*-------------------------------------------------------------*/
@@ -229,6 +243,7 @@ if(l1a_apihisr_com.fast_decoding.pending == TRUE)
   }
 #endif
 }
+#endif	/* FreeCalypso */
 
 /*-------------------------------------------------------------*/
 /* l1_trigger_api_interrupt()                                  */
