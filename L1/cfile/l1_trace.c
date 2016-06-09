@@ -6099,7 +6099,7 @@ rvt_send_trace_cpy ((T_RVT_BUFFER) str, trace_info.l1_trace_user_id, (T_RVT_MSG_
       tcs_program_release = ((T_TST_TEST_HW_CON*)(msg->SigP))->mcu_tcs_program_release;
 
       if (((tcs_program_release & 0xFFF0) == 0x2110) || ((tcs_program_release & 0xFFF0) == 0x2120))
-        sprintf(str, "TST_C %ld TCS_%d.%d.%d.%d_L1_%x_%x DSP:%xh DYN:%xh CHECKSUM:%xh\n\r",
+        sprintf(str, "TST_C %ld TCS_%d.%d.%d.%d_L1_%x_%x FreeCalypso DSP:%xh DYN:%xh CHECKSUM:%xh\n\r",
                 l1s.actual_time.fn_mod42432,
                 (tcs_program_release & 0xF000) >> 12,
                 (tcs_program_release & 0x0F00) >> 8 ,
@@ -6111,7 +6111,7 @@ rvt_send_trace_cpy ((T_RVT_BUFFER) str, trace_info.l1_trace_user_id, (T_RVT_MSG_
                 ((T_TST_TEST_HW_CON*)(msg->SigP))->dsp_patch_version,
               ((T_TST_TEST_HW_CON*)(msg->SigP))->dsp_checksum);
       else
-        sprintf(str, "TST_C %ld TCS_%x.%x.%x_L1_%x_%x DSP:%xh DYN:%xh CHECKSUM:%xh\n\r",
+        sprintf(str, "TST_C %ld TCS_%x.%x.%x_L1_%x_%x FreeCalypso DSP:%xh DYN:%xh CHECKSUM:%xh\n\r",
                 l1s.actual_time.fn_mod42432,
                 (tcs_program_release & 0xF000) >> 12,
                 (tcs_program_release & 0x0F00) >> 8 ,
