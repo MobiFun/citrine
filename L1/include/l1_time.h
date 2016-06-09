@@ -91,16 +91,8 @@
 #define D_NSUBB_IDLE         296L                                                    // Nb of 48 samples window for FBNEW task.
 #if (CODE_VERSION==SIMULATION)
   #define D_NSUBB_DEDIC        31L                                                     // Nb of 48 samples window for FB26 task.
-  //To simulate the handling of the worst case (FB/SB task with class 12 allocation),
-  //this parameter used in the computation of FB26_ACQUIS_DURATION has to fit with the
-  //value used outside the PC simulation (D_NSUBB_DEDIC)
-  //This value will only be used for mac_mode = Extended Dynamic Allocation to minimize the
-  //impact on reference simulation files for other allocation modes
-  #if L1_EDA
-    #define D_NSUBB_DEDIC_EDA  30L                                                     // Nb of 48 samples window for FB26 task.
-  #endif
 #else
-  #if (DSP >= 32)
+  #if (DSP == 33) || (DSP == 34) || (DSP == 35) || (DSP == 32) || (DSP == 36)
     #define D_NSUBB_DEDIC        30L                                                     // Nb of 48 samples window for FB26 task.
   #else
     #define D_NSUBB_DEDIC        31L                                                     // Nb of 48 samples window for FB26 task.
@@ -117,37 +109,15 @@
 #define SWITCH_TIME          ( TPU_CLOCK_RANGE - EPSILON_SYNC )                      // = 4990, time for offset change.
 
 #define PROVISION_TIME       ( 66L )
-
-#ifndef EPSILON_SYNC
-  #define EPSILON_SYNC         ( 10L )                                                 // synchro change: max TOA shift=8qbits, 2qbits TPU scenario exec.
-#endif
-
-#ifndef EPSILON_OFFS
-  #define EPSILON_OFFS         (  2L )                                                 // offset change: 2qbits for TPU scenario exec.
-#endif
-
-#ifndef EPSILON_MEAS
-  #define EPSILON_MEAS         ( 20L )                                                 // margin kept between RX and PW meas or between PW meas
-#endif
-
-#ifndef SERV_OFFS_REST_LOAD
-  #define SERV_OFFS_REST_LOAD  (  1L )                                                 // 1qbit TPU scen exec. for serv. cell offset restore
-#endif
-
+#define EPSILON_SYNC         ( 10L )                                                 // synchro change: max TOA shift=8qbits, 2qbits TPU scenario exec.
+#define EPSILON_OFFS         (  2L )                                                 // offset change: 2qbits for TPU scenario exec.
+#define EPSILON_MEAS         ( 20L )                                                 // margin kept between RX and PW meas or between PW meas
+#define SERV_OFFS_REST_LOAD  (  1L )                                                 // 1qbit TPU scen exec. for serv. cell offset restore
 #define TPU_SLEEP_LOAD       (  2L )                                                 // 2qbit TPU scen exec. for TPU sleep
 #if (CODE_VERSION==SIMULATION)
-  #define DL_ABB_DELAY         ( 32L )                // RX ABB filter delay
+  #define DL_ABB_DELAY         ( 32L )                                             // RX ABB filter delay
 #else
-  #if (RF_FAM != 61)
-    #ifndef DL_ABB_DELAY //Flexi ABB Delays defines it in tpudrvXX.c
-      #define DL_ABB_DELAY         ( 32L + 4L)        // RX ABB filter delay
-    #endif
-  #endif
-  #if (RF_FAM == 61)
-    #ifndef DL_ABB_DELAY //Flexi ABB Delays defines it in tpudrvXX.c
-      #define DL_ABB_DELAY         ( 41L + 4L)        // RX DRP filter delay
-    #endif
-  #endif
+  #define DL_ABB_DELAY         ( 32L + 4L)                                         // RX ABB filter delay
 #endif
 
 // DMA threshold used for sample acquisition by the DSP
@@ -170,7 +140,7 @@
 #if (CODE_VERSION==SIMULATION)
   #define TULSET_DURATION    ( 16L )                                                 // Uplink power on setup time
   #define BULRUDEL_DURATION  ( 2L )
-  #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3) || (ANALOG == 11))
+  #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
      // 16 qbits are added because the Calibration time is reduced of 4 GSM bit
      // due to a slow APC ramp of OMEGA (Cf. START_TX_NB)
      #define UL_VEGA_DELAY      ( TULSET_DURATION + BULRUDEL_DURATION +16L )         // = 18qbits, TX Vega delay
@@ -179,10 +149,7 @@
 
 #define SB_MARGIN            ( 23L * 4L )                                            // = 92
 #define NB_MARGIN            (  3L * 4L )                                            // = 12
-
-#ifndef TA_MAX  //flexi Abb Delays defined in tpudrvXX.h
-  #define TA_MAX               ( 63L * 4L )                                            // = 252
-#endif
+#define TA_MAX               ( 63L * 4L )                                            // = 252
 
 #define SB_BURST_DURATION    ( TAIL_WIDTH + ( 142L * 4L) )                           // = 580, required for Demodulation
 #define NB_BURST_DURATION_DL ( TAIL_WIDTH + ( 142L * 4L) )                           // = 580, required for Demodulation
@@ -203,12 +170,7 @@
 #define NB_ACQUIS_DURATION   ( NB_MARGIN + NB_BURST_DURATION_DL + NB_MARGIN + DL_ABB_DELAY + RX_DMA_DELAY ) // = 636 + DMA delay
 #define PW_ACQUIS_DURATION   ( PW_BURST_DURATION + DL_ABB_DELAY + RX_DMA_DELAY )                            // = 288 + DMA delay
 #define FB_ACQUIS_DURATION   ( ( D_NSUBB_IDLE  * 48L * 4L ) + ( 48L * 4L ) + DL_ABB_DELAY + RX_DMA_DELAY )  // = 57056 + DMA delay
-#if (L1_EDA) && (CODE_VERSION==SIMULATION)
-  #define FB26_ACQUIS_DURATION_DEFAULT ( ( D_NSUBB_DEDIC * 48L * 4L ) + DL_ABB_DELAY + RX_DMA_DELAY)                 // = 5984 + DMA delay
-  #define FB26_ACQUIS_DURATION_FOR_EDA ( ( D_NSUBB_DEDIC_EDA * 48L * 4L ) + DL_ABB_DELAY + RX_DMA_DELAY)                 // = 5984 + DMA delay
-#else
 #define FB26_ACQUIS_DURATION ( ( D_NSUBB_DEDIC * 48L * 4L ) + DL_ABB_DELAY + RX_DMA_DELAY)                 // = 5984 + DMA delay
-#endif
 
 #define START_RX_FB          ( PROVISION_TIME )                                                // = 66
 #define START_RX_SB          ( PROVISION_TIME )                                                // = 66
@@ -221,18 +183,10 @@
 
 #define STOP_RX_FB           ( (PROVISION_TIME + FB_ACQUIS_DURATION)   % TPU_CLOCK_RANGE )       // = 2122
 #define STOP_RX_SB           ( (START_RX_SB    + SB_ACQUIS_DURATION)   % TPU_CLOCK_RANGE )       // = 862
-#if ((REL99 == 1) && (FF_BHO == 1))
-  #define STOP_RX_FBSB         ( (STOP_RX_FB     + 800L              )   % TPU_CLOCK_RANGE )       // = 2922
-#endif
 #define STOP_RX_SNB          ( (START_RX_SNB   + NB_ACQUIS_DURATION)   % TPU_CLOCK_RANGE )       // = 702
 #define STOP_RX_PW_1         ( (START_RX_PW_1  + PW_ACQUIS_DURATION)   % TPU_CLOCK_RANGE )       // = 354
 #define STOP_RX_FB26         ( (START_RX_FB26  + FB26_ACQUIS_DURATION) % TPU_CLOCK_RANGE )     // = 4314
 
-#if (REL99 == 1 && FF_RTD == 1) // RTD feature
-#define RTD_UNIT_MARGIN      ( ((TPU_CLOCK_RANGE-8)/128L) + 1 )   // unit of RTD is 1/64 TDMA frame 
-#define RTD_RIGHT_MARGIN     ( (TA_MAX/2L) + (RTD_UNIT_MARGIN) )    
-#define RTD_LEFT_MARGIN      ( RTD_RIGHT_MARGIN ) 
-#endif
 
 //================================
 // Definitions used for GPRS

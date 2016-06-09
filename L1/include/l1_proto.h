@@ -14,9 +14,6 @@ void  hisr                        (void);
 
 void  frit_task                   (UWORD32 argc, void *argv);
 void  l1s_task                    (UWORD32 argc, void *argv);
-#if FF_L1_IT_DSP_USF
-void  usf_task                    (UWORD32 argc, void *argv);
-#endif
 void  l1s_synch                   (void);
 
 void  l1s_task_scheduler_process  (void);
@@ -27,24 +24,22 @@ void  l1s_schedule_tasks          (WORD32 *pending_task);
 void  l1s_merge_manager           (WORD32 dl_pending_task);
 
 void  l1s_dedicated_mode_manager  (void);
-void  l1s_keep_mftab_hist         (void);
 
 /**************************************/
 /* prototypes of L1_PWMGR.C functions */
 /**************************************/
-void  l1s_sleep_manager                    (void);
-void  l1s_wakeup                           (void);
-void  l1s_wakeup_adjust                    (void);
-void  GAUGING_Handler                      (void);
-UWORD8 l1s_recover_Os                      (void);
-UWORD8 l1s_check_System                    (void);
-void  l1s_recover_Frame                    (void);
-void l1s_recover_HWTimers                  (void);
-BOOL l1s_compute_wakeup_ticks              (void);
-void l1s_gauging_task                      (void);
-void  l1s_gauging_task_end                 (void);
-UWORD32 l1s_get_next_gauging_in_Packet_Idle(void);
-void    l1s_adapt_traffic_controller       (void);
+void  l1s_sleep_manager           (void);
+void l1s_gauging_task             (void);
+void  l1s_gauging_task_end        (void);
+WORD32 l1s_get_next_gauging_in_Packet_Idle(void);
+void  l1s_wakeup                  (void);
+void  l1s_wakeup_adjust           (void);
+void  GAUGING_Handler             (void);
+UWORD8 l1s_recover_Os             (void);
+UWORD8 l1s_check_System           (void);
+void  l1s_recover_Frame           (void);
+void l1s_recover_HWTimers         (void);
+BOOL l1s_compute_wakeup_ticks     (void);
 
 /**************************************/
 /* prototypes of L1_MFMGR.C functions */
@@ -68,9 +63,7 @@ void  l1s_ctrl_fb                 (UWORD8 param1, UWORD8 param2);
 void  l1s_ctrl_fb26               (UWORD8 task,   UWORD8 param2);
 void  l1s_ctrl_sbgen              (UWORD8 task,   UWORD8 attempt);
 void  l1s_ctrl_sb26               (UWORD8 task,   UWORD8 param2);
-#if ((REL99 == 1) && (FF_BHO == 1))
-void  l1s_ctrl_fbsb               (UWORD8 task  , UWORD8 param2);
-#endif
+
 void  l1s_ctrl_smscb              (UWORD8 task,   UWORD8 burst_id);
 
 void  l1s_ctrl_snb_dl             (UWORD8 task, UWORD8 param2);
@@ -98,26 +91,16 @@ void  l1s_read_nnb                (UWORD8 task, UWORD8 param);
 void  l1s_read_dedic_dl           (UWORD8 task, UWORD8 burst_id);
 
 void  l1s_read_tx_result          (UWORD8 param1, UWORD8 param2);
-
-#if FF_EMR
-  void  l1s_read_dedic_scell_meas   (UWORD8 meas,   UWORD8 sub_flag, T_EMR_PARAMS *emr_params);
-#else //FF_EMR
 void  l1s_read_dedic_scell_meas   (UWORD8 meas,   UWORD8 sub_flag);
-#endif //FF_EMR
 void  l1s_dedic_reporting         (void);
 
 void  l1s_read_fb                 (UWORD8 task, UWORD32 fb_flag, UWORD32 toa, UWORD32 attempt,
                                    UWORD32 pm,  UWORD32 angle,   UWORD32 snr);
 void  l1s_read_sb                 (UWORD8  task,UWORD32 flag,    API *data, UWORD32 toa, UWORD8 attempt,
                                    UWORD32 pm,  UWORD32 angle,   UWORD32 snr);
-#if ((REL99 == 1) && (FF_BHO == 1))
-void l1s_read_fbsb                (UWORD8 task, UWORD8 attempt, BOOL fb_flag,  BOOL sb_flag, API *data, 
-                                   UWORD32 toa, UWORD32 pm, UWORD32 angle, UWORD32 snr);
-#endif
 void  l1s_read_sacch_dl           (API *info_address, UWORD32 task_rx);
 void  l1s_read_dcch_dl            (API *info_address, UWORD32 task_rx);
 void  l1s_read_l3frm              (UWORD8 pwr_level, API *info_address, UWORD32 task_rx);
-void l1s_reset_tx_ptr(UWORD8 param1, UWORD8 param2);
 
 
 /**************************************/
@@ -139,24 +122,24 @@ void           l1a_send_result                (UWORD32 SignalCode, xSignalHeader
 UWORD8         l1a_encode_rxqual              (UWORD32 inlevel);
 void           l1a_report_failling_ncell_sync (UWORD32 SignalCode, UWORD8 neigh_id);
 UWORD8         l1a_clip_txpwr                 (UWORD8 supplied_txpwr, UWORD16 radio_freq);
-void         l1a_add_time_delta             (UWORD32 *time_alignmt, UWORD32 *fn_offset, WORD32 delta);
-void         l1a_compensate_sync_ind        (T_MPHC_NCELL_SYNC_IND * msg);
-void         l1a_compute_Eotd_data          (UWORD8 *first_scell, UWORD8 neigh_id, UWORD32 SignalCode, xSignalHeaderRec *msg);
-void         l1a_correct_timing             (UWORD8 neigh_id,UWORD32 time_alignmt,UWORD32 fn_offset);
+void           l1a_correct_timing             (UWORD8 neigh_id,UWORD32 time_alignmt,UWORD32 fn_offset);
+void           l1a_add_time_delta             (UWORD32 *time_alignmt, UWORD32 *fn_offset, WORD32 delta);
+void           l1a_compensate_sync_ind        (T_MPHC_NCELL_SYNC_IND * msg);
+void           l1a_compute_Eotd_data          (UWORD8 *first_scell, UWORD8 neigh_id, UWORD32 SignalCode, xSignalHeaderRec *msg);
+#if (L1_MPHC_RXLEV_IND_REPORT_SORT==1)
+void           l1a_sort_freq_reported_in_rxlev_ind(T_POWER_ARRAY *data_tab,UWORD16 data_tab_size,UWORD16 *index_tab,UWORD16 index_tab_size);
+#endif
 
 /**************************************/
 /* prototypes of L1_FUNC functions    */
 /**************************************/
 void            dsp_power_on                (void);
-#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3) || (ANALOG == 11))
+#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
    void         l1_abb_power_on              (void);
 #endif
 void            tpu_init                    (void);
 
 void            l1s_reset_db_mcu_to_dsp     (T_DB_MCU_TO_DSP *page_ptr);
-#if (DSP == 38) || (DSP == 39)
-void            l1s_reset_db_common_mcu_to_dsp   (T_DB_COMMON_MCU_TO_DSP *page_ptr);
-#endif
 void            l1s_reset_db_dsp_to_mcu     (T_DB_DSP_TO_MCU *page_ptr);
 void            initialize_l1var            (void);
 void            l1_initialize               (T_MMI_L1_CONFIG *mmi_l1_config);
@@ -174,7 +157,6 @@ UWORD8          l1s_ADC_decision_on_NP      (void);
 UWORD8          l1s_amr_get_ratscch_type    (API *a_ratscch_dl);
 void            l1s_amr_update_from_ratscch (API *a_ratscch_dl);
 #endif
-void            l1_memcpy_16bit(void *dst,void* src,unsigned int len);
 
 
 /**************************************/
@@ -182,10 +164,6 @@ void            l1_memcpy_16bit(void *dst,void* src,unsigned int len);
 /**************************************/
 // MCU-DSP interface drivers.
 //---------------------------
-
-#if (FF_L1_FAST_DECODING == 1)
-void l1ddsp_load_fast_dec_task(API task, UWORD8 burst_id);
-#endif 
 void   l1ddsp_load_info           (UWORD32   task,
                                    API       *info_ptr,
                                    UWORD8    *data);
@@ -203,21 +181,6 @@ void   l1ddsp_load_ra_task        (API       ra_task);
 
 void   l1ddsp_load_txpwr          (UWORD8           txpwr,
                                    UWORD16          radio_freq);
-
-// SAIC low level driver function
-#if (L1_SAIC != 0)
-void   l1ddsp_load_swh_flag       (UWORD16   SWH_flag, UWORD16 SAIC_flag);
-#endif
-
-void l1ddsp_read_iq_dump(UWORD8 task);
-void l1ddsp_apc_load_apcctrl2(UWORD16 apcctrl2);
-void l1ddsp_apc_set_manual_mode(void);
-void l1ddsp_apc_set_automatic_mode(void);
-
-#ifdef TESTMODE
-  void l1ddsp_apc_load_apclev(UWORD16 apclev);
-#endif  
-
 #if (AMR == 1)
   #if (FF_L1_TCH_VOCODER_CONTROL == 1)
     // Add the AMR synchro bit in the driver's paramters
@@ -229,12 +192,7 @@ void l1ddsp_apc_set_automatic_mode(void);
                                        UWORD8           sync_tch,
                                        UWORD8           sync_amr,
                                        UWORD8           reset_sacch,
-                                     #if !FF_L1_IT_DSP_DTX           
                                        UWORD8           vocoder_on);
-  #else
-                                       UWORD8           vocoder_on,
-                                       BOOL             dtx_dsp_interrupt);
-                                     #endif
   #else
     void   l1ddsp_load_tch_param      (T_TIME_INFO      *next_time,
                                        UWORD8           chan_mode,
@@ -242,12 +200,7 @@ void l1ddsp_apc_set_automatic_mode(void);
                                        UWORD8           subchannel,
                                        UWORD8           tch_loop,
                                        UWORD8           sync_tch,
-                                     #if !FF_L1_IT_DSP_DTX           
                                        UWORD8           sync_amr);
-                                     #else
-                                       UWORD8           sync_amr,
-                                       BOOL             dtx_dsp_interrupt);
-                                     #endif
   #endif
 #else
   #if (FF_L1_TCH_VOCODER_CONTROL == 1)
@@ -258,41 +211,31 @@ void l1ddsp_apc_set_automatic_mode(void);
                                        UWORD8           tch_loop,
                                        UWORD8           sync_tch,
                                        UWORD8           reset_sacch,
-                                     #if !FF_L1_IT_DSP_DTX           
                                        UWORD8           vocoder_on);
-  #else
-                                       UWORD8           vocoder_on,
-                                       BOOL             dtx_dsp_interrupt);
-                                     #endif
   #else
     void   l1ddsp_load_tch_param      (T_TIME_INFO      *next_time,
                                        UWORD8           chan_mode,
                                        UWORD8           chan_type,
                                        UWORD8           subchannel,
                                        UWORD8           tch_loop,
-                                     #if !FF_L1_IT_DSP_DTX           
                                        UWORD8           sync_tch);
-                                     #else
-                                       UWORD8           sync_tch,
-                                       BOOL             dtx_dsp_interrupt);
-                                     #endif
   #endif
 #endif
 
-#if (L1_VOCODER_IF_CHANGE == 0)
-BOOL enable_tch_vocoder               (BOOL             vocoder_on);
-#endif // L1_VOCODER_IF_CHANGE == 0
+BOOL enable_tch_vocoder           (BOOL             vocoder_on);
+
 BOOL   l1_select_mcsi_port            (UWORD8           port);
 
-void   l1ddsp_load_ciph_param         (UWORD8           a5mode,
-                                       T_ENCRYPTION_KEY *ciph_key);
-void   l1ddsp_load_tch_mode           (UWORD8           dai_mode,
-                                       BOOL             dtx_allowed);
+void   l1ddsp_load_ciph_param     (UWORD8           a5mode,
+                                   T_ENCRYPTION_KEY *ciph_key);
+void   l1ddsp_load_tch_mode       (UWORD8           dai_mode,
+                                   BOOL             dtx_allowed);
 #if (AMR == 1)
-  void l1ddsp_load_amr_param          (T_AMR_CONFIGURATION amr_param, UWORD8 cmip);
+void l1ddsp_load_amr_param          (T_AMR_CONFIGURATION amr_param, UWORD8 cmip);
 #endif
-void   l1ddsp_stop_tch                (void);
-void l1ddsp_load_afc                  (API afc);
+
+void   l1ddsp_stop_tch            (void);
+
 
 // MCU-TPU interface drivers.
 //---------------------------
@@ -301,12 +244,7 @@ void l1dtpu_meas                  (UWORD16  radio_freq,
                                    UWORD8   lna_off,
                                    UWORD16   win_id,
                                    UWORD16  tpu_synchro,
-                                   UWORD8   adc_active
-#if(RF_FAM == 61)
-                                 ,UWORD8 afc_mode
-                                 ,UWORD8 if_ctl
-#endif
-                                                 );
+                                   UWORD8   adc_active);
 void l1dtpu_neig_fb               (UWORD16  radio_freq,
                                    WORD8    agc,
                                    UWORD8   lna_off);
@@ -320,36 +258,20 @@ void l1dtpu_neig_sb               (UWORD16  radio_freq,
                                    UWORD32  time_alignmt,
                                    UWORD32  offset_serv,
                                    UWORD8   reload_flag,
-                                   UWORD8   attempt
-#if(RF_FAM == 61)
-                                 ,UWORD8 if_ctl
-#endif
-                                                       );
+                                   UWORD8   attempt);
 void l1dtpu_neig_sb26             (UWORD16  radio_freq,
                                    WORD8    agc,
                                    UWORD8   lna_off,
                                    UWORD32  time_alignmt,
                                    UWORD32  fn_offset,
-                                   UWORD32  offset_serv
-#if(RF_FAM == 61)
-                                  ,UWORD8 if_ctl
-#endif
-                                                      );
+                                   UWORD32  offset_serv);
 void l1dtpu_serv_rx_nb            (UWORD16  radio_freq,
                                    WORD8    agc,
                                    UWORD8   lna_off,
                                    UWORD32  synchro_serv,
                                    UWORD32  new_offset,
                                    BOOL     change_offset,
-                                   UWORD8   adc_active
-#if(RF_FAM == 61)                                   
-                                  ,UWORD8   csf_filter_choice
-                                  ,UWORD8 if_ctl
-#endif
-#if (NEW_SNR_THRESHOLD == 1)
-                                  ,UWORD8 saic_flag
-#endif /* NEW_SNR_THRESHOLD*/
-                                                        );
+                                   UWORD8   adc_active);
 void l1dtpu_serv_tx_nb            (UWORD16  radio_freq,
                                    UWORD8   timing_advance,
                                    UWORD32  offset_serv,
@@ -361,15 +283,7 @@ void l1dtpu_neig_rx_nb            (UWORD16  radio_freq,
                                    UWORD32  time_alignmt,
                                    UWORD32  offset_serv,
                                    UWORD8   reload_flag,
-                                   UWORD8   nop
-#if(RF_FAM == 61)
-                                  ,UWORD8 if_ctl
-#endif
-#if (NEW_SNR_THRESHOLD == 1)
-                                  ,UWORD8 saic_flag
-#endif /* NEW_SNR_THRESHOLD*/
-                                                      );
-
+                                   UWORD8   nop);
 void l1dtpu_serv_tx_ra            (UWORD16  radio_freq,
                                    UWORD32  offset_serv,
                                    UWORD8   txpwr,
@@ -427,11 +341,7 @@ void  l1a_idle_ba_list_meas_process   (xSignalHeaderRec *msg);
 void  l1a_idle_full_list_meas_process (xSignalHeaderRec *msg);
 void  l1a_test_process                (xSignalHeaderRec *msg);
 void  l1a_freq_band_configuration     (xSignalHeaderRec *msg);
-void  l1a_at_power_process            (xSignalHeaderRec *msg);    
 
-#if(L1_CHECK_COMPATIBLE == 1)
-void l1a_checkmsg_compatibility    (xSignalHeaderRec *msg);
-#endif
 #if (OP_L1_STANDALONE == 1)
 // Dynamic configuration process for L1 standalone only
   void   l1a_test_config_process        (xSignalHeaderRec *msg);
@@ -458,8 +368,9 @@ void  l3_expire_fct                   (UWORD32 id);
 /**************************************/
 /* Prototypes for Nu_main.            */
 /**************************************/
+UWORD32            get_arm_version (void);
+void               usart_hisr      (void);
 void               Adc_timer       (UWORD32 id);
-
 /**************************************/
 /* Prototypes for l2 task             */
 /**************************************/
@@ -478,25 +389,12 @@ void           rx_tch_data        (API     *data_address,
 UWORD8           *tx_tch_data     (void);
 
 #if (SEND_FN_TO_L2_IN_DCCH==1)
-#if (L1_SAGEM_INTERFACE == 1)
-void           dll_dcch_downlink  (API     *info_address,
-                                   UWORD8  valid_flag, 
-                                   UWORD32 frame_number,
-				   UWORD8 channel_type);
-#else
 void           dll_dcch_downlink  (API     *info_address,
                                    UWORD8  valid_flag, 
                                    UWORD32 frame_number);
-#endif
-#else
-#if (L1_SAGEM_INTERFACE == 1)
-void           dll_dcch_downlink  (API     *info_address,
-                                   UWORD8  valid_flag,
-				   UWORD8  channel_type);
 #else
 void           dll_dcch_downlink  (API     *info_address,
                                    UWORD8  valid_flag);
-#endif
 #endif
 
 /***************************************/
@@ -505,6 +403,7 @@ void           dll_dcch_downlink  (API     *info_address,
 void l1_trace_message          (xSignalHeaderRec *msg);
 void send_debug_sig            (UWORD8 debug_code, UWORD8 task);
 void l1_trace_cpu_load         (UWORD8 cpu_load);
+void l1_trace_ratscch(UWORD16 fn, UWORD16 amr_change_bitmap);
 
 #if (TRACE_TYPE==7) // CPU_LOAD
 void l1_cpu_load_start          (void);
@@ -516,6 +415,7 @@ void l1_cpu_load_interm         (void);
 /***************************************/
 /* Prototypes of HW_DEBUG.c functions  */
 /***************************************/
+void  get_usart_characters        (void);  // HISR for Rx characters
 void  wait_for_next_message       (CHAR *);
 
 /***************************************/
@@ -535,7 +435,7 @@ void log_fct                  (CHAR *fct_name, UWORD32 radio_freq);
 void trace_msg                (CHAR *msg_name, CHAR *queue_name);
 void log_msg                  (CHAR *msg_name, CHAR *queue_name);
 void trace_dedic              (void);
-void trace_fct_simu           (CHAR *fct_name, UWORD32 radio_freq);
+void trace_fct_simu           (CHAR *fct_name, WORD32 radio_freq);
 void trace_flowchart_msg      (CHAR *msg_name, CHAR *dest_queue_name);
 void trace_flowchart_l1tsk    (UWORD32 bit_register, UWORD32 *src_register_set);
 void trace_flowchart_dedic    (WORD32 SignalCode);
@@ -546,14 +446,6 @@ void trace_flowchart_dspres   (CHAR *task_name);
 void trace_flowchart_dsptx    (CHAR *task_name);
 void trace_flowchart_header   (void);
 void trace_sim_freq_band_configuration  (UWORD8 freq_band_config);
-#if (TOA_ALGO == 2)
-  void trace_toa_sim_ctrl   (UWORD16 SNR_val, UWORD16 TOA_val, UWORD32 l1_mode,
-                             UWORD32 frames_counter, UWORD32 cumul_counter,WORD16 cumul);
-  void trace_toa_sim_update (WORD16 toa_shift, UWORD32 tpu_offset);
-#endif
-#if (L1_SAIC != 0)
-  void trace_saic_sim (UWORD32 Il_for_rxlev, UWORD32 l1_mode, UWORD32 SWH_flag);
-#endif
 
 /**************************************/
 /* prototypes of control functions    */
@@ -572,36 +464,12 @@ WORD16 l1ctl_afc                 (UWORD8  phase,
                                  UWORD16  radio_freq,
                                  UWORD32  l1_mode);
 #endif
-
-#if (TOA_ALGO == 2)
-WORD16 l1ctl_toa                 (UWORD8 phase, 
-                                  UWORD32 l1_mode,
-                                  UWORD16 SNR_val,
-                                  UWORD16 TOA_val);
-#else
 WORD16 l1ctl_toa                 (UWORD8  phase,
                                  UWORD32  l1_mode,
                                  UWORD16  SNR_val,
                                  UWORD16  TOA_val,
                                  BOOL     *toa_update,
-                                 UWORD16  *toa_period_count
-#if (FF_L1_FAST_DECODING == 1)                                 
-                                ,UWORD8   skipped_values
-#endif /* FF_L1_FAST_DECODING */                                
-                                 );
-#endif
-
-// SAIC Control Function
-#if (L1_SAIC != 0)
-UWORD8 l1ctl_saic                (UWORD8  IL_for_rxlev,
-                                  UWORD32 l1_mode
-#if (NEW_SNR_THRESHOLD == 1)
-                                  ,UWORD8  task,
-                                  UWORD8   * saic_flag
-#endif /* NEW_SNR_THRESHOLD*/
-);
-#endif
-
+                                 UWORD16  *toa_period_count);
 UWORD8 l1ctl_txpwr             (UWORD8    target_txpwr,
                                  UWORD8   current_txpwr);
 
@@ -612,7 +480,6 @@ void l1ctl_encode_lna  (UWORD8  input_level,
                         UWORD16 radio_freq);
 UWORD8 l1ctl_find_max  (UWORD8  *buff,
                         UWORD8  buffer_len);
-
 // Automatic Gain Control Algorithms
 void l1ctl_pgc2          (UWORD8        pm_high_agc,
                           UWORD8        pm_low_agc,
@@ -641,62 +508,18 @@ UWORD8 l1ctl_dpagc       (BOOL          dtx_on,
 
 UWORD16 l1ctl_get_g_magic (UWORD16 radio_freq);
 UWORD16 l1ctl_get_lna_att (UWORD16 radio_freq);
-UWORD16 l1ctl_update_TPU_with_toa(void);
-
-#if (FF_L1_FAST_DECODING == 1)
-void l1ctl_pagc_missing_bursts (UWORD8 skipped_values);
-#endif  
+void    l1ctl_update_TPU_with_toa(void);
 
 //functions for customization
 void Cust_init_std         (void);
 void Cust_init_params      (void);
-WORD8 Cust_get_agc_from_IL (UWORD16 radio_freq, UWORD16 agc_index, UWORD8 table_id,UWORD8 lna_off_val);
+WORD8 Cust_get_agc_from_IL (UWORD16 radio_freq, UWORD16 agc_index, UWORD8 table_id);
 WORD8 l1ctl_encode_delta1  (UWORD16 radio_freq);
 WORD8 l1ctl_encode_delta2  (UWORD16 radio_freq);
 void Cust_get_ramp_tab     (API *a_ramp, UWORD8 txpwr_ramp_up, UWORD8 txpwr_ramp_down, UWORD16 radio_freq);
-#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3) || (RF_FAM == 61))
-  UWORD16 Cust_get_pwr_data(UWORD8 txpwr, UWORD16 radio_freq
-  										  #if(REL99 && FF_PRF)
-  										  ,UWORD8 number_uplink_timeslot
-  										  #endif
-  										  );
+#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+  UWORD16 Cust_get_pwr_data(UWORD8 txpwr, UWORD16 radio_freq);
 #endif
 
-#if (RF_FAM == 61)
-void l1_drp_wrapper_init (void);
-void l1_drp_init (void);
-void l1dapc_init_ramp_tables(void );
-void   cust_get_if_dco_ctl_algo (UWORD16* dco_algo_ctl, UWORD8* if_ctl,  
-  UWORD8 input_level_flag, UWORD8 input_level, UWORD16 radio_freq, UWORD8 if_threshold);
-#endif
-
-void l1s_restore_synchro(void);
-
-#if (FF_L1_FAST_DECODING == 1)
-BOOL l1s_check_deferred_control(UWORD8 task, UWORD8 burst_id);
-BOOL l1s_check_fast_decoding_authorized(UWORD8 task);
-#endif /* FF_L1_FAST_DECODING */
-
-#if (DRP_FW_EXT == 1)
-void l1_get_boot_result_and_version(T_L1_BOOT_VERSION_CODE * p_version);
-#endif /* DRP_FW_EXT */
-
-/*-----------------------------------------------------------------*/
-/* Prototypes of MULTIBAND related functions                       */
-/*-----------------------------------------------------------------*/
-#if (L1_FF_MULTIBAND == 1)
-#if 0
-UWORD16 l1_multiband_radio_freq_convert_into_operative_radio_freq(UWORD16 radio_freq);
-UWORD8 l1_multiband_radio_freq_convert_into_physical_band_id(UWORD16 radio_freq);
-UWORD8  l1_multiband_radio_freq_convert_into_effective_band_id(UWORD16 radio_freq);
-void l1_multiband_fill_power_meas_array(UWORD16 power_array_size, T_FULL_LIST_MEAS *full_list);
-UWORD8 l1_multiband_map_radio_freq_into_tpu_table(UWORD16 radio_freq);
-void l1_multiband_increment_effective_band_id(UWORD8 *effective_band_id);
-void l1_multiband_trace_params(UWORD8 multiband_table_id, UWORD8 multiband_trace_id) ;
-void l1_multiband_tpu_get_power_classes(T_L1_MULTIBAND_POWER_CLASS multiband_power_class[]);
-void l1_multiband_error_handler(UWORD16 radio_freq);
-#endif // if 0
-
-#endif /*if(L1_FF_MULTIBAND == 1)*/
 
 

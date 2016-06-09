@@ -38,14 +38,12 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_FN(param1) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_FN)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_FN *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_FN))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_FN))) != NULL) \
       { \
-        ptr2->fn          = param1; \
-        ptr2->cell_id     = RTTL1_ENABLE_FN; \
+        ((T_RTTL1_FN *)ptr)->fn          = param1; \
+        ((T_RTTL1_FN *)ptr)->cell_id     = RTTL1_ENABLE_FN; \
       } \
   }
 
@@ -55,20 +53,18 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_DL_BURST(param1,param2,param3,param4,param5,param6,param7) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_DL_BURST))                                                                  \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_DL_BURST *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_DL_BURST))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_DL_BURST))) != NULL) \
       { \
-        ptr2->angle       = param1; \
-        ptr2->snr         = param2; \
-        ptr2->afc         = param3; \
-        ptr2->task        = param4; \
-        ptr2->pm          = param5; \
-        ptr2->toa         = param6; \
-        ptr2->input_level = param7; \
-        ptr2->cell_id     = RTTL1_ENABLE_DL_BURST; \
+        ((T_RTTL1_DL_BURST *)ptr)->angle       = param1; \
+        ((T_RTTL1_DL_BURST *)ptr)->snr         = param2; \
+        ((T_RTTL1_DL_BURST *)ptr)->afc         = param3; \
+        ((T_RTTL1_DL_BURST *)ptr)->task        = param4; \
+        ((T_RTTL1_DL_BURST *)ptr)->pm          = param5; \
+        ((T_RTTL1_DL_BURST *)ptr)->toa         = param6; \
+        ((T_RTTL1_DL_BURST *)ptr)->input_level = param7; \
+        ((T_RTTL1_DL_BURST *)ptr)->cell_id     = RTTL1_ENABLE_DL_BURST; \
       } \
   }                                                                                                           
                                                                                                               
@@ -78,16 +74,14 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_UL_NB(param1, param2, param3) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_UL_NB)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_UL_NB *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_NB))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_NB))) != NULL) \
       { \
-        ptr2->task    = param1; \
-        ptr2->ta      = param2; \
-        ptr2->txpwr   = param3; \
-        ptr2->cell_id = RTTL1_ENABLE_UL_NB; \
+        ((T_RTTL1_UL_NB *)ptr)->task    = param1; \
+        ((T_RTTL1_UL_NB *)ptr)->ta      = param2; \
+        ((T_RTTL1_UL_NB *)ptr)->txpwr   = param3; \
+        ((T_RTTL1_UL_NB *)ptr)->cell_id = RTTL1_ENABLE_UL_NB; \
       } \
   }                                                                                                           
                                                                                                               
@@ -97,15 +91,13 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_UL_AB(param1, param2) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_UL_AB)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_UL_AB *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_AB))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_AB))) != NULL) \
       { \
-        ptr2->task    = param1; \
-        ptr2->txpwr   = param2; \
-        ptr2->cell_id = RTTL1_ENABLE_UL_AB; \
+        ((T_RTTL1_UL_AB *)ptr)->task    = param1; \
+        ((T_RTTL1_UL_AB *)ptr)->txpwr   = param2; \
+        ((T_RTTL1_UL_AB *)ptr)->cell_id = RTTL1_ENABLE_UL_AB; \
       } \
   }                                                                                                           
                                                                                                               
@@ -115,17 +107,15 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_FULL_LIST_MEAS(param1, param2, param3, param4) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_FULL_LIST_MEAS)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_FULL_LIST_MEAS *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_FULL_LIST_MEAS))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_FULL_LIST_MEAS))) != NULL) \
       {                                                                                                       \
-        ptr2->pm          = param1; \
-        ptr2->input_level = param2; \
-        ptr2->task        = param3; \
-        ptr2->radio_freq  = param4; \
-        ptr2->cell_id     = RTTL1_ENABLE_FULL_LIST_MEAS; \
+        ((T_RTTL1_FULL_LIST_MEAS *)ptr)->pm          = param1; \
+        ((T_RTTL1_FULL_LIST_MEAS *)ptr)->input_level = param2; \
+        ((T_RTTL1_FULL_LIST_MEAS *)ptr)->task        = param3; \
+        ((T_RTTL1_FULL_LIST_MEAS *)ptr)->radio_freq  = param4; \
+        ((T_RTTL1_FULL_LIST_MEAS *)ptr)->cell_id     = RTTL1_ENABLE_FULL_LIST_MEAS; \
       } \
   }                                                                                                           
                                                                                                               
@@ -135,17 +125,15 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_MON_MEAS(param1, param2, param3, param4) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_MON_MEAS)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_MON_MEAS *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_MON_MEAS))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_MON_MEAS))) != NULL) \
       { \
-        ptr2->pm          = param1; \
-        ptr2->input_level = param2; \
-        ptr2->task        = param3; \
-        ptr2->radio_freq  = param4; \
-        ptr2->cell_id     = RTTL1_ENABLE_MON_MEAS; \
+        ((T_RTTL1_MON_MEAS *)ptr)->pm          = param1; \
+        ((T_RTTL1_MON_MEAS *)ptr)->input_level = param2; \
+        ((T_RTTL1_MON_MEAS *)ptr)->task        = param3; \
+        ((T_RTTL1_MON_MEAS *)ptr)->radio_freq  = param4; \
+        ((T_RTTL1_MON_MEAS *)ptr)->cell_id     = RTTL1_ENABLE_MON_MEAS; \
       } \
   }                                                                                                           
 
@@ -155,15 +143,13 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_DL_DCCH(param1, param2) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_DL_DCCH)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_DL_DCCH *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_DL_DCCH))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_DL_DCCH))) != NULL) \
       { \
-        ptr2->valid_flag    = param1; \
-        ptr2->physical_info = param2; \
-        ptr2->cell_id       = RTTL1_ENABLE_DL_DCCH; \
+        ((T_RTTL1_DL_DCCH *)ptr)->valid_flag    = param1; \
+        ((T_RTTL1_DL_DCCH *)ptr)->physical_info = param2; \
+        ((T_RTTL1_DL_DCCH *)ptr)->cell_id       = RTTL1_ENABLE_DL_DCCH; \
       } \
   }                                                                                                           
                                                                                                               
@@ -173,15 +159,13 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_DL_PTCCH(param1, param2) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_DL_PTCCH)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_DL_PTCCH *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_DL_PTCCH))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_DL_PTCCH))) != NULL) \
       { \
-        ptr2->crc        = param1; \
-        ptr2->ordered_ta = param2; \
-        ptr2->cell_id    = RTTL1_ENABLE_DL_PTCCH; \
+        ((T_RTTL1_DL_PTCCH *)ptr)->crc        = param1; \
+        ((T_RTTL1_DL_PTCCH *)ptr)->ordered_ta = param2; \
+        ((T_RTTL1_DL_PTCCH *)ptr)->cell_id    = RTTL1_ENABLE_DL_PTCCH; \
       } \
   }                                                                                                           
                                                                                                               
@@ -191,13 +175,11 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_UL_DCCH \
   if(SELECTED_BITMAP(RTTL1_ENABLE_UL_DCCH)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_UL_DCCH *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_DCCH))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_DCCH))) != NULL) \
       { \
-        ptr2->cell_id = RTTL1_ENABLE_UL_DCCH; \
+        ((T_RTTL1_UL_DCCH *)ptr)->cell_id = RTTL1_ENABLE_UL_DCCH; \
       } \
   }                                                                                                           
                                                                                                               
@@ -207,16 +189,14 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_UL_SACCH(param1, param2, param3) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_UL_SACCH)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_UL_SACCH *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_SACCH))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_SACCH))) != NULL) \
       { \
-        ptr2->data_present   = param1; \
-        ptr2->reported_ta    = param2; \
-        ptr2->reported_txpwr = param3; \
-        ptr2->cell_id        = RTTL1_ENABLE_UL_SACCH; \
+        ((T_RTTL1_UL_SACCH *)ptr)->data_present   = param1; \
+        ((T_RTTL1_UL_SACCH *)ptr)->reported_ta    = param2; \
+        ((T_RTTL1_UL_SACCH *)ptr)->reported_txpwr = param3; \
+        ((T_RTTL1_UL_SACCH *)ptr)->cell_id        = RTTL1_ENABLE_UL_SACCH; \
       } \
   }                                                                                                           
                                                                                                               
@@ -226,18 +206,16 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_DL_PDTCH(param1, param2, param3, param4, param5) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_DL_PDTCH)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_DL_PDTCH *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_DL_PDTCH))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_DL_PDTCH))) != NULL) \
       { \
-        ptr2->mac_header = param1; \
-        ptr2->tfi_result = param2; \
-        ptr2->crc        = param3; \
-        ptr2->cs_type    = param4; \
-        ptr2->timeslot   = param5; \
-        ptr2->cell_id    = RTTL1_ENABLE_DL_PDTCH; \
+        ((T_RTTL1_DL_PDTCH *)ptr)->mac_header = param1; \
+        ((T_RTTL1_DL_PDTCH *)ptr)->tfi_result = param2; \
+        ((T_RTTL1_DL_PDTCH *)ptr)->crc        = param3; \
+        ((T_RTTL1_DL_PDTCH *)ptr)->cs_type    = param4; \
+        ((T_RTTL1_DL_PDTCH *)ptr)->timeslot   = param5; \
+        ((T_RTTL1_DL_PDTCH *)ptr)->cell_id    = RTTL1_ENABLE_DL_PDTCH; \
       } \
   }                                                                                                           
                                                                                                               
@@ -247,16 +225,14 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_UL_PDTCH(param1, param2, param3) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_UL_PDTCH)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_UL_PDTCH *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_PDTCH))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_UL_PDTCH))) != NULL) \
       { \
-        ptr2->cs_type      = param1; \
-        ptr2->data_allowed = param2; \
-        ptr2->timeslot     = param3; \
-        ptr2->cell_id      = RTTL1_ENABLE_UL_PDTCH; \
+        ((T_RTTL1_UL_PDTCH *)ptr)->cs_type      = param1; \
+        ((T_RTTL1_UL_PDTCH *)ptr)->data_allowed = param2; \
+        ((T_RTTL1_UL_PDTCH *)ptr)->timeslot     = param3; \
+        ((T_RTTL1_UL_PDTCH *)ptr)->cell_id      = RTTL1_ENABLE_UL_PDTCH; \
       } \
   }                                                                                                           
                                                                                                               
@@ -266,15 +242,13 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_MACS_STATUS(param1, param2) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_MACS_STATUS)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_MACS_STATUS *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_MACS_STATUS))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_MACS_STATUS))) != NULL) \
       { \
-        ptr2->status   = param1; \
-        ptr2->timeslot = param2; \
-        ptr2->cell_id  = RTTL1_ENABLE_MACS_STATUS; \
+        ((T_RTTL1_MACS_STATUS *)ptr)->status   = param1; \
+        ((T_RTTL1_MACS_STATUS *)ptr)->timeslot = param2; \
+        ((T_RTTL1_MACS_STATUS *)ptr)->cell_id  = RTTL1_ENABLE_MACS_STATUS; \
       } \
   }
 
@@ -284,15 +258,13 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_L1S_TASK_ENABLE(param1, param2) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_L1S_TASK_ENABLE)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_L1S_TASK_ENABLE *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_L1S_TASK_ENABLE))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_L1S_TASK_ENABLE))) != NULL) \
       { \
-        ptr2->bitmap1  = param1; \
-        ptr2->bitmap2  = param2; \
-        ptr2->cell_id  = RTTL1_ENABLE_L1S_TASK_ENABLE; \
+        ((T_RTTL1_L1S_TASK_ENABLE *)ptr)->bitmap1  = param1; \
+        ((T_RTTL1_L1S_TASK_ENABLE *)ptr)->bitmap2  = param2; \
+        ((T_RTTL1_L1S_TASK_ENABLE *)ptr)->cell_id  = RTTL1_ENABLE_L1S_TASK_ENABLE; \
       } \
   }
 
@@ -302,14 +274,12 @@ extern T_TRACE_INFO_STRUCT trace_info;
 #define RTTL1_FILL_MFTAB(param1) \
   if(SELECTED_BITMAP(RTTL1_ENABLE_MFTAB)) \
   { \
-      T_RTT_PTR  *ptr; \
-      T_RTTL1_MFTAB *ptr2; \
+      T_RTT_PTR  ptr; \
 \
-      ptr = (T_RTT_PTR *) &ptr2; \
-      if ((*ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_MFTAB))) != NULL) \
+      if ((ptr = trace_info.l1s_rtt_func.rtt_get_fill_ptr(trace_info.l1s_trace_user_id, sizeof(T_RTTL1_MFTAB))) != NULL) \
       { \
-        ptr2->func     = param1; \
-        ptr2->cell_id  = RTTL1_ENABLE_MFTAB; \
+        ((T_RTTL1_MFTAB *)ptr)->func     = param1; \
+        ((T_RTTL1_MFTAB *)ptr)->cell_id  = RTTL1_ENABLE_MFTAB; \
       } \
   }
 

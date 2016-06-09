@@ -1,9 +1,9 @@
 /************* Revision Controle System Header *************
- *                  GSM Layer 1 software
+ *                  GSM Layer 1 software 
  * L1_MSGTY.H
  *
  *        Filename l1_msgty.h
- *  Copyright 2003 (C) Texas Instruments
+ *  Copyright 2003 (C) Texas Instruments  
  *
  ************* Revision Controle System Header *************/
 
@@ -27,9 +27,9 @@
 /* TCH/4.8 -> 15 bytes                                          */
 /* TCH/2.4 ->  9 bytes                                          */
 /****************************************************************/
-typedef struct
+typedef struct 
 {  
-  UWORD8 A[30];
+  UWORD8 A[30];  
 }  
 T_DATA_FRAME;
 
@@ -37,7 +37,7 @@ T_DATA_FRAME;
 /* Structure definition for L1A <-> MMI messages                */
 /****************************************************************/
 
-typedef struct
+typedef struct 
 {
   UWORD8  tx_flag;
   UWORD8  traffic_period;
@@ -64,14 +64,6 @@ typedef struct
 T_TST_HW_CONFIG_REQ;
 #endif // OP_L1_STANDALONE
 
-/* Message used for software dynamic configuration */
-typedef struct
-{
-  UWORD8   ids_enable;    // activation of IDS module
-  T_FACCH_TEST_PARAMS facch_test;
-}
-T_TST_SW_CONFIG_REQ;
-
 typedef struct
 {
   UWORD32  mf51_fn;
@@ -84,11 +76,6 @@ typedef struct
   UWORD8           nbr_of_carriers;
   WORD8            s_rxlev;
   UWORD8           ba_id;
-  //added for Enhanced RSSI 
-  UWORD16          qual_acc_idle;           // accumulated rxqual meas. on different channels in Idle mode.= error bits
-  UWORD32          qual_nbr_meas_idle; // accumulated rxqual meas. on different channels in Idle mode.= total number of bits decoded
-
-  
 }
 T_MPHC_RXLEV_PERIODIC_IND;
 
@@ -123,7 +110,7 @@ typedef struct
 }
 T_MPHC_NCELL_BCCH_READ;
 
-typedef struct
+typedef struct 
 {
   UWORD32  fn;
   UWORD8   channel_request;
@@ -145,24 +132,24 @@ typedef struct
 }  
 T_MPHC_IMMED_ASSIGN_REQ;
 
-typedef struct
+typedef struct 
 {
-  T_CHANNEL_DESCRIPTION   channel_desc_1;
-  UWORD8                  channel_mode_1;
-  UWORD8                  txpwr;
-  T_MOBILE_ALLOCATION     frequency_list;
-  T_STARTING_TIME         starting_time;
-  T_CHANNEL_DESCRIPTION   channel_desc_2;
-  UWORD8                  channel_mode_2;
-  T_MOBILE_ALLOCATION     frequency_list_bef_sti;
-  T_CHANNEL_DESCRIPTION   channel_desc_1_bef_sti;
-  T_CHANNEL_DESCRIPTION   channel_desc_2_bef_sti;
-  UWORD8                  cipher_mode;
-  UWORD8                  a5_algorithm;
-  T_ENCRYPTION_KEY        cipher_key;
-  BOOL                    dtx_allowed;
+  T_CHANNEL_DESCRIPTION  channel_desc_1;
+  UWORD8                 channel_mode_1;
+  UWORD8                 txpwr;
+  T_MOBILE_ALLOCATION    frequency_list;
+  T_STARTING_TIME        starting_time;
+  T_CHANNEL_DESCRIPTION  channel_desc_2;
+  UWORD8         channel_mode_2;
+  T_MOBILE_ALLOCATION    frequency_list_bef_sti;
+  T_CHANNEL_DESCRIPTION  channel_desc_1_bef_sti;
+  T_CHANNEL_DESCRIPTION  channel_desc_2_bef_sti;
+  UWORD8                 cipher_mode;
+  UWORD8                 a5_algorithm;
+  T_ENCRYPTION_KEY       cipher_key;
+  BOOL                   dtx_allowed;
   #if (AMR == 1)
-    T_AMR_CONFIGURATION   amr_configuration;
+    T_AMR_CONFIGURATION  amr_configuration;
   #endif
 }  
 T_MPHC_CHANNEL_ASSIGN_REQ;
@@ -170,95 +157,63 @@ T_MPHC_CHANNEL_ASSIGN_REQ;
 
 typedef struct
 {
-  UWORD8                cipher_mode;
-  UWORD8                a5_algorithm;
-  T_ENCRYPTION_KEY      new_ciph_param;
-}
-T_MPHC_SET_CIPHERING_REQ;
-
-
-typedef struct
-{
-    T_CHANNEL_DESCRIPTION  channel_desc;
-    T_MOBILE_ALLOCATION    frequency_list;
-    T_STARTING_TIME        starting_time;
-}
-T_MPHC_CHANGE_FREQUENCY;
-
-
-typedef struct
-{
   UWORD8   txpwr;
   UWORD8   rand;
   UWORD8   channel_request;
-#if (L1_FF_MULTIBAND == 0)  
   UWORD8   powerclass_band1;
   UWORD8   powerclass_band2;
-#endif
 
 }
 T_MPHC_RA_REQ;
 
 
-typedef struct
+typedef struct 
 {
-  T_HO_PARAMS           handover_command;
-  UWORD32               fn_offset;
-  UWORD32               time_alignmt;
-  T_ENCRYPTION_KEY      cipher_key;
-  #if (AMR == 1)
-    T_AMR_CONFIGURATION amr_configuration;
-  #endif // (AMR == 1)
-  #if ((REL99 == 1) && (FF_BHO == 1))
-    BOOL               handover_type;
+  T_HO_PARAMS          handover_command;
+  UWORD32              fn_offset;     
+  UWORD32              time_alignmt;  
+  T_ENCRYPTION_KEY     cipher_key;
+  #if (AMR == 1)  
+    T_AMR_CONFIGURATION  amr_configuration;
   #endif
 }
 T_MPHC_ASYNC_HO_REQ;
 
-typedef struct
+typedef struct 
 {
-  T_HO_PARAMS           handover_command;
-  UWORD32               fn_offset;
-  UWORD32               time_alignmt;
-  T_ENCRYPTION_KEY      cipher_key;
-  BOOL                  nci;
-  BOOL                  timing_advance_valid;
-  UWORD8                timing_advance;
-  #if (AMR == 1)
-    T_AMR_CONFIGURATION amr_configuration;
-  #endif
-  #if ((REL99 == 1) && (FF_BHO == 1))
-    BOOL               handover_type;
+  T_HO_PARAMS          handover_command;
+  UWORD32              fn_offset;     
+  UWORD32              time_alignmt;  
+  T_ENCRYPTION_KEY     cipher_key;
+  BOOL                 nci;
+  BOOL                 timing_advance_valid;
+  UWORD8               timing_advance;
+  #if (AMR == 1)  
+    T_AMR_CONFIGURATION  amr_configuration;
   #endif
 }  
 T_MPHC_PRE_SYNC_HO_REQ;
 
-typedef struct
+typedef struct 
 {
-  T_HO_PARAMS           handover_command;
-  UWORD32               fn_offset;
-  UWORD32               time_alignmt;
-  T_ENCRYPTION_KEY      cipher_key;
-  BOOL                  nci;
-  UWORD8                real_time_difference;
-#if ((REL99 == 1) && (FF_BHO == 1))
-    BOOL handover_type;
-#endif // #if ((REL99 == 1) && (FF_BHO == 1))
-}
+  T_HO_PARAMS       handover_command;
+  UWORD32           fn_offset;     
+  UWORD32           time_alignmt;  
+  T_ENCRYPTION_KEY  cipher_key;
+  BOOL              nci;
+  UWORD8            real_time_difference;
+}  
 T_MPHC_PSEUDO_SYNC_HO_REQ;
 
 typedef struct
 {
-  T_HO_PARAMS           handover_command;
-  UWORD32               fn_offset;
-  UWORD32               time_alignmt;
-  T_ENCRYPTION_KEY      cipher_key;
-  BOOL                  nci;
-  #if (AMR == 1)
-    T_AMR_CONFIGURATION amr_configuration;
-  #endif
-  #if ((REL99 == 1) && (FF_BHO == 1))
-    BOOL               handover_type;
+  T_HO_PARAMS          handover_command;
+  UWORD32              fn_offset;     
+  UWORD32              time_alignmt;  
+  T_ENCRYPTION_KEY     cipher_key;
+  BOOL                 nci;
+  #if (AMR == 1)  
+    T_AMR_CONFIGURATION  amr_configuration;
   #endif
 }  
 T_MPHC_SYNC_HO_REQ;
@@ -266,14 +221,10 @@ T_MPHC_SYNC_HO_REQ;
 typedef struct
 {
   UWORD8  cause;
-  #if ((REL99 == 1) && (FF_BHO == 1))
-    UWORD32 fn_offset;
-    UWORD32 time_alignment;
-  #endif
 }  
 T_MPHC_HANDOVER_FINISHED;
 
-typedef struct
+typedef struct 
 {
   BOOL           dtx_used;
   BOOL           meas_valid;
@@ -290,32 +241,17 @@ typedef struct
   UWORD8         ba_id;
   UWORD8         timing_advance;
   UWORD8         txpwr_used;
-#if (REL99 == 1)
-#if FF_EMR
-    WORD16       rxlev_val_acc;
-    UWORD8       rxlev_val_nbr_meas;
-    UWORD32      mean_bep_block_acc;
-    UWORD16      cv_bep_block_acc;
-    UWORD8       mean_bep_block_num;
-    UWORD8       cv_bep_block_num;
-    UWORD8       nbr_rcvd_blocks;
-#endif
-#endif
 
   // RESERVED: for trace/debug only
   UWORD8         facch_dl_count;
   UWORD8         facch_ul_count;
-  #if (FF_REPEATED_DL_FACCH == 1)
-     UWORD8 facch_dl_combined_good_count; /* No of good decoded blocks after combining */
-     UWORD8 facch_dl_repetition_block_count; /* Total of Dl block count */
-  #endif
 }  
 T_MPHC_MEAS_REPORT;
 
 typedef T_NEW_BA_LIST  T_MPHC_UPDATE_BA_LIST;
 
 
-typedef struct
+typedef struct 
 {
   UWORD8  bs_pa_mfrms;
   UWORD8  bs_ag_blks_res;
@@ -341,23 +277,13 @@ typedef T_FULL_LIST_MEAS           T_MPHC_RXLEV_REQ;
 typedef T_FULL_LIST_MEAS           T_L1C_VALID_MEAS_INFO;
 typedef T_MPHC_RXLEV_PERIODIC_IND  T_L1C_RXLEV_PERIODIC_DONE;
 
-#if (L1_FF_MULTIBAND == 0)
 
-    typedef struct
-    {
-      UWORD8 radio_band_config; // frequency band configuration: E-GSM, DCS, GSM/DCS, PCS
-    }
-    T_MPHC_INIT_L1_REQ;
 
-#else // For Multiband the Init request is just a dummy and init confirm contains info
-
-    typedef struct
-    {
-      T_L1_MULTIBAND_POWER_CLASS multiband_power_class[NB_MAX_GSM_BANDS];
-    }
-    T_MPHC_INIT_L1_CON;
-
-#endif // L1_FF_MULTIBAND == 0
+typedef struct
+{
+  UWORD8 radio_band_config; // frequency band configuration: E-GSM, DCS, GSM/DCS, PCS
+}
+T_MPHC_INIT_L1_REQ;
 
 /****************************************************************/
 /* Structure definition for Test <-> L1A messages                */
@@ -365,7 +291,7 @@ typedef T_MPHC_RXLEV_PERIODIC_IND  T_L1C_RXLEV_PERIODIC_DONE;
 
 typedef struct
 {
-  UWORD16  dsp_code_version;
+  UWORD16  dsp_code_version;                      
   UWORD16  dsp_checksum;
   UWORD16  dsp_patch_version;
   UWORD16  mcu_tcs_program_release;
@@ -651,22 +577,6 @@ typedef struct
 }
 T_L1C_FB_INFO;
 
-#if ((REL99 == 1) && (FF_BHO == 1))
-typedef struct
-{
-  BOOL    fb_flag;
-  BOOL    sb_flag;
-  UWORD8  bsic;
-  UWORD32 fn_offset;
-  UWORD32 time_alignmt;
-  UWORD32 pm;
-  UWORD32 toa;
-  UWORD32 angle;
-  UWORD32 snr;
-}
-T_L1C_FBSB_INFO;
-#endif
-
 typedef struct
 {
   WORD8     radio_freq_array_size;
@@ -734,10 +644,6 @@ typedef struct
  UWORD8   swap_iq_band2;
  UWORD8   pwr_mngt;
  UWORD8   tx_pwr_code;
- #if IDS
-   UWORD8 ids_enable;
- #endif
- T_FACCH_TEST_PARAMS facch_test;
  UWORD16  dwnld;
  UWORD8   pwr_mngt_mode_authorized;
  UWORD32  pwr_mngt_clocks;

@@ -36,58 +36,17 @@
 #define TRACE_CHECK_RESULT_OPCODE 1023 // WARNING: UL opcode 1023 reseved for trace version
                                        // (cannot be used for trace)
 
-#if (GSM_IDLE_RAM != 0)
-  #define INTRAM_TRACE_BUFFER_SIZE 128
-  extern UWORD32          task_bitmap_idle_ram[2];
-  extern UWORD32          mem_task_bitmap_idle_ram[2];
-  extern CHAR intram_trace_buffer[INTRAM_TRACE_BUFFER_SIZE];
-  extern CHAR * intram_buffer_current_ptr;
-  extern T_RVT_MSG_LG intram_trace_size;
-
-  void l1_intram_send_trace(void);
-
-#endif
-
 /****************************** ASCII trace only *****************************************/
 
 #if (L1_BINARY_TRACE == 0) || (TRACE_TYPE == 5)
-
   #if (OP_L1_STANDALONE == 1)
-
-    #if (L1_DYN_DSP_DWNLD == 1 && CODE_VERSION == SIMULATION)
-      
-      #if (L1_FF_MULTIBAND == 0)              
-        // Dyn DWNLD (0x0001000) MP3 & MIDI traces activated (0x4000 and 0x2000)
-        #define DEFAULT_DYN_TRACE_CONFIG       0x00016AE7
-      #else
-        #define DEFAULT_DYN_TRACE_CONFIG       ( 0x00016AE7 | (1<<L1_DYN_TRACE_MULTIBAND) )          
-      #endif 
-        
-    #else // Below for normal L1 standalone with dynamic download
-      
-      #if (L1_FF_MULTIBAND == 0)   
-        // MP3 & MIDI traces activated (0x4000 and 0x2000)
-        #define DEFAULT_DYN_TRACE_CONFIG       0x028A6AE7
-      #else 
-        #define DEFAULT_DYN_TRACE_CONFIG       ( 0x028A6AE7 | (1<<L1_DYN_TRACE_MULTIBAND) )
-      #endif // L1_FF_MULTIBAND
-        
-    #endif // L1_DYN_DSP_DWNLD == 1 && CODE_VERSION == SIMULATION
-
+    #define DEFAULT_DYN_TRACE_CONFIG       0x00000A67
   #elif (OP_WCP == 1)
-
     // WCP patch: default config is no Layer1 trace
     #define DEFAULT_DYN_TRACE_CONFIG       0x00000000  // default was 0x00000BB7
     // End WCP patch
-
   #else  
-  
-    #if (L1_FF_MULTIBAND == 0)   
-      #define DEFAULT_DYN_TRACE_CONFIG       0x00881BB7
-    #else
-      #define DEFAULT_DYN_TRACE_CONFIG       ( 0x00881BB7 | (1<<L1_DYN_TRACE_MULTIBAND) )
-    #endif
-
+    #define DEFAULT_DYN_TRACE_CONFIG       0x00000BB7
   #endif
 
   // Possible EVENTS for L1S traces using TRACE_INFO.
@@ -115,36 +74,10 @@
   #define IT_DSP_ERROR           20
   #define TRACE_ADC              21
   #define PTCCH_DISABLED         22
-  #if (OP_L1_STANDALONE == 0)
-    #define DYN_TRACE_DEBUG      23 // Currently only work with TRACE_TYPE 4
-  #endif
+  #define DYN_TRACE_DEBUG        23 // Currently only work with TRACE_TYPE 4
   #define DEDIC_TCH_BLOCK_STAT   24
-  #define DSP_TRACE_DISABLE      25 // Only works with TRACE_TYPE 1 or 4
-  #define DSP_TRACE_ENABLE       26 // Only works with TRACE_TYPE 1 or 4
-  #if (L1_AUDIO_MCU_ONOFF == 1)
-  #define L1_AUDIO_UL_ONOFF_TRACE   27
-  #define L1_AUDIO_DL_ONOFF_TRACE   28
-  #endif 
-  #define SAIC_DEBUG             29
-  #define BURST_PARAM            30
-  #define TRACE_RATSCCH          31
-  #define NAVC_VALUE             32
-  #define PWMGT_FAIL_SLEEP       33
-  #define KPD_CR                 34
- 
-#if(L1_PCM_EXTRACTION)
-  #define L1S_PCM_ERROR_TRACE    35
-#endif
-  #define IQ_LOW                 36
-  #if FF_TBF //verify these event numbers
-    #define NO_BLOCKS_PASSED_TO_L3            37
-    #define LACK_FREE_RLC_BUFFER              38
-    #define RLC_BLOCK_OVERRUN                 39
-    #define EGPRS_IT_DSP_MISSING              40
-    #define EGPRS_IT_DSP_SPURIOUS             41
-    #define IR_TESTING                        42
-    #define RLC_POLL_PARAM                    43
-  #endif
+  #define TRACE_RATSCCH          25
+
   // Wakeup Type for Power management
   //--------------------------------
   #define WAKEUP_FOR_UNDEFINED       0
@@ -166,19 +99,9 @@
   #define BIG_SLEEP_DUE_TO_SLEEP_MODE 5  // deep sleep is forbiden by the sleep mode enabled
   #define BIG_SLEEP_DUE_TO_DSP_TRACES 6  // deep sleep is forbiden by the DSP
   #define BIG_SLEEP_DUE_TO_BLUETOOTH  7  // deep sleep is forbiden by the Bluetooth module
-  #define BIG_SLEEP_DUE_TO_CAMERA     8  // deep sleep is forbiden by the camera
 
   void  Trace_Packet_Transfer      (UWORD8  prev_crc_error); // Previous RX blocks CRC_ERROR summary
   void  l1_display_buffer_trace_fct(void);
-
-  // Possible cause for IT_DSP_ERROR
-  //-----------------------------------
-  #define IT_DSP_ERROR_CPU_OVERLOAD        0
-#if (FF_L1_FAST_DECODING == 1)
-  #define IT_DSP_ERROR_FAST_DECODING       2  
-  #define IT_DSP_ERROR_FAST_DECODING_UNEXP 3    
-#endif
-
 
  //===================================================
  //=========== BUFFER TRACE ==========================
@@ -424,70 +347,6 @@ typedef struct
   UWORD32   rttl1_event_enable;
 } T_TRACE_CONFIG;
 
-// Disable/enable DSP trace structure
-#if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
-#if (MELODY_E2 || L1_MP3 || L1_AAC || L1_DYN_DSP_DWNLD )
-
-typedef struct
-{
-  // Flag for blocking dsp trace while performing e2, mp3, aac or dynamic download activities
-  BOOL trace_flag_blocked;
-  // Nested Disable dsp trace counter
-  UWORD8 nested_disable_count;
-  // Trace level copy to be restored at the end of e2, mp3, aac or dynamic download activities
-  UWORD16 dsp_trace_level_copy;
-} T_DSP_TRACE_HANDLER;
-
-#endif
-#endif // (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
-
-#if (TOA_ALGO == 2)
-typedef struct
-{
-    UWORD16   toa_frames_counter;  // TOA Frames counter - Number of the TDMA frames (or bursts) which are used for TOA 
-                                   // updation OR number of times l1ctl_toa() function is invoked 
-                                   // Reset every TOA_PERIOD_LEN[l1_mode] frames
-    UWORD16   toa_accumul_counter; // Number of TDMA frames (or bursts) which are actually used for TOA tracking
-                                   // <= toa_frames_counter, as only if SNR>0.46875 TOA estimated by DSP is used to
-                                   // update the tracking algorithm
-    WORD16    toa_accumul_value;   // TOA_tracking_value accumulated over 'toa_accumul_counter' frames
-                                   // Based on this value the shift to be applied is decided
-}T_TRACE_TOA;
-#endif
-
-typedef struct
-{
-    UWORD8   fail_step;  // PWMGT Fail Step -> Periph Check OR osload/Timer/Gauging OR While puuting peripherals to sleep
-    UWORD8   fail_id;    // PWMGT Fail ID -> i.e. If Periph Check is the fail step whether failure is because of UART, etc.
-    UWORD8   fail_cause; // Why the Peripheral returned failure?  
-}T_TRACE_L1_PWMGR_DEBUG;
-
-#if (AUDIO_DEBUG == 1)
-typedef struct
-{
-  UWORD8      vocoder_enable_status;
-  UWORD8      ul_state;
-  UWORD8      dl_state;
-  UWORD8      ul_onoff_counter;
-  UWORD8      dl_onoff_counter;
-}T_TRACE_AUDIO_DEBUG;
-#endif
-  
-typedef struct
-{
-  UWORD32   dl_count;                    /*  Number of Downlink SACCH block                    */
-  UWORD32   dl_combined_good_count;      /*  Number of successfully decoded combined block     */
-  UWORD32  dl_error_count;    /* Total errors     */
-  UWORD8   srr;                         /*  SACCH Repetition Request                          */
-  UWORD8   sro;                         /*  SACCH Repetition Order                            */
-  /* trace,debug for FER */
-  UWORD32   dl_good_norep;               /* Number of correctly decoded block which is not a repetition */
-  API              dl_buffer[12];       /* Downlink buffer                                     */
-  BOOL         dl_buffer_empty;         /* Flag to indicate the downlink buffer is empty/full */
-}
-T_TRACE_REPEAT_SACCH;
-
-
 // Debug info structure
 typedef struct
 {
@@ -509,9 +368,6 @@ typedef struct
   UWORD8    facch_dl_fail_count_trace;
 
   UWORD8    sacch_d_nerr;
-  #if (FF_REPEATED_SACCH == 1)
-  T_TRACE_REPEAT_SACCH    repeat_sacch;
-  #endif /* (FF_REPEATED_SACCH == 1) */
 
   UWORD8    rxlev_req_count;
   BOOL      init_trace;
@@ -538,10 +394,6 @@ typedef struct
   T_RVT_USER_ID  gtt_trace_user_id;
 #endif
 
-#if (L1_MIDI == 1)
-  T_RVT_USER_ID  midi_trace_user_id;
-#endif
-
 #if (D_ERROR_STATUS_TRACE_ENABLE)
   // define a mask array for handling of the d_error_status field
   UWORD16 d_error_status_masks[2];
@@ -566,37 +418,10 @@ typedef struct
   UWORD32          task_bitmap[8];
   UWORD32          mem_task_bitmap[8];
 
-  #if (TOA_ALGO == 2)
-    T_TRACE_TOA    toa_trace_var;
-  #endif  
-  T_TRACE_L1_PWMGR_DEBUG pwmgt_trace_var;  
-  #if(L1_SAIC != 0)
-  UWORD8 prev_saic_flag_val;
-  UWORD8 prev_swh_flag_val;
-  #endif
   // Dynamic trace
   T_TRACE_CONFIG   config[2];
   T_TRACE_CONFIG   *current_config;
   T_TRACE_CONFIG   *pending_config;
-
-#if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
-#if (MELODY_E2 || L1_MP3 || L1_DYN_DSP_DWNLD)
-  // DSP Trace Handler global variables
-  T_DSP_TRACE_HANDLER dsptrace_handler_globals;
-#endif
-#endif // (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
-#if (AUDIO_DEBUG == 1)  
-  T_TRACE_AUDIO_DEBUG  audio_debug_var;
-#endif  
-#if (L1_RF_KBD_FIX == 1)
-UWORD16 prev_correction_ratio;
-#endif
-#if (FF_REPEATED_DL_FACCH == 1 )
-   UWORD8   facch_dl_combined_good_count;    /* Number of successfully decoded combined block */
-   UWORD8   facch_dl_repetition_block_count;   /*Number of repetition block*/
-   UWORD8   facch_dl_count_all;                          /* Number of DL FACCH block*/
-   UWORD8   facch_dl_good_block_reported;      /*  Number of correctly decoded block which is not a repetition */          
-#endif
 }
 T_TRACE_INFO_STRUCT;
 
@@ -607,40 +432,10 @@ extern T_TRACE_INFO_STRUCT trace_info;
 /* Function prototypes */
 /***********************/
 
-void  l1_init_trace_var          (void);
-void  l1_trace_init              (void);
+void  l1_trace_init              ();
 void  Trace_L1s_Abort            (UWORD8 task);
 void  Trace_MCU_DSP_Com_Mismatch (UWORD8 task);
 void  Trace_PM_Equal_0           (UWORD32 pm, UWORD8 task);
-#if FF_TBF
-void Trace_rlc_ul_param          (UWORD8 assignment_id,
-                                  UWORD32 fn,
-                                  UWORD8 tx_no,
-                                  UWORD8 ta,
-                                  BOOL fix_alloc_exhaust,
-                                  UWORD32 cs_type);
-void Trace_rlc_dl_param          (UWORD8 assignment_id,
-                                  UWORD32 fn,
-                                  UWORD8 rx_no,
-                                  UWORD8 rlc_blocks_sent,
-                                  UWORD8 last_poll_response,
-                                  UWORD32 status1,
-                                  UWORD32 status2);
-void Trace_rlc_poll_param        (BOOL poll,
-                                  UWORD32 fn,
-                                  UWORD8 poll_ts,
-                                  UWORD8 tx_alloc,
-                                  UWORD8 tx_data,
-                                  UWORD8 rx_alloc,
-                                  UWORD8 last_poll_resp,
-                                  UWORD8 ack_type);
-#else
-void  Trace_rlc_dl_param         (UWORD8  assignment_id,
-                                  UWORD32 fn,
-                                  UWORD32 d_rlcmac_rx_no_gprs,
-                                  UWORD8  rx_no,
-                                  UWORD8  rlc_blocks_sent,
-                                  UWORD8  last_poll_response);
 void  Trace_rlc_ul_param         (UWORD8  assignment_id,
                                   UWORD8  tx_no,
                                   UWORD32 fn,
@@ -648,8 +443,13 @@ void  Trace_rlc_ul_param         (UWORD8  assignment_id,
                                   UWORD32 a_pu_gprs,
                                   UWORD32 a_du_gprs,
                                   BOOL    fix_alloc_exhaust);
-#endif
-void  Trace_uplink_no_TA         (void);
+void  Trace_rlc_dl_param         (UWORD8  assignment_id,
+                                  UWORD32 fn,
+                                  UWORD32 d_rlcmac_rx_no_gprs,
+                                  UWORD8  rx_no,
+                                  UWORD8  rlc_blocks_sent,
+                                  UWORD8  last_poll_response);
+void  Trace_uplink_no_TA         ();
 void  Trace_condensed_pdtch      (UWORD8  rx_allocation, UWORD8 tx_allocation);
 void  Trace_dl_ptcch             (UWORD8 ordered_ta,
                                   UWORD8 crc,
@@ -662,9 +462,11 @@ void  Trace_dl_ptcch             (UWORD8 ordered_ta,
                                   UWORD16 elt5,
                                   UWORD16 elt6,
                                   UWORD16 elt7,
-                                  UWORD16 elt8);
-void  Trace_d_error_status       (void);
-void  Trace_dsp_debug            (void);
+                                  UWORD16 elt8
+                                 );
+
+void  Trace_d_error_status       ();
+void  Trace_dsp_debug            ();
 #if (AMR == 1)
   void Trace_dsp_amr_debug       (void);
 #endif
@@ -676,89 +478,29 @@ void  Trace_params               (UWORD8   debug_code,
                                   UWORD32  param4,
                                   UWORD32  param5,
                                   UWORD32  param6);
-void  Trace_L1S_CPU_load         (void);
-void  l1_dsp_cpu_load_read       (void);
-void  Trace_dyn_trace_change     (void);
+void  Trace_L1S_CPU_load         ();
+void  Trace_dyn_trace_change     ();
+
 #if (AMR == 1)
-void  l1_trace_ratscch            (UWORD16 fn, UWORD16 amr_change_bitmap);
+void  l1_trace_ratscch           (UWORD16 fn, UWORD16 amr_change_bitmap);
 #endif
+
 void  l1_trace_sleep             (UWORD32 start_fn,
                                   UWORD32 end_fn,
                                   UWORD8 type_sleep,
                                   UWORD8 wakeup_type,
-                                  UWORD8 big_sleep_type,
-                                  UWORD16 int_id);
-void  l1_trace_fail_sleep        (UWORD8 pwmgr_fail_step,
-                                  UWORD8 pwmgr_fail_id,
-                                  UWORD8 pwmgr_fail_cause);
-void  l1_trace_sleep_intram       (UWORD32 start_fn,
-                                   UWORD32 end_fn,
-                                   UWORD8 type_sleep,
-                                   UWORD8 wakeup_type,
-                                   UWORD8 big_sleep_type,
-                                   UWORD16 int_id);
+                                  UWORD8 big_sleep_type);
 void  l1_trace_gauging_reset     (void);
 void  l1_trace_gauging           (void);
-void  l1_trace_gauging_intram     (void);
-#if (L1_SAIC != 0)
-void  l1_trace_saic            (UWORD32 SWH_flag, UWORD32 SAIC_flag);
-#endif
-
-#if (L1_NAVC_TRACE == 1)
-  void  l1_trace_navc            (UWORD32 status, UWORD32 energy_level);
-#endif  
-void l1_trace_burst_param         (UWORD32 angle,
-                                   UWORD32 snr,
-                                   UWORD32 afc,
-                                   UWORD32 task,
-                                   UWORD32 pm,
-                                   UWORD32 toa_val,
-                                   UWORD32 IL_for_rxlev);
-void l1_log_burst_param           (UWORD32 angle,
-                                   UWORD32 snr,
-                                   UWORD32 afc,
-                                   UWORD32 task,
-                                   UWORD32 pm,
-                                   UWORD32 toa_val,
-                                   UWORD32 IL_for_rxlev);
 void  l1_trace_new_toa           (void);
-void  l1_trace_new_toa_intram     (void);
 void  l1_trace_toa_not_updated   (void);
-void  l1_trace_IT_DSP_error      (UWORD8 cause);
+void  l1_trace_IT_DSP_error      (void);
 void  l1_trace_ADC               (UWORD8 type);
-void  l1_trace_ADC_intram         (UWORD8 type);
 void  l1_check_com_mismatch      (UWORD8 task);
 void  l1_check_pm_error          (UWORD32 pm,UWORD8 task);
 void  Trace_PM_Equal_0_balance   (void);
 void  l1_trace_ptcch_disable     (void);
-void  trace_fct                   (UWORD8 fct_id, UWORD32 radio_freq);
-void  l1_intram_put_trace         (CHAR *msg);
-void  l1_trace_IT_DSP_error_intram(void);
-void  Trace_d_error_status_intram (void);
-void  l1s_trace_mftab             (void);
-void  l1s_trace_mftab             (void);
-
-#if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
-#if (MELODY_E2 || L1_MP3 || L1_DYN_DSP_DWNLD)
-void    l1_disable_dsp_trace      (void);
-void    l1_enable_dsp_trace       (void);
-void    l1_set_dsp_trace_mask     (UWORD16 mask);
-UWORD16 l1_get_dsp_trace_mask     (void);
-#endif
-#endif // (TRACE_TYPE == 1) || (TRACE_TYPE == 4)
-
-#if (L1_AUDIO_MCU_ONOFF == 1)
-void  l1_trace_ul_audio_onoff(UWORD8 ul_state);
-void  l1_trace_dl_audio_onoff(UWORD8 dl_state);
-#endif 
-#if FF_TBF
-//  void l1_trace_egprs            (UWORD8 type);
-
-  //For burst power trace.AGC_TRACE
-  void l1_trace_agc (UWORD8 burst_id, UWORD8 agc);
-  void l1_trace_burst (UWORD8 *time_slot, UWORD8 burst_id);
-  void burst_trace_message(void);
-#endif 
+void trace_fct                   (UWORD8 fct_id, WORD32 radio_freq);
 
 /****************/
 /* Trace macros */
@@ -796,44 +538,10 @@ void  l1_trace_dl_audio_onoff(UWORD8 dl_state);
 #define L1_DYN_TRACE_FULL_LIST_REPORT 10 //NAME/ Full list report
 #define L1_DYN_TRACE_GTT              11 //NAME/ GTT trace
 #define L1_DYN_TRACE_DSP_AMR_DEBUG    12 //NAME/ DSP AMR debug trace
-#define L1_DYN_TRACE_MIDI             13 //NAME/ MIDI trace
-#define L1_DYN_TRACE_MP3              14 //NAME/ MP3 trace
-#define L1_DYN_TRACE_GAUGING          15 //NAME/ Gauging parameters 
 #if(L1_DYN_DSP_DWNLD == 1)
-  #define L1_DYN_TRACE_DYN_DWNLD   16 //NAME/ DYN DWNLD trace
+ #define L1_DYN_TRACE_DYN_DWNLD       13 //NAME/ DYN DWNLD trace
 #endif // L1_DYN_DSP_DWNLD == 1
-
-#if (L1_SAIC != 0)
-  #define L1_DYN_TRACE_SAIC_DEBUG  17 //NAME/ SAIC trace  
-#endif
-#define L1_DYN_TRACE_BURST_PARAM   18 //NAME/ Burst Param  
-
-#if (L1_AUDIO_MCU_ONOFF == 1)
-  #define L1_DYN_TRACE_AUDIO_ONOFF  19
-#endif  
-#if FF_TBF
-  #define L1_DYN_TRACE_POLL_PARAM     29 //NAME/ Poll parameters
-  #endif
-// The Below flag is used to enable/disable the API dump over UART   
-#define L1_DYN_TRACE_API_DUMP      20 //NAME/ API dump
-
-#define L1_DSP_TRACE_FULL_DUMP     21 // flag for enabling the full trace buffer of DSP on PM error
-#if (L1_AAC == 1)
-#define L1_DYN_TRACE_AAC              22 //NAME/ AAC trace
-#endif  
-#define L1_DYN_TRACE_PWMGT_FAIL_DEBUG  23 // NAME Power Management Sleep fail Trace
-
-#if(L1_RF_KBD_FIX == 1)
-#define L1_DYN_TRACE_RF_KBD  24 //Make RF KPD trace dynamic
-#endif
-
-#define L1_DYN_TRACE_DSP_CPU_LOAD      25 //NAME/ DSP CPU load trace
-
-#if (L1_FF_MULTIBAND == 1)
-#define L1_DYN_TRACE_MULTIBAND        26 /*MULTIBAND DEBUG trace*/
-#endif
-
-
+#define L1_DYN_TRACE_GAUGING          14 //NAME/ Gauging parameters 
 //END_TRACE_CONF/
 
 #define L1_DYN_TRACE_DL_PDTCH_CRC      6 // DL PDTCH blocks CRC, only used if L1_BINARY_TRACE == 0
@@ -1007,9 +715,6 @@ void  l1_trace_dl_audio_onoff(UWORD8 dl_state);
 #define CST_DLL_READ_DCCH                 123  //NAME/ dll_read_dcch()
 #define CST_DLL_READ_SACCH                124  //NAME/ dll_read_sacch()
 #define CST_L1S_ADJUST_TIME               125  //NAME/ Time adjustment
-#if ((REL99 == 1) && (FF_BHO == 1))
-  #define CST_L1S_CTRL_FBSB                 128  //NAME/ l1s_ctrl_fbsb()
-#endif
 //END_TABLE/
 
 /***********************************************************/
@@ -1446,17 +1151,6 @@ typedef struct
   UWORD16          rxqual_sub_nbr_bits;
   WORD16           rxlev_sub_acc;
   WORD16           rxlev_full_acc;
-  #if REL99
-  #if FF_EMR
-    WORD16         rxlev_val_acc;
-    UWORD8         rxlev_val_nbr_meas;
-    UWORD32        mean_bep_block_acc;
-    UWORD16        cv_bep_block_acc;
-    UWORD8         mean_bep_block_num;
-    UWORD8         cv_bep_block_num;
-    UWORD8         nbr_rcvd_blocks;
-  #endif
-  #endif //L1_R99
   UWORD16          bcch_freq[6];
   WORD16           rxlev_acc[6];
   BOOL             meas_valid;
@@ -4588,85 +4282,6 @@ typedef struct
   UWORD32          header;
 }
 T_TR_MMI_VM_AMR_RECORD_STOP_CON;
-/***********************************************************************************************************/
-/* Begin header
-   //TYPE/ CLASSIC
-   //NAME/ MMI_VM_AMR_PAUSE_REQ
-   //FULL/
-    "        |  |  |  |  |                          |"
-    "#@Fdl7# |---->|  |  | VM_AMR_PAUSE_REQ    |  #"
-   //COND/
-    "#@Fdl7#  VM_AMR_PAUSE_REQ"
-   End header */
-//ID/
-#define TRL1_MMI_VM_AMR_PAUSE_REQ 227
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-//--------------------------------------------------
- 
-}
-T_TR_MMI_VM_AMR_PAUSE_REQ;
-/***********************************************************************************************************/
-/* Begin header
-   //TYPE/ CLASSIC
-   //NAME/ MMI_VM_AMR_RESUME_REQ
-   //FULL/
-    "        |  |  |  |  |                          |"
-    "#@Fdl7# |---->|  |  | VM_AMR_RESUME_REQ    | "
-   //COND/
-    "#@Fdl7#  VM_AMR_RESUME_REQ"
-   End header */
-//ID/
-#define TRL1_MMI_VM_AMR_RESUME_REQ 228
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-//--------------------------------------------------
-//  UWORD8           session_id;
-}
-T_TR_MMI_VM_AMR_RESUME_REQ;
-/***********************************************************************************************************/
-/* Begin header
-   //TYPE/ CLASSIC
-   //NAME/ MMI_VM_AMR_PAUSE_CON
-   //FULL/
-    "        |  |  |  |  |                          |"
-    "#@Fdl7# |---->|  |  | VM_AMR_PAUSE_CON    |"
-   //COND/
-    "#@Fdl7#  VM_AMR_PAUSE_CON"
-   End header */
-//ID/
-#define TRL1_MMI_VM_AMR_PAUSE_CON 229
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-//--------------------------------------------------
- }
-T_TR_MMI_VM_AMR_PAUSE_CON;
-/***********************************************************************************************************/
-/* Begin header
-   //TYPE/ CLASSIC
-   //NAME/ MMI_VM_AMR_RESUME_CON
-   //FULL/
-    "        |  |  |  |  |                          |"
-    "#@Fdl7# |---->|  |  | VM_AMR_RESUME_CON    |"
-   //COND/
-    "#@Fdl7#  VM_AMR_RESUME_CON"
-   End header */
-//ID/
-#define TRL1_MMI_VM_AMR_RESUME_CON 230
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-//--------------------------------------------------
-}
-T_TR_MMI_VM_AMR_RESUME_CON;
-
 
 /***********************************************************************************************************/
 /* Begin header
@@ -5981,11 +5596,6 @@ typedef struct
   UWORD32          header;
 //--------------------------------------------------
   WORD16           toa_shift;
-#if (TOA_ALGO == 2)
-    UWORD16   toa_frames_counter;  
-    UWORD16   toa_accumul_counter; 
-    UWORD16   toa_accumul_value;   
-#endif  
 }
 T_TR_NEW_TOA;
 
@@ -6059,7 +5669,6 @@ T_TR_SLEEP;
 #define BIG_SLEEP_DUE_TO_SLEEP_MODE 5  // deep sleep is forbiden by the sleep mode enabled
 #define BIG_SLEEP_DUE_TO_DSP_TRACES 6  // deep sleep is forbiden by the DSP
 #define BIG_SLEEP_DUE_TO_BLUETOOTH  7  // deep sleep is forbiden by the Bluetooth module
-#define BIG_SLEEP_DUE_TO_CAMERA     8  // deep sleep is forbiden by the camera
 
 /***********************************************************************************************************/
 /* Begin header
@@ -6467,132 +6076,6 @@ typedef struct
 }
 T_TR_L1C_STOP_DEDICATED_DONE;
 
-#if (L1_VOCODER_IF_CHANGE == 1)
-/***********************************************************************************************************/
-/* Begin header
-   //TYPE/ CLASSIC
-   //NAME/ MMI_TCH_VOCODER_CFG_REQ
-   //FULL/
-    "        |  |  |  |  |                          |"
-    "#@Fdl7# |---->|  |  | MMI_TCH_VOCODER_CFG_REQ      |"
-   //COND/
-    "#@Fdl7#  MMI_TCH_VOCODER_CFG_REQ"
-   End header */
-//ID/
-#define TRL1_MMI_TCH_VOCODER_CFG_REQ 220
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-}
-T_TR_MMI_TCH_VOCODER_CFG_REQ;
-
-/***********************************************************************************************************/
-/* Begin header
-   //TYPE/ CLASSIC
-   //NAME/ MMI_TCH_VOCODER_CFG_CON
-   //FULL/
-    "        |  |  |  |  |                          |"
-    "#@Fdl7# |     |<-|  | MMI_TCH_VOCODER_CFG_CON  |"
-   //COND/
-    "#@Fdl7#  MMI_TCH_VOCODER_CFG_CON"
-   End header */
-//ID/
-#define TRL1_MMI_TCH_VOCODER_CFG_CON 221
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-}
-T_TR_MMI_TCH_VOCODER_CFG_CON;
-
-/***********************************************************************************************************/
-/* Begin header
-   //TYPE/ CLASSIC
-   //NAME/ L1_VOCODER_CFG_ENABLE_CON
-   //FULL/
-    "        |  |  |  |  |                          |"
-    "#@Fdl7# |  |  |<-|  |   L1_VOCODER_CFG_ENABLE_CON |"
-   //COND/
-    "#@Fdl7#  L1_VOCODER_CFG_ENABLE_CON"
-   End header */
-//ID/
-#define TRL1_L1_VOCODER_CFG_ENABLE_CON 222
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-}
-T_TR_L1_VOCODER_CFG_ENABLE_CON;
-
-/***********************************************************************************************************/
-/* Begin header
-   //TYPE/ CLASSIC
-   //NAME/ L1_VOCODER_CFG_DISABLE_CON
-   //FULL/
-    "        |  |  |  |  |                          |"
-    "#@Fdl7# |  |  |<-|  |   L1_VOCODER_CFG_DISABLE_CON |"
-   //COND/
-    "#@Fdl7#  L1_VOCODER_CFG_DISABLE_CON"
-   End header */
-//ID/
-#define TRL1_L1_VOCODER_CFG_DISABLE_CON 223
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-}
-T_TR_L1_VOCODER_CFG_DISABLE_CON;
-#endif
-
-/***********************************************************************************************************/
-/* Begin header
-   //TYPE/ CLASSIC
-   //NAME/ SAIC Debug
-   //FULL/
-    "        |  |  |  |  |                          |----------------------------------------------------------------------------------------------------------------"
-    "#@Fdl7# |  |  |  O  |                  SAIC    |            SWH_flag: #@1d#"
-   //COND/
-    "#@Fdl7#                          New TOA"
-   End header */
-//ID/
-#define TRL1_SAIC_DEBUG 224
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-//--------------------------------------------------
-  UWORD32          SWH_flag;
-  UWORD32          SAIC_flag;
-}
-T_TR_SAIC_DEBUG;
-
-
-#define TRL1_BURST_PARAM 225
-//STRUCT/
-typedef struct
-{
-  UWORD32          header;
-//--------------------------------------------------
-  WORD16           angle;
-  UWORD16          snr;
-  WORD16           afc;
-  UWORD16          pm;
-  UWORD16          toa;
-  UWORD8           task;
-  UWORD8           input_level;
-}
-T_TR_BURST_PARAM;
-
-//NAVC
-
-#define TRL1_L1_NAVC  226
-typedef struct 
-{
-  UWORD32 status;
-  UWORD32 energy_level;
-} 
-T_TR_NAVC_PARAM;
 
 /***********************************************************************************************************/
 /* L1 RTT                                                                                                  */
@@ -7198,21 +6681,9 @@ typedef struct
   T_TR_MMI_VM_AMR_RECORD_START_CON              cell214;
   T_TR_MMI_VM_AMR_RECORD_STOP_REQ               cell215;
   T_TR_MMI_VM_AMR_RECORD_STOP_CON               cell216;
-  T_TR_MMI_VM_AMR_PAUSE_REQ                     cell227;
-  T_TR_MMI_VM_AMR_RESUME_REQ                    cell228;
-  T_TR_MMI_VM_AMR_PAUSE_CON                     cell229;
-  T_TR_MMI_VM_AMR_RESUME_CON                    cell230;
   T_TR_MPHC_NCELL_LIST_SYNC_REQ                 cell217;
   T_TR_MPHC_STOP_DEDICATED_CON                  cell218;
   T_TR_L1C_STOP_DEDICATED_DONE                  cell219;
-  #if (L1_VOCODER_IF_CHANGE == 1) 
-    T_TR_MMI_TCH_VOCODER_CFG_REQ                  cell220;
-    T_TR_MMI_TCH_VOCODER_CFG_CON                  cell221;
-    T_TR_L1_VOCODER_CFG_ENABLE_CON                cell222;
-    T_TR_L1_VOCODER_CFG_DISABLE_CON               cell223;
-  #endif  
-  T_TR_SAIC_DEBUG                               cell224;
-  T_TR_BURST_PARAM                              cell225;
 
   // RTT cells
   T_RTTL1_FN                                    rttcell1;
@@ -7238,16 +6709,5 @@ T_TRACE_CELLS;
 /* RTT macro definitions            */
 /************************************/
 #include "l1_rtt_macro.h"
-
-#if (L1_FF_MULTIBAND == 1)
-#if ( (TRACE_TYPE == 1) || (TRACE_TYPE==4) )
-#define L1_MULTIBAND_TRACE_PARAMS            l1_multiband_trace_params
-#elif (TRACE_TYPE == 5)
-#define L1_MULTIBAND_TRACE_PARAMS            l1_multiband_trace_params_simu
-#endif
-#define MULTIBAND_PHYSICAL_BAND_TRACE_ID 0
-#define MULTIBAND_ERROR_TRACE_ID     1
-#endif /*if (L1_FF_MULTIBAND == 1)*/ 
-
 
 #endif

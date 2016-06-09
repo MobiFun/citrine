@@ -3,7 +3,7 @@
  * L1_CONFG.H
  *
  *        Filename l1_confg.h
- *  Copyright 2003 (C) Texas Instruments
+ *  Copyright 2003 (C) Texas Instruments  
  *
  ************* Revision Controle System Header *************/
 
@@ -32,7 +32,7 @@
 #define SIMULATION     1
 #define NOT_SIMULATION 2
 
-// RLC functions Version possible choices
+// RCL functions Version possible choices
 //------------------------------
 #define       POLL_FORCED     0
 #define       RLC_SCENARIO    1
@@ -40,15 +40,10 @@
 
 // possible choices for UART trace output
 //------------------------------
-#if (CHIPSET != 15)
-  #define       MODEM_UART     0
-  #define       IRDA_UART      1
-  #if (CHIPSET == 12)
-    #define     MODEM2_UART    2
-  #endif
-#else
-  // There is only one UART in Locosto
-  #define       MODEM_UART     0
+#define       MODEM_UART     0
+#define       IRDA_UART      1
+#if (CHIPSET == 12)
+  #define     MODEM2_UART    2
 #endif
 
 //============
@@ -59,9 +54,9 @@
 #define CODE_VERSION NOT_SIMULATION
 #else // OP_L1_STANDALONE
 #ifdef WIN32
-  #define CODE_VERSION  SIMULATION
+#define CODE_VERSION  SIMULATION
 #else // WIN32
-  #define CODE_VERSION  NOT_SIMULATION
+#define CODE_VERSION  NOT_SIMULATION
 #endif // WIN32
 #endif // OP_L1_STANDALONE
 #endif // #if 0
@@ -94,32 +89,14 @@
 //---------------------------------------------------------------------------------
 #if (CODE_VERSION == SIMULATION)
 
-
-  #undef FF_L1_IT_DSP_USF
-  #define FF_L1_IT_DSP_USF       0
-  #undef FF_L1_IT_DSP_DTX
-#if (AMR == 1)
-  #define FF_L1_IT_DSP_DTX     1 //it should be 1, sajal- temp made it 0 for build purpose
-#else
-  #define FF_L1_IT_DSP_DTX     0
-#endif
-
-  #define L1_DRP_IQ_SCALING    0
-
   // Test Scenari...
   #define SCENARIO_FILE          1  // Test Scenario comes from input files.
   #define SCENARIO_MEM           0  // Test Scenario comes from RAM.
-
-  // In Simulation AUDIO_DEBUG Should be 0
-  #define AUDIO_DEBUG 0
 
   // Traces...
   #undef TRACE_TYPE
   #define TRACE_TYPE             5
   #define LOGFILE_TRACE          1  // trace in an output logfile
-
-  #define BURST_PARAM_LOG_ENABLE 0  // Burst Param Log Enable
-
   #define FLOWCHART              0  // Message sequence/flow chart trace.
   #define NUCLEUS_TRACE          0  // Nucleus error trace
   #define EOTD_TRACE             1  // EOTD log trace
@@ -129,15 +106,11 @@
 
   // Control algorithms...
   #define AFC_ALGO               1  // AFC algorithm.
-#if (L1_SAIC != 0)
-  #define TOA_ALGO               2  // TOA algorithm.
-#else
   #define TOA_ALGO               1  // TOA algorithm.
-#endif
   #define AGC_ALGO               1  // AGC algorithm.
   #define TA_ALGO                0  // TA (Timing Advance) algorithm.
   #undef VCXO_ALGO
-  #define VCXO_ALGO              1  // VCXO algo
+  #define VCXO_ALGO              0  // VCXO algo
   #undef DCO_ALGO
   #define DCO_ALGO               0  // DCO algo (TIDE)
   #undef ORDER2_TX_TEMP_CAL
@@ -154,11 +127,11 @@
   #define AUDIO_L1_STANDALONE    0  // Flag to enable the audio simulator used with the L1 stand-alone (works only with the new audio design i.e. AUDIO_TASK=1)
 
   #define GTT_SIMULATION         1  // Gtt simulator for the gtt tasks (works only with if L1_GTT=1)
-  #define TTY_SYNC_MCU           0  // TTY WORKAROUND BUG03401
-  #define TTY_SYNC_MCU_2         0  //
+  #define TTY_SYNC_MCU           1  // TTY WORKAROUND BUG03401
+  #define TTY_SYNC_MCU_2         1  // 
   #define L1_GTT_FIFO_TEST_ATOMIC 0 //
   #define NEW_WKA_PATCH          0
-  #define OPTIMISED              0
+  #define OPTIMISED              1
 
   #define L1_RECOVERY            0  // L1 recovery
 
@@ -182,61 +155,12 @@
 
   #undef OP_WCP
   #define OP_WCP                 0  // No WCP integration
-
-  #undef L1_DRP
-  #define L1_DRP                0  // L1 supporting DRP interface
-
-  #undef DRP_MEM_SIMULATION
-  #define DRP_MEM_SIMULATION          0
 //---------------------------------------------------------------------------------
 // Test with H/W platform.
 //---------------------------------------------------------------------------------
-
-  #if (GSM_IDLE_RAM == 1)
-    #define GSM_IDLE_RAM_DEBUG 0
-  #endif
-
-  #define AFC_BYPASS_MODE        0
- #define PWMEAS_IF_MODE_FORCE  0
-// WA for OMAPS00099442 must be disabled in PC simulation
-  #undef L1_FF_WA_OMAPS00099442
-  #define L1_FF_WA_OMAPS00099442 0
-
 #elif (CODE_VERSION == NOT_SIMULATION)
 
-  #define L1_DRP_IQ_SCALING    1
-  // In Target AUDIO_DEBUG could be turned ON to debug any AUDIO ON/OFF issues
-  #define AUDIO_DEBUG 0
-
-  #if (GSM_IDLE_RAM == 1)
-    #if ((CHIPSET == 12) || (CHIPSET == 10))
-      #define GSM_IDLE_RAM_DEBUG 1
-    #else
-      #define GSM_IDLE_RAM_DEBUG 0
-    #endif
-  #else
-    #define GSM_IDLE_RAM_DEBUG 0
-  #endif
-
-//FreeCalypso: L1_VPM commented out, as I suspect it's a LoCosto-ism
-//#define L1_VPM  1
-
-  #if (OP_L1_STANDALONE == 1)
-    #if (CHIPSET == 15)
-      #if ((BOARD == 71) && (FLASH == 0))
-        // Not possible in I-SAMPLE only RAM configuration as there will
-        // not be enough memory space
-        #define BURST_PARAM_LOG_ENABLE  0
-      #else
-        #define BURST_PARAM_LOG_ENABLE  1
-      #endif
-    #else
-      #define BURST_PARAM_LOG_ENABLE  0
-    #endif
-  #else
-    #define BURST_PARAM_LOG_ENABLE  0
-  #endif
-
+  #define WA_PCTM_AGC_PARAMS 0 // to work by default with 4 parameters to calibration (compatible with PCTM if 1) 
   // Work around about Calypso RevA: the bus is floating (Cf PB01435)
   // (corrected with Calypso ReV B and Calypso C035)
   #if (CHIPSET == 7)
@@ -245,22 +169,16 @@
     #define W_A_CALYPSO_BUG_01435 0
   #endif
 
-  #if (CHIPSET == 12) // Not needed for CHIPSET =15, as there is no extended page mode in Locosto
-    #define W_A_CALYPSO_PLUS_SPR_19599 1
-  #else
-    #define W_A_CALYPSO_PLUS_SPR_19599 0
-  #endif
 
   // for AMR thresolds definition CQ22226
-  #define W_A_AMR_THRESHOLDS 1
-  #define W_A_PCTM_RX_AGC_GLOBAL_PARAMS 1 // For support of PCTM
+  #define AMR_THRESHOLDS_WORKAROUND 1
 
   #if (L1_GTT==1)
-    #define TTY_SYNC_MCU 0
-    #define TTY_SYNC_MCU_2 0
+    #define TTY_SYNC_MCU 1
+    #define TTY_SYNC_MCU_2 1
     #define L1_GTT_FIFO_TEST_ATOMIC 0
     #define NEW_WKA_PATCH          0
-    #define OPTIMISED              0
+    #define OPTIMISED              1
   #else
     #define TTY_SYNC_MCU_2 0
     #define L1_GTT_FIFO_TEST_ATOMIC 0
@@ -269,28 +187,7 @@
     #define OPTIMISED              0
 
   #endif
-
-/*
- * FreeCalypso: these FF_L1_IT_DSP_USF and FF_L1_IT_DSP_DTX features (?)
- * are new with the LoCosto L1 headers, i.e., not present in the Leonardo
- * headers.  I have no idea what they are, and I suspect they may likely
- * be something that won't work on our Calypso platform, so I'm disabling
- * them for now.
- */
-
-  #undef FF_L1_IT_DSP_USF
-#if 0 //(L1_GPRS == 1)
-  #define FF_L1_IT_DSP_USF       1
-#else
-  #define FF_L1_IT_DSP_USF       0
-#endif
-  #undef FF_L1_IT_DSP_DTX
-#if 0 //(AMR == 1)
-  #define FF_L1_IT_DSP_DTX     1
-#else
-  #define FF_L1_IT_DSP_DTX     0
-#endif
-
+ 
   // Traces...
   #define NUCLEUS_TRACE        0  // Nucleus error trace
   #define FLOWCHART            0  // Message sequence/flow chart trace.
@@ -310,11 +207,7 @@
   // Control algorithms...
   #define AFC_ALGO               1  // AFC algorithm.
   //TOA Algorithm needs to be on for TestMode, otherwise no dedic test will be succesful!!!
-#if (L1_SAIC != 0)
-  #define TOA_ALGO               2  // TOA algorithm.
-#else
   #define TOA_ALGO               1  // TOA algorithm.
-#endif
   #define AGC_ALGO               1  // AGC algorithm.
   #define TA_ALGO                1  // TA (Timing Advance) algorithm.
 
@@ -336,16 +229,10 @@
 
   #define GTT_SIMULATION         0  // Gtt simulator for the gtt tasks (works only with if L1_GTT=1)
 
-  #define OP_BT                  0  // Simulation of ISLAND (BLUETOOTH) sleep management
+  #define OP_BT                  0  // Simulation of ISLAND (BLUETOOTH) sleep management 
 
   #define L1_RECOVERY            1  // L1 recovery
 
-  #if ((RF_FAM == 60) || (RF_FAM == 61))
-    #define L1_DRP                 1  // L1 supporting DRP interface
-  #else
-    #define L1_DRP                 0  // L1 supporting DRP interface
-  #endif
-  #define DRP_MEM_SIMULATION   0 // DRP memory simulation OFF by default
 
   #if (L1_GPRS == 1)
     #define RLC_VERSION            RLC_SCENARIO
@@ -371,16 +258,6 @@
     #define DSP_BACKGROUND_TASKS     0
     #define RLC_DL_BLOCK_STAT        0  // Default value; Never change it
   #endif
-#define PWMEAS_IF_MODE_FORCE  1
-// WA for OMAPS00099442 (OMAPS0010023 (N12.x), OMAPS000010022 (N5.x))
-  // The problem is: When NW is lost due to reception gap or cell border range,
-  // the MS will try to re-synchronize on the cell with the TPU timing aligned
-  // with the timing of the cell. So the FB will start within the 92 bits of the TPU window and
-  // will be missed. This issue is due to a limitation of the legacy FB demodulation algorithm
-  // WA is to re-initialize the TPU with an arbitrary timing value
-  #undef L1_FF_WA_OMAPS00099442
-  #define L1_FF_WA_OMAPS00099442 1
-
 #endif
 
 // Audio tasks selection
@@ -393,60 +270,48 @@
   #if (OP_L1_STANDALONE == 1)
     #define GSMLITE 1
   #endif
-  #if (CODE_VERSION == SIMULATION)
-    #define L1_VOICE_MEMO       1
-  #endif
   #if ((OP_L1_STANDALONE == 1) || (!GSMLITE))
     #define MELODY_E1        1  // Enable melody format E1 feature
+    #define VOICE_MEMO       1  // Enable voice memorization feature
 
-    #if(L1_VOICE_MEMO == 1)
-      #define VOICE_MEMO       1  // Enable voice memorization feature
-    #else
-      #define VOICE_MEMO       0
-    #endif
     #define FIR              1  // Enable FIR feature
-    #if (DSP >= 33)
+    #if (DSP == 33) || (DSP == 34) || (DSP == 35) || (DSP == 36)
       #define AUDIO_MODE       1  // Enable Audio mode feature
     #else
       #define AUDIO_MODE        0  // Disable Audio mode feature
     #endif
   #else
     #define MELODY_E1        0  // Disable melody format E1 feature
-    #if(L1_VOICE_MEMO == 1)
-      #define VOICE_MEMO       1  // Enable voice memorization feature
-    #else
-      #define VOICE_MEMO       0
-    #endif
+    #define VOICE_MEMO       0  // Disable voice memorization feature
     #if (MELODY_E2)
-      #define FIR            1  // Enable FIR feature
-    #else
-      #define FIR            0  // Disable FIR feature
+	    #define FIR              1  // Enable FIR feature  
+	  #else
+      #define FIR              0  // Disable FIR feature  
     #endif
+
     #define AUDIO_MODE       0  // Disable Audio mode feature
   #endif
-
+  // Define CPORT for ESample only
+  #if ((CHIPSET == 12) && ((DSP == 35) || (DSP == 36))) 
+    #define L1_CPORT         1  // Enable cport feature
+  #else
+    #define L1_CPORT         0  // Disable cport feature
+  #endif
 
 #else
   #define KEYBEEP           0  // Enable keybeep feature
   #define TONE              0  // Enable tone feature
   #define MELODY_E1         0  // Enable melody format E1 feature
-  #define VOICE_MEMO        0 // Enable voice memorization feature
+  #define VOICE_MEMO        0  // Enable voice memorization feature
+
   #define FIR               0  // Enable FIR feature
   #define AUDIO_MODE        0  // Enable Audio mode feature
+  #define L1_CPORT          0  // Enable cport feature
 #endif
-
-//FreeCalypso: LoCosto-ism below disabled
-//#define L1_MIDI_BUFFER 1
-
-/*
- * L1_CPORT appears in the Leonardo L1 headers, and is enabled only for
- * CHIPSET 12.  The LoCosto version doesn't have it at all.
- */
-#define	L1_CPORT	0
 
 #define L1_AUDIO_BACKGROUND_TASK (SPEECH_RECO | MELODY_E2) // audio background task is used by speech reco and melody_e2
 #if (OP_RIV_AUDIO == 1)
-  #define L1_AUDIO_DRIVER (L1_VOICE_MEMO_AMR | L1_EXT_AUDIO_MGT | L1_MP3) // Riviera audio driver (only Voice Memo AMR is available)
+  #define L1_AUDIO_DRIVER L1_VOICE_MEMO_AMR // Riviera audio driver (only Voice Memo AMR is available)
 #endif
 
 
@@ -460,7 +325,6 @@
 
 // Standard (frequency plan) selections
 //-------------------------------------
-#if(L1_FF_MULTIBAND == 0) // std id is not used if multiband feature is enabled
 
 #define GSM             1            // GSM900.
 #define GSM_E           2            // GSM900 Extended.
@@ -471,27 +335,12 @@
 #define GSM850          7            // GSM850 Band
 #define DUAL_US         8            // PCS1900 + GSM850
 
-#endif // L1_FF_MULTIBAND
-
 /*------------------------------------*/
 /* Power Management                   */
 /*------------------------------------*/
 #define PWR_MNGT  1            // POWER management active if l1_config.pwr_mngt=1
 
-/*------------------------------------*/
-/*    BT Audio                        */ 
-/*------------------------------------*/
-#if ((L1_MP3 == 1) || (L1_AAC == 1))
-#if (OP_L1_STANDALONE == 0)
-#if((PSP_STANDALONE == 1) || (DRP_FW_BUILD == 1))
-#define L1_BT_AUDIO 0
-#else
-#define L1_BT_AUDIO 1
-#endif
-#else
-#define L1_BT_AUDIO 0
-#endif
-#endif
+
 /*---------------------------------------------------------------------------*/
 /* DSP configurations                                                        */
 /* ------------------                                                        */
@@ -552,11 +401,11 @@
     // In case of the melody E2 the DSP trace must be disable because the
     // melody instrument waves are overlayed with DSP trace buffer
 
-    // DSP debug trace API buffer config
+    // DSP debug trace API buufer config
     #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
     #define C_DEBUG_BUFFER_SIZE 7       // Real size is incremented by 1 for DSP write pointer.
   #else
-    // DSP debug trace API buffer config
+    // DSP debug trace API buufer config
     #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
     #define C_DEBUG_BUFFER_SIZE 2047    // Real size is incremented by 1 for DSP write pointer.
   #endif
@@ -619,8 +468,12 @@
   #define C_PLL_CONFIG 0x154   // For VTCXO = 13 MHz and max DSP speed = 84.5 Mips
   #define VOC        FR_HR_EFR // FR + HR + EFR (normaly FR_EFR : PBs).
   #define AEC        1         // AEC/NS not supported.
-  #define L1_NEW_AEC 1
-
+  #if (OP_RIV_AUDIO == 0)
+    #define L1_NEW_AEC 1
+  #else
+  // Available but not yet tuned with Riviera AUDIO    
+  #define L1_NEW_AEC 0
+  #endif
   #if ((L1_NEW_AEC) && (!AEC))
     // First undef the flag to avoid warnings at compilation time
     #undef AEC
@@ -638,10 +491,14 @@
 
   #define W_A_DSP_SR_BGD 1    // Work around about the DSP speech reco background task.
 
-  #if (CODE_VERSION == NOT_SIMULATION)
+  #if ( (CHIPSET != 12) && (CODE_VERSION == NOT_SIMULATION))
+
     #define W_A_DSP_IDLE3 1     // Work around to report DSP state to the ARM for Deep Sleep
+
                                 // management.
-                // DSP_IDLE3 is not supported in simulation
+
+								// DSP_IDLE3 is not supported in simulation
+
   #else
     #define W_A_DSP_IDLE3 0
   #endif
@@ -669,7 +526,7 @@
     // In case of the melody E2 the DSP trace must be disable because the
     // melody instrument waves are overlayed with DSP trace buffer
 
-    // DSP debug trace API buffer config
+    // DSP debug trace API buufer config
     #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
     #define C_DEBUG_BUFFER_SIZE 7       // Real size is incremented by 1 for DSP write pointer.
 
@@ -683,7 +540,7 @@
                                                 // Currently not supported !
     #endif
   #else
-    // DSP debug trace API buffer config
+    // DSP debug trace API buufer config
     #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
     #define C_DEBUG_BUFFER_SIZE 2047    // Real size is incremented by 1 for DSP write pointer.
 
@@ -693,7 +550,7 @@
     #define C_DEBUG_TRACE_TYPE  0x0012  // Level = BASIC; Features = Buffer Header.
 
     #if (C_DEBUG_TRACE_TYPE != 0) && ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
-      #define DSP_DEBUG_TRACE_ENABLE       1    // Enable DSP debug trace dumping capability (supported since patch 2090)
+    #define DSP_DEBUG_TRACE_ENABLE       1    // Enable DSP debug trace dumping capability (supported since patch 2090)
     #endif
   #endif
   /* d_error_status                */
@@ -703,7 +560,7 @@
     #define D_ERROR_STATUS_TRACE_ENABLE  1    // Enable d_error_status checking capability (supported since patch 2090)
 
     // masks to apply on d_error_status bit field for DSP patch 0x2061 or 0x2062
-    #define DSP_DEBUG_GSM_MASK     0x08BD // L1_MCU-SPR-15852
+    #define DSP_DEBUG_GSM_MASK     0x0000
     #define DSP_DEBUG_GPRS_MASK    0x0f3d
   #endif
 
@@ -719,8 +576,12 @@
   #define C_PLL_CONFIG 0x154   // For VTCXO = 13 MHz and max DSP speed = 84.5 Mips
   #define VOC        FR_HR_EFR // FR + HR + EFR (normaly FR_EFR : PBs).
   #define AEC        1         // AEC/NS not supported.
-  #define L1_NEW_AEC 1
-
+  #if (OP_RIV_AUDIO == 0)
+    #define L1_NEW_AEC 1
+  #else
+  // Available but not yet tuned with Riviera AUDIO    
+    #define L1_NEW_AEC 0
+   #endif
   #if ((L1_NEW_AEC) && (!AEC))
     // First undef the flag to avoid warnings at compilation time
     #undef AEC
@@ -737,10 +598,14 @@
 
   #define W_A_DSP_SR_BGD 1    // Work around about the DSP speech reco background task.
 
-  #if (CODE_VERSION == NOT_SIMULATION)
-  #define W_A_DSP_IDLE3 1     // Work around to report DSP state to the ARM for Deep Sleep
-                              // management.
-                // DSP_IDLE3 is not supported in simulation
+  #if ( (CHIPSET != 12) && (CODE_VERSION == NOT_SIMULATION))
+
+    #define W_A_DSP_IDLE3 1     // Work around to report DSP state to the ARM for Deep Sleep
+
+                                // management.
+
+								// DSP_IDLE3 is not supported in simulation
+
   #else
     #define W_A_DSP_IDLE3 0
   #endif
@@ -767,7 +632,7 @@
     // In case of the melody E2 the DSP trace must be disable because the
     // melody instrument waves are overlayed with DSP trace buffer
 
-    // DSP debug trace API buffer config
+    // DSP debug trace API buufer config
     #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
     #define C_DEBUG_BUFFER_SIZE 7       // Real size is incremented by 1 for DSP write pointer.
 
@@ -781,7 +646,7 @@
                                                 // Currently not supported !
     #endif
   #else
-    // DSP debug trace API buffer config
+    // DSP debug trace API buufer config
     #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
     #define C_DEBUG_BUFFER_SIZE 2047    // Real size is incremented by 1 for DSP write pointer.
 
@@ -791,7 +656,7 @@
     #define C_DEBUG_TRACE_TYPE  0x0012  // Level = BASIC; Features = Buffer Header.
 
     #if (C_DEBUG_TRACE_TYPE != 0) && ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
-      #define DSP_DEBUG_TRACE_ENABLE       1    // Enable DSP debug trace dumping capability (supported since patch 2090)
+    #define DSP_DEBUG_TRACE_ENABLE       1    // Enable DSP debug trace dumping capability (supported since patch 2090)
     #endif
 
     // AMR trace
@@ -804,8 +669,8 @@
   #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
     #define D_ERROR_STATUS_TRACE_ENABLE  1    // Enable d_error_status checking capability (supported since patch 2090)
 
-    // masks to apply on d_error_status bit field for DSP patch 0x2061 or 0x2062
-    #define DSP_DEBUG_GSM_MASK     0x08BD // L1_MCU-SPR-15852
+    // masks to apply on d_error_status bit field
+    #define DSP_DEBUG_GSM_MASK     0x0000
     #define DSP_DEBUG_GPRS_MASK    0x0f3d
   #endif
 
@@ -816,8 +681,12 @@
   #define C_PLL_CONFIG 0x154   // For VTCXO = 13 MHz and max DSP speed = 84.5 Mips
   #define VOC        FR_HR_EFR // FR + HR + EFR (normaly FR_EFR : PBs).
   #define AEC        1         // AEC/NS not supported.
-  #define L1_NEW_AEC 1
-
+  #if (OP_RIV_AUDIO == 0)
+    #define L1_NEW_AEC 1
+  #else
+  // Available but not yet tuned with Riviera AUDIO    
+    #define L1_NEW_AEC 0
+  #endif
   #if ((L1_NEW_AEC) && (!AEC))
     // First undef the flag to avoid warnings at compilation time
     #undef AEC
@@ -826,7 +695,7 @@
   #define MAP        3
 
   #define FF_L1_TCH_VOCODER_CONTROL 1
-  #define W_A_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE 1
+  #define L1M_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE 1
 
   #define DSP_START  0x7000
 
@@ -837,21 +706,17 @@
 
   #define W_A_DSP_SR_BGD 1    // Work around about the DSP speech reco background task.
 
-  #if (CODE_VERSION == NOT_SIMULATION)
-    #if (CHIPSET != 12)
-        #define W_A_DSP_IDLE3 1     // Work around to report DSP state to the ARM for Deep Sleep
-                                    // management.
-                                    // DSP_IDLE3 is not supported in simulation
-    #else
-      #define W_A_DSP_IDLE3 0     // Work around to report DSP state to the ARM for Deep Sleep
-                                  // management.
-                                  // DSP_IDLE3 is not supported in simulation
-    #endif // CHIPSET 12
-  #else
-      #define W_A_DSP_IDLE3 0
-  #endif
+  #if ( (CHIPSET != 12) && (CODE_VERSION == NOT_SIMULATION))
 
-  #define W_A_DSP_PR20037 1
+    #define W_A_DSP_IDLE3 1     // Work around to report DSP state to the ARM for Deep Sleep
+
+                                // management.
+
+								// DSP_IDLE3 is not supported in simulation
+
+  #else
+    #define W_A_DSP_IDLE3 0
+  #endif
 
   // DSP software work-around config
   //  bit0 - Work-around to support CRTG.
@@ -875,7 +740,7 @@
     // In case of the melody E2 the DSP trace must be disable because the
     // melody instrument waves are overlayed with DSP trace buffer
 
-    // DSP debug trace API buffer config
+    // DSP debug trace API buufer config
     #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
     #define C_DEBUG_BUFFER_SIZE 7       // Real size is incremented by 1 for DSP write pointer.
 
@@ -889,7 +754,7 @@
                                                 // Currently not supported !
     #endif
   #else
-    // DSP debug trace API buffer config
+    // DSP debug trace API buufer config
     #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
     #define C_DEBUG_BUFFER_SIZE 2047    // Real size is incremented by 1 for DSP write pointer.
 
@@ -899,7 +764,7 @@
     #define C_DEBUG_TRACE_TYPE  0x0012  // Level = BASIC; Features = Timer + Buffer Header + Burst.
 
     #if (C_DEBUG_TRACE_TYPE != 0) && ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
-      #define DSP_DEBUG_TRACE_ENABLE       1    // Enable DSP debug trace dumping capability (supported since patch 2090)
+    #define DSP_DEBUG_TRACE_ENABLE       1    // Enable DSP debug trace dumping capability (supported since patch 2090)
     #endif
 
     // AMR trace
@@ -913,27 +778,15 @@
     #define D_ERROR_STATUS_TRACE_ENABLE  1    // Enable d_error_status checking capability (supported since patch 2090)
 
     // masks to apply on d_error_status bit field for DSP patch 0x2061 or 0x2062
-    #define DSP_DEBUG_GSM_MASK     0x08BD // L1_MCU-SPR-15852
+    #define DSP_DEBUG_GSM_MASK     0x08BD
     #define DSP_DEBUG_GPRS_MASK    0x0f3d
   #endif
-#elif (DSP >= 36)				// ROM Code GPRS AMR.
-
-  #if ((L1_PCM_EXTRACTION) && (SPEECH_RECO))
-    #error "PCM extraction and Speech recognition not supported simultaneously"
-  #endif
-
+#elif (DSP == 36)            // ROM Code GPRS AMR.
   #define CLKMOD1    0x4006  // ...
   #define CLKMOD2    0x4116  // ...65 Mips pll free
   #define CLKSTART   0x29    // ...65 Mips
   #define C_PLL_CONFIG 0x154   // For VTCXO = 13 MHz and max DSP speed = 84.5 Mips
   #define VOC        FR_HR_EFR // FR + HR + EFR (normaly FR_EFR : PBs).
-
-#if 0
-  /* what we got with LoCosto L1 headers */
-  #define AEC        0         // AEC/NS not supported.
-  #define L1_NEW_AEC 0
-#else
-  /* what we are used to from the Leonardo version */
   #define AEC        1         // AEC/NS not supported.
   #if (OP_RIV_AUDIO == 0)
     #define L1_NEW_AEC 1
@@ -941,8 +794,6 @@
   // Available but not yet tuned with Riviera AUDIO    
     #define L1_NEW_AEC 0
   #endif
-#endif
-
   #if ((L1_NEW_AEC) && (!AEC))
     // First undef the flag to avoid warnings at compilation time
     #undef AEC
@@ -952,7 +803,7 @@
   #undef  L1_AMR_NSYNC
   #define L1_AMR_NSYNC 1
   #define FF_L1_TCH_VOCODER_CONTROL 1
-  #define W_A_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE 1
+  #define L1M_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE 1
 
   #define DSP_START  0x7000
 
@@ -963,21 +814,17 @@
 
   #define W_A_DSP_SR_BGD 1    // Work around about the DSP speech reco background task.
 
-  #if (CODE_VERSION == NOT_SIMULATION)
-    #if ((CHIPSET != 12) && (CHIPSET != 15))
-      #define W_A_DSP_IDLE3 1     // Work around to report DSP state to the ARM for Deep Sleep
-                                  // management.
-                                  // DSP_IDLE3 is not supported in simulation
-    #else  // CHIPSET 12
-      #define W_A_DSP_IDLE3 0     // Work around to report DSP state to the ARM for Deep Sleep
-                                  // management.
-                                  // DSP_IDLE3 is not supported in simulation
-    #endif // CHIPSET 12
-  #else // CODE_VERSION
+  #if ( (CHIPSET != 12) && (CODE_VERSION == NOT_SIMULATION))
+
+    #define W_A_DSP_IDLE3 1     // Work around to report DSP state to the ARM for Deep Sleep
+
+                                // management.
+
+								// DSP_IDLE3 is not supported in simulation
+
+  #else
     #define W_A_DSP_IDLE3 0
   #endif
-
-  #define W_A_DSP_PR20037 1
 
   // DSP software work-around config
   //  bit0 - Work-around to support CRTG.
@@ -992,42 +839,50 @@
 
   #elif  (ANALOG == 3)  // SYREN
     #define C_DSP_SW_WORK_AROUND 0x000E
+  #endif
 
-  #elif  (ANALOG == 11)  // TRITON
-    #define C_DSP_SW_WORK_AROUND 0x000E
-
+  // This workaround should be enabled only for H2-sample on full build config
+  #if (OP_L1_STANDALONE==1)
+    #define RAZ_VULSWITCH_REGAUDIO 0
   #endif
 
   /* DSP debug trace configuration */
   /*-------------------------------*/
-   // Note:
-  // In case of melody E2, MP3, AAC or Dyn Dwnld ACTIVITY the DSP trace is automatically disabled
-  // because the melody instrument waves are overlayed with DSP trace buffer (supported since patch 7c20)
+  #if (MELODY_E2)
+    // In case of the melody E2 the DSP trace must be disable because the
+    // melody instrument waves are overlayed with DSP trace buffer
 
-    // DSP debug trace API buffer config
+    // DSP debug trace API buufer config
     #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
-    #define C_DEBUG_BUFFER_SIZE 2047       // Real size is incremented by 1 for DSP write pointer.
+    #define C_DEBUG_BUFFER_SIZE 7       // Real size is incremented by 1 for DSP write pointer.
 
     // DSP debug trace type config
     //             |<-------------- Features -------------->|<---------- Levels ----------->|
     // [15-8:UNUSED|7:TIMER|6:BURST|5:BUFFER|4:BUFFER HEADER|3:UNUSED|2:KERNEL|1:BASIC|0:ISR]
-
-    #if (TRACE_TYPE == 1) || (TRACE_TYPE == 4)// C_DEBUG_TRACE_TYPE  0x0012 changed from 0x0054 for DSP load reduce
-      #define C_DEBUG_TRACE_TYPE  0x0012  // Level = KERNEL; Features = Timer, Burst, Buffer Header.
-    #else
-      #define C_DEBUG_TRACE_TYPE  0x0000  // Level = KERNEL; Features = Timer, Burst, Buffer Header.
-    #endif
-
+    #define C_DEBUG_TRACE_TYPE  0x0000  // Level = BASIC; Features = Timer + Buffer Header + Burst.
 
     #if (C_DEBUG_TRACE_TYPE != 0) && ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
       #define DSP_DEBUG_TRACE_ENABLE       1    // Enable DSP debug trace dumping capability
                                                 // Currently not supported !
     #endif
+  #else
+    // DSP debug trace API buufer config
+    #define C_DEBUG_BUFFER_ADD  0x17ff  // Address of DSP write pointer... data are just after.
+    #define C_DEBUG_BUFFER_SIZE 2047    // Real size is incremented by 1 for DSP write pointer.
+
+    // DSP debug trace type config
+    //             |<-------------- Features -------------->|<---------- Levels ----------->|
+    // [15-8:UNUSED|7:TIMER|6:BURST|5:BUFFER|4:BUFFER HEADER|3:UNUSED|2:KERNEL|1:BASIC|0:ISR]
+    #define C_DEBUG_TRACE_TYPE  0x0012  // Level = BASIC; Features = Buffer Header.
+
+    #if (C_DEBUG_TRACE_TYPE != 0) && ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
+    #define DSP_DEBUG_TRACE_ENABLE       1    // Enable DSP debug trace dumping capability (supported since patch 2090)
+    #endif
 
     // AMR trace
     #define C_AMR_TRACE_ID 55
 
-
+  #endif
   /* d_error_status                */
   /*-------------------------------*/
 
@@ -1035,7 +890,7 @@
     #define D_ERROR_STATUS_TRACE_ENABLE  1    // Enable d_error_status checking capability (supported since patch 2090)
 
     // masks to apply on d_error_status bit field for DSP patch 0x2061 or 0x2062
-    #define DSP_DEBUG_GSM_MASK     0x08BD // L1_MCU-SPR-15852
+    #define DSP_DEBUG_GSM_MASK     0x08BD
     #define DSP_DEBUG_GPRS_MASK    0x0f3d
   #endif
 #endif // DSP
@@ -1090,10 +945,8 @@
 
 #ifndef FF_L1_TCH_VOCODER_CONTROL
   #define FF_L1_TCH_VOCODER_CONTROL 0
-  #define W_A_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE 0
-  #define W_A_DSP_PR20037 0
+  #define L1M_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE 0 
 #endif
-
 
 /*------------------------------------*/
 /* Download                           */
@@ -1125,40 +978,17 @@
 // MAC-S status reporting to Layer 1
 #define MACS_STATUS     0   // MAC-S STATUS activated if set to 1
 
-/*
- * Possible choice for dll_dcch_downlink interface (with FN or without FN)
- * 0=without, 1=with FN parameter
- *
- * FreeCalypso note: the Leonardo version had this setting set to 1, i.e.,
- * 3 arguments to dll_dcch_downlink(). We don't have any source or even
- * header files for the Leonardo version of DL, but disassembly shows
- * that dll_dcch_downlink() does expect the FN parameter. The source for
- * DL from LoCosto also has a SEND_FN_TO_L2_IN_DCCH configurable setting,
- * and it is set to 1 in the dl.h local header. But here is the kicker:
- * the LoCosto version of this l1_confg.h header has the setting set to 0!
- *
- * I couldn't believe my eyes, so I disassembled the binary objects present
- * in the copy of the LoCosto source from scottn.us: yes, indeed that
- * code version contains an outright bug in that L1 does not pass the
- * 3rd argument (in ARM register r2), but DL expects it to be there.
- * (Thus DL is getting whatever "garbage" happens to be in r2 as the FN
- * parameter. I did not take the time to investigate what the downstream
- * effects are.)
- *
- * For FreeCalypso I'm setting SEND_FN_TO_L2_IN_DCCH to 1, both here
- * in L1 and in DL, where it was already set.
- */
-#define SEND_FN_TO_L2_IN_DCCH 1
 
-/*
- * FreeCalypso change: I'm disabling L1_CHECK_COMPATIBLE (a new "feature"
- * added with LoCosto version of L1, not present in the Leonardo version)
- * because l1_async.c fails to compile with it enabled.  Examination of
- * the code reveals that this "compatibility check" involves things
- * which we won't be enabling any time soon, if ever.
- */
-#define L1_CHECK_COMPATIBLE 0    //Check L1A message compatiblity
+// Possible choice for dll_dcch_downlink interface (with FN or without FN)
+#define SEND_FN_TO_L2_IN_DCCH 1 /* 0=without, 1=with FN parameter */
 
 //---------------------------------------------------------------------------------
+
+// Neighbor Cell RXLEV indication
+#if ((OP_L1_STANDALONE==1) && (CODE_VERSION == NOT_SIMULATION))
+ #define  L1_MPHC_RXLEV_IND_REPORT_SORT 1
+#else
+ #define  L1_MPHC_RXLEV_IND_REPORT_SORT 0
+#endif
 
 #endif /* __L1_CONFG_H__ */

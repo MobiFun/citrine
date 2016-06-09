@@ -3,7 +3,7 @@
  * L1_VER.H
  *
  *        Filename l1_ver.h
- *  Copyright 2003 (C) Texas Instruments
+ *  Copyright 2003 (C) Texas Instruments  
  *
  ************* Revision Controle System Header *************/
 
@@ -261,11 +261,10 @@
 //#define    SOFTWAREVERSION  0x1426L   // CHG03059, CHG03306, CHG3319, CHG3330, BUG03331, CHG03344, CHG3345, CHG3346, CHG03347, REQ03349, CHG03352
 //#define    SOFTWAREVERSION  0x1427L   // CHG03382, CHG03394, BUG03395, BUG03403, CHG03405, REQ03406
 //#define    SOFTWAREVERSION  0x1428L   // CHG03415, CHG03402, CHG03411, REQ03414, REQ03396, REQ03410, BUG03401, BUG03312, BUG03372.
-//#define    SOFTWAREVERSION  0x1429L   // CHG03417
+//#define    SOFTWAREVERSION  0x1429L   // CHG03417 
 //#define    SOFTWAREVERSION  0x1430L   // CHG03425, BUG03371, REQ03429, REQ03431, CHG03432, CHG03434
 //#define    SOFTWAREVERSION  0x1431L   // CHG2438, BUG2783, BUG3142, BUG3351, BUG3358, BUG3370, BUG3377, BUG3378, BUG3407, BUG3424, CHG3456, BUG3457, CHG3460, BUG3461
-//#define    SOFTWAREVERSION  0x1432L   // CHG3472
-//#define    SOFTWAREVERSION  0x1433L   // BUG03423, REQ03464, REQ03465, REQ03466, CHG03467, REQ03468, BUG03469, BUG03471, REQ03477, BUG03483, BUG03484, CHG03485, BUG03486
+//#define    SOFTWAREVERSION  0x1432L   // CHG3472 
 
 //#define    DEVELPMTVERSION  0x0001L
 //#define    DEVELPMTVERSION  0x0002L  // Corrected TI_4, TI_7, TI_12
@@ -307,83 +306,37 @@
 /////////////////////////////////////
 
 // added for new naming conventions
-#define PROGRAM_RELEASE_VERSION       0x3200 // TCS 3.0.0 - No protocol stack release done
+//#define PROGRAM_RELEASE_VERSION       0x2112
+//#define PROGRAM_RELEASE_VERSION       0x2118	// release 1446 is for TCS2.1.1.8
+//#define PROGRAM_RELEASE_VERSION       0x2119	// release 1448 is for TCS2.1.1.9
+//#define PROGRAM_RELEASE_VERSION       0x211A	// release 1450 is for TCS2.1.1.10
+//#define PROGRAM_RELEASE_VERSION       0x211C	// release 1451 is for TCS2.1.1.12 -> switching to dynamic download
+#define PROGRAM_RELEASE_VERSION         0x211E	// release 1452 is for TCS2.1.1.14 
 
-//#define INTERNAL_VERSION        0x1 // First version on ClearCase
-//#define INTERNAL_VERSION        0x1 // 1434: L1_MCU-ENH-16756, L1_MCU-ENH-16380, L1_ENV-ENH-16274,
-                                      //       L1_DRI-ENH-16267, L1_TES-SPR-16117, L1_ENV-ENH-16058,
-                                      //       L1_MCU-ENH-16034, L1_TES-ENH-16026, L1_DRI-SPR-16005,
-                                      //       L1_ENV-ENH-15885, L1_ENV-ENH-15884, L1_DRI-ENH-15883,
-                                      //       L1_MCU-ENH-15873, L1_MCU-SPR-15836, L1_ENV-ENH-15789,
-                                      //       FLUID-ENH-15702, L1_MCU-SPR-15513, L1_MCU-ENH-15506,
-                                      //       L1_MCU-CHG-13001
-//#define INTERNAL_VERSION        0x2 // 1434: L1_MCU-ENH-16599, L1_MCU-ENH-16602, L1_MCU-ENH-16593,
-                                      //       L1_MCU-ENH-17204, L1_MCU-ENH-17209, L1_MCU-ENH-17210,
-                                      //       L1_MCU-ENH-17324, L1_MCU-ENH-16697
-//#define INTERNAL_VERSION        0x0 // 1435: L1_MCU-ENH-17455, L1_MCU-ENH-17456
-//#define INTERNAL_VERSION        0x1 // 1435: G23M/L1_MCU-FIX-16046, G23M/L1_ALL-FIX-16114,
-                                      //       G23M/L1_MCU-FIX-17639, G23M/L1_MCU-SPR-17646,
-                                      //       G23M/L1_MCU-FIX-17664, G23M/L1_MCU-ENH-17683,
-                                      //       G23M/L1_MCU-SPR-17763, G23M/L1_MCU-SPR-17515,
-                                      //       G23M/L1_MCU-ENH-18032
+/* Internal release numbering */
+//#define INTERNAL_VERSION	      0x1 // First version on ClearCase
+//#define INTERNAL_VERSION	      0x2 // Second subversion on mainline
+//#define INTERNAL_VERSION	      0x3 // Second subversion on mainline
+#define INTERNAL_VERSION	      0x0 // Official release
 
-//#define INTERNAL_VERSION        0x0
-//#define INTERNAL_VERSION        0x1
-//#define INTERNAL_VERSION        0x2 // 1436: 19177,19167,18866,18012,17976,16726,15739,15494,18202,18727,18839,18799,19365
-//#define INTERNAL_VERSION          0x0 // 1437: 18109, 18101, 18063, 17979, 17865, 17769, 16917, 18233,
-                                      //       16015, 19341, 19599, 18938, 19570, 19092, 19089, 19708,
-                                      //       17684, 19633, 19741, 19752, 19818, 19816, 19823, 19836,
-                                      //       19144, 19915, 20091
-//#define INTERNAL_VERSION          0x1 // 1438: L1_MCU_ENH-17504
-                                      // 1437: L1_MCU-SPR-20357, L1_MCU-FIX-20354
-//#define INTERNAL_VERSION          0x2 // 1438: 18136, 18202, 18482, 19178, 19247, 19368
-                                      //       19585, 19639, 19901, 20130, 20187, 20226
-                                      //       20509, 20603, 20739
-
-//#define INTERNAL_VERSION          0x1 // 1439: 17561, 17563, 18861, 18897, 18931, 19119, 19151, 19168, 19539
-                                      //       19965, 20269, 20419, 20355, 20665, 20708, 20776, 20781, 21075
-                                      //       21105, 20959, 20902, 20762, 20965, 21280.
-                                      // 1440: 20430, 20616, 20657, 20963, 21154, 21249, 21671, 22029, 22102
-                                      //       22131, 22218, 22236, 22358, 22361, 22549
-                                      // 1441: 27674, 27682, 28060, 27756, 27759, 27761, 27762, 27763, 27765,
-                                      //       27766, 27769, 27770, 27771, 27772, 24206, 24207, 24208, 24209,
-                                      //       29392, 24211, 24212, 24213, 27775, 27776, 24214, 27777, 27778,
-                                      //       27779, 24215, 27780, 27781, 24216, 24217, 24218, 29036, 28815,
-                                      //       28914, 29038, 28999, 29001, 29003, 29005, 29006, 29007, 29008,
-                                      //       29009, 29010, 29014, 29021, 29022, 29023, 29024, 29026, 29027,
-                                      //       29028, 29029, 29030, 29032, 29033, 29034, 29037, 29039, 29040,
-                                      //       29059, 29060, 29061, 29062, 29063, 29064, 29065, 29066, 29067,
-                                      //       29068, 29069, 29070, 29071, 29072, 29073, 29074, 29075, 29076,
-                                      //       29079, 29080, 29081, 29082, 29083, 29084, 29085, 29086, 29087,
-                                      //       29088, 29089, 29090, 29091, 29092, 29405, 27356, 28417, 26720,
-                                      //       24992, 24988, 24401, 24138, 24143, 29406, 23943, 29407, 29408,
-                                      //       29409, 29410, 26294, 29415, 29416, 29417, 29418, 28412, 27362,
-                                      //       29419, 28420, 28421, 29420, 29423, 29424, 29425, 29426, 29429,
-                                      //       29430, 27812, 29431, 29433, 29434, 29436, 29437, 29438, 29440,
-                                      //       29442, 29443, 29444, 29445, 29959
-
-#define INTERNAL_VERSION          0x1
-//#define INTERNAL_VERSION          0x2
-
-
-//#define OFFICIAL_VERSION        0x1433
-//#define OFFICIAL_VERSION        0x1434 // L1_DSP-ENH-15589, L1_DSP-ENH-15590, L1_GPR-FIX-12737
-//#define OFFICIAL_VERSION        0x1435
-//#define OFFICIAL_VERSION        0x1436
-//#define OFFICIAL_VERSION        0x1437
-//#define OFFICIAL_VERSION          0x1438
-//#define OFFICIAL_VERSION          0x1439
-//#define OFFICIAL_VERSION          0x1440
-//#define OFFICIAL_VERSION          0x1441
-//#define OFFICIAL_VERSION          0x1446
-//#define OFFICIAL_VERSION          0xA447
-//#define OFFICIAL_VERSION          0xA448
-//#define OFFICIAL_VERSION          0xA449
-//#define OFFICIAL_VERSION          0xA450
-//#define OFFICIAL_VERSION          0xA451
-//#define OFFICIAL_VERSION          0xA452
-//L1 SW version
-#define OFFICIAL_VERSION            0xA460
-#define MAINTENANCE_VERSION         0x6011
-#define L1_DRP_COMPAT_MAJOR_VER     (0x008A)
-#define L1_DRP_COMPAT_MINOR_VER     (0x0003)
+/* Official external release numbering */
+//#define OFFICIAL_VERSION	      0x1432
+//#define OFFICIAL_VERSION	      0x1433
+//#define OFFICIAL_VERSION	      0x1434
+//#define OFFICIAL_VERSION	      0x1435
+//#define OFFICIAL_VERSION	      0x1436
+//#define OFFICIAL_VERSION	      0x1438
+//#define OFFICIAL_VERSION	      0x1439 
+//#define OFFICIAL_VERSION	      0x1440
+//#define OFFICIAL_VERSION	      0x1441
+//#define OFFICIAL_VERSION	      0x1442
+//#define OFFICIAL_VERSION	      0x1444
+//#define OFFICIAL_VERSION	      0x1445
+//#define OFFICIAL_VERSION	      0x1446
+//#define OFFICIAL_VERSION	      0x1447
+//#define OFFICIAL_VERSION	      0x1448
+//#define OFFICIAL_VERSION	      0x1449
+//#define OFFICIAL_VERSION	      0x1450
+//#define OFFICIAL_VERSION	      0x1451
+//#define OFFICIAL_VERSION	      0x1453
+#define OFFICIAL_VERSION	      0x1454

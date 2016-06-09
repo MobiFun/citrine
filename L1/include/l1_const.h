@@ -6,8 +6,6 @@
  *  Copyright 2003 (C) Texas Instruments
  *
  ************* Revision Controle System Header *************/
-#ifndef  L1_CONST_H
-#define  L1_CONST_H
 
 #ifdef __MSDOS__              // Running BORLANDC compiler.
   #ifdef MVC
@@ -59,7 +57,7 @@
 //-----------------------------
 // POWER MANAGEMENT............
 //-----------------------------
-#define MIN_SLEEP_TIME  (SETUP_FRAME+2+l1_config.params.rf_wakeup_tpu_scenario_duration) //HW WAKE-UP+MIN_SLEEP(2)+AFC RESTORE(rf_wakeup_tpu_scenario_duration)
+#define MIN_SLEEP_TIME  (SETUP_FRAME+2+l1_config.params.setup_afc_and_rf) //HW WAKE-UP+MIN_SLEEP(2)+AFC RESTORE(2)
 #define TPU_LOAD              01
 #define TPU_FREEZE            02
 
@@ -75,9 +73,6 @@
 #define MAX_BAD_GAUGING        3
 
 // GAUG_IN_32T =  (HF in clock of 13Mhz*dpll) * ( LF in Khz)
-// Leonardo version had it set to 1348, but TCS3.2 (LoCosto) has it set
-// to 605 instead.  I'll revert it to the Leonardo value for now.
-// -- Space Falcon
 #define GAUG_IN_32T           1348   // gauging duration is 1348*T32 measured on eva4
 
 // DSP state need to be used to enter Deep Sleep mode
@@ -159,6 +154,13 @@
 #define TCH_FS_BLEN           378                           // TCH FULL SPEECH block length
 #define TCH_HS_BLEN           211                           // TCH HALF SPEECH block length
 #define TCH_F_D_BLEN          456                           // FACCH, TCH_DATA block length
+
+/*
+ * FreeCalypso Frankenstein: the following definition was not present in
+ * our TCS211 version and we had to pull it from the LoCosto version for
+ * l1_cmplx.c to compile.  However, the comment in the place where it is
+ * used says that it "valuable for code running on target with DSP 3606."
+ */
 #define MIN_ACCEPTABLE_SNR_FOR_SB 200  // threshold under which a SB shall be considered as not found
 
 // Define max PM/TDMA according to DSP code and TPU RAM size
@@ -173,9 +175,9 @@
   #define NB_MEAS_MAX       4
   #define NB_MEAS_MAX_GPRS  4
 
-#elif ((CHIPSET == 5) || (CHIPSET == 6) || (CHIPSET == 7)  || (CHIPSET == 8) || (CHIPSET == 9) || (CHIPSET == 10) || (CHIPSET == 11) || (CHIPSET == 12) || (CHIPSET == 15))
+#elif ((CHIPSET == 5) || (CHIPSET == 6) || (CHIPSET == 7)  || (CHIPSET == 8) || (CHIPSET == 9) || (CHIPSET == 10) || (CHIPSET == 11) || (CHIPSET == 12))
 
-  #if (DSP >= 33)
+  #if (DSP == 33) || (DSP == 34) || (DSP == 35) || (DSP == 36)
 
     // DSP code 33: upto 8 PMs with GSM and GPRS scheduler
 
@@ -217,76 +219,278 @@
 //----------------------------------------
 // LAYER 1 Asynchronous processes names...
 //----------------------------------------
-#define NBR_L1A_PROCESSES           63
-
-#define FULL_MEAS                         0   // l1a_full_list_meas_process(msg)
-#define CS_NORM                           1   // l1a_cs_bcch_process(msg)
-#define I_6MP                             2   // l1a_idle_6strongest_monitoring_process(msg)
-#define I_SCP                             3   // l1a_idle_serving_cell_paging_process(msg)
-#define I_SCB                             4   // l1a_idle_serving_cell_bcch_reading_process(msg)
-#define I_SMSCB                           5   // l1a_idle_smscb_process(msg)
-#define CR_B                              6   // l1a_cres_process(msg)
-#define ACCESS                            7   // l1a_access_process(msg)
-#define DEDICATED                         8   // l1a_dedicated_process(msg)
-#define I_FULL_MEAS                       9   // l1a_dedicated_process(msg)
-#define I_NMEAS                          10   // l1a_idle_ba_meas_process(msg)
-#define DEDIC_6                          11   // l1a_dedic6_process(msg)
-#define D_NMEAS                          12   // l1a_dedic_ba_list_meas_process(msg)
-#define HW_TEST                          13   // l1a_test_process(msg)
-#define I_BCCHN                          14   // l1a_idle_neighbour_cell_bcch_reading_process(msg)
-#define I_ADC                            15   // l1a_mmi_adc_req(msg)
-#define TMODE_FB0                        16   // l1a_tmode_fb0_process(msg)
-#define TMODE_FB1                        17   // l1a_tmode_fb1_process(msg)
-#define TMODE_SB                         18   // l1a_tmode_sb_process(msg)
-#define TMODE_BCCH                       19   // l1a_tmode_bcch_reading_process(msg)
-#define TMODE_RA                         20   // l1a_tmode_access_process(msg)
-#define TMODE_DEDICATED                  21   // l1a_tmode_dedicated_process(msg)
-#define TMODE_FULL_MEAS                  22   // l1a_tmode_full_list_meas_process(msg)
-#define TMODE_PM                         23   // l1a_tmode_meas_process(msg)
-#define TMODE_TRANSFER                   24   // l1a_tmode_transfer_process(msg)
-#define L1A_KEYBEEP_STATE                25   // l1a_mmi_keybeep_process(msg)
-#define L1A_TONE_STATE                   26   // l1a_mmi_tone_process(msg)
-#define L1A_MELODY0_STATE                27   // l1a_mmi_melody0_process(msg)
-#define L1A_MELODY1_STATE                28   // l1a_mmi_melody1_process(msg)
-#define L1A_VM_PLAY_STATE                29   // l1a_mmi_vm_playing_process(msg)
-#define L1A_VM_RECORD_STATE              30   // l1a_mmi_vm_recording_process(msg)
-#define L1A_SR_ENROLL_STATE              31   // l1a_mmi_sr_enroll_process(msg)
-#define L1A_SR_UPDATE_STATE              32   // l1a_mmi_sr_update_process(msg)
-#define L1A_SR_RECO_STATE                33   // l1a_mmi_sr_reco_process(msg)
-#define L1A_SR_UPDATE_CHECK_STATE        34   // l1a_mmi_sr_update_check_process(msg)
-#define L1A_AEC_STATE                    35   // l1a_mmi_aec_process(msg)
-#define L1A_FIR_STATE                    36   // l1a_mmi_fir_process(msg)
-#define L1A_AUDIO_MODE_STATE             37   // l1a_mmi_audio_mode_process(msg)
-#define L1A_MELODY0_E2_STATE             38   // l1a_mmi_melody0_e2_process(msg)
-#define L1A_MELODY1_E2_STATE             39   // l1a_mmi_melody1_e2_process(msg)
-#define L1A_VM_AMR_PLAY_STATE            40   // l1a_mmi_vm_amr_playing_process(msg)
-#define L1A_VM_AMR_RECORD_STATE          41   // l1a_mmi_vm_amr_recording_process(msg)
-#define L1A_CPORT_STATE                  42   // l1a_mmi_cport_process(msg)
-#define L1A_AUDIO_ONOFF_STATE            43   // l1a_mmi_audio_onoff_process(msg)
-#define L1A_GTT_STATE                    44   // l1a_mmi_gtt_process(msg)
-#define INIT_L1                          45   // l1a_init_layer1_process(msg)
-#define HSW_CONF                         46   // l1a_test_config_process(msg)
-#define L1A_MP3_STATE                    47   // l1a_mmi_mp3_process(msg)
-#define TMODE_AUDIO_STEREOPATH_DRV_STATE 48   // l1a_tmode_audio_stereopath_process(msg)
-#define L1A_EXT_AUDIO_MGT_STATE          49   // l1a_mmi_ext_audio_mgt_process(msg)
-#define L1A_ANR_STATE                    50   // l1a_mmi_anr_process(msg)
-#define L1A_IIR_STATE                    51   // l1a_mmi_iir_process(msg)
-#define L1A_LIMITER_STATE                52   // l1a_mmi_limiter_process(msg)
-#define L1A_ES_STATE                     53   // l1a_mmi_es_process(msg)
-#define L1A_MIDI_STATE                   54   // l1a_mmi_midi_process(msg)
-#define L1A_AGC_UL_STATE                 55   // l1a_mmi_agc_ul_process(msg)
-#define L1A_AGC_DL_STATE                 56   // l1a_mmi_agc_dl_process(msg)
-#define L1A_DRC_STATE                    57   // l1a_mmi_drc_process(msg)
-#define L1A_WCM_STATE                    58   // l1a_mmi_wcm_process(msg)
-#define L1A_AAC_STATE                    59   // l1a_mmi_aac_process(msg)
-#if (L1_VOCODER_IF_CHANGE == 1)
-#define L1A_VOCODER_CFG_STATE            60   // l1a_mmi_vocoder_cfg_process
+#if (TESTMODE) && !(L1_GPRS)
+  #if (AUDIO_TASK == 1)
+    #if (L1_GTT)
+      #if (OP_L1_STANDALONE == 1)
+        #define NBR_L1A_PROCESSES       45
+      #else    
+        #define NBR_L1A_PROCESSES       44
+      #endif
+    #else
+      #if (OP_L1_STANDALONE == 1)
+        #define NBR_L1A_PROCESSES       44
+      #else    
+        #define NBR_L1A_PROCESSES       43
+      #endif
+    #endif
+  #else
+    #if (L1_GTT)
+      #if (OP_L1_STANDALONE == 1)
+        #define NBR_L1A_PROCESSES       27
+      #else
+        #define NBR_L1A_PROCESSES       26
+      #endif
+  #else
+      #if (OP_L1_STANDALONE == 1)
+        #define NBR_L1A_PROCESSES       26
+      #else  
+        #define NBR_L1A_PROCESSES       25
+      #endif
+  #endif
 #endif
-#if (L1_PCM_EXTRACTION)
-#define L1A_PCM_DOWNLOAD_STATE           61
-#define L1A_PCM_UPLOAD_STATE             62
 #endif
 
+#if (TESTMODE) && (L1_GPRS)
+  #if (AUDIO_TASK == 1)
+    #if (L1_GTT)
+      #if (OP_L1_STANDALONE == 1)
+        #define NBR_L1A_PROCESSES       46
+      #else
+        #define NBR_L1A_PROCESSES       45
+      #endif
+    #else
+      #if (OP_L1_STANDALONE == 1)
+        #define NBR_L1A_PROCESSES       45
+      #else
+        #define NBR_L1A_PROCESSES       44
+      #endif
+    #endif
+  #else
+    #if (L1_GTT)
+      #if (OP_L1_STANDALONE == 1)
+        #define NBR_L1A_PROCESSES       28
+      #else
+        #define NBR_L1A_PROCESSES       27
+      #endif
+  #else
+      #if (OP_L1_STANDALONE == 1)
+        #define NBR_L1A_PROCESSES       27
+      #else
+        #define NBR_L1A_PROCESSES       26
+      #endif    
+  #endif
+#endif
+#endif
+
+#if !(TESTMODE)
+  #if (AUDIO_TASK == 1)
+    #if (L1_GTT)
+       #if (OP_L1_STANDALONE == 1)
+          #define NBR_L1A_PROCESSES       37
+       #else
+          #define NBR_L1A_PROCESSES       36
+       #endif
+    #else
+      #if (OP_L1_STANDALONE == 1)
+         #define NBR_L1A_PROCESSES       36
+      #else
+         #define NBR_L1A_PROCESSES       35
+      #endif
+    #endif
+  #else
+    #if (L1_GTT)
+      #if (OP_L1_STANDALONE == 1)
+          #define NBR_L1A_PROCESSES       19
+      #else
+          #define NBR_L1A_PROCESSES       18
+      #endif
+  #else
+      #if (OP_L1_STANDALONE == 1)
+          #define NBR_L1A_PROCESSES       18
+      #else
+          #define NBR_L1A_PROCESSES       17
+      #endif
+  #endif
+#endif
+#endif
+
+
+#define FULL_MEAS                0   // l1a_full_list_meas_process(msg)
+#define CS_NORM                  1   // l1a_cs_bcch_process(msg)
+#define I_6MP                    2   // l1a_idle_6strongest_monitoring_process(msg)
+#define I_SCP                    3   // l1a_idle_serving_cell_paging_process(msg)
+#define I_SCB                    4   // l1a_idle_serving_cell_bcch_reading_process(msg)
+#define I_SMSCB                  5   // l1a_idle_smscb_process(msg)
+#define CR_B                     6   // l1a_cres_process(msg)
+#define ACCESS                   7   // l1a_access_process(msg)
+#define DEDICATED                8   // l1a_dedicated_process(msg)
+#define I_FULL_MEAS              9   // l1a_dedicated_process(msg)
+#define I_NMEAS                 10   // l1a_idle_ba_meas_process(msg)
+#define DEDIC_6                 11   // l1a_dedic6_process(msg)
+#define D_NMEAS                 12   // l1a_dedic_ba_list_meas_process(msg)
+#define HW_TEST                 13   // l1a_test_process(msg)
+#define I_BCCHN                 14   // l1a_idle_neighbour_cell_bcch_reading_process(msg)
+#define I_ADC                   15   // l1a_mmi_adc_req(msg)
+
+#if (TESTMODE) && !(L1_GPRS)
+  #define TMODE_FB0                     16   // l1a_tmode_fb0_process(msg)
+  #define TMODE_FB1                     17   // l1a_tmode_fb1_process(msg)
+  #define TMODE_SB                      18   // l1a_tmode_sb_process(msg)
+  #define TMODE_BCCH                    19   // l1a_tmode_bcch_reading_process(msg)
+  #define TMODE_RA                      20   // l1a_tmode_access_process(msg)
+  #define TMODE_DEDICATED               21   // l1a_tmode_dedicated_process(msg)
+  #define TMODE_FULL_MEAS               22   // l1a_tmode_full_list_meas_process(msg)
+  #define TMODE_PM                      23   // l1a_tmode_meas_process(msg)
+  #if (AUDIO_TASK == 1)
+    #define L1A_KEYBEEP_STATE           24   // l1a_mmi_keybeep_process(msg)
+    #define L1A_TONE_STATE              25   // l1a_mmi_tone_process(msg)
+    #define L1A_MELODY0_STATE           26   // l1a_mmi_melody0_process(msg)
+    #define L1A_MELODY1_STATE           27   // l1a_mmi_melody1_process(msg)
+    #define L1A_VM_PLAY_STATE           28   // l1a_mmi_vm_playing_process(msg)
+    #define L1A_VM_RECORD_STATE         29   // l1a_mmi_vm_recording_process(msg)
+    #define L1A_SR_ENROLL_STATE         30   // l1a_mmi_sr_enroll_process(msg)
+    #define L1A_SR_UPDATE_STATE         31   // l1a_mmi_sr_update_process(msg)
+    #define L1A_SR_RECO_STATE           32   // l1a_mmi_sr_reco_process(msg)
+    #define L1A_SR_UPDATE_CHECK_STATE   33   // l1a_mmi_sr_update_check_process(msg)
+    #define L1A_AEC_STATE               34   // l1a_mmi_aec_process(msg)
+    #define L1A_FIR_STATE               35   // l1a_mmi_fir_process(msg)
+    #define L1A_AUDIO_MODE_STATE        36   // l1a_mmi_audio_mode_process(msg)
+    #define L1A_MELODY0_E2_STATE        37   // l1a_mmi_melody0_e2_process(msg)
+    #define L1A_MELODY1_E2_STATE        38   // l1a_mmi_melody1_e2_process(msg)
+    #define L1A_VM_AMR_PLAY_STATE       39   // l1a_mmi_vm_amr_playing_process(msg)
+    #define L1A_VM_AMR_RECORD_STATE     40   // l1a_mmi_vm_amr_recording_process(msg)
+    #define L1A_CPORT_STATE             41   // l1a_mmi_cport_process(msg)
+    #if (L1_GTT == 1)
+      #define L1A_GTT_STATE               42   // l1a_mmi_gtt_process(msg)
+      #define INIT_L1                     43   // l1a_init_layer1_process(msg)
+      #if (OP_L1_STANDALONE == 1)
+        #define HSW_CONF                  44   // l1a_test_config_process(msg)
+      #endif
+    #else
+      #define INIT_L1                     42   // l1a_init_layer1_process(msg)
+      #if (OP_L1_STANDALONE == 1)
+        #define HSW_CONF                  43  // l1a_test_config_process(msg)
+      #endif
+    #endif
+  #else
+    #if (L1_GTT == 1)
+      #define L1A_GTT_STATE               24   // l1a_mmi_gtt_process(msg)
+      #define INIT_L1                     25   // l1a_init_layer1_process(msg)
+      #if (OP_L1_STANDALONE == 1)
+        #define HSW_CONF                  26  // l1a_test_config_process(msg)
+      #endif
+    #else
+      #define INIT_L1                     24   // l1a_init_layer1_process(msg)
+      #if (OP_L1_STANDALONE == 1)
+        #define HSW_CONF                  25  // l1a_test_config_process(msg)
+      #endif
+    #endif
+  #endif
+#endif
+
+#if (TESTMODE) && (L1_GPRS)
+  #define TMODE_FB0                     16   // l1a_tmode_fb0_process(msg)
+  #define TMODE_FB1                     17   // l1a_tmode_fb1_process(msg)
+  #define TMODE_SB                      18   // l1a_tmode_sb_process(msg)
+  #define TMODE_BCCH                    19   // l1a_tmode_bcch_reading_process(msg)
+  #define TMODE_RA                      20   // l1a_tmode_access_process(msg)
+  #define TMODE_DEDICATED               21   // l1a_tmode_dedicated_process(msg)
+  #define TMODE_FULL_MEAS               22   // l1a_tmode_full_list_meas_process(msg)
+  #define TMODE_PM                      23   // l1a_tmode_meas_process(msg)
+  #define TMODE_TRANSFER                24   // l1a_tmode_transfer_process(msg)
+  #if (AUDIO_TASK == 1)
+    #define L1A_KEYBEEP_STATE           25   // l1a_mmi_keybeep_process(msg)
+    #define L1A_TONE_STATE              26   // l1a_mmi_tone_process(msg)
+    #define L1A_MELODY0_STATE           27   // l1a_mmi_melody0_process(msg)
+    #define L1A_MELODY1_STATE           28   // l1a_mmi_melody1_process(msg)
+    #define L1A_VM_PLAY_STATE           29   // l1a_mmi_vm_playing_process(msg)
+    #define L1A_VM_RECORD_STATE         30   // l1a_mmi_vm_recording_process(msg)
+    #define L1A_SR_ENROLL_STATE         31   // l1a_mmi_sr_enroll_process(msg)
+    #define L1A_SR_UPDATE_STATE         32   // l1a_mmi_sr_update_process(msg)
+    #define L1A_SR_RECO_STATE           33   // l1a_mmi_sr_reco_process(msg)
+    #define L1A_SR_UPDATE_CHECK_STATE   34   // l1a_mmi_sr_update_check_process(msg)
+    #define L1A_AEC_STATE               35   // l1a_mmi_aec_process(msg)
+    #define L1A_FIR_STATE               36   // l1a_mmi_fir_process(msg)
+    #define L1A_AUDIO_MODE_STATE        37   // l1a_mmi_audio_mode_process(msg)
+    #define L1A_MELODY0_E2_STATE        38   // l1a_mmi_melody0_e2_process(msg)
+    #define L1A_MELODY1_E2_STATE        39   // l1a_mmi_melody1_e2_process(msg)
+    #define L1A_VM_AMR_PLAY_STATE       40   // l1a_mmi_vm_amr_playing_process(msg)
+    #define L1A_VM_AMR_RECORD_STATE     41   // l1a_mmi_vm_amr_recording_process(msg)
+    #define L1A_CPORT_STATE             42   // l1a_mmi_cport_process(msg)
+    #if (L1_GTT == 1)
+      #define L1A_GTT_STATE             43
+      #define INIT_L1                   44   // l1a_init_layer1_process(msg)
+      #if (OP_L1_STANDALONE == 1)
+        #define HSW_CONF                45  // l1a_test_config_process(msg)
+      #endif
+    #else
+      #define INIT_L1                   43   // l1a_init_layer1_process(msg)
+      #if (OP_L1_STANDALONE == 1)
+        #define HSW_CONF                44  // l1a_test_config_process(msg)
+      #endif
+    #endif
+  #else
+    #if (L1_GTT == 1)
+      #define L1A_GTT_STATE             25
+      #define INIT_L1                   26   // l1a_init_layer1_process(msg)
+      #if (OP_L1_STANDALONE == 1)
+        #define HSW_CONF                27  // l1a_test_config_process(msg)
+      #endif
+    #else
+      #define INIT_L1                   25   // l1a_init_layer1_process(msg)
+      #if (OP_L1_STANDALONE == 1)
+        #define HSW_CONF                26  // l1a_test_config_process(msg)
+      #endif
+    #endif
+  #endif
+#endif
+
+#if !(TESTMODE) && (AUDIO_TASK == 1)
+  #define L1A_KEYBEEP_STATE             16   // l1a_mmi_keybeep_process(msg)
+  #define L1A_TONE_STATE                17   // l1a_mmi_tone_process(msg)
+  #define L1A_MELODY0_STATE             18   // l1a_mmi_melody0_process(msg)
+  #define L1A_MELODY1_STATE             19   // l1a_mmi_melody1_process(msg)
+  #define L1A_VM_PLAY_STATE             20   // l1a_mmi_vm_playing_process(msg)
+  #define L1A_VM_RECORD_STATE           21   // l1a_mmi_vm_recording_process(msg)
+  #define L1A_SR_ENROLL_STATE           22   // l1a_mmi_sr_enroll_process(msg)
+  #define L1A_SR_UPDATE_STATE           23   // l1a_mmi_sr_update_process(msg)
+  #define L1A_SR_RECO_STATE             24   // l1a_mmi_sr_reco_process(msg)
+  #define L1A_SR_UPDATE_CHECK_STATE     25   // l1a_mmi_sr_update_check_process(msg)
+  #define L1A_AEC_STATE                 26   // l1a_mmi_aec_process(msg)
+  #define L1A_FIR_STATE                 27   // l1a_mmi_fir_process(msg)
+  #define L1A_AUDIO_MODE_STATE          28   // l1a_mmi_audio_mode_process(msg)
+  #define L1A_MELODY0_E2_STATE          29   // l1a_mmi_melody0_e2_process(msg)
+  #define L1A_MELODY1_E2_STATE          30   // l1a_mmi_melody1_e2_process(msg)
+  #define L1A_VM_AMR_PLAY_STATE         31   // l1a_mmi_vm_amr_playing_process(msg)
+  #define L1A_VM_AMR_RECORD_STATE       32   // l1a_mmi_vm_amr_recording_process(msg)
+  #define L1A_CPORT_STATE               33   // l1a_mmi_cport_process(msg)
+  #if (L1_GTT == 1)
+    #define L1A_GTT_STATE               34   // l1a_mmi_tty_process(msg)
+    #define INIT_L1                     35   // l1a_init_layer1_process(msg)
+    #if (OP_L1_STANDALONE == 1)
+      #define HSW_CONF                  36   // l1a_test_config_process(msg)
+    #endif
+  #else
+    #define INIT_L1                     34   // l1a_init_layer1_process(msg)
+    #if (OP_L1_STANDALONE == 1)
+      #define HSW_CONF                  35   // l1a_test_config_process(msg)
+    #endif
+  #endif
+#elif !(TESTMODE) && !(AUDIO_TASK == 1)
+  #if (L1_GTT == 1)
+    #define L1A_GTT_STATE               16   // l1a_mmi_tty_process(msg)
+    #define INIT_L1                     17   // l1a_init_layer1_process(msg)
+    #if (OP_L1_STANDALONE == 1)
+      #define HSW_CONF                  18   // l1a_test_config_process(msg)
+    #endif   
+  #else
+    #define INIT_L1                     16   // l1a_init_layer1_process(msg)
+    #if (OP_L1_STANDALONE == 1)
+      #define HSW_CONF                  17   // l1a_test_config_process(msg)
+    #endif  
+  #endif
+#endif
 
 #if TESTMODE
   #define TMODE_UPLINK            (1<<0)
@@ -307,18 +511,9 @@
 
 // Tasks in the order of their priority (low to high).
 
-#if (GSM_IDLE_RAM != 0)
-  #define INT_RAM_GSM_IDLE_L1S_PROCESSES1 0x00000618 // PNP, PEP, NP, EP only are supported
-#endif
-
-
 #if !L1_GPRS
 
-#if ((REL99 == 1) && (FF_BHO == 1))
-  #define NBR_DL_L1S_TASKS  33
-#else //#if ((REL99 == 1) && (FF_BHO == 1))
   #define NBR_DL_L1S_TASKS  32
-#endif //#if ((REL99 == 1) && (FF_BHO == 1))
 
   //GSM_TASKS/
   #define HWTEST       0  // DSP checksum reading
@@ -352,25 +547,13 @@
   #define TCHTF       28  // TCH Full rate
   #define TCHTH       29  // TCH Half rate
   #define BCCHN_TOP   30  // BCCH Neighbour TOP priority in Idle mode
-#if ((REL99 == 1) && (FF_BHO == 1))
-  #define FBSB        31  // Freq + Synchro Burst Reading in Blind Handover
-  #define SYNCHRO     32  // synchro task: L1S reset
-#else //#if ((REL99 == 1) && (FF_BHO == 1))
   #define SYNCHRO     31  // synchro task: L1S reset
-#endif //#if ((REL99 == 1) && (FF_BHO == 1))
   //END_GSM_TASKS/
 
 #else
 
-#if ((REL99 == 1) && (FF_BHO == 1))
-  #define NBR_DL_L1S_TASKS  46
-#else //#if ((REL99 == 1) && (FF_BHO == 1))
   #define NBR_DL_L1S_TASKS  45
-#endif //#if ((REL99 == 1) && (FF_BHO == 1))
 
-#if (FF_REPEATED_SACCH == 1 )
-  #define  REPEATED_SACCH_ENABLE  1
-#endif /*  FF_REPEATED_SACCH */
   //GPRS_TASKS/
   #define HWTEST       0   // DSP checksum reading
   #define ADC_CSMODE0  1   // ADC task in CS_MODE0 mode
@@ -382,7 +565,7 @@
   #define PRACH        7   // Packet Random Access Channel
   #define ITMEAS       8   // Interference measurements
   #define FBNEW        9   // Frequency burst search (Idle mode)
-  #define SBCONF       10  // Synchro. burst confirmation
+  #define SBCONF       10   // Synchro. burst confirmation
   #define SB2          11  // Synchro. burst read (1 frame uncertainty / SB position)
   #define PTCCH        12  // Packet Timing Advance control channel
   #define FB26         13  // Frequency burst search, dedic/transfer mode MF26 or MF52
@@ -416,18 +599,9 @@
   #define NP           41  // Normal paging Reading
   #define EP           42  // Extended paging Reading
   #define BCCHN_TOP    43  // BCCH Neighbour TOP priority in Idle mode
-#if ((REL99 == 1) && (FF_BHO == 1))
-  #define FBSB             44  // Freq + Synchro Burst Reading in Blind Handover
-  #define SYNCHRO          45  // synchro task: L1S reset
-#else //#if ((REL99 == 1) && (FF_BHO == 1))
   #define SYNCHRO      44  // synchro task: L1S reset
-#endif //#if ((REL99 == 1) && (FF_BHO == 1))
   //END_GPRS_TASKS/
 
-#endif
-
-#if (GSM_IDLE_RAM != 0)
-  #define SIZE_TAB_L1S_MONITOR (((NBR_DL_L1S_TASKS-1) >> 5) + 1)
 #endif
 
 //------------------------------------
@@ -437,55 +611,33 @@
 #define MCSI_PORT2 1
 
 
-#if (W_A_DSP_PR20037 == 1)
- //---------------------------------
- // DSP vocoder Enable/ Disable
- //---------------------------------
- #if (FF_L1_TCH_VOCODER_CONTROL == 1)
-   #if (L1_VOCODER_IF_CHANGE == 0)
-     #define TCH_VOCODER_DISABLE_REQ          0
-     #define TCH_VOCODER_ENABLE_REQ           1
-     #define TCH_VOCODER_ENABLED              2
-     #define TCH_VOCODER_DISABLED             3
-   #else
-     #define TCH_VOCODER_RESET_COMMAND        0
-     #define TCH_VOCODER_ENABLE_COMMAND       1
-     #define TCH_VOCODER_DISABLE_COMMAND      2
-   #endif // L1_VOCODER_IF_CHANGE == 0
+//---------------------------------
+// DSP vocoder Enable/ Disable
+//---------------------------------
 
-   #if (W_A_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE ==1)
-     // Number of TDMA wait frames until the DSP output is steady
-     #define DSP_VOCODER_ON_TRANSITION      165
-   #endif
- #endif // FF_L1_TCH_VOCODER_CONTROL
-#endif // W_A_DSP_PR20037
+#if (L1M_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE ==1)
+  #if (FF_L1_TCH_VOCODER_CONTROL == 1)
+    #define TCH_VOCODER_DISABLE_REQ          0
+    #define TCH_VOCODER_ENABLE_REQ           1
+    #define TCH_VOCODER_ENABLED              2
+    #define TCH_VOCODER_DISABLED             3
 
+    // Number of TDMA wait frames until the DSP output is steady
+    #define DSP_VOCODER_ON_TRANSITION      165   
+  #endif // FF_L1_TCH_VOCODER_CONTROL
+#endif 
 
 //---------------------------------
 // Handover Finished cause defines.
 //---------------------------------
 #define HO_COMPLETE              0
 #define HO_TIMEOUT               1
-#if ((REL99 == 1) && (FF_BHO == 1))
-  #define HO_FB_FAIL             2
-  #define HO_SB_FAIL             3
-
-  #define NORMAL_HANDOVER        0
-  #define BLIND_HANDOVER         1
-#endif
 
 //---------------------------------
 // FB detection algorithm defines.
 //---------------------------------
 #define FB_MODE_0                0                          // FB detec. mode 0.
 #define FB_MODE_1                1                          // FB detec. mode 1.
-
-//---------------------------------
-// SB acquisition phase.
-//---------------------------------
-#if ((REL99 == 1) && ((FF_BHO == 1) || (FF_RTD == 1)))
-  #define SB_ACQUISITION_PHASE      5
-#endif
 
 //---------------------------------
 // AFC control defines.
@@ -500,31 +652,11 @@
 #define AFC_INIT_MAX             5
 #define AFC_INIT_MIN             6
 #endif
-
-#if 0
-// For Locosto
-#define L1_AFC_MANUAL_MODE  0
-#define L1_AFC_SCRIPT_MODE  1
-#define L1_AFC_NONE         2
-
-#define L1_CTL_ZERO_IF 2
-#define L1_CTL_LOW_IF 1
-
-#define  L1_IL_INVALID 0
-#define  L1_IL_VALID 1
-
-// End Locosto
-#endif
-
 //---------------------------------
 // TOA control defines.
 //---------------------------------
 #define TOA_INIT                 1
 #define TOA_RUN                  2
-#if (TOA_ALGO == 2)
-  // In this version TOA is refreshed every 2 seconds
-  #define   L1_TOA_UPDATE_TIME  ((UWORD32)(433))
-#endif
 
 //---------------------------------
 // Neighbour Synchro possible status.
@@ -545,20 +677,10 @@
   #define MAX_BLOCK_ID   ((UWORD32) (3 * (UWORD32) (MAX_FN / 13))) // Block ID corresponding to fn = FN MAX
 #endif
 
-#if FF_L1_IT_DSP_DTX
-  // dtx_status states
-  #define DTX_AVAILABLE          0
-  #define DTX_AWAITED            1
-  #define DTX_IT_DSP             2
-
-  // Latency time for Fast DTX availability upon channel start (TDMAs)
-  #define FAST_DTX_LATENCY       10 //chaged from value-4 -CQ- 74387
-#endif
-
 //--------------------------------------------------------
 // standard specific constants used in l1_config.std.xxx
 //--------------------------------------------------------
-#if (L1_FF_MULTIBAND == 0) 
+
 
 // GSM
 #define FIRST_ARFCN_GSM               1    // 1st arfcn is 1
@@ -604,385 +726,6 @@
 #define BAND1    1
 #define BAND2    2
 
-#else // L1_FF_MULTIBAND == 1 below
-
-/***** GSM Band Identifiers to be communicated to the L3, these indexes are fixed *****************/
-#define PGSM900                       0
-#define GSM850                        1
-#define PCS1900                       2
-#define DCS1800                       3   
-#define GSM750                        4
-#define GSM480                        5
-#define GSM450                        6
-#define T_GSM380                      7
-#define T_GSM410                      8 
-#define T_GSM900                      9 
-#define EGSM900                      10 
-#define RGSM900                      11
-
-/***** PGSM900, EGSM900 and RGSM900 are seen a single band GSM900 **********************************/
-#define GSM900                       12                    
-
-/***** The total number of bands specified in the 3GPP Specs ***************************************/
-#define NB_MAX_GSM_BANDS             12
-
-#if 0               
-/********************************* Physical_band_ids to be supported Definition *******************/
-#define RGSM900_SUPPORTED           0
-#define EGSM900_SUPPORTED           1
-#define PGSM900_SUPPORTED           0
-#define GSM850_SUPPORTED            1
-#define PCS1900_SUPPORTED           1  
-#define DCS1800_SUPPORTED           1 
-#define GSM750_SUPPORTED            0
-#define GSM710_SUPPORTED            0
-#define GSM480_SUPPORTED            0
-#define T_GSM380_SUPPORTED          0
-#define T_GSM410_SUPPORTED          0
-#define GSM450_SUPPORTED            0   
-#define T_GSM900_SUPPORTED          0
-
-/***** Bands to be supported Eror Cases ******************************************/
-
-#if (RGSM900_SUPPORTED + EGSM900_SUPPORTED + PGSM900_SUPPORTED > 1)
-#error " Only one of the RGSM900 or EGSM900 or PGSM900 bands is supported"
-#endif/*if(RGSM900_SUPPORTED + EGSM900_SUPPORTED + PGSM900_SUPPORTED > 1)*/  
-
-
-/***** GSM900_SUPPORTED means one of P, E or R GSM900 is supported ***/
-#if ((PGSM900_SUPPORTED == 1) || (EGSM900_SUPPORTED == 1) || (RGSM900_SUPPORTED == 1))
-#define GSM900_SUPPORTED 1
-#endif 
-
-#endif // if 0
-
-/***** Number of Physical Bands Supported by the L1 Calculation, this constant is less than NB_MAX_GSM_BANDS**********/
-#define NB_MAX_SUPPORTED_BANDS (GSM900_SUPPORTED +\
-                                GSM850_SUPPORTED + \
-                                PCS1900_SUPPORTED + \
-                                DCS1800_SUPPORTED + \
-                                GSM750_SUPPORTED + \
-                                GSM480_SUPPORTED + \
-                                GSM450_SUPPORTED + \
-                                T_GSM410_SUPPORTED + \
-                                T_GSM380_SUPPORTED + \
-                                T_GSM900_SUPPORTED)
-                                
-/***** 
-    EGSM and RGSM have two separate ranges of ARFCN's that are considered by L1 as 
-    separate bands. Hence number of supported bands is one more if E or R GSM900 is
-    supported. 
-*****/
-#if (PGSM900_SUPPORTED == 1)// This means E or R GSM900 is not supported
-#define NB_MAX_EFFECTIVE_SUPPORTED_BANDS NB_MAX_SUPPORTED_BANDS
-#endif
-
-#if ((EGSM900_SUPPORTED == 1) || (RGSM900_SUPPORTED == 1))
-#define NB_MAX_EFFECTIVE_SUPPORTED_BANDS (NB_MAX_SUPPORTED_BANDS + 1)
-#endif
-
-#if 0
-/*The following constants allows the indexing of the physical bands in the MULTIBAND rf table located in l1_cust.c*/
-/*The bands positionning order is related to the bands ENUMERATION here below*/
-/*Changing the bands positions in this table implies changing the the band ENUMERATION in the file l1_const.h*/
-/*Changing the the band ENUMERATION in the file l1_const.h implies changing the bands positions in the table below*/
-enum
-{
-#if (GSM900_SUPPORTED == 1)
-  GSM900_ID,
-#endif /*if (GSM900_SUPPORTED == 1)*/
-
-#if (GSM850_SUPPORTED == 1)
-  GSM850_ID,
-#endif /*if (GSM850_SUPPORTED == 1)*/
-
-#if (DCS1800_SUPPORTED == 1)
-  DCS1800_ID,
-#endif /*if (DCS1800_SUPPORTED == 1)*/
-
-#if (PCS1900_SUPPORTED == 1)
-  PCS1900_ID,
-#endif /*if (PCS1900_SUPPORTED == 1)*/
-
-#if (GSM750_SUPPORTED == 1)
-  GSM750_ID,
-#endif /*if (GSM750_SUPPORTED == 1)*/
-
-#if (GSM480_SUPPORTED == 1)
-  GSM480_ID,
-#endif /*if (GSM480_SUPPORTED == 1)*/
-
-#if GSM450_SUPPORTED
-  GSM450_ID,
-#endif /*if (GSM450_SUPPORTED == 1)*/
-
-#if (T_GSM410_SUPPORTED == 1)
-  T_GSM410_ID,
-#endif /*if (T_GSM410_SUPPORTED == 1)*/
-
-#if (T_GSM380_SUPPORTED == 1)
-  T_GSM380_ID,
-#endif /*if (T_GSM380_SUPPORTED == 1)*/
-
-#if (T_GSM900_SUPPORTED == 1)
-  T_GSM900_ID,
-#endif /*if (T_GSM900_SUPPORTED == 1)*/
-};
-#endif
-/***********************************Calculation of the number of carriers per Effective Band*********/
-#if 0
-
-#if (PGSM900_SUPPORTED == 1)
-#define NB_CARRIER_900_LOW_SUB_BAND 124
-#define NB_CARRIER_900_HIGH_SUB_BAND 0
-#endif /*if (PGSM900_SUPPORTED == 1)*/
-
-#if (EGSM900_SUPPORTED == 1) 
-#define NB_CARRIER_900_LOW_SUB_BAND 125
-#define NB_CARRIER_900_HIGH_SUB_BAND 49
-#endif /*if (EGSM900_SUPPORTED == 1)*/
-
-#if (RGSM900_SUPPORTED == 1) 
-#define NB_CARRIER_900_LOW_SUB_BAND 125
-#define NB_CARRIER_900_HIGH_SUB_BAND 69
-#endif /*if (RGSM900_SUPPORTED == 1)*/
-
-#define NB_CARRIER_850 124
-#define NB_CARRIER_1800 344
-#define NB_CARRIER_1900 299
-#define NB_CARRIER_750 74
-#define NB_CARRIER_480 35
-#define NB_CARRIER_450 35
-#define NB_CARRIER_T_410 47
-#define NB_CARRIER_T_380 47
-#define NB_CARRIER_T_900 27
-
-/****** NBMAX_CARRIER is the total number of carriers supported based on band support *********/
-
-#define NBMAX_CARRIER  (((NB_CARRIER_900_LOW_SUB_BAND + NB_CARRIER_900_HIGH_SUB_BAND)  * GSM900_SUPPORTED) \
-                       + (NB_CARRIER_850 * GSM850_SUPPORTED) \
-                       + (NB_CARRIER_1800 * DCS1800_SUPPORTED)\
-                       + (NB_CARRIER_1900 * PCS1900_SUPPORTED) \
-                       + (NB_CARRIER_750 * GSM750_SUPPORTED) \
-                       + (NB_CARRIER_480 * GSM480_SUPPORTED) \
-                       + (NB_CARRIER_450 * GSM450_SUPPORTED) \
-                       + (NB_CARRIER_T_410 * T_GSM410_SUPPORTED) \
-                       + (NB_CARRIER_T_380 * T_GSM380_SUPPORTED) \
-                       + (NB_CARRIER_T_900 * T_GSM900_SUPPORTED))
-
-
-/**
-    The multiband frequency numbers exchanged across L3-L1 I/F are the 3GPP ARFCN numbers
-    with exceptiopn of 1900 where the numbers start from 1024 onwards. This results in 
-    holes in the numbering given from L3 and hence cannot be used for indexing arrays of 
-    carriers. To index arrays the frequency numbers from L3 are translated to 'operative radio
-    frequencies'. For any band configuration supported, this is a continuos number from 
-    0 to NBMAX_CARRIER (The sum of number of carriers in all supported bands)
-    The defines below are for finding the first operative frequency corresponding to each band
-**/
-
-#define FIRST_OPERATIVE_RADIO_FREQ_900_LOW_SUB_BAND     0
-#define FIRST_OPERATIVE_RADIO_FREQ_900_HIGH_SUB_BAND    (FIRST_OPERATIVE_RADIO_FREQ_900_LOW_SUB_BAND  + NB_CARRIER_900_LOW_SUB_BAND) * GSM900_SUPPORTED
-#define FIRST_OPERATIVE_RADIO_FREQ_850                  (FIRST_OPERATIVE_RADIO_FREQ_900_HIGH_SUB_BAND + NB_CARRIER_900_HIGH_SUB_BAND) * GSM850_SUPPORTED
-#define FIRST_OPERATIVE_RADIO_FREQ_1900                 (FIRST_OPERATIVE_RADIO_FREQ_850 + NB_CARRIER_850) * PCS1900_SUPPORTED
-#define FIRST_OPERATIVE_RADIO_FREQ_1800                 (FIRST_OPERATIVE_RADIO_FREQ_1900 + NB_CARRIER_1900) * DCS1800_SUPPORTED
-#define FIRST_OPERATIVE_RADIO_FREQ_750                  (FIRST_OPERATIVE_RADIO_FREQ_1800 + NB_CARRIER_1800) * GSM750_SUPPORTED
-#define FIRST_OPERATIVE_RADIO_FREQ_480                  (FIRST_OPERATIVE_RADIO_FREQ_750 + NB_CARRIER_750) * GSM480_SUPPORTED
-#define FIRST_OPERATIVE_RADIO_FREQ_450                  (FIRST_OPERATIVE_RADIO_FREQ_480 + NB_CARRIER_480) * GSM450_SUPPORTED
-#define FIRST_OPERATIVE_RADIO_FREQ_T_410                (FIRST_OPERATIVE_RADIO_FREQ_450 + NB_CARRIER_450) * T_GSM410_SUPPORTED
-#define FIRST_OPERATIVE_RADIO_FREQ_T_380                (FIRST_OPERATIVE_RADIO_FREQ_T_410 + NB_CARRIER_T_410) * T_GSM380_SUPPORTED    
-#define FIRST_OPERATIVE_RADIO_FREQ_T_900                (FIRST_OPERATIVE_RADIO_FREQ_T_380 + NB_CARRIER_T_380) * T_GSM900_SUPPORTED
-   
-/********************** Definition of the first  radio freqs as per L3-L1 interface *********/
-
-#if (PGSM900_SUPPORTED == 1)
-#define FIRST_RADIO_FREQ_900_LOW_SUB_BAND 1
-#define FIRST_RADIO_FREQ_900_HIGH_SUB_BAND 0
-#endif /*if (PGSM900_SUPPORTED == 1)*/
-
-#if (EGSM900_SUPPORTED == 1)
-#define FIRST_RADIO_FREQ_900_LOW_SUB_BAND 0
-#define FIRST_RADIO_FREQ_900_HIGH_SUB_BAND 975
-#endif /*if (EGSM900_SUPPORTED == 1)*/
-
-#if (RGSM900_SUPPORTED == 1)
-#define FIRST_RADIO_FREQ_900_LOW_SUB_BAND 0
-#define FIRST_RADIO_FREQ_900_HIGH_SUB_BAND 955
-#endif /* (RGSM900_SUPPORTED == 1)*/
-
-#define FIRST_RADIO_FREQ_850      128    
-#define FIRST_RADIO_FREQ_1800     512
-#define FIRST_RADIO_FREQ_1900     1024
-#define FIRST_TPU_RADIO_FREQ_1900 512  /* TBD The GSM1900 is the unique band in which the FIRST_TPU_RADIO is not equal to FIRST_RADIO_FREQ*/
-
-#endif // if 0                       
-
-#endif // L1_FF_MULTIBAND == 0
-
-#if (L1_FF_MULTIBAND == 0)
-#else
-/* Prototypes */
-
-#define l1_multiband_radio_freq_convert_into_effective_band_id(radio_freq) \
- rf_convert_rffreq_to_l1subband(radio_freq)
-
-#define l1_multiband_radio_freq_convert_into_physical_band_id(radio_freq) \
-((UWORD8)rf_convert_l1freq_to_rf_band_idx(rf_convert_rffreq_to_l1freq(radio_freq)))
-
-#define l1_multiband_radio_freq_convert_into_operative_radio_freq(radio_freq) \
-  rf_convert_rffreq_to_l1freq(radio_freq)
-
-#if (CODE_VERSION != SIMULATION)
-UWORD8 rf_convert_rffreq_to_l1subband(UWORD16 rf_freq);
-UWORD8 rf_convert_l1freq_to_l1subband(UWORD16 l1_freq);
-WORD8 rf_convert_l1freq_to_rf_band_idx(UWORD16 l1_freq);
-UWORD16 rf_convert_l1freq_to_rffreq(UWORD16 l1_freq );
-UWORD16 rf_convert_l1freq_to_rffreq_rfband(UWORD16 l1_freq, WORD8 *rf_band_index);
-UWORD16 rf_convert_l1freq_to_arfcn_rfband(UWORD16 l1_freq, WORD8 *rf_band_index);
-UWORD16 rf_convert_rffreq_to_l1freq(UWORD16 rf_freq);
-UWORD16 rf_convert_rffreq_to_l1freq_rfband(UWORD16 rf_freq, WORD8 *rf_band_index);
-UWORD16 rf_convert_tmarfcn_to_l1freq(UWORD16 tm_arfcn, WORD8 * error_flag);
-#endif
-
-/* RF defines */
-/******************************Physical_band_ids to be supported Definition****************************************/
-#define RGSM900_SUPPORTED  0
-#define PGSM900_SUPPORTED  0
-#define GSM750_SUPPORTED   0
-#define GSM710_SUPPORTED   0
-#define GSM480_SUPPORTED   0
-#define T_GSM380_SUPPORTED 0
-#define T_GSM410_SUPPORTED 0
-#define GSM450_SUPPORTED   0
-#define T_GSM900_SUPPORTED 0
-#if 0
-#if (RF_BAND_SYSTEM_INDEX == RF_DCS1800_850_DUALBAND)
-#define GSM900_SUPPORTED  0
-#define GSM850_SUPPORTED   1
-#define PCS1900_SUPPORTED  0
-#define DCS1800_SUPPORTED  1
-#elif (RF_BAND_SYSTEM_INDEX == RF_PCS1900_900_DUALBAND)
-#define GSM900_SUPPORTED  1
-#define GSM850_SUPPORTED   0
-#define PCS1900_SUPPORTED  1
-#define DCS1800_SUPPORTED  0
-#elif (RF_BAND_SYSTEM_INDEX == RF_US_DUALBAND)
-#define GSM900_SUPPORTED  0
-#define GSM850_SUPPORTED   1
-#define PCS1900_SUPPORTED  1
-#define DCS1800_SUPPORTED  0
-#elif (RF_BAND_SYSTEM_INDEX == RF_US_TRIBAND)
-#define GSM900_SUPPORTED  0
-#define GSM850_SUPPORTED   1
-#define PCS1900_SUPPORTED  1
-#define DCS1800_SUPPORTED  1
-#elif (RF_BAND_SYSTEM_INDEX == RF_EU_DUALBAND)
-#define GSM900_SUPPORTED  1
-#define GSM850_SUPPORTED   0
-#define PCS1900_SUPPORTED  0
-#define DCS1800_SUPPORTED  1
-#elif (RF_BAND_SYSTEM_INDEX == RF_EU_TRIBAND)
-#define GSM900_SUPPORTED  1
-#define GSM850_SUPPORTED   0
-#define PCS1900_SUPPORTED  1
-#define DCS1800_SUPPORTED  1
-#elif (RF_BAND_SYSTEM_INDEX == RF_QUADBAND)
-#define GSM900_SUPPORTED  1
-#define GSM850_SUPPORTED   1
-#define PCS1900_SUPPORTED  1
-#define DCS1800_SUPPORTED  1
-#endif
-#endif // if 0 TBD
-#define GSM900_SUPPORTED  1
-#define GSM850_SUPPORTED   1
-#define PCS1900_SUPPORTED  1
-#define DCS1800_SUPPORTED  1
-
-/* The physical RF bands are enumerated in order of increasing frequencies */
-/* The same order must be used in l1_rf61, l1_cust, and l1_const */
-enum
-{
-#if (GSM900_SUPPORTED == 1)
-  RF_GSM900,
-#endif
-#if (GSM850_SUPPORTED == 1)
-  RF_GSM850,
-#endif
-#if (DCS1800_SUPPORTED == 1)
-  RF_DCS1800,
-#endif
-#if (PCS1900_SUPPORTED == 1)
-  RF_PCS1900,
-#endif
-  RF_NB_SUPPORTED_BANDS /* The number of supported physical bands */
-};
-
-#if GSM900_SUPPORTED
-#define RF_NB_SUBBANDS (RF_NB_SUPPORTED_BANDS + 1)
-#else
-#define RF_NB_SUBBANDS (RF_NB_SUPPORTED_BANDS)
-#endif
-
-/***********************************Calculation of the number of carriers per Effective Band*********/
-#define NB_CHAN_900L  125
-#define NB_CHAN_900H  49
-#define NB_CHAN_850   124
-#define NB_CHAN_1800  374
-#define NB_CHAN_1900  299
-
-/**
-    The multiband frequency numbers exchanged across L3-L1 I/F are the 3GPP ARFCN numbers
-    except for DCS1900 where the numbers start from 1024 onwards, i.e. ARFCN+512.
-    L1 cannot have holes in the numbering, so a different L1 internal one is needed to build arrays in L1.
-    This numbering is similar to ARFCN numbering, except the high part of GSM900 channel numbers
-    are mapped between low part of GSM900 numbers and the GSM850 numbers.
-    For any band configuration supported, this is a continuos number from
-    0 to NB_CARRIERS (The sum of number of carriers in all supported bands)
-**/
-/****** L1_NB_CARRIER is the total number of carriers supported based on band support *********/
-#define L1_FREQ_1ST_900L    0
-#define L1_FREQ_1ST_900H   (L1_FREQ_1ST_900L + NB_CHAN_900L * GSM900_SUPPORTED)
-#define L1_FREQ_1ST_850    (L1_FREQ_1ST_900H + NB_CHAN_900H * GSM900_SUPPORTED)
-#define L1_FREQ_1ST_1800   (L1_FREQ_1ST_850  + NB_CHAN_850  * GSM850_SUPPORTED)
-#define L1_FREQ_1ST_1900   (L1_FREQ_1ST_1800 + NB_CHAN_1800 * DCS1800_SUPPORTED)
-#define NBMAX_CARRIER      (L1_FREQ_1ST_1900 + NB_CHAN_1900 * PCS1900_SUPPORTED)
-
-#define ARFCN_1ST_900L  0
-#define ARFCN_1ST_900H  975
-#define ARFCN_1ST_850   128
-#define ARFCN_1ST_1800  512
-#define ARFCN_1ST_1900  512
-
-#define RF_FREQ_1ST_900L  ARFCN_1ST_900L
-#define RF_FREQ_1ST_900H  ARFCN_1ST_900H
-#define RF_FREQ_1ST_850   ARFCN_1ST_850
-#define RF_FREQ_1ST_1800  ARFCN_1ST_1800
-#define RF_FREQ_1ST_1900  (ARFCN_1ST_1900 + 512)
-
-
-typedef struct
-{
-  UWORD16 first_rf_freq;
-  UWORD16 last_rf_freq;
-  UWORD16 first_l1_freq;
-  WORD16  l1freq2rffreq;
-}
-T_MULTIBAND_CONVERT;
-
-typedef struct
-{
-  UWORD8 power_class;
-  UWORD8  tx_turning_point;
-  UWORD8  max_txpwr;
-  UWORD8  gsm_band_identifier;
-  char*   name;
-}
-T_MULTIBAND_RF;
-
-#endif /*if (L1_FF_MULTIBAND == 1)*/
-
-
-
 #define NO_TXPWR 255     // sentinal value used with UWORD8 type.
 
 
@@ -991,6 +734,13 @@ T_MULTIBAND_RF;
 //--------------------------------------------------------
 #define RXLEV63   63   // max value for RXLEV.
 #define IL_MIN    240  // minimum input level is -120 dbm.
+
+//--------------------------------------------------------
+// Max number of cell to report in MPHC_RXLEV_IND.
+// Nb cells to check to see if cell of MPHC_NETWORK_SYNC_REQ has been detected
+//--------------------------------------------------------
+#define MAX_MEAS_RXLEV_IND_TRACE 10
+#define NB_FQ_TO_CHK 4
 
 /*--------------------------------------------------------*/
 /* Max value for GSM Paging Parameters.                   */
@@ -1049,15 +799,6 @@ T_MULTIBAND_RF;
 #define CBCH_TB6            0x0010
 #define CBCH_TB7            0x0020
 
-#if FF_TBF
-/*--------------------------------------------------------*/
-/* Access burst types on the RACH/PRACH                   */
-/*--------------------------------------------------------*/
-  #define ACC_BURST_8              0
-  #define ACC_BURST_11             1
-  #define ACC_BURST_11_TS1         2
-  #define ACC_BURST_11_TS2         3
-#endif
 #define CBCH_CONTINUOUS_READING  0
 #define CBCH_SCHEDULED           1
 #define CBCH_INACTIVE            2
@@ -1104,11 +845,11 @@ T_MULTIBAND_RF;
 #define DEDIC_MODE         5    // functional mode in DEDICATED.
 #define DEDIC_MODE_HALF_DATA 6    // used only for TOA histogram length purpose.
 #if L1_GPRS
-  #define PACKET_TRANSFER_MODE 7 //
+  #define PACKET_TRANSFER_MODE 7
 #endif
 
 /*--------------------------------------------------------*/
-/* Error causes for MPHC_NO_BCCH message.                 */
+/* Error causes for MPHC_NO_BCCH message.                  */
 /*--------------------------------------------------------*/
 #define NO_FB_SB           0  // FB or SB not found.
 #define NCC_NOT_PERMITTED  1  // Synchro OK! but PLMN not permitted.
@@ -1137,9 +878,7 @@ T_MULTIBAND_RF;
   #define CTRL_PRACH     (TRUE_L << 10)
   #define CTRL_SYSINGLE  (TRUE_L << 11)
 #endif
-#if ((REL99 == 1) && (FF_BHO == 1))
-#define CTRL_FBSB_ABORT (TRUE_L << 12)
-#endif
+
 
 /********************************/
 /* MISC management              */
@@ -1252,9 +991,6 @@ T_MULTIBAND_RF;
 #define SB_DSP_TASK        6  // Sync. Burst reading task in Idle mode.
 #define TCH_FB_DSP_TASK    8  // Freq. Burst reading task in Dedicated mode.
 #define TCH_SB_DSP_TASK    9  // Sync. Burst reading task in Dedicated mode.
-#if ((REL99 == 1) && (FF_BHO == 1))
-#define FBSB_DSP_TASK     16  // Freq.+Sync. Burst reading task in Blind Handover.
-#endif
 #define IDLE1              1
 
 // Debug tasks
@@ -1269,7 +1005,7 @@ T_MULTIBAND_RF;
 #define TCH_LOOP_A        31
 #define TCH_LOOP_B        32
 
-#if (DSP >= 33)
+#if (DSP == 33) || (DSP == 34) || (DSP == 35) || (DSP == 36)
   #define SC_CHKSUM_VER     (DB_W_PAGE_0 + (2 * (0x08DB - 0x800)))
 #else
   #define SC_CHKSUM_VER     (DB_W_PAGE_0 + (2 * (0x09A0 - 0x800)))
@@ -1301,14 +1037,7 @@ T_MULTIBAND_RF;
 //#define D_NSUBB_DEDIC           30L
 #define D_FB_THR_DET_IACQ       0x3333L
 #define D_FB_THR_DET_TRACK      0x28f6L
-
-#if (RF_FAM == 60)
-// UPPCosto without dc offset compensation (DSP algo)
-  #define D_DC_OFF_THRES          0x0000L
-#else
 #define D_DC_OFF_THRES          0x7fffL
-#endif
-
 #define D_DUMMY_THRES           17408L
 #define D_DEM_POND_GEWL         26624L
 #define D_DEM_POND_RED          20152L
@@ -1329,7 +1058,7 @@ T_MULTIBAND_RF;
 #define D_MD_MAX_THR_TCHFS      1700L                 //(2000L *C_POND_RED)
 #define D_MD1_MAX_THR_TCHFS     99L                   //(160L  *C_POND_RED)
 
-#if (DSP >= 33)
+#if (DSP == 33) || (DSP == 34) || (DSP == 35) || (DSP == 36)
   // Frequency burst definitions
   #define D_FB_MARGIN_BEG         24
   #define D_FB_MARGIN_END         22
@@ -1341,7 +1070,7 @@ T_MULTIBAND_RF;
   #define D_V42B_RESET_DELAY      10L
 
   // Latencies definitions
-  #if (DSP >= 33)
+  #if (DSP == 33) || (DSP == 34) || (DSP == 35) || (DSP == 36)
     // C.f. BUG1404
     #define D_LAT_MCU_BRIDGE        0x000FL
   #else
@@ -1358,9 +1087,7 @@ T_MULTIBAND_RF;
 
 #if (CHIPSET == 4)
   #define D_MISC_CONFIG           0L
-#elif (CHIPSET == 7)  || (CHIPSET == 8) || (CHIPSET == 10) || (CHIPSET == 11) || (CHIPSET == 12) || (CHIPSET == 15)
-  // This variable is basically used for Samson. If SAMSON should be zero.
-  // A variable for making DSP not go to IDLE3 when DMA is on
+#elif (CHIPSET == 7)  || (CHIPSET == 8) || (CHIPSET == 10) || (CHIPSET == 11) || (CHIPSET == 12)
   #define D_MISC_CONFIG           1L
 #else
   #define D_MISC_CONFIG           0L
@@ -1420,12 +1147,6 @@ T_MULTIBAND_RF;
 
 // d_ra_act: bit field definition
 #define B_F48BLK                5
-#if REL99
-#if FF_EMR
-#define B_F48BLK_DL             6
-#endif
-#endif
-
 
 // Mask for b_itc information (d_ra_conf)
 #define CE_MASK                 0x04
@@ -1436,12 +1157,12 @@ T_MULTIBAND_RF;
 #define D_TI_VERSION            0
 
 
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*                 DEFINITIONS FOR DSP <-> MCU COMMUNICATION.                 */
-/*                 ++++++++++++++++++++++++++++++++++++++++++                 */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
+/*------------------------------------------------------------------------------*/
+/*                                                                              */
+/*                 DEFINITIONS FOR DSP <-> MCU COMMUNICATION.                   */
+/*                 ++++++++++++++++++++++++++++++++++++++++++                   */
+/*                                                                              */
+/*------------------------------------------------------------------------------*/
 // COMMUNICATION Interrupt definition
 //------------------------------------
 #define ALL_16BIT          0xffffL
@@ -1463,16 +1184,7 @@ T_MULTIBAND_RF;
 #define D_ANGLE                  2  // Angle (AFC correction)
 #define D_SNR                    3  // Signal / Noise Ratio.
 
-#if REL99
-#if FF_EMR
-  #define D_CV_BEP                 2
-  #define D_MEAN_BEP_MSW           0
-  #define D_MEAN_BEP_LSW           1
-#endif
-#endif //L1_R99
-
 // Bit name/position definitions.
-#define B_JOINT                  4  // Chase combining flag
 #define B_FIRE0                  5  // Fire result bit 0. (00 -> NO ERROR) (01 -> ERROR CORRECTED)
 #define B_FIRE1                  6  // Fire result bit 1. (10 -> ERROR)    (11 -> unused)
 #define B_SCH_CRC                8  // CRC result for SB decoding. (1 for ERROR).
@@ -1482,21 +1194,6 @@ T_MULTIBAND_RF;
 #define B_UFI                    0  // UNRELIABLE FRAME Indicator
 #define B_ECRC                   9  // Enhanced full rate CRC bit
 #define B_EMPTY_BLOCK           10  // for voice memo purpose, this bit is used to determine
-
-#if REL99
-#if FF_EMR
-  #define MEAN_BEP_FORMAT        5  // mean_bep is received in F1.31 format from DSP and should be
-                                    // reported in F6.26 format to L2.
-  #define CV_BEP_FORMAT          5  // cv_bep is received in F3.13 format from DSP and should be
-                                    // reported in F8.8 format to L2.
-  #define B_SID1                 4  // SID1 bit.
-  #define B_M1                   0  // M1 bit.
-  #define B_CE                   8  // Connection element
-  #define B_FCS_OK               3  // Frame check sequence bit
-  #define WORD_SHIFT            16  // Shift word
-#endif
-#endif //L1_R99
-
 
 #if (DEBUG_DEDIC_TCH_BLOCK_STAT == 1)
   #define FACCH_GOOD 10
@@ -1526,15 +1223,6 @@ T_MULTIBAND_RF;
   // List of possible RX types in RATSCCH block
   #define C_RATSCCH_GOOD          5
 
-  #if REL99
-  #if FF_EMR
-    #define RATSCCH_GOOD            5
-    #define RATSCCH_BAD             6
-  #endif
-  #endif //L1_R99
-
-
-
   // List of the possible AMR channel rate
   #define AMR_CHANNEL_4_75        0
   #define AMR_CHANNEL_5_15        1
@@ -1544,7 +1232,6 @@ T_MULTIBAND_RF;
   #define AMR_CHANNEL_7_95        5
   #define AMR_CHANNEL_10_2        6
   #define AMR_CHANNEL_12_2        7
-
 
   // Types of RATSCCH blocks
   #define C_RATSCCH_UNKNOWN                   0
@@ -1593,85 +1280,20 @@ T_MULTIBAND_RF;
   #define B_BULRAMPDEL_BIS         9
   #define B_BULRAMPDEL2_BIS       10
 #endif
-#if ((RF_FAM == 61) && ((DSP == 38) || (DSP == 39)))
-  #define B_BULRAMPDEL             3 // Note: this name is changed
-  #define B_BULRAMPDEL2            2 // Note: this name is changed
-  #define B_BULRAMPDEL_BIS         9
-  #define B_BULRAMPDEL2_BIS       10
-#endif
 #define B_AFC                    4
 
 // "d_ctrl_system" bits positions.
 #define B_TSQ                    0
 #define B_BCCH_FREQ_IND          3
 #define B_TASK_ABORT            15  // Abort RF tasks for DSP.
-#define B_SWH_APPLY_WHITENING    4  // SWH control(enable, disable)
 
-#if (NEW_SNR_THRESHOLD == 1) && (L1_SAIC == 0)
-#error "SNR threshold valid only for SAIC build"
-#endif
-
-//SAIC related
-#define B_SWH              1   /* SWH bit position */
-#define B_NEW_POND         2   /* NEW_POND bit position*/
-#define B_SWH_DOUBLE_INTERPOLATION    3  /* Single or Double Interpolation*/
-#define B_SWH_INTERPOLATE             4  /* interpolate or not*/
-#define B_TOA_ALMNT                   5  /* New TOA alignment from DSP for non saic mode*/
-#define B_SNR_ALMNT                   6  /* New SNR threshold set to 1024 for AFC and TOA*/
-
-// DB Area
-#define B_SAIC_DB                0
-#define B_NEW_POND_DB            1
-#define B_SWH_DB                 4
-#define B_SWH_CHANTAP            12
-#define SAIC_ENABLE_DB           ((0x01 << B_SAIC_DB) | (0x01 << B_NEW_POND_DB))
-
-#if (NEW_SNR_THRESHOLD == 1)
-#if (ONE_THIRD_INTRPOL ==1 )
-#define SAIC_INITIAL_VALUE ((1<< B_SWH)|(1<< B_NEW_POND)| (1<< B_SWH_DOUBLE_INTERPOLATION)) | (1 << B_SWH_INTERPOLATE) |(1<< B_TOA_ALMNT) | (1 << B_SNR_ALMNT)
-#else /* ONE_THIRD_INTRPOL == 0*/
-#define SAIC_INITIAL_VALUE ((1<< B_SWH)|(1<< B_NEW_POND)| (1 << B_SWH_INTERPOLATE) |(1<< B_TOA_ALMNT) | (1 << B_SNR_ALMNT)
-#endif /* ONE_THIRD_INTRPOL*/
-#else /* NEW_SNR_THRESHOLD == 0 */
-#if (ONE_THIRD_INTRPOL ==1 )
-#define SAIC_INITIAL_VALUE ((1<< B_SWH)|(1<< B_NEW_POND)| (1<< B_SWH_DOUBLE_INTERPOLATION)) | (1 << B_SWH_INTERPOLATE) /* added for CQ-95275 &  93303 */
-#else
-#define SAIC_INITIAL_VALUE ((1<< B_SWH)|(1<< B_NEW_POND)) | (1 << B_SWH_INTERPOLATE)
-#endif//ONE_THIRD_INTRPOL
-#endif /*NEW_SNR_THRESHOLD*/
-#if (FF_L1_FAST_DECODING == 1)
-#define B_FAST_DECODING_FLAG (5)
-#define C_FAST_DECODING_CRC_FIRE1 (0x02)
-
-/* Fast decoding states */
-#define C_FAST_DECODING_NONE       0
-#define C_FAST_DECODING_AWAITED    1
-#define C_FAST_DECODING_PROCESSING 2
-#define C_FAST_DECODING_COMPLETE   3
-#define C_FAST_DECODING_FORBIDDEN  4
-
-#endif /* FF_L1_FAST_DECODING */
-
-#if (FF_L1_FAST_DECODING == 1)
-#define C_BA_PM_MEAS (4)
-#else
+/*
+ * FreeCalypso Frankenstein: the following definition has been
+ * imported from LoCosto version of l1_const.h; it is needed for
+ * the LoCosto-based C code to compile.
+ */
 #define C_BA_PM_MEAS (2)
-#endif /* FF_L1_FAST_DECODING */
 
-#if FF_L1_IT_DSP_USF
-  // d_dsp_hint_flag word definition
-  #define B_USF_HINT_ISSUED      0
-  #define B_NON_USF_HINT_ISSUED 1
-#endif
-#if FF_L1_IT_DSP_DTX
-  // d_fast_dtx_hint word definition- now d_fast_dtx_hint is not used- same as- d_dsp_hint_flag
-  #define B_DTX_HINT_ISSUED      0
-  #define B_DTX_STATE            1
-
-  // d_tch_mode_ext word definition
-  #define B_FAST_DTX_ENABLED     0
-  #define B_NON_USF_HINT_ISSUED 1
-#endif
 // ****************************************************************
 // POLESTAR EVABOARD 3 REGISTERS & ADRESSES  DEFINITIONS
 // ****************************************************************
@@ -1682,9 +1304,7 @@ T_MULTIBAND_RF;
 
   #define DB_SIZE                 (4*20L)     // 4 pages of 20 words...
 
-  #if (DSP >= 33)
-    #define MCU_API_BASE_ADDRESS 0xFFD00000L
-    #define DSP_API_BASE_ADDRESS 0x800
+  #if (DSP == 33) || (DSP == 34) || (DSP == 35) || (DSP == 36)
     #define DB_W_PAGE_0          0xFFD00000L   // DB page 0 write : 20 words long
     #define DB_W_PAGE_1          0xFFD00028L   // DB page 1 write : 20 words long
     #define DB_R_PAGE_0          0xFFD00050L   // DB page 0 read  : 20 words long
@@ -1696,31 +1316,13 @@ T_MULTIBAND_RF;
       #define DB2_R_PAGE_0       0xFFD00184L
       #define DB2_R_PAGE_1       0xFFD00188L
     #endif
-
-    #if (DSP >= 38)
-      /* DSP CPU load measurement */
-      #define DSP_CPU_LOAD_MCU_API_BASE_ADDRESS 0xFFD01DE0L
-      #define DSP_CPU_LOAD_DB_W_PAGE_0          0xFFD01DE0L   // DB page 0 write : 4 words long
-      #define DSP_CPU_LOAD_DB_W_PAGE_1          0xFFD01DE8L   // DB page 1 write : 4 words long
-      #define DSP_CPU_LOAD_MCU_W_CTRL           0xFFD01DF0L   // DSP CPU load feature control
-      #define DSP_CPU_LOAD_MCU_W_TDMA_FN        0xFFD01DF2L   // MCU TDMA frame number
-    #endif
-
   #else
-    #define MCU_API_BASE_ADDRESS 0xFFD00000L
-    #define DSP_API_BASE_ADDRESS 0x800
     #define DB_W_PAGE_0          0xFFD00000L   // DB page 0 write : 20 words long
     #define DB_W_PAGE_1          0xFFD00028L   // DB page 1 write : 20 words long
     #define DB_R_PAGE_0          0xFFD00050L   // DB page 0 read  : 20 words long
     #define DB_R_PAGE_1          0xFFD00078L   // DB page 1 read  : 20 words long
     #define NDB_ADR              0xFFD000a0L   // NDB start address : 268 words
     #define PARAM_ADR            0xFFD002b8L   // PARAM start address  : 57 words
-  #endif
-
-  #if (DSP == 38) || (DSP == 39)
-    // a DB common is used by the GSM and GPRS for the common feature
-    #define DB_COMMON_W_PAGE_0          0xFFD00760L   // DB common page 0
-    #define DB_COMMON_W_PAGE_1          0xFFD00780L   // DB common page 1
   #endif
 
 // ****************************************************************
@@ -1788,14 +1390,5 @@ T_MULTIBAND_RF;
   #define THR_MASK      0x003F
   #define HYST_MASK     0x000F
   #define CMIP_MASK     0x0001
-
 #endif
 
-#if (L1_RF_KBD_FIX == 1)
-
-#define FRAME_DURATION 5000
-#define CUST_DEBOUNCE_TIME 64
-
-#endif
-
-#endif // L1_CONST_H

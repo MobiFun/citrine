@@ -10,10 +10,11 @@
 #ifndef _L1_API_HISR_H_
 #define _L1_API_HISR_H_
 
-#if (L1_DYN_DSP_DWNLD == 1)
 /* Constants */
 #define ID_API_INT		0x4
-#endif
+
+/* Prototypes */
 void l1_trigger_api_interrupt();
+void l1_api_handler();
 
 #endif
