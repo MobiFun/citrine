@@ -10,7 +10,7 @@
 #if (AUDIO_TASK == 1)
 
   #if (OP_RIV_AUDIO == 1)
-    #include "rv_general.h"
+    #include "../../riviera/rv/rv_general.h"
   #endif
 
   #if (KEYBEEP)
