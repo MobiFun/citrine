@@ -9,8 +9,9 @@
 
 #define  L1_FUNC_C
 
-#include "l1_macro.h"
+#include "config.h"
 #include "l1_confg.h"
+#include "l1_macro.h"
 
 #if (CODE_VERSION == SIMULATION)
   #include <string.h>
@@ -103,7 +104,7 @@
     #include "l1aac_defty.h"
   #endif
   #include "l1_defty.h"
-  #include "cust_os.h"
+  #include "../../gpf/inc/cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"
@@ -118,7 +119,7 @@
   #include "rhea_arm.h"
   #include "dma.h"
   #include "ulpd.h"
-  #include "leadapi.h"
+  #include "../dsp/leadapi.h"
 
   #if (OP_L1_STANDALONE)
   #if (CHIPSET == 4) || (CHIPSET == 7) || (CHIPSET == 8) || (CHIPSET == 10) || \
@@ -149,20 +150,20 @@
 
   /* DSP patch */
   #if (DWNLD == NO_DWNLD)
-    const UWORD8  patch_array[1];
-    const UWORD8  DspCode_array[1] ;
-    const UWORD8  DspData_array[1];
+    const UWORD8  patch_array[1] = {0};
+    const UWORD8  DspCode_array[1] = {0};
+    const UWORD8  DspData_array[1] = {0};
   #elif (DWNLD == PATCH_DWNLD)
-    extern const UWORD8  patch_array[] ;
-    const UWORD8  DspCode_array[1] ;
-    const UWORD8  DspData_array[1];
+    extern const UWORD8  patch_array[];
+    const UWORD8  DspCode_array[1] = {0};
+    const UWORD8  DspData_array[1] = {0};
   #elif (DWNLD == DSP_DWNLD)
-    const UWORD8 patch_array[1] ;
-    extern const UWORD8 DspCode_array[] ;
+    const UWORD8 patch_array[1] = {0};
+    extern const UWORD8 DspCode_array[];
     extern const UWORD8 DspData_array[];
   #else
-    extern const UWORD8  patch_array[] ;
-    extern const UWORD8  DspCode_array[] ;
+    extern const UWORD8  patch_array[];
+    extern const UWORD8  DspCode_array[];
     extern const UWORD8  DspData_array[];
   #endif
 

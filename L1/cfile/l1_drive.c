@@ -9,6 +9,7 @@
 
 #define  L1_DRIVE_C
 
+#include "config.h"
 #include "l1_confg.h"
 
 #if (RF_FAM == 61)
@@ -18,7 +19,7 @@
 #define	W_A_DSP_PR20037	1	/* FreeCalypso */
 
 #if ((L1M_WAIT_DSP_RESTART_AFTER_VOCODER_ENABLE ==1)&&(W_A_DSP_PR20037 == 1))
-  #include "nucleus.h"
+  #include "../../nucleus/nucleus.h"
 #endif
 #include "l1_macro.h"
 #if (CODE_VERSION == SIMULATION)
@@ -107,7 +108,7 @@
   #endif
   #include "l1_defty.h"
   #include "l1_varex.h"
-  #include "cust_os.h"
+  #include "../../gpf/inc/cust_os.h"
   #include "l1_msgty.h"
   #if TESTMODE
     #include "l1tm_varex.h"

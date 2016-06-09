@@ -8,8 +8,9 @@
  ************* Revision Controle System Header *************/
 
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_START
-#include "l1_macro.h"
+#include "config.h"
 #include "l1_confg.h"
+#include "l1_macro.h"
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_END
 
 #if !((MOVE_IN_INTERNAL_RAM == 1) && (GSM_IDLE_RAM !=0))  // MOVE TO INTERNAL MEM IN CASE GSM_IDLE_RAM enabled
@@ -87,7 +88,7 @@
   #include "l1_const.h"
   #include "l1_time.h"
   #include "l1_signa.h"
-  #include "cust_os.h"
+  #include "../../gpf/inc/cust_os.h"
   #if TESTMODE
     #include "l1tm_defty.h"
     #include "l1tm_signa.h"
@@ -282,7 +283,7 @@ extern void tm_receive(UWORD8 *inbuf, UWORD16 size);
   #if (L1_AGC_DL == 1)
     extern void l1a_mmi_agc_dl_process          (xSignalHeaderRec *msg);
   #endif
-#if (L1_DRC == 1)
+  #if (L1_DRC == 1)
     extern void l1a_mmi_drc_process             (xSignalHeaderRec *msg);
   #endif
   #if (L1_LIMITER == 1)

@@ -7,15 +7,16 @@
  *
  ************* Revision Controle System Header *************/
 
+#include "config.h"
 #include "l1_confg.h"
-#include "nucleus.h"
+#include "../../nucleus/nucleus.h"
 #include "sys_types.h"
 #include "l1_types.h"
 #include "l1audio_cust.h"
 #include "l1audio_defty.h"
 #include "l1audio_const.h"
 #include "l1_const.h"
-#include "cust_os.h"
+#include "../../gpf/inc/cust_os.h"
 #include "l1tm_defty.h"
 #if (L1_GTT == 1)
   #include "l1gtt_const.h"

@@ -1,7 +1,7 @@
 CC=	arm-elf-gcc
 CPPFLAGS=-I../../include -I../include -I../audio_include -I../audio_cust0 \
 	-I../dyn_dwl_include -I../tm_include -I../tm_cust0 -I../cust0 \
-	-I../tpudrv -DMOVE_IN_INTERNAL_RAM
+	-I../tpudrv -I../../bsp -I../../bsp/abb+spi -DMOVE_IN_INTERNAL_RAM
 CFLAGS=	-O2 -fno-builtin -mthumb-interwork
 ASFLAGS=-mthumb-interwork
 LD=	arm-elf-ld

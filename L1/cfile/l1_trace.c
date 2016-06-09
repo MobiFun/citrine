@@ -10,13 +10,10 @@
 #define  L1_TRACE_C
 
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_START
-#include "l1sw.cfg"
-#if (OP_L1_STANDALONE == 0)
-  #include "debug.cfg"
-#endif
 
-#include "l1_macro.h"
+#include "config.h"
 #include "l1_confg.h"
+#include "l1_macro.h"
 
 #include <string.h>
 #include "l1_types.h"
@@ -66,7 +63,7 @@
 #endif
 
 #include "l1_defty.h"
-#include "cust_os.h"
+#include "../../gpf/inc/cust_os.h"
 #include "l1_msgty.h"
 #include "l1_varex.h"
 #include "l1_proto.h"
@@ -106,11 +103,9 @@
 #include <string.h>
 #include <stdio.h>
 
-#if (OP_L1_STANDALONE == 1)
-  #include "serialswitch_core.h"
-#else
-  #include "uart/serialswitch.h"
-#endif
+#include "../../serial/serialswitch.h"
+#include "../../riviera/rv/rv_trace.h"
+#include "../../riviera/rvf/rvf_api.h"
 
 //void dt_trace_event(UWORD16 id, char *fmt_string, ...);
 #if (TRACE_TYPE==7)

@@ -8,8 +8,9 @@
  ************* Revision Controle System Header *************/
 
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_START
-  #include "l1_macro.h"
+  #include "config.h"
   #include "l1_confg.h"
+  #include "l1_macro.h"
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_END
 
 #if !((MOVE_IN_INTERNAL_RAM == 1) && (GSM_IDLE_RAM !=0))  // MOVE TO INTERNAL MEM IN CASE GSM_IDLE_RAM enabled
@@ -129,7 +130,7 @@
   #endif
 
   #include "l1_defty.h"
-  #include "cust_os.h"
+  #include "../../gpf/inc/cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"
@@ -7998,7 +7999,7 @@ void l1s_dedicated_mode_manager()
 	 * TCS211 binary object; it appears neither in the LoCosto nor
 	 * in the TSM30 source.
 	 */
-        #if (AEC)
+        #if (AUDIO_TASK && AEC)
 	  if((l1s.aec.aec_control & 0x0002) || (l1s.aec.aec_control & 0x0004)) {
 	    l1s.aec.aec_control = l1a_l1s_com.aec_task.parameters.aec_control
 				  | 0x0001;

@@ -10,19 +10,14 @@
 #define  L1_PWMGR_C
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_START
 
-#include "timer/timer2.h"
-#include "armio/armio.h"
-
-//omaps00090550 #include "l1_macro.h"
+#include "config.h"
 #include "l1_confg.h"
 
-#if (OP_L1_STANDALONE == 1)
-  #include "uart/serialswitch_core.h"
-#else
-  #include "uart/serialswitch.h"
-#endif
+#include "../../bsp/timer2.h"
+#include "../../bsp/armio.h"
+#include "../../serial/serialswitch.h"
 
-#if (OP_L1_STANDALONE == 0)
+#if 0 //(OP_L1_STANDALONE == 0)
   #include "sim/sim.h"
   #include "rv_swe.h"
 #endif
@@ -98,17 +93,13 @@
   extern NU_TASK L1S_task;
   STATUS status;
 
-
-
 #else // NO SIMULATION
-
-
 
   #include "l1_types.h"
   #include "l1_const.h"
 
-  #include "abb/abb.h"
-  #include "dma/sys_dma.h"
+  #include "../../bsp/abb+spi/abb.h"
+  /* #include "dma/sys_dma.h" */
 
   #if (OP_BT == 1)
     #include "hci_ll_simul.h"
@@ -145,11 +136,11 @@
   #include "l1_tabs.h"
   #include "sys_types.h"
   #include "tpudrv.h"
-  #include "cust_os.h"
+  #include "../../gpf/inc/cust_os.h"
   #include "l1_msgty.h"
   #include "l1_proto.h"
   #include "l1_trace.h"
-  #include "timer/timer.h"
+  #include "../../bsp/timer.h"
 
   #if (CHIPSET == 12) || (CHIPSET == 15)
     #include "timer/timer_sec.h"
@@ -158,13 +149,12 @@
     /* FreeCalypso: massive #if (CHIPSET == 15) chunk removed */
 
   #else  //(CHIPSET == 12) || (CHIPSET == 15)
-    #include "inth/iq.h"
-    #include "inth/inth.h"
+    #include "iq.h"
+    #include "inth.h"
   #endif
-//  #include "timer1.h"
-  #include "ulpd/ulpd.h"
-  #include "clkm/clkm.h"
-  #include "memif/mem.h"
+  #include "ulpd.h"
+  #include "clkm.h"
+  #include "mem.h"
   #if L2_L3_SIMUL
     #include "hw_debug.h"
   #endif

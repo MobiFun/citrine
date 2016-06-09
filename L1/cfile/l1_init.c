@@ -9,6 +9,7 @@
 
 #define  L1_INIT_C
 
+#include "config.h"
 #include "l1_confg.h"
 
 #define	W_A_DSP_PR20037	1	/* FreeCalypso */
@@ -84,10 +85,10 @@
 #else // NO SIMULATION
 
   #include <string.h>
-  #include "tm_defs.h"
+  /* #include "tm_defs.h" */
   #include "l1_types.h"
   #include "sys_types.h"
-  #include "leadapi.h"
+  #include "../dsp/leadapi.h"
   #include "l1_const.h"
   #include "l1_macro.h"
   #include "l1_time.h"
@@ -130,7 +131,7 @@
   #endif
 
   #include "l1_defty.h"
-  #include "cust_os.h"
+  #include "../../gpf/inc/cust_os.h"
   #include "l1_msgty.h"
   #include "l1_varex.h"
   #include "l1_proto.h"
