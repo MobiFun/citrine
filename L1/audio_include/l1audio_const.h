@@ -3,20 +3,17 @@
  * L1AUDIO_CONST.H
  *
  *        Filename l1audio_const.h
- *  Copyright 2003 (C) Texas Instruments
+ *  Copyright 2003 (C) Texas Instruments  
  *
  ************* Revision Controle System Header *************/
 
 #if (AUDIO_TASK == 1)
 
-// DRC API base address
-#define C_DRC_API_BASE_ADDRESS 0x161E
-
   //----------------------------------------
   // LAYER 1 Synchronous audio process name.
   //----------------------------------------
 
-  #define NBR_AUDIO_MANAGER        37  // Number of L1S audio managers
+  #define NBR_AUDIO_MANAGER        19   // Number of L1S audio managers
 
   #define L1S_KEYBEEP_STATE         0   // l1s_keybeep_manager()
   #define L1S_TONE_STATE            1   // l1s_tone_manager()
@@ -37,31 +34,6 @@
   #define L1S_VM_AMR_PLAY_STATE    16   // l1s_vm_amr_play_manager()
   #define L1S_VM_AMR_RECORD_STATE  17   // l1s_vm_amr_record_manager()
   #define L1S_CPORT_STATE          18   // l1s_cport_manager()
-  #define L1S_AUDIO_ONOFF_STATE    19   // l1s_audio_onoff_manager()
-  #define L1S_STEREOPATH_DRV_STATE 20   // l1s_stereopath_drv_manager()
-  #define L1S_MP3_STATE            21   // l1s_mp3_manager()
-  #define L1S_ANR_STATE            22   // l1s_anr_manager()
-  #define L1S_IIR_STATE            23   // l1s_iir_manager()
-  #define L1S_LIMITER_STATE        24   // l1s_limiter_manager()
-  #define L1S_ES_STATE             25   // l1s_es_manager()
-  #define L1S_MIDI_STATE           26   // l1s_midi_manager()
-  #define L1S_AGC_UL_STATE         27   // l1s_agc_ul_manager()
-  #define L1S_AGC_DL_STATE         28   // l1s_agc_dl_manager()
-  #define L1S_WCM_STATE            29   // l1s_wcm_manager()
-  #define L1S_DRC_STATE            30   // l1s_drc_manager()
-#if (L1_AAC == 1)
-
-//added from e-sample for AAC
-  #define L1S_AAC_STATE            31   // l1s_aac_manager()
-#endif
-#if (L1_AUDIO_MCU_ONOFF == 1)
-  #define L1S_AUDIO_UL_ONOFF_STATE 32  // l1s_audio_ul_onoff_manager()
-  #define L1S_AUDIO_DL_ONOFF_STATE 33   // l1s_audio_dl_onoff_manager()
-#endif
-  #define L1S_PCM_DOWNLOAD_STATE   34   // l1s_pcm_download_manager()
-  #define L1S_PCM_UPLOAD_STATE     35   // l1s_pcm_upload_manager()
-  #define L1S_FIR_STATE            36   // l1s_fir_manager()
-
 
   //----------------------------------------
   // MCU<->DSP communication bit field.
@@ -69,7 +41,7 @@
 
   // bit in d_tch_mode for audio features
   #define B_VOICE_MEMO_DTX      (TRUE_L << 5)
-#if (DSP >= 34)
+#if (DSP == 34) || (DSP == 35) || (DSP == 36)
   #define B_VM_VOCODER_SELECT   (TRUE_L << 6)
 #endif
 
@@ -86,12 +58,6 @@
   #define B_SR_PROCESSING_TASK  (TRUE_L <<  7) // Indicate if the DSP processing task is running
   #define B_SR_ALIGNMENT_TASK   (TRUE_L <<  8) // Indicate if the DSP alignment task is running
   #define B_IT_COM_REQ          (TRUE_L <<  9) // Indicate that the DSP requests an IT com for the next TDMA
-  #define B_AUDIO_ON_STATUS     (TRUE_L <<  14) // Set to 1 if DSP doesn'tpower OFF audio ABB if no DSP audio activity
-
-  #if(L1_PCM_EXTRACTION)
-    #define B_PCM_UPLOAD_ON_GOING    (TRUE_L << 4)
-    #define B_PCM_DOWNLOAD_ON_GOING  (TRUE_L << 5)
-  #endif
 
   // bits in d_toneskb_init
   #define B_VM_RECORD_START  (TRUE_L <<  2)   // Start the DSP voice memo recording task
@@ -110,17 +76,6 @@
   #define B_SR_STOP          (TRUE_L << 11)   // Stop the current DSP speech reco task
 
   #define B_MELO             (TRUE_L << 13)   // Start the DSP melody module if it's not started
-  #define B_AUDIO_ON_START   (TRUE_L << 14)   // Use to start ABB audio and to not stop it when 
-                                              // no audio activity on DSP side
-  #define B_AUDIO_OFF_STOP   (TRUE_L << 15)   // Use to stop ABB audio when no audio activity
-
-  #if(L1_PCM_EXTRACTION)
-    #define B_PCM_UPLOAD_START     (TRUE_L << 7)
-    #define B_PCM_UPLOAD_STOP      (TRUE_L << 8)
-    #define B_PCM_DOWNLOAD_START   (TRUE_L << 9)
-    #define B_PCM_DOWNLOAD_STOP    (TRUE_L << 10)
-  #endif
-
   #if (L1_CPORT == 1)
     //----------------------------------------
     // C_PORT constant.
@@ -214,15 +169,6 @@
     #define SC_VM_SPEECH_SAMPLE   20
   #endif // VOICE_MEMO || SPEECH_RECO
 
-  #if (L1_PCM_EXTRACTION)
-    #define B_PCM_DOWNLOAD_READY    (TRUE_L << 0)
-    #define B_PCM_UPLOAD_READY      (TRUE_L << 0)
-    #define SC_PCM_DOWNLOAD_SAMPLE  160
-    #define SC_PCM_UPLOAD_SAMPLE    160
-    #define B_PCM_UPLOAD_ERROR      (TRUE_L << 0)
-    #define B_PCM_DOWNLOAD_ERROR    (TRUE_L << 1)
-  #endif /* L1_PCM_EXTRACTION */
-
   #if (L1_VOICE_MEMO_AMR)
     //----------------------------------------
     // Voice memo amr constant.
@@ -311,9 +257,14 @@
 
   #endif // SPEECH_RECO
 
-  #if (L1_AEC == 1)
+  #if (AEC)
     #define B_AEC_ACK        (TRUE_L <<  0)  // Bit set by the MCU to indicate a new AEC settings and
                                              // clear by the DSP to confirm the new settings.
+    
+    #define B_AEC_EN         (TRUE_L <<  1)   // enables AEC module
+    #define B_SPENH_EN       (TRUE_L <<  2)   // enables SPENH module
+
+
     #if (L1_NEW_AEC)
       #define B_AEC_VISIBILITY (TRUE_L <<  9)  // Bit set by the MCU to have internal output values of AEC copied in API
       #define SC_AEC_VISIBILITY_SHIFT (9)
@@ -389,76 +340,6 @@
   #define MELODY_E1_SELECTED    (2)
   #define MELODY_E2_SELECTED    (3)
 
-  #if (L1_STEREOPATH == 1)
-    // configuration
-    #define AUDIO_SP_SELF_CONF      0
-    #define AUDIO_SP_MIDI_CONF      1
-    #define AUDIO_SP_MP3_CONF       2
-    #define AUDIO_SP_EXTAUDIO_CONF  3
-
-#if (ANALOG == 3)
-    // sampling frequency 
-    #define AUDIO_SP_FREQ_8         7
-    #define AUDIO_SP_FREQ_11        6
-    #define AUDIO_SP_FREQ_16        5
-    #define AUDIO_SP_FREQ_22        4
-    #define AUDIO_SP_FREQ_32        3
-    #define AUDIO_SP_FREQ_44        2
-    #define AUDIO_SP_FREQ_48        0
-#endif
-
-#if (ANALOG == 11 || CODE_VERSION == SIMULATION)
- // sampling frequency index for Triton. This would be set in the 
- //SRW[0:3] bits of the CTRL5 register.
-    #define AUDIO_SP_FREQ_8           0
-    #define AUDIO_SP_FREQ_11         1
-    #define AUDIO_SP_FREQ_12         2
-    #define AUDIO_SP_FREQ_16         3
-    #define AUDIO_SP_FREQ_22         4
-    #define AUDIO_SP_FREQ_24         5
-    #define AUDIO_SP_FREQ_32         6
-    #define AUDIO_SP_FREQ_44         7
-    #define AUDIO_SP_FREQ_48         8
-#endif
-
-    // DMA allocation
-    #define AUDIO_SP_DMA_ALLOC_MCU  0
-    #define AUDIO_SP_DMA_ALLOC_DSP  1
-
-    // Data type
-    #define AUDIO_SP_DATA_S8        0
-    #define AUDIO_SP_DATA_S16       1
-    #define AUDIO_SP_DATA_S32       2
-
-    // Source port
-    #define AUDIO_SP_SOURCE_IMIF    0
-    #define AUDIO_SP_SOURCE_API     2
-#if (CHIPSET == 15)
-    //In Locosto, EMIF is also a source port for the audio
-    #define AUDIO_SP_SOURCE_EMIF   4
-#endif
-
-    // output type
-    #define AUDIO_SP_MONO_OUTPUT    0
-    #define AUDIO_SP_STEREO_OUTPUT  1
-
-    // feature identifier
-    #define AUDIO_SP_MIDI_ID        0
-    #define AUDIO_SP_EXT_AUDIO_ID   1
-    #define AUDIO_SP_MP3_ID         2
-    #define AUDIO_SP_TESTS_ID       3
-#if (L1_AAC == 1)
-    #define AUDIO_SP_AAC_ID         4   //added for AAC
-#endif
-
-    // Pattern
-    #define AUDIO_SP_SILENCE_PATTERN 0
-    #define AUDIO_SP_SINUS1_PATTERN  1
-    #define AUDIO_SP_SINUS2_PATTERN  2
-    #define AUDIO_SP_SINUS3_PATTERN  3
-
-  #endif
-
 #endif // AUDIO_TASK
 
 #if (DSP == 17) || (DSP == 32)
@@ -467,171 +348,3 @@
 
 #define B_FIR_LOOP  (TRUE_L <<  1)  // Bit set by the MCU to close the loop between the audio UL and DL path.
                                     // This features is used to find the FIR coefficient.
-
-/*************************************/
-/* ACOUSTIC interface                */
-/*************************************/
-
-/* Control values */
-/*----------------*/
-
-#define B_ANR_ENABLE      (TRUE_L << 0)
-#define B_ANR_DISABLE     (TRUE_L << 1)
-#define B_ANR_FULL_UPDATE (TRUE_L << 2)
-
-#define B_IIR_ENABLE      (TRUE_L << 0)
-#define B_IIR_DISABLE     (TRUE_L << 1)
-#define B_IIR_FULL_UPDATE (TRUE_L << 2)
-
-#define B_AGC_ENABLE      (TRUE_L << 0)
-#define B_AGC_DISABLE     (TRUE_L << 1)
-#define B_AGC_FULL_UPDATE (TRUE_L << 2)
-
-#define B_WCM_ENABLE      (TRUE_L << 0)
-#define B_WCM_DISABLE     (TRUE_L << 1)
-#define B_WCM_FULL_UPDATE (TRUE_L << 2)
-
-#if (L1_DRC == 1)
-#define DRC_LPF_LENGTH  17
-#define DRC_BPF_LENGTH  17 
-#endif
-
-#define B_DRC_ENABLE      (TRUE_L << 0)
-#define B_DRC_DISABLE     (TRUE_L << 1)
-#define B_DRC_FULL_UPDATE (TRUE_L << 2)
-
-#define B_LIM_ENABLE      (TRUE_L << 0)
-#define B_LIM_DISABLE     (TRUE_L << 1)
-#define B_LIM_FULL_UPDATE (TRUE_L << 2)
-#define B_LIM_UPDATE      (TRUE_L << 3)
-
-#define B_ES_ENABLE       (TRUE_L << 0)
-#define B_ES_DISABLE      (TRUE_L << 1)
-#define B_ES_FULL_UPDATE  (TRUE_L << 2)
-
-#if (L1_IIR == 2)
-#define IIR_4X_ORDER_OF_SECTION      2
-#define IIR_4X_FIR_MAX_LENGTH       40
-#endif
-
-#if (L1_WCM == 1)
-#define  WCM_1X_GAIN_TABLE_LENGTH  16
-#endif
-
-/* d_aqi_status bits */
-/*-------------------*/
-#if (DSP == 38) || (DSP == 39)
-#define B_DRC_DL_STATE    (TRUE_L <<  3)
-#define B_IIR_DL_STATE    (TRUE_L <<  4)
-#define B_LIM_STATE       (TRUE_L <<  5)
-#define B_AGC_DL_STATE    (TRUE_L <<  6)
-#define B_AEC_STATE       (TRUE_L <<  11)
-#define B_ANR_UL_STATE    (TRUE_L <<  12)
-#define B_ES_STATE        (TRUE_L <<  13)
-#define B_AGC_UL_STATE    (TRUE_L <<  14)
-#else
-#define B_IIR_STATE       (TRUE_L <<  4)
-#define B_LIM_STATE       (TRUE_L <<  5)
-#define B_ANR_STATE       (TRUE_L << 12)
-#define B_ES_STATE        (TRUE_L << 13)
-#endif
-
-/* d_audio_apps_status bits */
-/*-------------------*/
-#if (DSP == 38) || (DSP == 39)
-#define B_WCM_STATE    (TRUE_L <<  0)
-#endif
-
-/*****************/
-/* ANR constants */
-/*****************/
-#if (L1_ANR == 1)
-#define C_ANR_VAD_THR            0x1333
-#define C_ANR_GAMMA_SLOW         0x7F1B
-#define C_ANR_GAMMA_FAST         0x75C3
-#define C_ANR_GAMMA_GAIN_SLOW    28836
-#define C_ANR_GAMMA_GAIN_FAST    32113
-#define C_ANR_THR2               0x01E0
-#define C_ANR_THR4               0x03DE
-#define C_ANR_THR5               0x012C
-#define C_ANR_MEAN_RATIO_THR1    10000
-#define C_ANR_MEAN_RATIO_THR2    6000
-#define C_ANR_MEAN_RATIO_THR3    5000
-#define C_ANR_MEAN_RATIO_THR4    4000
-#endif
-
-
-#if (L1_ES == 1)
-
-/*******************/
-/* ES constants    */
-/*******************/
-
-// ES custom mode
-#define ES_CUSTOM_PARAM 0xFF
-
-// ES mode definition
-#define B_ES_UL             (0x1 << 0)   // ES UL enable
-#define B_ES_DL             (0x1 << 1)   // ES DL enable
-#define B_ES_CNG            (0x1 << 2)   // CNG enable
-#define B_ES_NSF            (0x1 << 3)   // NSF enable
-#define B_ES_ALS_UL         (0x1 << 4)   // ALS UL enable
-#define B_ES_ALS_DL         (0x1 << 5)   // ALS DL enable
-
-// ES parameter values
-#define C_ES_GAIN_DL_OFF    0x0
-#define C_ES_GAIN_UL_1_OFF  0x0
-#define C_ES_GAIN_UL_2_OFF  0x0
-
-#define C_ES_TCL_M23DB      0x005E    // ref. -23dB
-#define C_ES_TCL_M6DB       0x0176    // ref. -6dB
-#define C_ES_TCL_M3DB       0x02EA    // ref. -6dB
-#define C_ES_TCL_0DB        0x05D1    // ref. 0dB
-#define C_ES_TCL_4DB        0x0E9D    // ref. 4dB
-#define C_ES_TCL_6DB        0x1729    // ref. 6dB
-#define C_ES_TCL_10DB       0x3A2F    // ref. 10dB
-#define C_ES_TCL_12DB       0x5C36    // ref. 12dB
-#define C_ES_TCL_B3_FE_LS   0x0004    // ref. -10dB
-#define C_ES_TCL_B3_DT_LS   0x0001    // ref. -16dB
-#define C_ES_TCL_B3_FE_NS   0x000F    // ref. -10dB
-#define C_ES_TCL_B3_DT_NS   0x0004    // ref. -16dB
-#define C_ES_TCL_B3_NE      0x000F    // ref. 0dB
-
-#define C_ES_TCL_FE_0       0x05D1    // ref. 0dB
-#define C_ES_TCL_DT_0       0x05D1    // ref. 0dB
-#define C_ES_TCL_NE_0       0x05D1    // ref. 0dB
-
-#define C_ES_TCL_LOUD       0x00BF    // ref. 70dB
-
-#define C_ES_SW_CNT         5         // ref. switching time 100ms
-#define C_ES_DT_CNT         5         // ref. double-talk time 100ms
-
-#define C_ES_HG_CNT_1       8         // ref. hangover time 150ms, A_S(IDLE) = -3dB
-#define C_ES_HG_CNT_1A      8         // ref. hangover time 150ms, A_S(IDLE) = -3dB
-#define C_ES_HG_CNT_2A      10        // ref. hangover time 200ms, A_S(IDLE) = -3dB
-#define C_ES_HG_CNT_2B      13        // ref. hangover time 250ms, A_S(IDLE) = -3dB
-#define C_ES_HG_CNT_2C      13        // ref. hangover time 250ms, A_S(IDLE) = -3dB
-#define C_ES_HG_CNT_2C_IDLE 13        // ref. hangover time 250ms, A_S(IDLE) = -3dB
-#define C_ES_HG_CNT_3       20        // ref. hangover time 400ms
-
-#define C_ES_ATT_LIN_0DB    0x7fff    // ref.  0dB
-#define C_ES_ATT_LIN_3DB    0x5A9D    // ref. -3dB
-#define C_ES_ATT_LIN_5DB    0x47FA    // ref. -5dB
-#define C_ES_ATT_LIN_6DB    0x4026    // ref. -6dB
-#define C_ES_ATT_LIN_8DB    0x32F4    // ref. -8dB
-#define C_ES_ATT_LIN_9DB    0x2D6A    // ref. -9dB
-#define C_ES_ATT_LIN_10DB   0x2879    // ref. -10dB
-#define C_ES_ATT_LIN_12DB   0x2026    // ref. -12dB
-#define C_ES_ATT_LIN_15DB   0x16C2    // ref. -15dB
-#define C_ES_ATT_LIN_16DB   0x1449    // ref. -16dB
-#define C_ES_ATT_LIN_19DB   0x0E5D    // ref. -19dB
-#define C_ES_ATT_LIN_21DB   0x0B68    // ref. -21dB
-#define C_ES_ATT_LIN_24DB   0x0813    // ref. -24dB
-#define C_ES_ATT_LIN_36DB   0x0207    // ref. -36dB
-#define C_ES_ATT_LIN_48DB   0x0082    // ref. -48dB
-#define C_ES_ATT_LIN_66DB   0x0010    // ref. -56dB
-
-#endif    // L1_ES
-#if(L1_EXT_AUDIO_MGT == 1)
-#define AUDIO_EXT_MIDI_BUFFER_SIZE 2640
-#endif

@@ -22,10 +22,6 @@ void l1_send_sr_background_msg  (UWORD32 SignalCode);
 #if (MELODY_E2)
 void l1_send_melody_e2_background_msg(UWORD32 SignalCode, UWORD8  melody_id);
 #endif
-#if (OP_L1_STANDALONE == 0)
-void * mem_Allocate(UWORD16 size);
-void    mem_Deallocate(void *memoryBlock);
-#endif
 #endif    // _L1AUDIO_PROTO_H_
 
 #endif    // AUDIO_TASK
