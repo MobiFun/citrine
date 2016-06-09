@@ -157,11 +157,11 @@ void l1_create_HISR (void)
                            "L1_HISR",
                            layer_1_sync_HISR_entry,
   #if (OP_L1_STANDALONE == 0)
-                           1,
+                           0,
                            layer_1_sync_stack,
                            LAYER_1_SYNC_STACK_SIZE);
   #else
-                           1,
+                           0,
                            layer_1_sync_stack,
                            sizeof(layer_1_sync_stack));
   #endif
@@ -172,7 +172,7 @@ void l1_create_HISR (void)
     status += NU_Create_HISR(&EXT_AUDIO_MGT_hisr,
                              "H_EXT_AUDIO_MGT",
                              Cust_ext_audio_mgt_hisr,
-                             2,
+                             1,
                              ext_audio_mgt_hisr_stack,
                              sizeof(ext_audio_mgt_hisr_stack));
   #endif
@@ -181,7 +181,7 @@ void l1_create_HISR (void)
     status += NU_Create_HISR(&apiHISR,
                              "API_HISR",
                              api_hisr,
-                             2,
+                             1,
                              API_HISR_stack,
                              sizeof(API_HISR_stack));
   #endif // (L1_MP3 == 1) || (L1_MIDI == 1) || (L1_AAC == 1) || (L1_DYN_DSP_DWNLD == 1)
@@ -194,7 +194,7 @@ void l1_create_HISR (void)
     status += NU_Create_HISR(&api_modemHISR,
                              "MODEM",
                              api_modem_hisr,
-                             1,
+                             0,
                              API_MODEM_HISR_stack,
                              sizeof(API_MODEM_HISR_stack));
   #endif
@@ -204,11 +204,15 @@ void l1_create_HISR (void)
 
 /*
  * The versions of TP_FrameIntHandler() and layer_1_sync_HISR_entry()
- * in the Leonardo dl1_com.obj module contain CPU load measurement
- * code, but in the LoCosto version of L1 which we are using this
- * functionality has been moved into L1S proper, i.e., inside the
- * hisr() function.
+ * in the TCS211 dl1_com.obj module contain CPU load measurement
+ * code.  TI changed things for LoCosto, so we have to revert their
+ * changes and restore the TCS211 way.
  */
+
+#if (TRACE_TYPE == 4)
+  #define TIMER_RESET_VALUE (0xFFFF)
+  #define TICKS_PER_TDMA    (1875)
+#endif
 
 /*-------------------------------------------------------*/
 /* TP_FrameIntHandler() Low Interrupt service routine    */
@@ -241,7 +245,7 @@ void TP_FrameIntHandler(void)
 
   #else
 
-     #if (TRACE_TYPE == 4) && (TI_NUC_MONITOR != 1) && (WCP_PROF == 1)
+    #if (TRACE_TYPE == 4) && (TI_NUC_MONITOR != 1)
               TM_ResetTimer (2, TIMER_RESET_VALUE, 1, 0);
               TM_StartTimer (2);
     #endif
@@ -277,6 +281,44 @@ void TP_FrameIntHandler(void)
 
 void layer_1_sync_HISR_entry (void)
 {
-   // Call Synchronous Layer1
-   hisr();
+  /* automatic var for the CPU load measurement code below */
+  #if (TRACE_TYPE == 4)
+    unsigned long cpu;
+  #endif
+
+  // Call Synchronous Layer1
+  hisr();
+
+  /*
+   * FreeCalypso: the following code has been reconstructed from
+   * the disassembly of the TCS211 binary object; it was found to be
+   * similar to the Trace_L1S_CPU_load() function in l1_trace.c
+   * which appears to have been only for (TRACE_TYPE == 1) originally.
+   */
+  #if (TRACE_TYPE == 4)
+    layer_1_sync_end_time = TIMER_RESET_VALUE - TM_ReadTimer(2);
+
+    cpu = (100 * layer_1_sync_end_time) / TICKS_PER_TDMA;
+    if (cpu > max_cpu)
+    {
+      max_cpu=cpu;
+      fn_max_cpu=l1s.actual_time.fn;
+      max_cpu_flag = 1;
+      /*
+       * TCS211 object has this bogus code here:
+
+       if (some non-understood condition) {
+         static int i;
+         i++;	// static var never used anywhere
+         max_cpu_flag = 1;
+       }
+
+       * Because this bogus code does not change the result,
+       * I decided not to bother with reconstructing it.
+       */
+    }
+
+    if (((l1s.actual_time.fn%1326) == 0) && (max_cpu_flag == 0))
+      max_cpu = 0;
+  #endif
 }
