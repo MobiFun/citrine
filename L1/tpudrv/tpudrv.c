@@ -15,10 +15,9 @@
  *
  */
 
-#include "config.h"
-#include "l1_confg.h"
 #include "l1_macro.h"
-#include "../../bsp/iq.h"
+#include "iq.h"
+#include "l1_confg.h"
 #include "l1_const.h"
 #include "l1_types.h"
 
@@ -57,7 +56,7 @@
 #include "l1_defty.h"
 #include "tpudrv.h"
 #include "sys_types.h"
-#include "../../bsp/clkm.h"
+#include "clkm.h"
 #include "l1_time.h"
 #include "l1_varex.h"
 #include "l1_trace.h"
@@ -248,9 +247,6 @@ void  TPU_DisableAllIt()
 }
 
 
-
-
-
 /*
  * TP_Program
  *
@@ -258,20 +254,14 @@ void  TPU_DisableAllIt()
  * (Do not write terminating 0)
  *
  */
-void *TP_Program(const SYS_UWORD16 *src)
+void TP_Program(const SYS_UWORD16 *src)
 {
    /* Write TPU instructions until SLEEP */
    while (*src)
    {
       *TP_Ptr++ = *src++;
    }
-   #if 1 //(TOOL_CHOICE == 3)   // 2.54 Migration
-   return((void *)NULL);
-   #endif // TOOL_CHOICE == 3
-    //  return((void *)NULL);//ompas00090550
-
 }
-
 
 
 void TP_Reset(SYS_UWORD16 on)
@@ -312,6 +302,7 @@ void TP_Enable(SYS_UWORD16 on)
 }
 
 
+#if 0	/* FreeCalypso: function not present in TCS211 */
 /*-----------------------------------------------------------------------*/
 /*   Function name: TPU_wait_idle                                        */
 /*-----------------------------------------------------------------------*/
@@ -331,6 +322,7 @@ void TPU_wait_idle(void)
     wait_ARM_cycles(convert_nanosec_to_cycles(3000));
   }
 }
+#endif
 
 
 /*
@@ -374,7 +366,7 @@ void l1dmacro_synchro (UWORD32 when, UWORD32 value)
 {
    // WARNING: 'when' must always be comprised between 0 and TPU_CLOCK_RANGE !!!
    #if (TRACE_TYPE!=0) && (TRACE_TYPE!=5)
-     trace_fct(CST_L1DMACRO_SYNCHRO, 1);//omaps00090550
+     trace_fct(CST_L1DMACRO_SYNCHRO, -1);
    #endif
 
    if (value != IMM)      // IMM indicates to set directly without AT
@@ -394,7 +386,7 @@ void l1dmacro_synchro (UWORD32 when, UWORD32 value)
 void l1dmacro_adc_read_rx(void)
 {
 
-  #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+  #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
      // TSP needs to be configured in order to send serially to Omega
 
 //   *TP_Ptr++ = TPU_MOVE  (TSP_SPI_SET1, TSP_CLK_RISE); // Clock configuration
@@ -416,7 +408,7 @@ void l1dmacro_adc_read_rx(void)
   #endif
 
 #if (L1_MADC_ON == 1)
-  #if (ANALOG == 11)
+  #if (ANLG_FAM == 11)
 
      #if (TRACE_TYPE==1)||(TRACE_TYPE ==4)
        #if (GSM_IDLE_RAM == 0)
@@ -457,7 +449,7 @@ void l1dmacro_adc_read_rx_cs_mode0(void)
           *TP_Ptr++ = TPU_MOVE(REG_SPI_ACT_U,0);
 
 #if (L1_MADC_ON == 1)
-  #if (ANALOG == 11)
+  #if (ANLG_FAM == 11)
 
      #if (TRACE_TYPE==1)||(TRACE_TYPE ==4)
        #if (GSM_IDLE_RAM == 0)
@@ -485,14 +477,14 @@ void l1dmacro_adc_read_rx_cs_mode0(void)
  */
 
 
-#if (ANALOG != 11)
+#if (ANLG_FAM != 11)
 void l1dmacro_adc_read_tx(UWORD32 when)
 #else
 void l1dmacro_adc_read_tx(UWORD32 when, UWORD8 tx_up_state)
 #endif
 {
 
-  #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+  #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
 
      *TP_Ptr++ = TPU_FAT (when);
      *TP_Ptr++ = TPU_MOVE  (TSP_CTRL1,6);                // Device and Nb of bits configuration
@@ -508,7 +500,7 @@ void l1dmacro_adc_read_tx(UWORD32 when, UWORD8 tx_up_state)
   #endif
 
 #if (L1_MADC_ON == 1)
-  #if (ANALOG == 11)
+  #if (ANLG_FAM == 11)
      *TP_Ptr++ = TPU_FAT (when);
      *TP_Ptr++ = TPU_MOVE(REG_SPI_ACT_U,tx_up_state | START_ADC);
      *TP_Ptr++ = TPU_WAIT  (2);
