@@ -9,6 +9,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include "config.h"
 #include "l1_confg.h"
 #include "l1_types.h"
 #include "l1_const.h"        

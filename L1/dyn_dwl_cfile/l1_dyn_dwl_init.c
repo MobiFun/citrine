@@ -6,9 +6,11 @@
  *  Copyright 2004 (C) Texas Instruments
  *
  ************* Revision Controle System Header *************/
-#include "nucleus.h"
+#include "config.h"
 #include "l1_confg.h"
 #include "sys_types.h"
+#include "../../riviera/rv/rv_general.h"
+#include "../../nucleus/nucleus.h"
 #include "l1_types.h"
 #include "l1audio_const.h"
 #include "l1audio_cust.h"
@@ -37,7 +39,7 @@
 #endif //L1_AAC
 
 #include "l1_defty.h"
-#include "cust_os.h"
+#include "../../gpf/inc/cust_os.h"
 /* #include "nu_main.h" */
 #include "l1audio_signa.h"
 #include "l1_varex.h"

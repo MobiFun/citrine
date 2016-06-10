@@ -7,10 +7,11 @@
  *
  ************* Revision Controle System Header *************/
 
+#include "config.h"
 #include "l1_confg.h"
 #include "l1_types.h"
 #include "sys_types.h"
-#include "cust_os.h"
+#include "../../gpf/inc/cust_os.h"
 #include "l1_macro.h"
 #include "l1_const.h"
 #if TESTMODE

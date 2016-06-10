@@ -8,11 +8,14 @@
  ************* Revision Controle System Header *************/
 #include <stdio.h>
 #include <string.h>
-#include "nucleus.h"
+
+#include "config.h"
 #include "l1_confg.h"
-#include "l1_types.h"
 #include "sys_types.h"
-#include "cust_os.h"
+#include "../../riviera/rv/rv_general.h"
+#include "../../nucleus/nucleus.h"
+#include "l1_types.h"
+#include "../../gpf/inc/cust_os.h"
 #include "l1audio_signa.h"
 #include "l1audio_const.h"
 #include "l1audio_cust.h"
@@ -44,11 +47,7 @@
 #include "l1_defty.h"
 #include "l1_varex.h"
 #include "l1_trace.h"
-#include "sys_dma.h"
-
-#if (OP_RIV_AUDIO == 1)
-  #include "rv/rv_general.h"
-#endif
+/* #include "sys_dma.h" */
 
 
 #if (L1_DYN_DSP_DWNLD == 1)
@@ -696,7 +695,7 @@ void l1a_dyn_dsp_dwnld_process(xSignalHeaderRec *msg)
                   l1a_apihisr_com.dyn_dwnld.command.restart = TRUE;
 
                   /********** WORKAROUND *************/
-                #if (OP_RIV_AUDIO == 1)
+                #if 1 //(OP_RIV_AUDIO == 1)
                   {
                     // WARNING: temporary until os_activate_hisr() is declared in L3 functions
                     extern NU_HISR apiHISR;
