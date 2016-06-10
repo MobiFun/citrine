@@ -782,14 +782,9 @@ void l1dmacro_RF_sleep  (void)
 	*TP_Ptr++ = TPU_SLEEP;
 	TP_Ptr = (SYS_UWORD16 *) TPU_RAM;
 	TP_Enable(1);
-	/*
-	 * The following call does not appear in tpudrv12.obj, and
-	 * there is no TPU_wait_idle() function in Leonardo tpudrv.obj
-	 * either.  But this wait operation makes sense to me, so
-	 * I'm keeping it as-is from the LoCosto version for now.
-	 * -- Space Falcon
-	 */
-	TPU_wait_idle();
+	#if 0	/* present in LoCosto but not in TCS211 */
+	  TPU_wait_idle();
+	#endif
 }
 
 //  l1dmacro_RF_wakeup
@@ -832,8 +827,9 @@ void l1dmacro_RF_wakeup  (void)
 	*TP_Ptr++ = TPU_SLEEP;
 	TP_Ptr = (SYS_UWORD16 *) TPU_RAM;
 	TP_Enable(1);
-	/* same issue as in the previous function */
-	TPU_wait_idle();
+	#if 0	/* present in LoCosto but not in TCS211 */
+	  TPU_wait_idle();
+	#endif
 }
 
 
