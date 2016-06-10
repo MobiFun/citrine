@@ -23,7 +23,7 @@ RVTMUX_UART_baud=115200
 FLASH_BOOT_VIA_BOOTROM=1
 FLASHIMAGE_BASE_ADDR=0x2000
 DWNLD=1
-L1_DYN_DSP_DWNLD=0
+L1_DYN_DSP_DWNLD=1
 
 # We always export CONFIG_INCLUDE_xxx to config.h and config.mk, whether
 # enabled or disabled.  This way enabling any of these components is
