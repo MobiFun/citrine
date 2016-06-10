@@ -15,9 +15,10 @@
  *
  */
 
-#include "l1_macro.h"
-#include "iq.h"
+#include "config.h"
 #include "l1_confg.h"
+#include "l1_macro.h"
+#include "../../bsp/iq.h"
 #include "l1_const.h"
 #include "l1_types.h"
 
@@ -56,7 +57,7 @@
 #include "l1_defty.h"
 #include "tpudrv.h"
 #include "sys_types.h"
-#include "clkm.h"
+#include "../../bsp/clkm.h"
 #include "l1_time.h"
 #include "l1_varex.h"
 #include "l1_trace.h"
