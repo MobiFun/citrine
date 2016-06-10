@@ -273,8 +273,6 @@ WORD16 Convert_l1_radio_freq  (UWORD16 radio_freq);
 UWORD8 Cust_recover_Os(void)
 {
 #if (CODE_VERSION != SIMULATION)
-  if (l1_config.pwr_mngt == PWR_MNGT)
-  {
     UWORD32 current_system_clock;
 
     /***************************************************/
@@ -300,9 +298,7 @@ UWORD8 Cust_recover_Os(void)
     //..............
     return(TRUE);
 
-  }
 #endif
-    return(TRUE); //omaps00090550
 }
 
 
@@ -329,66 +325,42 @@ UWORD8 Cust_recover_Os(void)
 /*-------------------------------------------------------*/
 UWORD8 Cust_check_system(void)
 {
+  extern UWORD8 why_big_sleep;
 
 #if (CODE_VERSION != SIMULATION)
-  if (l1_config.pwr_mngt == PWR_MNGT)
+  /* FreeCalypso change: this LT_Status() function is defunct */
+#if 0
+  // Forbid deep sleep if the light is on 
+  if(LT_Status())
   {
-
-#if (L2_L3_SIMUL == 0)
-    // Forbid deep sleep if the light is on
-/* FreeCalypso change: this LT_Status() function is defunct */
-#if 0
-    if(LT_Status())
-    {
-       //cut ARMIO and UWIRE clocks in big sleep
-       l1s.pw_mgr.modules_status = ARMIO_CLK_CUT | UWIRE_CLK_CUT ;
-       l1s.pw_mgr.why_big_sleep = BIG_SLEEP_DUE_TO_LIGHT_ON;
-       return(FRAME_STOP);  // BIG sleep
-    }
-#endif
-
-  #if (OP_L1_STANDALONE == 0)
-    // Forbid deep sleep if the camera is working
-/* FreeCalypso change: no camera */
-#if 0
-    if(!cama_sleep_status())
-    {
-      l1s.pw_mgr.why_big_sleep = BIG_SLEEP_DUE_TO_CAMERA;
-      return(FRAME_STOP);  // BIG sleep
-    }
-#endif
-
-// Forbid deep sleep if the SIM and UARTs not ready
-// FC note: this call to SIM_SleepStatus() *is* present in the Leonardo object
-#if CONFIG_INCLUDE_SIM //(REQUIRED_FOR_ESAMPLE_LOCOSTO)
-    // Forbid deep sleep if the SIM and UARTs not ready
-    if(SIM_SleepStatus())
-#endif
-    {
-  #endif
-#endif
-        if(SER_UartSleepStatus())
-          {
-              return(CLOCK_STOP);   // DEEP sleep
-          }
-         else l1s.pw_mgr.why_big_sleep = BIG_SLEEP_DUE_TO_UART;
-#if (L2_L3_SIMUL == 0)
-  #if (OP_L1_STANDALONE == 0)
-    }
-// Forbid deep sleep if the SIM and UARTs not ready
-#if CONFIG_INCLUDE_SIM //(REQUIRED_FOR_ESAMPLE_LOCOSTO)
-    else l1s.pw_mgr.why_big_sleep = BIG_SLEEP_DUE_TO_SIM;
-#endif
-  #endif
-#endif
-        // cut ARMIO and UWIRE clocks in big sleep
-        l1s.pw_mgr.modules_status = ARMIO_CLK_CUT | UWIRE_CLK_CUT ;
-        return(FRAME_STOP);  // BIG sleep
+    //cut ARMIO and UWIRE clocks in big sleep
+    l1s.pw_mgr.modules_status = ARMIO_CLK_CUT | UWIRE_CLK_CUT ;
+    why_big_sleep = BIG_SLEEP_DUE_TO_LIGHT_ON;
+    return(FRAME_STOP);  // BIG sleep
   }
+#endif
+
+  // Forbid deep sleep if the SIM and UARTs not ready 
+#if CONFIG_INCLUDE_SIM
+  if(SIM_SleepStatus())
+#endif
+  {
+    if(SER_UartSleepStatus()) 
+    {
+      return(CLOCK_STOP);   // DEEP sleep
+    }
+    else why_big_sleep = BIG_SLEEP_DUE_TO_UART;
+  }
+#if CONFIG_INCLUDE_SIM
+  else why_big_sleep = BIG_SLEEP_DUE_TO_SIM;
+#endif
+
+  // cut ARMIO and UWIRE clocks in big sleep
+  l1s.pw_mgr.modules_status = ARMIO_CLK_CUT | UWIRE_CLK_CUT ;
+  return(FRAME_STOP);  // BIG sleep
 #else // Simulation part
   return(CLOCK_STOP);   // DEEP sleep
 #endif
-return(CLOCK_STOP); // omaps00090550
 }
 #endif	/* !RUN_FLASH */
 
@@ -521,23 +493,16 @@ void config_rf_rw_band(char type, UWORD8 read)
     WORD32 offset;
     char name[64];
     char *p;
-#if (L1_FF_MULTIBAND == 0)
     UWORD8 std = l1_config.std.id;
-#endif
 
 #if FFS_WORKAROUND == 1
     struct stat_s stat;
     UWORD16 time;
 #endif
- #if (L1_FF_MULTIBAND == 0)
     for (i=0; i< GSM_BANDS; i++)
     {
       if(std_config[std].band[i] !=0 )
       {
-#else
-      for (i = 0; i < RF_NB_SUPPORTED_BANDS; i++)
-      {
-#endif /*if (L1_FF_MULTIBAND == 0) */
         f1 = &config_files_band[0];
         while (f1->name != NULL)
         {
@@ -547,11 +512,7 @@ void config_rf_rw_band(char type, UWORD8 read)
           {
             strcpy(name, &f1->name[1]);
             strcat(name, ".");
-#if (L1_FF_MULTIBAND == 0)
             strcat(name, band_config[std_config[std].band[i]].name);
-#else
-            strcat(name, multiband_rf[i].name);
-#endif /*if (L1_FF_MULTIBAND == 0)*/
 
             if (read == 1)
               cal_fread(name, p, f1->size);
@@ -575,9 +536,7 @@ void config_rf_rw_band(char type, UWORD8 read)
           f1++;
         }
       }
- #if (L1_FF_MULTIBAND == 0)
-}
-#endif
+    }
 }
 
 
@@ -589,7 +548,6 @@ void config_rf_rw_band(char type, UWORD8 read)
 /* Functionality : Init Standard variable configuration  */
 /*-------------------------------------------------------*/
 void Cust_init_std(void)
-#if (L1_FF_MULTIBAND == 0)
 {
   UWORD8 std = l1_config.std.id;
   UWORD8 band1, band2;
@@ -651,33 +609,6 @@ void Cust_init_std(void)
   //TBD: DRP Calib: Currently the Calib Data are only used for the routines, TBD add to l1_config. from saved Calibration
   // on a need basis ?
 }
-#else
-{
-  UWORD8 i;
-
-  for (i = 0; i < RF_NB_SUPPORTED_BANDS; i++)
-  {
-    switch(multiband_rf[i].gsm_band_identifier)
-    {
-        case RF_GSM900:
-            rf_band[i]=rf_900;
-        break;
-        case RF_GSM850:
-            rf_band[i]=rf_850;
-        break;
-        case RF_DCS1800:
-            rf_band[i]=rf_1800;
-        break;
-        case RF_PCS1900:
-            rf_band[i]=rf_1900;
-        break;
-        default:
-        break;
-    }
-  }
-  config_ffs_read('*');
-}
-#endif // if (L1_FF_MULTIBAND == 0)
 
 
 /*-------------------------------------------------------*/
@@ -771,7 +702,6 @@ void Cust_init_params(void)
   l1_config.params.fixed_txpwr        = FIXED_TXPWR;
   l1_config.params.eeprom_afc         = rf.afc.eeprom_afc;
   l1_config.params.setup_afc_and_rf   = SETUP_AFC_AND_RF;
-  l1_config.params.rf_wakeup_tpu_scenario_duration = l1_config.params.setup_afc_and_rf + 1; //directly dependent of l1dmacro_RF_wakeup implementation
 
   l1_config.params.psi_sta_inv        = rf.afc.psi_sta_inv;
   l1_config.params.psi_st             = rf.afc.psi_st;
@@ -787,11 +717,7 @@ void Cust_init_params(void)
       l1_config.params.afc_dac_center       = rf.afc.dac_center;      // VCXO - assuming DAC linearity
       l1_config.params.afc_dac_min          = rf.afc.dac_min;         // VCXO - assuming DAC linearity
       l1_config.params.afc_dac_max          = rf.afc.dac_max;         // VCXO - assuming DAC linearity
-#if (NEW_SNR_THRESHOLD == 0)
       l1_config.params.afc_snr_thr          = rf.afc.snr_thr;         // VCXO - SNR threshold
-#else
-      l1_config.params.afc_snr_thr = L1_TOA_SNR_THRESHOLD;
-#endif /* NEW_SNR_THRESHOLD */
       l1_config.params.afc_algo             = ALGO_AFC_LQG_PREDICTOR; // VCXO|VCTCXO - Choosing AFC algorithm
       l1_config.params.afc_win_avg_size_M   = C_WIN_AVG_SIZE_M;       // VCXO - Average psi values with this value
       l1_config.params.rgap_algo            = ALGO_AFC_RXGAP;         // VCXO - Choosing Reception Gap algorithm
@@ -900,27 +826,31 @@ void Cust_init_params(void)
 /* Return     :                                          */
 /* Functionality : returns agc value                     */
 /*-------------------------------------------------------*/
-WORD8 Cust_get_agc_from_IL(UWORD16 radio_freq, UWORD16 agc_index, UWORD8 table_id,UWORD8 lna_off_val)
+WORD8 Cust_get_agc_from_IL(UWORD16 radio_freq, UWORD16 agc_index, UWORD8 table_id)
 {
+  WORD8 agc_value;
 
-  UWORD16 agc_index_temp;
-	
 // radio_freq currently not used
 // this parameter is passed in order to allow band dependent tables for specific RFs
 // (e.g. dual band RF with separate AGC H/W blocks for GSM and DCS)
 
-  agc_index_temp = (agc_index<<1) + (lna_off_val * l1ctl_get_lna_att(radio_freq)); 
-  agc_index= agc_index_temp>>1;
   if (agc_index > 120)
     agc_index = 120;    // Clip agc_index
 
   switch (table_id)
   {
-    case MAX_ID:  return(rf.rx.agc.il2agc_max[agc_index]);
-    case AV_ID:   return(rf.rx.agc.il2agc_av[agc_index]);
-    case PWR_ID:  return(rf.rx.agc.il2agc_pwr[agc_index]);
+    case MAX_ID:
+      agc_value = rf.rx.agc.il2agc_max[agc_index];
+      break;
+    case AV_ID:
+      agc_value = rf.rx.agc.il2agc_av[agc_index];
+      break;
+    case PWR_ID:
+      agc_value = rf.rx.agc.il2agc_pwr[agc_index];
+      break;
   }
-  return (0);//omaps00090550
+
+  return agc_value;
 }
 
 /*-------------------------------------------------------*/
@@ -938,19 +868,17 @@ WORD8 Cust_get_agc_from_IL(UWORD16 radio_freq, UWORD16 agc_index, UWORD8 table_i
     UWORD16 inline Cust_get_agc_band(UWORD16 arfcn, UWORD8 gsm_band)
   #endif
     {
-//      WORD32 i =0 ;  //omaps00090550
-	UWORD8  band_number;
+      WORD32 i ;
 
-      for (band_number=0;band_number<RF_RX_CAL_CHAN_SIZE;band_number++)
+      for (i=0;i<RF_RX_CAL_CHAN_SIZE;i++)
       {
-        if (arfcn <= rf_band[gsm_band].rx.agc_bands[band_number].upper_bound)
-          return(band_number);
+        if (arfcn <= rf_band[gsm_band].rx.agc_bands[i].upper_bound)
+          return(i);
       }
       // Should never happen!
       return(0);
-    }
+    }  
 
-#if (L1_FF_MULTIBAND == 0)
 /*-------------------------------------------------------*/
 /* Cust_is_band_high                                     */
 /*-------------------------------------------------------*/
@@ -971,7 +899,6 @@ UWORD8 Cust_is_band_high(UWORD16 radio_freq)
   return(((radio_freq >= l1_config.std.first_radio_freq) &&
           (radio_freq < (l1_config.std.first_radio_freq + max_carrier))) ? MULTI_BAND1 : MULTI_BAND2);
 }
-#endif
 
 /*-------------------------------------------------------*/
 /* l1ctl_encode_delta2()                                 */
@@ -985,16 +912,10 @@ WORD8 l1ctl_encode_delta2(UWORD16 radio_freq)
   WORD8    delta2_freq;
   UWORD16  i;
   UWORD16  arfcn;
-#if (L1_FF_MULTIBAND == 0)
   UWORD8   band;
 
   band  = Cust_is_band_high(radio_freq);
   arfcn = Convert_l1_radio_freq(radio_freq);
-#else
-  WORD8   band;
-  // Corrected for input being rf_freq and not l1_freq
-  arfcn = rf_convert_l1freq_to_arfcn_rfband(rf_convert_rffreq_to_l1freq(radio_freq), &band);
-#endif
 
   i = Cust_get_agc_band(arfcn,band); //
   delta2_freq = rf_band[band].rx.agc_bands[i].agc_calib;
@@ -1011,92 +932,6 @@ WORD8 l1ctl_encode_delta2(UWORD16 radio_freq)
 
   return(delta2_freq);
 }
-
-#if (L1_FF_MULTIBAND == 0)
-#else
-/*-------------------------------------------------------*/
-/* l1ctl_get_g_magic()                                   */
-/*-------------------------------------------------------*/
-/* Parameters :                                          */
-/* Return     :                                          */
-/* Functionality :                                       */
-/*-------------------------------------------------------*/
-UWORD16 l1ctl_get_g_magic(UWORD16 radio_freq)
-{
-  // Corrected for input being rf_freq and not l1_freq
-  return (rf_band[rf_subband2band[rf_convert_rffreq_to_l1subband(radio_freq)]].rx.rx_cal_params.g_magic);
-}
-
-
-/*-------------------------------------------------------*/
-/* l1ctl_get_lna_att()                                   */
-/*-------------------------------------------------------*/
-/* Parameters :                                          */
-/* Return     :                                          */
-/* Functionality :                                       */
-/*-------------------------------------------------------*/
-UWORD16 l1ctl_get_lna_att(UWORD16 radio_freq)
-{
-// The function is provided with rf_freq as input so 
-// convert rf_freq to l1_subband then convert l1_subband to rf_band and index into rf_band
-  return( rf_band[rf_subband2band[rf_convert_rffreq_to_l1subband(radio_freq)]].rx.rx_cal_params.lna_att);    
-//  return (rf_band[rf_convert_l1freq_to_rf_band_idx(radio_freq)].rx.rx_cal_params.lna_att);
-}
-/*-------------------------------------------------------*/
-/* l1ctl_encode_delta1()                                 */
-/*-------------------------------------------------------*/
-/* Parameters :                                          */
-/* Return     :                                          */
-/* Functionality :                                       */
-/*-------------------------------------------------------*/
-WORD8 l1ctl_encode_delta1(UWORD16 radio_freq)
-{
-  return 0;
-}
-/*-------------------------------------------------------*/
-/* l1ctl_encode_lna()                                    */
-/*-------------------------------------------------------*/
-/* Parameters :                                          */
-/* Return     :                                          */
-/* Functionality :                                       */
-/*-------------------------------------------------------*/
-void l1ctl_encode_lna( UWORD8   input_level,
-                       UWORD8  *lna_state,
-                       UWORD16  radio_freq)
-{
-
-  /*** LNA Hysteresis is implemented as following :
-
-            |
-          On|---<>----+-------+
-            |         |       |
-   LNA      |         |       |
-            |         ^       v
-            |         |       |
-            |         |       |
-         Off|         +-------+----<>-----
-            +--------------------------------
-              50      40      30      20   input_level /-dBm
-                   THR_HIGH THR_LOW                          ***/
-  WORD8 band;
-  // Corrected for input to be rf_freq and not l1_freq
-  band = rf_subband2band[rf_convert_rffreq_to_l1subband(radio_freq)];
-  if ( input_level > rf_band[band].rx.rx_cal_params.lna_switch_thr_high)  // < -44dBm ?
-  {
-   *lna_state = LNA_ON;  // lna_off = FALSE
-  }
-  else if ( input_level < rf_band[band].rx.rx_cal_params.lna_switch_thr_low)   // > -40dBm ?
-  {
-   *lna_state = LNA_OFF; // lna off = TRUE
-  }
-}
-
-UWORD8 l1ctl_get_iqswap(UWORD16 rf_freq)
-{
-  return(rf_band[rf_subband2band[rf_convert_rffreq_to_l1subband(rf_freq)]].swap_iq);
-}
-
-#endif //if L1_FF_MULTIBAND == 0)
 
 /************************************/
 /* TX Management                    */
@@ -1118,38 +953,22 @@ APCRAM: Dwn(15:8)Up(7:0)
 
 void Cust_get_ramp_tab(API *a_ramp, UWORD8 txpwr_ramp_up, UWORD8 txpwr_ramp_down, UWORD16 radio_freq)
 {
-  UWORD16 index_up, index_down,j, arfcn;
-#if (L1_FF_MULTIBAND == 0)
+  UWORD16 index_up, index_down, j;
   UWORD8 band;
 
   band  = Cust_is_band_high(radio_freq);
-  arfcn = Convert_l1_radio_freq(radio_freq);
-#else
-  WORD8 band;
-  // Corrected for input being rf_freq and not l1_freq
-  arfcn = rf_convert_l1freq_to_arfcn_rfband(rf_convert_rffreq_to_l1freq(radio_freq), &band);
-#endif //if( L1_FF_MULTIBAND == 0)
 
   index_up   = rf_band[band].tx.levels[txpwr_ramp_up].ramp_index;
   index_down = rf_band[band].tx.levels[txpwr_ramp_down].ramp_index;
 
-  #if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3))
+  #if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
     for (j=0; j<16; j++)
     {
       a_ramp[j]=((rf_band[band].tx.ramp_tables[index_down].ramp_down[j])<<11) |
                 ((rf_band[band].tx.ramp_tables[index_up].ramp_up[j])  << 6) |
                   0x14;
     }
-  #endif
-
-   #if (RF_FAM == 61)
-  // 20 Coeff each 8 (RampDown) + 8 (RampUp)
-      for (j=0; j<20; j++)
-      {
-         a_ramp[j]=( (255 - (rf_band[band].tx.ramp_tables[index_down].ramp_down[j]) ) <<8) |
-                ((rf_band[band].tx.ramp_tables[index_up].ramp_up[j])) ;
-      }
-   #endif
+  #endif 
 }
 
 /*-------------------------------------------------------*/
@@ -1160,22 +979,13 @@ void Cust_get_ramp_tab(API *a_ramp, UWORD8 txpwr_ramp_up, UWORD8 txpwr_ramp_down
 /* Functionality :                                       */
 /*-------------------------------------------------------*/
 
-#if ((ANALOG == 1) || (ANALOG == 2) || (ANALOG == 3) || (RF_FAM == 61))
-UWORD16 Cust_get_pwr_data(UWORD8 txpwr, UWORD16 radio_freq
-                          #if (REL99 && FF_PRF)
-                            , UWORD8 number_uplink_timeslot
-                          #endif
-                          )
-{
+#if ((ANLG_FAM == 1) || (ANLG_FAM == 2) || (ANLG_FAM == 3))
+UWORD16 Cust_get_pwr_data(UWORD8 txpwr, UWORD16 radio_freq)
+{  
 
   UWORD16 i,j;
   UWORD16 arfcn;
-
-  T_TX_LEVEL *a_tx_levels;
-
-  #if (APC_VBAT_COMP == 1)
-    static UWORD16 apc_max_value = APC_MAX_VALUE;
-  #endif
+  UWORD8 band;
 
 #if(ORDER2_TX_TEMP_CAL==1)
         WORD16 pwr_data;
@@ -1183,39 +993,19 @@ UWORD16 Cust_get_pwr_data(UWORD8 txpwr, UWORD16 radio_freq
         UWORD16  pwr_data;
 #endif
 
-#if (L1_FF_MULTIBAND == 0)
-    UWORD8 band;
-    band  = Cust_is_band_high(radio_freq);
-    arfcn = Convert_l1_radio_freq(radio_freq);
-#else
-    WORD8 band;
-    // Corrected for input being rf_freq and not l1_freq
-    arfcn = rf_convert_l1freq_to_arfcn_rfband(rf_convert_rffreq_to_l1freq(radio_freq), &band);
-#endif //if( L1_FF_MULTIBAND == 0)
-
-//  band  = Cust_is_band_high(radio_freq);
-//  arfcn = Convert_l1_radio_freq(radio_freq);
-
-  a_tx_levels = &(rf_band[band].tx.levels[txpwr]); // get pointer to rf tx structure
-
-  #if REL99
-    #if FF_PRF
-      // uplink power reduction feature which decrease power level in case of uplink multislot
-      a_tx_levels = Cust_get_uplink_apc_power_reduction(band, number_uplink_timeslot, a_tx_levels);
-    #endif
-  #endif
-
-// get uncalibrated apc
-  pwr_data = a_tx_levels->apc;
-
-  i = a_tx_levels->chan_cal_index; // get index for channel compensation
+  band  = Cust_is_band_high(radio_freq);
+  arfcn = Convert_l1_radio_freq(radio_freq);
+   
+  i = rf_band[band].tx.levels[txpwr].chan_cal_index;
   j=0;
+  // get uncalibrated apc
+  pwr_data = rf_band[band].tx.levels[txpwr].apc;
 
   while (arfcn > rf_band[band].tx.chan_cal_table[i][j].arfcn_limit)
     j++;
 
-  // channel calibrate apc
-  pwr_data = ((UWORD32) (pwr_data * rf_band[band].tx.chan_cal_table[i][j].chan_cal))/128;
+  // channel calibrate apc  
+  pwr_data = ((UWORD32) (pwr_data * rf_band[band].tx.chan_cal_table[i][j].chan_cal))/128; 
 
   // temperature compensate apc
   {
@@ -1223,7 +1013,7 @@ UWORD16 Cust_get_pwr_data(UWORD8 txpwr, UWORD16 radio_freq
 
     pt = rf_band[band].tx.temp;
     while (((WORD16)adc.converted[ADC_RFTEMP] > pt->temperature) && ((pt-rf_band[band].tx.temp) < (RF_TX_CAL_TEMP_SIZE-1)))
-      pt++;
+	    pt++;
 #if(ORDER2_TX_TEMP_CAL==1)
                 pwr_data += (txpwr*(pt->a*txpwr + pt->b) + pt->c) / 64;      //delta apc = ax^2+bx+c
                 if(pwr_data < 0) pwr_data = 0;
@@ -1231,83 +1021,8 @@ UWORD16 Cust_get_pwr_data(UWORD8 txpwr, UWORD16 radio_freq
     pwr_data += pt->apc_calib;
 #endif
   }
-
-  // Vbat compensate apc
-  #if (APC_VBAT_COMP == 1)
-
-    if (adc.converted[ADC_VBAT] < VBAT_LOW_THRESHOLD)
-       apc_max_value = APC_MAX_VALUE_LOW_BAT;
-
-    else if (adc.converted[ADC_VBAT] > VBAT_HIGH_THRESHOLD)
-            apc_max_value = APC_MAX_VALUE;
-
-    // else do nothing as Vbat is staying between VBAT_LOW_THRESHOLD and
-    // VBAT_HIGH_THRESHOLD -> max APC value is still the same than previous one
-
-    if (pwr_data > apc_max_value)
-	  pwr_data = apc_max_value;
-  #endif // APC_VBAT_COMP == 1
-
   return(pwr_data);
 }
-#endif
-
-
-#if(REL99 && FF_PRF)
-
-/*-------------------------------------------------------*/
-/* Cust_get_uplink_apc_power_reduction                   */
-/*-------------------------------------------------------*/
-/* Parameters :                                          */
-/* - frenquency band                                     */
-/* - modulation type                                     */
-/* - number of uplink timeslot                           */
-/* - pointer to radio power control structure            */
-/* Return     :                                          */
-/* - pointer to radio power control structure            */
-/*                                                       */
-/* Functionality : This function returns a pointer to    */
-/* the radio power control structure after power         */
-/* reduction processing.                                 */
-/* Depending of the number of uplink timeslot, the       */
-/* analogue power control (apc) value can be reduced     */
-/* in order to limit effect of terminal heat             */
-/* dissipation due to power amplifier.                   */
-/*-------------------------------------------------------*/
-
-T_TX_LEVEL *Cust_get_uplink_apc_power_reduction(UWORD8 band,
-                                                UWORD8 number_uplink_timeslot,
-                                                T_TX_LEVEL *p_tx_level)
-{
-  T_TX_LEVEL *p_power_reduction_tx_level;
-
-  #if TESTMODE
-    if ((l1_config.TestMode == TRUE) && (l1_config.tmode.tx_params.power_reduction_enable == FALSE))
-      return p_tx_level ;       // return without any power reduction
-  #endif
-
-  if ((number_uplink_timeslot >= 1) && (number_uplink_timeslot <=   MAX_UPLINK_TIME_SLOT))
-  {
-    number_uplink_timeslot--;  // index start from 0
-  }
-  else
-  {
-    return p_tx_level;         // abnormal case we do not apply any power reduction
-  }
-
- p_power_reduction_tx_level = &(rf_band[band].tx.levels_power_reduction[number_uplink_timeslot]);
-
-  // We select the lowest power level in order to apply power reduction
-  #if (CODE_VERSION != SIMULATION)
-    if (p_tx_level->apc > p_power_reduction_tx_level->apc)   // higher apc value means higher transmit power
-  #else
-    if (p_tx_level->apc < p_power_reduction_tx_level->apc)   // ! for simulation rf apc tables are inverted so comparaison is the reverse
-  #endif
-      return p_power_reduction_tx_level;
-    else
-      return p_tx_level;
-}
-
 #endif
 #endif	/* !RUN_FLASH */
 
