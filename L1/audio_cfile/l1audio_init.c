@@ -11,9 +11,8 @@
 /* Include files...                 */
 /************************************/
 
-#include "config.h"
-#include "l1_confg.h"
 #include "l1_macro.h"
+#include "l1_confg.h"
 
 
   #include "l1_types.h"
@@ -111,22 +110,22 @@
     #endif
 
     #include "l1_defty.h"
-    #include "../../gpf/inc/cust_os.h"
+    #include "cust_os.h"
     #include "l1_msgty.h"
-    #include "tpudrv.h"
+    #include "tpudrv.h"       // TPU drivers.           ("eva3.lib")
     #include "l1_varex.h"
     #include "l1_proto.h"
     #include "l1_mftab.h"
     #include "l1_tabs.h"
-    #include "../../bsp/mem.h"
-    #include "../../bsp/armio.h"
-    #include "../../bsp/timer.h"
-    #include "../../bsp/timer1.h"
-    #include "../../bsp/dma.h"
-    #include "../../bsp/inth.h"
-    #include "../../bsp/ulpd.h"
-    #include "../../bsp/rhea_arm.h"
-    #include "../../bsp/clkm.h"
+    #include "mem.h"
+    #include "armio.h"
+    #include "timer.h"
+    #include "timer1.h"
+    #include "dma.h"
+    #include "inth.h"
+    #include "ulpd.h"
+    #include "rhea_arm.h"
+    #include "clkm.h"         // Clockm  ("eva3.lib")
     #include "l1_ctl.h"
     #include "l1_time.h"
 
@@ -141,24 +140,9 @@
     extern T_DRC_MCU_DSP drc_ndb_sim;
   #endif
 #endif
+
 #if(L1_BT_AUDIO ==1)
   extern T_L1_BT_AUDIO bt_audio;
-#endif
-
-/*
- * FreeCalypso hack: the version of l1_confg.h in the Leonardo semi-src
- * sets AUDIO_TASK to 1 unconditionally, thus it appears that by the
- * time TCS211 came around, TI stopped supporting and testing the
- * sans-AUDIO_TASK configuration.  We do wish to support it in FreeCalypso
- * though.  Attempting to compile this module w/o AUDIO_TASK failed
- * because some preprocessor constant definitions were missing.
- * All 3 offending constants are defined in l1audio_const.h, but only
- * when AUDIO_TASK is enabled.  The following hack is our workaround.
- */
-#if !AUDIO_TASK
-  #define C_BGD_RECOGN  5
-  #define C_BGD_ALIGN   6
-  #define NO_MELODY_SELECTED    (0)
 #endif
 
   /**************************************/
@@ -186,6 +170,12 @@
   void l1audio_dsp_init(void)
   {
     UWORD8  i, j;
+
+    //-----------------------------------
+    // AUDIO control words initialization
+    //-----------------------------------
+    l1s_dsp_com.dsp_ndb_ptr->d_toneskb_init     = 0;             // MCU/DSP audio task com. register
+    l1s_dsp_com.dsp_ndb_ptr->d_toneskb_status   = 0;             // MCU/DSP audio task com. register
 
     #if (KEYBEEP)
       l1s_dsp_com.dsp_ndb_ptr->d_k_x1_kt0       = 0;             // keybeep variable
@@ -348,6 +338,9 @@
         l1s_dsp_com.dsp_ndb_ptr->a_melody_e2_instrument_ptr[i]  = 0x0000;
       }
 
+      /* FreeCalypso: reconstructed from disassembly of TCS211 object */
+      l1s_dsp_com.dsp_ndb_ptr->d_melody_e2_deltatime = 0;
+
       // Reset the flag to know if the DSP melody E2 task runs
       l1s.melody_e2.dsp_task = FALSE;
     #endif // MELODY_E2
@@ -357,12 +350,6 @@
       // In case of WCP, there is a WCP variable at this address
       l1s_dsp_com.dsp_ndb_ptr->d_melody_selection = NO_MELODY_SELECTED;
     #endif
-
-    //-----------------------------------
-    // AUDIO control words initialization
-    //-----------------------------------
-    l1s_dsp_com.dsp_ndb_ptr->d_toneskb_init     = 0;             // MCU/DSP audio task com. register
-    l1s_dsp_com.dsp_ndb_ptr->d_toneskb_status   = 0;             // MCU/DSP audio task com. register
 
 
     #if ((CHIPSET == 4) || (CHIPSET == 12) || (CHIPSET == 15) || ((CHIPSET==10) && (OP_WCP==1))) && ((DSP == 36) || (DSP == 37) || (DSP == 38) || (DSP == 39))
@@ -376,7 +363,6 @@
       l1s_dsp_com.dsp_ndb_ptr->d_lim_dl_ctrl      = 0;             // Limiter control
 
     #endif
-
 
 #if (DSP == 38) || (DSP == 39)
 
@@ -407,7 +393,6 @@
       l1s_dsp_com.dsp_ndb_ptr->d_anr_tone_ene_th      = (API) 0;
       l1s_dsp_com.dsp_ndb_ptr->d_anr_tone_cnt_th      = (API) 0;
 #endif
-
 
 #if(L1_IIR == 2)
       // Set IIR parameters
@@ -443,7 +428,6 @@
       }
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_num_form_1  = (API) 0;
 
-
       // Set parameters for IIR part - SOS 2 
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_fact_2      = (API) 0;
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_fact_form_2 = (API) 0;
@@ -457,7 +441,6 @@
         l1s_dsp_com.dsp_ndb_ptr->a_iir4x_sos_num_2[j]  = (API) 0;
       }
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_num_form_2  = (API) 0;
-
 
       // Set parameters for IIR part - SOS 3 
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_fact_3      = (API) 0;
@@ -473,7 +456,6 @@
       }
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_num_form_3  = (API) 0;
 
-
       // Set parameters for IIR part - SOS 4 
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_fact_4      = (API) 0;
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_fact_form_4 = (API) 0;
@@ -487,7 +469,6 @@
         l1s_dsp_com.dsp_ndb_ptr->a_iir4x_sos_num_4[j]  = (API) 0;
       }
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_num_form_4  = (API) 0;
-
 
       // Set parameters for IIR part - SOS 5 
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_fact_5      = (API) 0;
@@ -503,7 +484,6 @@
       }
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_num_form_5  = (API) 0;
 
-
       // Set parameters for IIR part - SOS 6 
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_fact_6      = (API) 0;
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_fact_form_6 = (API) 0;
@@ -517,7 +497,6 @@
         l1s_dsp_com.dsp_ndb_ptr->a_iir4x_sos_num_6[j]  = (API) 0;
       }
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_sos_num_form_6  = (API) 0;
-
 
       l1s_dsp_com.dsp_ndb_ptr->d_iir4x_gain            = (API) 0;
 
@@ -593,7 +572,9 @@
     #if (L1_EXTERNAL_AUDIO_VOICE_ONOFF == 1)
       l1a_l1s_com.audio_onoff_task.parameters.onoff_value = FALSE;
     #endif
-    l1a_l1s_com.audio_forced_by_l1s = FALSE;
+    #if 0	/* FreeCalypso TCS211 reconstruction */
+      l1a_l1s_com.audio_forced_by_l1s = FALSE;
+    #endif
 
     #if (MELODY_E1)
       l1s.melody0.oscillator[0] = &(l1s_dsp_com.dsp_ndb_ptr->a_melo_note0[0]);
@@ -699,25 +680,6 @@
   }
 #endif
 
-  l1a_l1s_com.outen_cfg_task.outen1 = 
-  l1a_l1s_com.outen_cfg_task.outen2 = 
-  l1a_l1s_com.outen_cfg_task.outen3 = 
-  l1a_l1s_com.outen_cfg_task.command_requested =  
-  l1a_l1s_com.outen_cfg_task.command_commited =  0;
-  	//voice and stereo path configuration for L1 standalone mode CQ- OMAPS00088143 
-#if (OP_L1_STANDALONE == 1)
-// Voice path and Stereo path
-l1a_l1s_com.outen_cfg_task.outen3 = 0;
-l1a_l1s_com.outen_cfg_task.outen2 = 0x03; 
-l1a_l1s_com.outen_cfg_task.outen1 = 0;
-#endif  
-#if(L1_BT_AUDIO ==1)
-bt_audio.pcm_data_pending    = 0;
-bt_audio.pcm_data_end          = 0;
-bt_audio.pcm_data_ready       = 0;
-bt_audio.pcm_data_failed       =  0;
-bt_audio.connected_status      = FALSE;
-#endif
 }
 
 #endif // AUDIO_TASK
