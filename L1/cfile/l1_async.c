@@ -5804,8 +5804,12 @@ void l1a_dedicated_process(xSignalHeaderRec *msg)
   {
     RESET          = 0,
     WAIT_INIT      = 1,
+  #if (L1_DYN_DSP_DWNLD == 1)
     WAIT_DYN_DWNLD = 2,
     WAIT_MSG       = 3
+  #else
+    WAIT_MSG       = 2
+  #endif
   };
 
           T_DEDIC_SET  *free_set;
