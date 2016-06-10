@@ -895,6 +895,19 @@
   #endif
 #endif // DSP
 
+/*
+ * FreeCalypso band-aid: when we build with MELODY_E2 disabled and
+ * DSP_DEBUG_TRACE_ENABLE gets set to 1 by the logic above as a result,
+ * but L1_DYN_DSP_DWNLD is enabled, some code in l1_sync.c fails to
+ * compile.  Our band-aid solution is to disable DSP_DEBUG_TRACE_ENABLE:
+ * after all, our TCS211 golden reference is built with MELODY_E2
+ * enabled, so it has DSP_DEBUG_TRACE_ENABLE set to 0.
+ */
+#if L1_DYN_DSP_DWNLD
+  #undef  DSP_DEBUG_TRACE_ENABLE
+  #define DSP_DEBUG_TRACE_ENABLE 0
+#endif
+
 /*------------------------------------*/
 /* Default value                      */
 /*------------------------------------*/
