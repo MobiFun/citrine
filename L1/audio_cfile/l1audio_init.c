@@ -11,8 +11,9 @@
 /* Include files...                 */
 /************************************/
 
-#include "l1_macro.h"
+#include "config.h"
 #include "l1_confg.h"
+#include "l1_macro.h"
 
 
   #include "l1_types.h"
@@ -110,7 +111,7 @@
     #endif
 
     #include "l1_defty.h"
-    #include "cust_os.h"
+    #include "../../gpf/inc/cust_os.h"
     #include "l1_msgty.h"
     #include "tpudrv.h"       // TPU drivers.           ("eva3.lib")
     #include "l1_varex.h"
@@ -143,6 +144,22 @@
 
 #if(L1_BT_AUDIO ==1)
   extern T_L1_BT_AUDIO bt_audio;
+#endif
+
+/*
+ * FreeCalypso hack: the version of l1_confg.h in the Leonardo semi-src
+ * sets AUDIO_TASK to 1 unconditionally, thus it appears that by the
+ * time TCS211 came around, TI stopped supporting and testing the
+ * sans-AUDIO_TASK configuration.  We do wish to support it in FreeCalypso
+ * though.  Attempting to compile this module w/o AUDIO_TASK failed
+ * because some preprocessor constant definitions were missing.
+ * All 3 offending constants are defined in l1audio_const.h, but only
+ * when AUDIO_TASK is enabled.  The following hack is our workaround.
+ */
+#if !AUDIO_TASK
+  #define C_BGD_RECOGN  5
+  #define C_BGD_ALIGN   6
+  #define NO_MELODY_SELECTED    (0)
 #endif
 
   /**************************************/
