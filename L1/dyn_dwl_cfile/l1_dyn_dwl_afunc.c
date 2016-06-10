@@ -7,11 +7,10 @@
  *
  ************* Revision Controle System Header *************/
 
-#include "config.h"
 #include "l1_confg.h"
 #include "l1_types.h"
 #include "sys_types.h"
-#include "../../gpf/inc/cust_os.h"
+#include "cust_os.h"
 #include "l1_macro.h"
 #include "l1_const.h"
 #if TESTMODE
@@ -188,7 +187,7 @@ UWORD16 l1_lookup_primitive_patch_matrix(UWORD32 msg_code, UWORD16* patch_id_p)
 {
   UWORD16 j;
   UWORD16 counter=0;
-  UWORD16 msg_code_id=0 ;//omaps00090550
+  UWORD16 msg_code_id;
 
   // Check if one of the messages belongs to the set of primitves which triggers a dynamic download and saves its index
 
@@ -411,6 +410,50 @@ void l1_reset_semaphores()
   }
 }
 
+/*
+ * TCS211 had l1_disable_DSP_trace() and l1_enable_DSP_trace() functions
+ * implemented here in the l1_dyn_dwl code.  The LoCosto version of L1
+ * has l1_{dis,en}able_dsp_trace() instead (note the case difference)
+ * implemented in the l1_trace.c module.  The LoCosto versions of these
+ * functions implement more complex logic with nesting, and use more
+ * state variables than are provided in TCS211 L1 data structures which
+ * we cannot change at this early phase of deblobbing.  Therefore,
+ * we are going to recreate the simpler logic of the older
+ * l1_{dis,en}able_DSP_trace() functions from disassembly.
+ */
+
+void l1_disable_DSP_trace()
+{
+#if (CODE_VERSION != SIMULATION)
+  T_NDB_MCU_DSP* dsp_ndb_ptr = (T_NDB_MCU_DSP *) NDB_ADR;
+#else
+  T_NDB_MCU_DSP* dsp_ndb_ptr = l1s_dsp_com.dsp_ndb_ptr;
+#endif
+
+  if (dsp_ndb_ptr->d_debug_trace_type != 0x0000)
+  {
+    l1a.dyn_dwnld.dsp_trace_level_copy = dsp_ndb_ptr->d_debug_trace_type;
+    dsp_ndb_ptr->d_debug_trace_type = (API)0x8000;	/* 0x9000 in LoCosto */
+    l1a.dyn_dwnld.trace_flag_blocked = TRUE;
+  }
+}
+
+void l1_enable_DSP_trace()
+{
+#if (CODE_VERSION != SIMULATION)
+  T_NDB_MCU_DSP* dsp_ndb_ptr = (T_NDB_MCU_DSP *) NDB_ADR;
+#else
+  T_NDB_MCU_DSP* dsp_ndb_ptr = l1s_dsp_com.dsp_ndb_ptr;
+#endif
+
+  if ((l1a.dyn_dwnld.trace_flag_blocked == TRUE) && (dsp_ndb_ptr->d_debug_trace_type == 0x0000))
+  {
+    l1a.dyn_dwnld.trace_flag_blocked = FALSE;
+
+    dsp_ndb_ptr->d_debug_trace_type = (API)l1a.dyn_dwnld.dsp_trace_level_copy | 0x8000;
+    l1a.dyn_dwnld.dsp_trace_level_copy = 0x0000;
+  }
+}
 
 /*---------------------------------------------------------- */
 /* l1_push_Primitive                                         */

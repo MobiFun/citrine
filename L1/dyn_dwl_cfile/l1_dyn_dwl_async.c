@@ -8,13 +8,11 @@
  ************* Revision Controle System Header *************/
 #include <stdio.h>
 #include <string.h>
-#include "config.h"
+#include "nucleus.h"
 #include "l1_confg.h"
-#include "sys_types.h"
-#include "../../riviera/rv/rv_general.h"
-#include "../../nucleus/nucleus.h"
 #include "l1_types.h"
-#include "../../gpf/inc/cust_os.h"
+#include "sys_types.h"
+#include "cust_os.h"
 #include "l1audio_signa.h"
 #include "l1audio_const.h"
 #include "l1audio_cust.h"
@@ -46,7 +44,11 @@
 #include "l1_defty.h"
 #include "l1_varex.h"
 #include "l1_trace.h"
-/* #include "sys_dma.h" */
+#include "sys_dma.h"
+
+#if (OP_RIV_AUDIO == 1)
+  #include "rv/rv_general.h"
+#endif
 
 
 #if (L1_DYN_DSP_DWNLD == 1)
@@ -177,7 +179,7 @@ BOOL l1_dynamic_download_manager(UWORD32 SignalCode, BOOL delay_flag)
   UWORD16 i;
   UWORD16 patch_id_uninstall_vect[MAX_NUM_OF_PATCH_IDS];
   UWORD16 patch_id;
-  UWORD16 temp_patch_id[MAX_NUM_OF_PATCH_IDS]= {0}; //omaps00090550
+  UWORD16 temp_patch_id[MAX_NUM_OF_PATCH_IDS];
   BOOL return_flag = FALSE;
 
   // Primitive is processed only if it triggers a dynamic download or there is a delay
@@ -263,7 +265,7 @@ BOOL l1_dynamic_download_manager(UWORD32 SignalCode, BOOL delay_flag)
 #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4) || (TRACE_TYPE == 5))
         if((trace_info.current_config->l1_dyn_trace) & (1<<L1_DYN_TRACE_DYN_DWNLD))
         {
-          char str[16];
+          char str[18];
           sprintf(str,"UNINST_ID: %d \r\n", element);
 #if(CODE_VERSION == SIMULATION)
           trace_fct_simu_dyn_dwnld(str);
@@ -328,7 +330,7 @@ BOOL l1_dynamic_download_manager(UWORD32 SignalCode, BOOL delay_flag)
 #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4) || (TRACE_TYPE == 5))
       if((trace_info.current_config->l1_dyn_trace) & (1<<L1_DYN_TRACE_DYN_DWNLD))
       {
-        char str[22];
+        char str[18];
         sprintf(str,"DWNLD_ID: %d \r\n", patch_id);
 
 #if(CODE_VERSION == SIMULATION)
@@ -386,7 +388,7 @@ void l1a_dyn_dwnld_set_process(void)
 
 #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
   // Disable trace DSP upon Dynamic Download activation
-  l1_disable_dsp_trace();
+  l1_disable_DSP_trace();
 #endif
           
   // Reset API variables
@@ -638,6 +640,7 @@ void l1a_dyn_dsp_dwnld_process(xSignalHeaderRec *msg)
             
             //  Check if there is any pending primitive waiting to be de-queued
             {
+#if 0	/* LoCosto code */
               UWORD32 remaining_primitive_flag=0;
               UWORD32 process_continue_flag=1;
               UWORD32 delay_primitive_processed_flag=0;
@@ -655,15 +658,15 @@ void l1a_dyn_dsp_dwnld_process(xSignalHeaderRec *msg)
                   l1a_apihisr_com.dyn_dwnld.command.restart = TRUE;
 
                   /********** WORKAROUND *************/
-#if 1 //(OP_RIV_AUDIO == 1)
+                #if (OP_RIV_AUDIO == 1)
                   {
                     // WARNING: temporary until os_activate_hisr() is declared in L3 functions
                     extern NU_HISR apiHISR;
                     NU_Activate_HISR(&apiHISR);
                   }
-#else
+                #else
                   os_activate_hisr(API_HISR);
-#endif // OP_RIV_AUDIO == 1         
+                #endif // OP_RIV_AUDIO == 1         
                   /********** WORKAROUND *************/
                   *state = WAIT_RESULT;
                 }
@@ -673,14 +676,50 @@ void l1a_dyn_dsp_dwnld_process(xSignalHeaderRec *msg)
               // else stop the DSP background task as no other patch must be downloaded
               if(delay_primitive_processed_flag == 0)
               {
-#if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
+              #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
                 // Enable trace DSP upon Dynamic Download deactivation
-                l1_enable_dsp_trace();
+                l1_enable_DSP_trace();
                 //Trace_dsp_dump();
-#endif  // omaps00090550 #14-D removal
+              #endif  // omaps00090550 #14-D removal
                 l1a_l1s_com.dyn_dwnld_task.stop=TRUE;
                 *state = WAIT_STOP;
               }
+
+#else	/* TCS211 reconstruction from disassembly */
+
+              if (l1_check_Fifo_Primitive() != 0)
+              {
+                l1_pop_Primitive(&(delay_primitive));
+                if (l1_dynamic_download_manager(delay_primitive, TRUE) == TRUE)
+                {
+                  // If yes set the restart command at apihisr level
+                  l1a_apihisr_com.dyn_dwnld.command.restart = TRUE;
+
+                  /********** WORKAROUND *************/
+                #if (OP_RIV_AUDIO == 1)
+                  {
+                    // WARNING: temporary until os_activate_hisr() is declared in L3 functions
+                    extern NU_HISR apiHISR;
+                    NU_Activate_HISR(&apiHISR);
+                  }
+                #else
+                  os_activate_hisr(API_HISR);
+                #endif // OP_RIV_AUDIO == 1         
+                  /********** WORKAROUND *************/
+                  *state = WAIT_RESULT;
+                }
+              }
+              else
+              {
+              #if ((TRACE_TYPE == 1) || (TRACE_TYPE == 4))
+                // Enable trace DSP upon Dynamic Download deactivation
+                l1_enable_DSP_trace();
+                //Trace_dsp_dump();
+              #endif  // omaps00090550 #14-D removal
+                l1a_l1s_com.dyn_dwnld_task.stop=TRUE;
+                *state = WAIT_STOP;
+              }
+#endif
             }
           }
           break;

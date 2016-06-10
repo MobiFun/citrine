@@ -9,11 +9,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "config.h"
+#include "nucleus.h"
 #include "l1_confg.h"
 #include "sys_types.h"
-#include "../../riviera/rv/rv_general.h"
-#include "../../nucleus/nucleus.h"
 #include "l1_types.h"
 #include "l1audio_cust.h"
 #include "l1audio_defty.h"
@@ -43,7 +41,7 @@
 #endif
 
 #include "l1_defty.h"
-#include "../../gpf/inc/cust_os.h"
+#include "cust_os.h"
 /* #include "nu_main.h" */
 #include "l1audio_signa.h"
 #include "l1audio_cust.h"

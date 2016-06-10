@@ -9,7 +9,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "config.h"
 #include "l1_confg.h"
 #include "l1_types.h"
 #include "l1_const.h"        
@@ -129,6 +128,62 @@ void l1_initialize_pointers_for_copy(UWORD16 **pp_dest_mcu, UWORD16 **pp_src_mcu
 #endif // CODE_VERSION == SIMULATION
 
   *pp_src_mcu  = (UWORD16 *) l1_apihisr.dyn_dwnld.running_source_pointer;   
+}
+
+/*--------------------------------------------------------*/
+/* l1_memcpy_16bit()                                      */
+/*--------------------------------------------------------*/
+/*                                                        */
+/* Description:                                           */
+/* ------------                                           */
+/* This function is equivalemt of memcopy. Thid function  */
+/* does only 8/16 bit accessed to both source and         */
+/* destination                                            */
+/*                                                        */
+/* Input parameter:                                       */
+/* ---------------                                        */
+/* "src" - input pointer                                  */
+/* "len" - number of bytes to copy                        */
+/*                                                        */
+/* Output parameter:                                      */
+/* ----------------                                       */
+/*  "dst" - output pointer                                */
+/*                                                        */
+/*--------------------------------------------------------*/
+void l1_memcpy_16bit(void *dst,void* src,unsigned int len)
+{
+	unsigned int i;
+	unsigned int tempLen;
+	unsigned char *cdst,*csrc;
+	unsigned short *ssrc,*sdst;
+
+	cdst=dst;
+	csrc=src;
+	sdst=dst;
+	ssrc=src;
+
+  if(((unsigned int)src&0x01) || ((unsigned int)dst&0x01)){
+  // if either source or destination is not 16-bit aligned do the entire memcopy
+  // in 8-bit
+    for(i=0;i<len;i++){
+      *cdst++=*csrc++;
+    }
+  }
+  else{
+    // if both the source and destination are 16-bit aligned do the memcopy
+    // in 16-bits
+    tempLen = len>>1;
+    for(i=0;i<tempLen;i++){
+      *sdst++ = *ssrc++;
+    }
+    if(len & 0x1){
+      // if the caller wanted to copy odd number of bytes do a last 8-bit copy
+      cdst=(unsigned char*)sdst;
+      csrc=(unsigned char*)ssrc;
+      *cdst++ = *csrc++;
+    }
+  }
+  return;
 }
 
 /*---------------------------------------------------------------------------- */

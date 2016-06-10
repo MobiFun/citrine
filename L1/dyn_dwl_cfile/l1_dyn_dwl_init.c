@@ -6,11 +6,9 @@
  *  Copyright 2004 (C) Texas Instruments
  *
  ************* Revision Controle System Header *************/
-#include "config.h"
+#include "nucleus.h"
 #include "l1_confg.h"
 #include "sys_types.h"
-#include "../../riviera/rv/rv_general.h"
-#include "../../nucleus/nucleus.h"
 #include "l1_types.h"
 #include "l1audio_const.h"
 #include "l1audio_cust.h"
@@ -39,7 +37,7 @@
 #endif //L1_AAC
 
 #include "l1_defty.h"
-#include "../../gpf/inc/cust_os.h"
+#include "cust_os.h"
 /* #include "nu_main.h" */
 #include "l1audio_signa.h"
 #include "l1_varex.h"
@@ -111,7 +109,6 @@ extern const UWORD8 tty_patch_array[];
 void l1_dyn_dwnld_initialize_var()
 {
   UWORD16 i;
-  
 
   /* Init Dynamic Download NDB */
   dyn_dwl_ndb=(T_DYN_DWNLD_MCU_DSP *)API_address_dsp2mcu(C_DYN_DWNLD_API_BASE_ADDRESS);
@@ -130,32 +127,48 @@ void l1_dyn_dwnld_initialize_var()
     l1s_dsp_com.dsp_ndb_ptr->d_max_background=(API)(C_BGD_DSP_DYN_DWNLD+1);
 
   dyn_dwnld_copy_MCU_vect[0] = gprs_patch_array;
+  l1_set_dyn_dwnld_install_vect(size_vect,dyn_dwnld_address_vect,dyn_dwnld_crc_vect, gprs_patch_array, 0);
+
   dyn_dwnld_copy_MCU_vect[1] = amr_sch_patch_array;
+  l1_set_dyn_dwnld_install_vect(size_vect,dyn_dwnld_address_vect,dyn_dwnld_crc_vect, amr_sch_patch_array, 1);
+
   #if (L1_GTT == 1)
     dyn_dwnld_copy_MCU_vect[2] = tty_patch_array;
-  #endif
-  #if (MELODY_E2 == 1)
-    dyn_dwnld_copy_MCU_vect[3] = amr_mms_patch_array;
-    dyn_dwnld_copy_MCU_vect[4] = e2_patch_array;
+    l1_set_dyn_dwnld_install_vect(size_vect,dyn_dwnld_address_vect,dyn_dwnld_crc_vect, tty_patch_array, 2);
   #endif
 
-  for(i=0;i<MAX_NUM_OF_PATCH_IDS;i++)
-  {
-    if (dyn_dwnld_copy_MCU_vect[i] != 0)
-    {
-      l1_set_dyn_dwnld_install_vect(size_vect,dyn_dwnld_address_vect,dyn_dwnld_crc_vect,dyn_dwnld_copy_MCU_vect[i],i);
-    }
-  }
+  #if (MELODY_E2 == 1)
+    dyn_dwnld_copy_MCU_vect[3] = amr_mms_patch_array;
+    l1_set_dyn_dwnld_install_vect(size_vect,dyn_dwnld_address_vect,dyn_dwnld_crc_vect, amr_mms_patch_array, 3);
+    dyn_dwnld_copy_MCU_vect[4] = e2_patch_array;
+    l1_set_dyn_dwnld_install_vect(size_vect,dyn_dwnld_address_vect,dyn_dwnld_crc_vect, e2_patch_array, 4);
+  #endif
 
   /*---------- Set L1A globals at phone init ----------------------------*/
   l1a.dyn_dwnld.melody0_E2_flag_activated = FALSE;
   l1a.dyn_dwnld.melody1_E2_flag_activated = FALSE;
+  l1a.dyn_dwnld.dedicated_stop_flag       = FALSE;
+
+  l1a.dyn_dwnld.num_patches_installed     = 2;
   l1a.dyn_dwnld.state                     = 0;
-  
+  l1a.dyn_dwnld.dsp_trace_level_copy      = 0;
 
-  l1a.dyn_dwnld.num_patches_installed     = 0;  
+  l1a.dyn_dwnld.patch_id[0] = GPRS_PATCH;
+  l1a.dyn_dwnld.patch_id[1] = AMR_MMS_PATCH;
 
-  l1a.dyn_dwnld.patch_id[0] = 0xFFFF; //omaps00090550
+  for (i=l1a.dyn_dwnld.num_patches_installed;i<MAX_NUM_OF_PATCH_IDS;i++)
+  {  
+    l1a.dyn_dwnld.patch_id[i]      = 0xFFFF; //omaps00090550 ;
+    l1a.dyn_dwnld.next_patch_id[i] = 0xFFFF; //omaps00090550 ;
+  }
+  for (i=0;i<MAX_NUM_OF_SEMAPHORES;i++)
+     l1a.dyn_dwnld.semaphore_vect[i] = GREEN;
+
+  l1a.dyn_dwnld.trace_flag_blocked = FALSE;
+
+  l1a.dyn_dwnld.waiting_patch_fifo.num_of_elem = 0;
+  for (i=0;i<MAX_NUM_OF_PATCH_IDS;i++)
+    l1a.dyn_dwnld.waiting_patch_fifo.signal_code_vect[i] = 0;
 
   /**************************************************/
 
@@ -170,19 +183,7 @@ void l1_dyn_dwnld_initialize_var()
     l1a.dyn_dwnld.num_of_primitives += 3;
   #endif // MELODY_E2
 
-  for (i=l1a.dyn_dwnld.num_patches_installed;i<MAX_NUM_OF_PATCH_IDS;i++)
-  {  
-    l1a.dyn_dwnld.patch_id[i]      = 0xFFFF; //omaps00090550 ;
-    l1a.dyn_dwnld.next_patch_id[i] = 0xFFFF; //omaps00090550 ;
-  }
-  for (i=0;i<MAX_NUM_OF_SEMAPHORES;i++)
-     l1a.dyn_dwnld.semaphore_vect[i] = GREEN;
 
-   
-    l1a.dyn_dwnld.waiting_patch_fifo.num_of_elem = 0;
-    for (i=0;i<MAX_NUM_OF_PATCH_IDS;i++)
-      l1a.dyn_dwnld.waiting_patch_fifo.signal_code_vect[i] = 0;
-  
   /*---------------------------------------------------------------------*/
 
   /*---------- Set L1S globals at phone init ----------------------------*/

@@ -10,13 +10,11 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "config.h"
+#include "nucleus.h"
 #include "l1_confg.h"
-#include "sys_types.h"
-#include "../../riviera/rv/rv_general.h"
-#include "../../nucleus/nucleus.h"
 #include "l1_types.h"
-#include "../../gpf/inc/cust_os.h"
+#include "sys_types.h"
+#include "cust_os.h"
 #include "l1audio_signa.h"
 #include "l1audio_const.h"
 #include "l1audio_cust.h"
@@ -48,7 +46,7 @@
 #include "l1_defty.h"
 #include "l1_varex.h"
 #include "l1_trace.h"
-/* #include "sys_dma.h" */
+#include "sys_dma.h"
 
 #if (L1_DYN_DSP_DWNLD == 1)
 
