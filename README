@@ -1,0 +1,27 @@
+You are looking at the source tree for FreeCalypso Citrine, which is one of the
+several Calypso GSM firmware offerings developed under the FreeCalypso umbrella.
+The key distinguishing features of FC Citrine are:
+
+* The firmware is built from full source, no blobs;
+* The compiler used to build the fw is gcc (free software) instead of TI's
+  proprietary compiler;
+* The way in which the firmware is put together is "from the bottom up".
+
+Our Citrine firmware can be built for the following targets:
+
+  Mot C11x/12x
+  Mot C139/140
+  Mot C155/156
+  Openmoko GTA01/02
+  Pirelli DP-L10
+
+However, only minimal functionality is implemented so far: whichever target
+device you are using, it can only function as an AT-command-controlled voice+SMS
+pseudo-modem; because there is no UI code integrated yet, the LCD stays dark
+and the buttons do nothing on those target devices that have such hardware.
+No CSD, fax or GPRS support has been integrated yet either, and in general this
+Citrine firmware has not yet reached the level of functionality and stability
+offered by its blob-laden, Windows-built competitors.  It is a work in progress.
+
+Please refer to the write-ups in the doc directory for instructions on how to
+compile and play with this firmware.

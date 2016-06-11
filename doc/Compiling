@@ -1,0 +1,70 @@
+Building and installing the ARM7 toolchain
+==========================================
+
+Before you can compile Citrine, you first need to build and install the
+necessary toolchain targeting ARM7, the CPU core in the Calypso.  The current
+"official" GNU ARM toolchain for FreeCalypso consists of binutils-2.21.1,
+gcc-4.5.4 and newlib-2.0.0 with a specific set of patches and build
+configuration options.  All of the necessary bits can be downloaded here:
+
+ftp://ftp.freecalypso.org/pub/GSM/FreeCalypso/toolchain/
+
+Please note: the toolchain that is prescribed for FreeCalypso as above is
+*believed* to be equivalent to the one used by OsmocomBB, but there are no
+guarantees.  Use any other toolchain at your own risk.
+
+Compiling FreeCalypso Citrine firmware
+======================================
+
+Citrine firmware can be built in many different configurations, hence there is
+no singular build for it.  The configuration choices consist of:
+
+* Which target device the firmware should be built for: the target device
+  selection is made at compile time; do not attempt to take a firmware image
+  built for one target device and flash or fc-xram it into another!
+
+* What functionality is to be included.  As the FreeCalypso firmware subproject
+  moves forward, we gradually add chunks of functionality, slowly approaching
+  what each target device is ultimately capable of.  However, each time we add
+  a new piece of functionality, the ability to build a firmware image that works
+  like before, without the newly added functionality, still remains.  Each
+  feature to be included needs to be explicitly selected.
+
+* Miscellaneous configuration: which Calypso UART should be used for what,
+  should the firmware use a real FFS (flash file system) in flash or a fake one
+  in RAM, etc.
+
+The GSM firmware build configuration is set by way of an editable text file
+named build.conf; the configuration and build procedure is as follows:
+
+1. Look at the available repertoire of standard configurations in the configs
+   directory and choose which one you would like to use, either as-is or as a
+   basis for your own;
+
+2. Copy the configuration you selected to build.conf in the top level directory
+   of the source tree;
+
+3. Optionally edit it to taste - the configuration language is Bourne shell;
+
+4. Run 'make' in the top level directory.
+
+Depending on the configuration, either a flashable or a RAM-loadable image will
+be built by default.  A flashable image will appear in finlink/flashImage.bin;
+these images are meant to be programmed with fc-loadtool's flash program-bin
+command; the starting flash address at which the image needs to be programmed
+depends on the target device - see target-specific notes.  A RAM-loadable image
+will appear in finlink/ramImage.srec; these images are meant to be loaded and
+run with the fc-xram utility.
+
+It is possible to build either a flashable or a RAM-loadable image, or both,
+without changing build.conf: run 'make flashImage' or 'make ramImage' as
+desired.  (The compilation of each module from source into a .o and all
+intermediate linking steps are agnostic to whether a flashImage or a ramImage
+is being built, only the very final link step differs.)  Any otherwise working
+configuration can be built into a flashImage, even if it makes no logical sense
+to do so, but the ability to build a ramImage for a given configuration depends
+on the code image size (which in turn depends on the selected feature set) and
+the amount of RAM available on the target in question: most Calypso GSM devices
+have small RAM, enough to satisfy a GSM firmware's data space requirements, but
+not enough to hold the entire firmware code in RAM as well.  Please see target-
+specific notes for more details.
