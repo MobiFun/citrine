@@ -134,18 +134,18 @@ const UBYTE pcm_default_values[] =
   /********************************************************************
    * Field MOBILE CAPABILITIES - MSCAP
    ********************************************************************/
-  #if 1
-    /*
-     * FreeCalypso temporary kludge: until we fix our L1,
-     * let's advertise that we only support the FR codec.
-     *
-     * If you would like to experiment with different codec
-     * configurations, you can do so without having to recompile
-     * and reflash the firmware each time: just write a /pcm/MSCAP
-     * file into FFS with whatever setting you wish to try.
-     */
-    0x01, 0x00, 0x00,
-  #elif ((DSP == 34) || (DSP == 35) || (DSP == 36)) // ROM Codes including AMR feature.
+  /*
+   * FreeCalypso: the change of L1 to the reconstructed TCS211 version
+   * has fixed the EFR codec, so we can re-enable it now, but AMR is
+   * still broken, hence we are going to advertise as non-AMR-capable
+   * despite running on AMR-capable silicon.
+   *
+   * If you would like to experiment with different codec
+   * configurations, you can do so without having to recompile
+   * and reflash the firmware each time: just write a /pcm/MSCAP
+   * file into FFS with whatever setting you wish to try.
+   */
+  #if 0 //((DSP == 34) || (DSP == 35) || (DSP == 36)) // ROM Codes including AMR feature.
     #if (STD == 1) // GSM 900
       #if defined (FAX_AND_DATA) 
         0xB1,   0xC7,   0x00,                     
