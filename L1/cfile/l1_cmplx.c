@@ -234,6 +234,11 @@ void   cust_get_if_dco_ctl_algo (UWORD16* dco_algo_ctl, UWORD8* if_ctl,
   UWORD8 input_level_flag, UWORD8 input_level, UWORD16 radio_freq, UWORD8 if_threshold);
 #endif
 
+#if FEATURE_TCH_REROUTE
+extern BOOL tch_reroute_downlink;
+extern void tch_send_downlink_bits(API *dsp_buffer);
+extern void tch_substitute_uplink(API *dsp_buffer);
+#endif
 
 //#pragma DUPLICATE_FOR_INTERNAL_RAM_END
 
@@ -5116,6 +5121,10 @@ void l1s_ctrl_tchtf(UWORD8 task, UWORD8 param2)
           }
           #endif
         }
+#if FEATURE_TCH_REROUTE
+        else
+          tch_substitute_uplink(l1s_dsp_com.dsp_ndb_ptr->a_du_1);
+#endif
       }
     }
 
@@ -9450,6 +9459,11 @@ if((rx_type==SPEECH_GOOD) || (rx_type==SPEECH_DEGRADED) || (rx_type==SPEECH_BAD)
                 os_send_sig(msg, L1C1_QUEUE);
                 DEBUGMSG(status,NU_SEND_QUEUE_ERR)
               }
+            #endif
+
+            #if FEATURE_TCH_REROUTE
+              if (tch_reroute_downlink)
+                tch_send_downlink_bits(l1s_dsp_com.dsp_ndb_ptr->a_dd_0);
             #endif
 
             if(channel_mode == TCH_24F_MODE)

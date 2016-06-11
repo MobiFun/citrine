@@ -1876,10 +1876,13 @@ void l1_initialize(T_MMI_L1_CONFIG *mmi_l1_config)
   #if TRACE_TYPE==3
     reset_stats();
   #endif
- #if(OP_L1_STANDALONE == 1 || L1_NAVC == 1 )//NAVC
+  #if(OP_L1_STANDALONE == 1 || L1_NAVC == 1 )//NAVC
     Cust_navc_ctrl_status(1);//start - NAVC
- #endif//end of (OP_L1_STANDALONE == 1 || L1_NAVC == 1 )
+  #endif//end of (OP_L1_STANDALONE == 1 || L1_NAVC == 1 )
 
+  #if FEATURE_TCH_REROUTE
+    feature_tch_reroute_init();
+  #endif
 }
 
 /*-------------------------------------------------------*/
