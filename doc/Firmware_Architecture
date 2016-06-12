@@ -1,0 +1,760 @@
+Our FreeCalypso GSM firmware follows the same architecture as TI's TCS211;
+this document is an attempt to describe this architecture.
+
+Nucleus environment
+===================
+
+Like all classic TI firmwares, ours is based on the Nucleus PLUS RTOS.  Just
+like TI's original code on which we are based, we use only a small subset of
+the functionality provided by Nucleus - but because the latter is a library,
+the pieces we don't use simply don't get pulled into the link.  The main
+function we get out of Nucleus is the scheduling of threads, or tasks as
+Nucleus calls them.
+
+Our entry point code as we receive control from the Calypso boot ROM or from
+other bootloaders on crippled targets or from loadagent in the case of fc-xram
+loadable builds does some absolutely minimal initialization (set up sensible
+memory access timings, copy iram.text to IRAM and .data to XRAM if we are
+booting from flash, zero out our two bss segments (int.bss and ext.bss)) and
+jumps to Nucleus' assembly init entry point.  Prior to jumping to Nucleus, we
+don't even have a stack (all init code prior to that point is pure assembly and
+uses only ARM registers); Nucleus then sets up the stack pointer for everything
+running under its control.
+
+Aside from just a few exceptions (ARM exception handlers come to mind, never
+mind the pun), every piece of code in the firmware executes in one of the
+following contexts:
+
+* Application_Initialize(): this function and everything called from it execute
+  just before Nucleus' thread scheduler starts; at this point interrupts are
+  disabled at the ARM7 core level (in the CPSR) and must not be enabled; the
+  stack is Nucleus' "system stack" which is also used by the scheduler and LISRs
+  as explained below.
+
+* Regular threads or tasks: once Application_Initialize() finishes, all code
+  with the exception of interrupt handlers (LISRs and HISRs as explained below)
+  runs in the context of some Nucleus task.  Whenever you are trying to debug
+  or simply understand some piece of code in the firmware, the first question
+  you should ask is "which task does this code execute in?".  Most functional
+  components run in their own tasks, i.e., a given piece of code is only
+  intended to run within the Nucleus task that belongs to the component in
+  question.  On the other hand, some components are implemented as APIs,
+  functions to be called from other components: these don't have their own task
+  associated with them, and instead they run in the context of whatever task
+  they were called from.  Some only get called from one task: for example, the
+  "uartfax" driver API calls only get called from the protocol stack's UART
+  entity, which is its own task.  Other component API functions like FFS and
+  trace can get called from just about any task in the system.  Many components
+  have both their own task and some API functions to be called from other tasks,
+  and the API functions oftentimes post messages to the task to be worked on by
+  the latter; the just-mentioned FFS and trace functions work in this manner.
+
+  In our current GSM firmware (just like in TCS211) every Nucleus task is
+  created either through Riviera or through GPF, and not in any other way - see
+  the description of Riviera and GPF below.
+
+* LISRs (Low level Interrupt Service Routines): these are the interrupt handlers
+  that run immediately when an ARM IRQ or FIQ comes in.  The code at the IRQ and
+  FIQ vector entry points calls Nucleus' magic stack switching function
+  (switches the CPU from IRQ/FIQ into SVC mode, saves the interrupted thread's
+  registers on that thread's stack, and switches to the "system" stack) and
+  then calls TI's IRQ dispatcher implemented in C.  The latter figures out
+  which Calypso interrupt needs to be handled and calls the handler configured
+  in the compiled-in table.  Nucleus' LISR registration framework is not used
+  by the GSM fw, but these interrupt handlers should be viewed as LISRs
+  nonetheless.
+
+  There is one additional difference between canonical Nucleus and TI's version
+  (we've replicated the latter): canonical Nucleus was designed to support
+  nested LISRs, i.e., IRQs re-enabled in the magic stack switching function,
+  but in TI's version which we follow this IRQ re-enabling is removed: each LISR
+  runs with interrupts disabled and cannot be interrupted.  (The corner case of
+  an FIQ interruping an IRQ remains to be looked at more closely as bugs may be
+  hiding there, but Calypso doesn't really use FIQ interrupts.)  There is really
+  no need for LISR nesting in our GSM fw, as each LISR is very short: most LISRs
+  do nothing more than trigger the corresponding HISR.
+
+* HISRs (High level Interrupt Service Routines): these hold an intermediate
+  place between LISRs and tasks, similar to softirqs in the Linux kernel.  A
+  HISR can be activated by a LISR calling NU_Activate_HISR(), and when the LISR
+  returns, the HISR will run before the interrupted task (or some higher
+  priority task, see below) can resume.  HISRs run with CPU interrupts enabled,
+  thus more interrupts can occur, with their LISRs executing and possibly
+  triggering other HISRs.  All triggered HISRs must complete and thereby go
+  "quiescent" before task scheduling resumes, i.e., all HISRs as a group have a
+  higher scheduling priority than tasks.
+
+Nucleus implements priority scheduling for tasks.  Tasks have their priority set
+when they are created (through Riviera or GPF, see below), and a higher priority
+task will run until it gets blocked waiting for something, at which time lower
+priority tasks will run.  If a lower priority task sends a message to a higher
+priority task, unblocking the latter which was waiting for incoming messages,
+the lower priority task will effectively suspend itself immediately while the
+higher priority task runs to process the message it was sent.
+
+HISRs oftentimes post messages to their associated tasks as well; if one of
+these messages unblocks a higher priority task, that unblocked task will run
+upon the completion of the HISR instead of the original lower priority task
+that was interrupted by the LISR that triggered the HISR.  Nucleus' scheduler
+is fun!
+
+Major functional blocks
+=======================
+
+At the highest level, all code in TI's classic firmwares and in our FreeCalypso
+fw can be divided into 3 broad groupings:
+
+* GSM Layer 1: this code was developed by TI, is highly specific to TI's
+  baseband chipset family in general and to specific individual chips in
+  particular (the code is liberally sprinkled with conditional compilation
+  based on DBB type, ABB type, DSP ROM version and so on), and is absolutely
+  necessary in order to operate a Calypso device as a GSM MS (mobile station)
+  and not merely as a general purpose microprocessor platform.  This code can
+  be considered to be the most important part of the entire firmware.
+
+  L1 interties with Nucleus and with the G23M stack (with which it needs to
+  communicate) in a very peculiar way described later in this article.
+
+* G23M protocol stack: at the beginning of TI's involvement in the GSM baseband
+  chipset business, they only developed and maintained their own L1 code, while
+  the rest of the protocol stack (which is hardware-independent) was licensed
+  from another company called Condat.  Later Condat as a company was fully
+  acquired by TI, and the once-customer of this code became its owner.  The
+  name of TI/Condat's implementation of GSM layers 2&3 for the MS side is G23M,
+  and it forms its own major division of the overall fw architecture.
+
+  Underlying the G23M stack is a special layer called GPF, which was originally
+  Condat's Generic Protocol stack Framework.  Apparently Condat was in the
+  business of developing and maintaining a whole bunch of protocol stacks: GSM
+  MS side, GSM network side, TETRA and who knows what else.  GPF was their
+  common underpinning for all of their protocol stack projects, which ran on top
+  of many different OS environments: Nucleus, pSOS, VxWorks, Unix/Linux, Win32
+  and who knows what else.
+
+  In the case of FreeCalypso GSM fw, both the protocol stack and the underlying
+  OS environment are fixed: GSM and Nucleus, respectively.  But GPF is still a
+  critically important layer in the firmware architecture: in addition to
+  serving as the glue between the G23M stack and Nucleus, it provides some
+  important support infrastructure for the protocol stack.
+
+* Miscellaneous peripheral accessories: under this category I (Space Falcon)
+  place everything implemented through TI's Riviera framework.  Historical
+  evidence indicates that TI's earliest firmwares did not have this part, i.e.,
+  Riviera and everything built on top of it is a "non-essential" later
+  addition.  It appears that TI originally invented Riviera in order to support
+  the development of fancy "feature phone" UI/application layers, complete with
+  Java, MMS, WAP, games and whatnot - things upon which our FreeCalypso project
+  looks with disdain - but in the TCS211 firmware from 2007 which I used as the
+  reference for FreeCalypso this Riviera framework serves as the foundation for
+  some small but essential pieces of functionality: the FFS implementation, the
+  SPI-based ABB access driver, the RTC driver and the debug trace facility.
+
+  While it is certain that TI had some non-Riviera implementation of the just-
+  listed essential pieces in their earliest pre-Riviera days, trying to find
+  surviving sources from those days would be a "mission impossible" task.  OTOH,
+  reusing the Riviera code from TCS211 was quite easy, as the copy of TCS211 we
+  got has it in full source form with nothing omitted.  Therefore, I took the
+  sensible easy road and kept Riviera in FreeCalypso.
+
+The above division of the firmware into 3 broad functional groupings also
+corresponds quite neatly with where each piece of our source code originally
+came from.  Our versions of L1 and G23M came in their entirety from TI's TCS3.2
+program targeting their later LoCosto chipset (specifically from the
+TCS3.2_N5.24_M18_V1.11_M23BTH_PSL1_src.zip release from Peek/FGW), whereas
+everything in the 3rd division (Riviera and everything built on top of it) came
+from our TCS211/Leonardo source from Sotovik.
+
+The just-listed divisions of the firmware are really separate software
+environments which are linked together into one final image, but which have
+very little in the way of interties.  Each of the 3 realms has its own very
+different coding style, its own set of header files and its own defined types.
+It is very rare for a module from one realm to include any header files or call
+any functions from another realm, and while they all ultimately run on top of
+Nucleus, they interface with Nucleus in different ways: G23M goes through GPF,
+everything in Riviera land goes through Riviera, and L1 uses its own bizarre
+mechanism which in our fw ends up going through GPF but hasn't always been this
+way - to be explained lated in this article.
+
+Also note that there is no mention of any handset UI code (or MMI in the GSM
+industry's sexist speak) in the above breakdown of code divisions.  This
+document describes the architecture of TI's modem firmware in which the highest
+layer is the AT command interface (part of the G23M suite, or its uppermost
+layer to be precise), and which does not include any UI code.  Our TI reference
+sources do include their "MMI" code, but I haven't studied it closely enough
+yet to comment on it properly, and the version of TCS211 which serves as our
+primary reference is set up for the modem configuration without this "MMI" part.
+Making sense of TI's "MMI" code is a task to be tackled later in the project
+when we have a working modem and are ready to start building a usable handset
+with UI.
+
+Riviera and GPF
+===============
+
+Riviera and GPF are two parallel/independent/competing wrappers around or
+layers above Nucleus.  The way in which they are treated in our FreeCalypso fw
+architecture is somewhat inverted: originally GPF was the essential framework
+underlying the G23M stack (and to which L1 was also attached in a hacky way)
+while Riviera was added to support non-essential frills, but in our current FC
+fw Riviera is always included just like Nucleus, whereas GPF only needs to be
+included in the build when building with feature gsm (full GSM MS functionality)
+or feature l1stand (L1 standalone) - but is not needed if one wishes to build
+an "in vivo" FFS editing agent, for example.
+
+This peculiar arrangement happened because of the source code availability
+situation we found ourselves in.  TCS211 uses real Riviera that is fully
+independent of GPF (see below), and our copy thereof came with this part in
+full source form.  On the other hand, we never got the complete original source
+for GPF in one piece, thus our FC version of GPF had to be reconstructed from
+bits and pieces.  For this reason I made the decision early on to include
+Riviera and some RV-based components in the "mandatory core" part of our FC fw
+architecture, while leaving GPF to be worked on later.  And when I did get to
+reintegrating GPF, at that point it was natural to make it into an "optional"
+component that is included only when needed.
+
+At some point in their post-Calypso TCS3.x program TI decided to eliminate
+Riviera as an independent framework and to reimplement Riviera APIs (used by
+peripheral but necessary code such as FFS, ETM, various drivers etc) over GPF.
+This arrangement is used in the TCS3.2 LoCosto code from which we lifted our
+versions of L1 and G23M.  However, I (Space Falcon) chose not to adopt this
+approach for FreeCalypso, and mimic the TCS211 way (Riviera entirely
+independent of GPF) instead.  The reasons were twofold: (1) there was no full
+source for GPF and a painstaking reconstruction effort was required before we
+could have our own working version of GPF in our gcc-built fw, and (2) I felt
+more comfortable and familiar with following TCS211.
+
+Start-up process
+================
+
+I mentioned earlier that every Nucleus task in our firmware gets created and
+started either through Riviera or through GPF.  All GPF tasks are created and
+placed into the runable state in the Application_Initialize() context: the work
+is done by GPF init code in gsm-fw/gpf/frame/frame.c, and the top level GPF
+init function called from Application_Initialize() is StartFrame().  Thus when
+Application_Initialize() finishes and the Nucleus thread scheduler starts
+running for the first time, all GPF tasks are there to be scheduled.
+
+There is a compiled-in table of all protocol stack entities and the tasks in
+which they need to run which (in our fw) lives under gsm-fw/gpf/conf and which
+logically belongs to GPF.  Canonically each protocol stack entities runs in its
+own task, but sometimes two or more are combined to run in the same task: for
+example, in the minimal GSM "voice only" configuration (no CSD, fax or GPRS)
+CC, SMS and SS entities share the same task named CM.  Unlike Riviera, GPF does
+not support dynamic starting and stopping of tasks.
+
+As each GPF task starts running (immediately upon entry into Nucleus' scheduling
+loop as Application_Initialize() finishes), pf_TaskEntry() function in
+gsm-fw/gpf/frame/frame.c is the first code it runs.  This function creates the
+queue for messages to be sent to all entities running within the task in
+question, calls each entity's pei_init() function (repeatedly until it succeeds:
+it will fail until the other entities to which this entity needs to send
+messages have created their message queues), and then falls into the main body
+of the task: for all "regular" entities/tasks except L1, this main body consists
+of waiting for messages (or signals or timeouts) to arrive on the queue and
+dispatching each received message to the appropriate handler in the right
+entity.
+
+Riviera tasks get started in a different way.  The same Application_Initialize()
+function that calls StartFrame() to create and start all GPF tasks also calls
+create_tasks() (found in gsm-fw/riviera/init/create_RVtasks.c), the appinit-time
+function for starting the Riviera environment.  But this function does not
+create and start every configured Riviera task like StartFrame() does for GPF.
+Instead it creates a special helper task which will do this work once scheduled.
+Thus at the completion of Application_Initialize() and the beginning of
+scheduling the set of runable Nucleus tasks consists of all GPF ones plus the
+special RV starter task.  Once the RV starter task gets scheduled, it will call
+rvm_start_swe() to launch every configured Riviera SWE (SoftWare Entity), which
+in turns entails creating the tasks in which these SWEs are to run.
+
+Dynamic memory allocation
+=========================
+
+All dynamic memory allocation (i.e., all RAM usage beyond statically allocated
+variables and buffers) is once again done either through Riviera or through GPF,
+and in no other way.  Ultimately all areas of the physical RAM that will ever
+be used by the fw in any way are allocated when the fw is compiled and linked:
+the areas from which Riviera and GPF serve their dynamic memory allocations are
+statically allocated as char arrays in the respective C modules and placed in
+the int.ram or ext.ram section as appropriate; Riviera and GPF then provide
+API functions that allocate memory dynamically from these statically allocated
+large pools.
+
+Riviera and GPF have entirely separate memory pools from which they serve their
+respective clients, hence there is no possibility of one affecting the other.
+Riviera's memory allocation scheme is very much like the classic malloc&free:
+there is one large unstructured pool from which all allocations are made, one
+can allocate a chunk of any size, free chunks are merged when physically
+adjacent, and fragmentation is an issue: a memory allocation request may fail
+even when there is enough memory available in total if it is too fragmented.
+
+GPF's dynamic memory allocation facility is considerably more robust: while it
+does maintain one or two (depending on configuration) memory pools of the
+traditional "dynamic" kind (like malloc&free, susceptible to fragmentation),
+most GPF memory allocation works on "partition" memory instead.  Here GPF
+maintains 3 separate groups of pools: PRIM, TEST and DMEM; each allocation
+request must specify the appropriate pool group and cannot affect the others.
+Within each pool there is a fixed number of partitions of a fixed size: for
+example, in TI's TCS211 GSM+GPRS configuration the PRIM pool group consists of
+190 partitions of 60 bytes, 110 partitions of 128 bytes, 50 partitions of 632
+bytes and 7 partitions of 1600 bytes.  An allocation request from a given pool
+group (e.g., PRIM) can request any arbitrary size in bytes, but it gets rounded
+up to the nearest partition size and allocated out of the respective pool.  If
+no free partitions are available, the requesting task is suspended until another
+task frees on.  Because these partitions are used primarily for intertask
+communication, if none are free, it can only mean (assuming that the firmware
+functions correcly) that all partitions have been allocated and sent to some
+queue for some task to work on, hence eventually they will get freed.
+
+This scheme implemented in GPF is extremely robust in the opinion of this
+author, and the other purely "dynamic" scheme is used (in the case of GPF) only
+for init-time allocations which are never freed, such as task stacks - hence
+the GPF-based part of the firmware is not suspectible at all to the problem of
+memory fragmentation.  But Riviera does suffer from this problem, and the
+concern is more than just theoretical: one major user of Riviera-based dynamic
+memory allocation is the trace facility (described in its own section below),
+and my observation of the trace output from Pirelli's proprietary fw (which
+appears to use the same architecture with separate Riviera and GPF) suggests
+that after the fw has been running for a while, Riviera memory gets fragmented
+to a point where many traces are being dropped.  Replacing Riviera's poor
+dynamic memory allocation scheme with a GPF-like partition-based one is a to-do
+item for our project.
+
+Message-based intertask communication
+=====================================
+
+Even though all entities of the G23M protocol stack are linked together into
+one monolithic fw image and there is nothing to stop them from calling each
+other's functions and accessing each other's variables, they don't work that
+way.  Instead all communication between entities is done through messages, just
+as if they ran in separate address spaces or even on separate processors.
+Buffers for this message exchange are allocated from a GPF partition pool: an
+entity that needs to send a message to another entity allocates a buffer of the
+needed size, fills it with the message to be sent, and posts it on the recipient
+entity's message queue, all through GPF services.  The other entity simply
+processes the stream of messages that arrives on its message queue, freeing each
+message (returning the buffer to the partition pool in came from) as it is
+processed.
+
+Riviera-based tasks use a similar mechanism: unlike G23M protocol stack
+entities, most Riviera-based functional modules provide APIs that are called as
+functions from other tasks, but these API functions typically allocate a memory
+buffer (through Riviera), fill it with the call parameters, and post it to the
+associated task's message queue (also in the Riviera land) to be worked on.
+Once the worker task gets the job done, it will either call a callback function
+or post a response message back to the requestor - the latter option is only
+possible if the requesting entity is also Riviera-based.
+
+A closer look at GPF
+====================
+
+There are certain sublayers within GPF which need to be pointed out.  The 3
+major subdivisions within GPF are:
+
+* The meaty core of GPF: this part is the code under gsm-fw/gpf/frame in our
+  source tree.  It appears that this part was originally intended to be both
+  project-independent (same for GSM, TETRA etc) and OS-independent (same for
+  Nucleus, pSOS, VxWorks etc).  This is the part of GPF that matters for the
+  G23M stack: all APIs called by PS entities are implemented here, and so are
+  all other PS-facing functions such as startup.  (PS = protocol stack)
+
+* OS adaptation layer (OSL): this is the part of GPF that adapts it to a given
+  underlying OS, in our case Nucleus.
+
+* Test interface: see the code under gsm-fw/gpf/tst_drv and gsm-fw/gpf/tst_pei.
+  This part handles the trace output from all entities that run under GPF and
+  the mechanism for sending external debug commands to the GPF+PS subsystem.
+
+GPF was a difficult step in our GSM firmware reintegration process because no
+complete source for it could be found anywhere: apparently GPF was so stable
+and so independent of firmware particulars (Calypso or LoCosto, GSM only or
+GSM+GPRS, modem or complete phone with UI etc) that it appears to have been
+used and distributed as prebuilt binary libraries even inside TI.  All TI fw
+(semi-)sources we have use GPF in prebuilt library form and are not set up to
+recompile any part of it from source.  (They had to include all GPF header
+files though, as most of them are included by G23M C modules, and it would be
+too much hassle to figure out which ones are or aren't needed, hence all were
+included.)
+
+Fortunately though, we were able to find the sources for most parts of GPF:
+
+* The LoCosto source in TCS3.2_N5.24_M18_V1.11_M23BTH_PSL1_src.zip features the
+  source for the "core" part of GPF under gpf/FRAME - these sources aren't
+  actually used by that fw's build system (it only uses the prebuilt binary
+  libs for GPF), but they are there.
+
+* Our TCS211 semi-src doesn't have any sources for the core part of GPF, but
+  instead it features the source for the test interface and some "misc" parts:
+  under gpf/MISC and gpf/tst in that source tree - these sources are not present
+  in the LoCosto version from Peek.
+
+But one critical piece was still missing: the OS adaptation layer.  It appears
+that the GPF core (vsi_??? modules) and OSL (os_??? modules) were maintained
+and built together, ending up together in frame_<blah>.lib files in the binary
+form used to build firmwares, but the source for the "frame" part in the Peek
+find contained only vsi_*.c and others, but not any of os_*.c.
+
+Thus we had to reconstruct GPF from the shattered bits and pieces we had.  I
+took the frame sources from Peek and the misc and tst sources from Sotovik, and
+saw that they compiled w/o problems in our gcc environment.  Attempting to link
+any firmware that uses GPF would have been futile at this point, as it would
+have failed with undefined references to os_*() functions.  Then I had to do
+the hard work: disassemble the missing os_??? modules from the binary libs in
+the TCS211 version (hey, at least this one was known to work reliably) and write
+new C code replicating the exact logic found in the disassembly of the known
+working and fitting binary.  This work is now mostly done (some non-essential
+functions have been stubbed out to be revisited later), and the version of GPF
+used by FreeCalypso is a significant work of reconstruction, not merely lifted
+from a readily available source and plopped in.
+
+A closer look at L1
+===================
+
+The L1 code is remarkable in how little intertie it has with the rest of the
+firmware it is linked into.  It is almost entirely self-contained, expecting
+only 4 functions to be provided by the underlying OS environment:
+
+os_alloc_sig	-- allocate message buffer
+os_free_sig	-- free message buffer
+os_send_sig	-- send message to upper layers
+os_receive_sig	-- receive message from upper layers
+
+It helps to remember that at the beginning of TI's involvement in the GSM
+baseband chipset business, L1 was the only thing they "owned", while Condat,
+the maintainers of the higher level protocol stack, was a separate company.
+TI's "turnkey" solution must have consisted of their own L1 code plus G23M code
+(including GPF etc) licensed from Condat, but I'm guessing that TI probably
+wanted to retain the ability to sell their chips with their L1 without being
+entangled by Condat: let the customer use their own GSM L23 stack, or perhaps
+work out their own independent licensing arrangements with Condat.  I'm
+guessing that L1 was maintained as its own highly independent and at least
+conceptually portable entity for these reasons.
+
+The way in which L1 is intertied into our FreeCalypso GSM fw is the same as how
+it is done in TI's production firmwares, including both our TCS211 reference
+and the TCS3.2 version from which we got our L1 source.  There is a module
+called OSX, which is an extremely thin adaptation layer that implements the
+APIs expected by L1 in terms of GPF.  Furthermore, this OSX layer provides
+header file isolation: the only "outside" (non-L1) header included by L1 is
+cust_os.h, and it defines the necessary interface to OSX *without* including
+any other headers (no GPF headers in particular), using only the C language's
+native types.  Apart from this cust_os.h header, the entire OSX layer is
+implemented in one C module (osx.c, which we had to reconstruct from osx.obj as
+the source was missing - but it's very simple) which does include some GPF
+headers and implements the OSX API in terms of GPF services.  Thus in TI's
+production firmwares and in our FC GSM fw L1 does sit on top of GPF, but very
+indirectly.
+
+More specifically, the "production" version of OSX implements its API in terms
+of *high-level* GPF functions, i.e., VSI.  However, they also had an interesting
+OP_L1_STANDALONE configuration which omitted not only all of G23M, but also the
+core of GPF and possibly the Riviera environment as well.  We don't have a way
+to recreate this configuration exactly as it existed inside TI because we don't
+have the source bits specific to this configuration (our own standalone L1
+configuration is implemented differently, see below), but we do have a little
+bit of insight into how it worked.
+
+It appears that TI's OP_L1_STANDALONE build used a special "gutted" version of
+GPF in which the "meaty core" (VSI etc) was removed.  The OS layer (os_???
+modules implementing os_*() functions) that interfaces to Nucleus was kept, and
+so was OSX used by L1 - but this time the OSX API functions were implemented in
+terms of os_*() ones (low-level wrappers around Nucleus) instead of the higher-
+level VSI APIs provided by the "meaty core" of GPF.  It is purely a guess on my
+part, but perhaps this hack was also done in the days before TI's acquisition
+of Condat, and by omitting the "meaty core" of GPF, TI could claim that their
+OP_L1_STANDALONE configuration did not contain any of Condat's "intellectual
+property".
+
+In FreeCalypso we do have a way to build a firmware image that includes L1 but
+not G23M: it is our own L1 standalone configuration, enabled with a
+feature l1stand line in build.conf.  However, because IP considerations don't
+apply to us (we operate under the doctrine of eminent domain), we are not
+replicating TI's gutting of GPF: *our* L1 standalone configuration includes the
+full GPF (with OSX for L1 implemented in terms of VSI), but with a greatly
+reduced set of tasks when G23M is omitted.
+
+Run-time structure of L1
+========================
+
+L1 consists of two major parts: L1S and L1A.  L1S is the synchronous part where
+the most time-critical functions are performed; it runs as a Nucleus HISR.  The
+hardware in the Calypso generates an interrupt on every TDMA frame (4.615 ms),
+and the LISR handler for this interrupt triggers the L1S HISR.  L1S communicates
+with L1A through a shared memory data structure, and also sometimes allocates
+message buffers and posts them to L1A's incoming message queue (both via OSX
+API functions, i.e., via GPF in disguise).
+
+L1A runs as a regular task under Nucleus, and includes a blocking call (to GPF
+via OSX) to wait for incoming messages on its queue.  It is one big loop that
+waits for incoming messages, then processes each received message and commands
+L1S to do most of the work.  The entry point to L1A in the L1 code proper is
+l1a_task(), although the responsibility for running it as a task falls on some
+"glue" code outside of L1 proper.  TI's production firmwares with G23M included
+have an L1 protocol stack entity within G23M whose only job (aside from some
+initialization) is to run l1a_task() in the Nucleus task created by GPF for
+that protocol stack entity; we do the same in our firmware.
+
+Communication between L1 and G23M
+=================================
+
+It is remarkable that L1 and G23M don't have any header files in common: L1
+uses its own (almost fully self-contained), whereas the G23M+GPF realm is its
+own world with its own header files.  One has to ask then: how do they
+communicate?  OK, we know they communicate through primitives (messages in
+buffers allocated from GPF's PRIM partition memory pool) passes via message
+queues, but what about the data structures in these messages?  Where are those
+defined if there are no header files in common between L1 and G23M?
+
+The answer is that there are separate definitions of the L1<->G23M interface on
+each side, and TI must have kept them in sync manually.  Not exactly a
+recommended programming or software maintenance practice for sure, but TI took
+care of it, and the existing proprietary products based on TI's firmware are
+rock solid, so it is not really our place to complain.
+
+TI's firmwares from the era we are working with (the TCS3.2/LoCosto source from
+20090327 from which we took our L1 and G23M and the binary libs version of
+TCS211 from 20070608 which serves as our reference) also include a component
+called ALR.  It resides in the G23M code realm: G23M coding style, uses Condat
+header files, runs as its own protocol stack entity under GPF.  This component
+appears to serve as a glue layer between the rest of the G23M stack (which is
+supposed to be truly hardware-independent) and TI's L1.
+
+Speaking of ALR, it is worth mentioning that there is a little naming
+inconsistency here.  ALR is known to the connect-by-name logic in GPF as "PL"
+(physical layer, apparently), while the ACI entity (Application Control
+Interface, the top level entity) is known to the same logic as "MMI".  No big
+deal really, but hopefully knowing this quirk will save someone some confusion.
+
+Debug trace facility
+====================
+
+See the RVTMUX document in the same directory as this one for general background
+information about the debug and development interface provided by TI-based
+firmwares.  Our FreeCalypso GSM firmware implements an RVTMUX interface as well,
+and the most immediate use to which it is put is debug trace output.  In this
+section I'm going to describe how this debug trace output is generated inside
+the fw.
+
+The firmware component that "owns" the physical UART channel assigned to RVTMUX
+is RVT, implemented in gsm-fw/riviera/rvt.  It is a Riviera-based component,
+and it has a Nucleus task that is created and started through Riviera.  All
+calls to the actual driver for the UART are made from RVT.  In the case of
+output from the Calypso GSM device to an external host, all such output is
+performed in the context of RVT's Nucleus task; this task drains RVT's message
+queue and emits the content of allocated buffers posted to it, freeing them
+afterward.  (The dynamic memory allocation system in this case is Riviera's,
+which is susceptible to fragmentation - see discussion earlier in this article.)
+Therefore, every trace or other output packet emitted from a GSM device running
+our fw (or any of the proprietary firmwares based on the same architecture)
+appears as a result of a message in a dynamically allocated buffer having been
+posted to RVT's queue.
+
+RVT exports several API functions that are intended to be called from other
+tasks, it is by way of these functions that most output is submitted to RVT.
+One can call rvt_send_trace_cpy() with a fully prepared output message, and
+that function will allocate a buffer from Riviera's dynamic memory allocator
+properly accounted to RVT, fill it and post it to the RVT task's queue.
+Alternatively, one can can rvt_mem_alloc() to allocate the buffer, fill it in
+and then pass it to rvt_send_trace_no_cpy().
+
+At higher levels, there are a total of 3 kinds of debug traces that can be
+emitted:
+
+* Riviera traces: these are generated by various components implemented in
+  Riviera land, although in reality any component can generate a trace of this
+  form by calling rvf_send_trace() - this function can be called from any task.
+
+* L1 traces: L1 has its own trace facility implemented in
+  gsm-fw/L1/cfile/l1_trace.c; it generates its traces as ASCII messages and
+  sends them out via rvt_send_trace_cpy().
+
+* GPF traces: code that runs in GPF/G23M land and uses those header files and
+  coding conventions etc can emit traces through GPF.  GPF's trace functions
+  (implemented in gsm-fw/gpf/frame/vsi_trc.c) allocate a memory partition from
+  GPF's TEST pool, format the trace into it, and send the trace primitive to
+  GPF's special test interface task.  That task receives trace and other GPF
+  test interface primitives on its queue, performs some manipulations on them,
+  and ultimately generates RVT trace output, i.e., a new dynamic memory buffer
+  is allocated in the Riviera land, the trace is copied there, and the Riviera
+  buffer goes to the RVT task for the actual output.
+
+Trace masking
+=============
+
+The RV trace facility invoked via rvf_send_trace() has a crude masking ability,
+but by default all traces are enabled.  In TI's standard firmwares most of the
+trace output comes from L1: L1's trace output is very voluminous, and appears
+to be fully enabled by default.  I have yet to look more closely if there is
+any trace masking functionality in L1 and what the default trace verbosity
+level should be.
+
+On the other hand, GPF and therefore G23M traces are mostly disabled by default.
+One can turn the trace verbosity level from any GPF-based entity up or down by
+sending a "system primitive" command to the running fw, and another such command
+can be used to save these masks in FFS, so that they will be restored on the
+next boot cycle and be effective at the earliest possible time.  Enabling *all*
+GPF trace output for all entities is generally not useful though, as it is so
+verbose that a developer trying to make sense of it will likely drown in it.
+
+GPF compressed trace hack
+=========================
+
+TI's Windows-based GSM firmware build systems include a hack called str2ind.
+Seeking to reduce the fw image size by eliminating trace ASCII strings from it,
+and seeking to reduce the load on the RVTMUX serial interface by eliminating
+the transmission time of these strings, they passed their sources through an
+ad hoc preprocessor that replaces these ASCII strings with numeric indices.
+The compilation process with this str2ind hack becomes very messy: each source
+file is first passed through the C preprocessor, then the intermediate form is
+passed through str2ind, and finally the de-string-ified form is compiled, with
+the compiler being told not to run the C preprocessor again.
+
+TI's str2ind tool maintains a table of correspondence between the original trace
+ASCII strings and the indices they've been turned into, and a copy of this table
+becomes essential for making sense of GPF trace output: the firmware now emits
+only numeric indices which are useless without this str2ind.tab mapping table.
+
+Our FreeCalypso firmware does not currently implement this str2ind aka
+compressed trace hack, i.e., all GPF trace output from our fw is in full ASCII
+string form.  I have not bothered to implement compressed traces because:
+
+* We have not yet encountered a case of the full ASCII strings causing a problem
+  either with fw images not fitting into the available memory or excessive load
+  on the RVTMUX interface;
+
+* Implementing the hack in question would require extra work: the str2ind tool
+  would have to be reimplemented anew, as of the original we have no source,
+  only a Windows binary, and requiring our free fw build process to run a
+  Windows binary under Wine is a no-no;
+
+* I don't feel like doing all that extra work for what appears to be no real
+  gain;
+
+* Having to run gcc with separate cpp and actual compilation steps with str2ind
+  sandwiched in between would be ugly and gross;
+
+* Having to keep track of which str2ind.tab goes with which fw image and supply
+  the right table to our rvinterf tools would likely be a pita.
+
+So we shall stick with full ASCII string traces until and unless we run into an
+actual (as opposed to hypothetical) problem with either fw image size or serial
+interface load.
+
+RVTMUX command input
+====================
+
+RVTMUX is not just debug trace output: it is also possible for an external host
+to send commands to the running fw via RVTMUX.
+
+Inside the fw RVTMUX input is handled by the RVT entity by way of a Nucleus
+HISR.  This HISR gets triggered when Rx bytes arrive at the designated UART,
+and it calls the UART driver to collect the input.  RVT code running in this
+HISR parses the message structure and figures out which fw component the
+incoming message is addressed to.  Any fw component can register to receive
+RVTMUX packets, and provides a callback function with this registration; this
+callback function is called in the context of the HISR.
+
+In our current FC GSM fw there are two components that register to receive
+external host commands via RVTMUX: ETM and GPF.  ETM is described in my earlier
+RVTMUX write-up.  ETM is implemented as a Riviera SWE and has its own Nucleus
+task; the callback function that gets called from the RVT HISR posts received
+messages onto ETM's own queue drained by its task.  The ETM task gets scheduled,
+picks up the command posted to its queue, executes it, and sends a response
+message back to the external host through RVT.
+
+Because all ETM commands funnel through ETM's queue and task, and that task
+won't start looking at a new command until it finished handling the previous
+one, all ETM commands and responses are in strict lock-step: it is not possible
+to send two commands and have their responses come in out of order, and it makes
+no sense to send another ETM command prior to receiving the response to the
+previous one.  (But there can still be debug traces or other traffic intermixed
+on RVTMUX in between an ETM command and the corresponding response!)
+
+The other component that can receive external commands is GPF.  GPF's test
+interface can receive so-called "system primitives", which are ASCII string
+commands parsed and acted upon by GPF, and also binary protocol stack
+primitives.  Remember how all entities in the G23M stack communicate by sending
+messages to each other?  Well, GPF's test interface allows such messages to be
+injected externally as well, directed to any entity in the running fw.  System
+primitive commands can also be used to cause entities to send their outgoing
+primitives to the test interface, either instead of or in addition to the
+originally intended recipient.
+
+Firmware subsetting
+===================
+
+We have built our firmware up incrementally, piece by piece, starting from a
+very small skeleton.  As we added pieces working toward full GSM MS
+functionality, the ability to build less functional fw images corresponding to
+our earlier stages of development has been retained.  Each piece we added is
+"optional" from the viewpoint of our build system, even if it is absolutely
+required for normal usage, and is enabled by the appropriate feature line in
+build.conf.
+
+Our minimal baseline with absolutely no "features" enabled consists of:
+
+* Nucleus
+* Riviera
+* TI's basic drivers for GPIO, ABB etc
+* RVTMUX on the UART port chosen by the user (RVTMUX_UART_port Bourne shell
+  variable in build.conf) and the UART driver for it
+* FFS code operating on a fake FFS image in RAM
+
+If one runs this minimal "firmware" on a Calypso device, one will see some
+startup messages in RV trace format followed by a System Time trace every 20 s.
+This "firmware" can't do anything more, there is not even a way to command it
+to power off or reboot.
+
+Working toward full GSM MS functionality, pieces can be added to this skeleton
+in this order:
+
+* GPF
+* L1
+* G23M
+
+feature gsm enables all of the above for normal usage; feature l1stand can be
+used alternatively to build an L1 standalone image without G23M - we expect
+that we may end up using a ramImage form of the latter for RF calibration on
+our own Calypso hardware.
+
+ETM and various FFS configurations are orthogonal features to the choice of
+core functionality level.
+
+Further reading
+===============
+
+Believe it or not, some of the documentation that was written by the original
+vendors of the software in question and which we've been able to locate turns
+out to be fairly relevant and helpful, such that I recommend reading it.
+
+Documentation for Nucleus PLUS RTOS:
+
+	ftp://ftp.ifctf.org/pub/embedded/Nucleus/nucleus_manuals.tar.bz2
+
+	Quite informative, and fits our version of Nucleus just fine.
+
+Riviera environment:
+
+	ftp://ftp.ifctf.org/pub/GSM/Calypso/riviera_preso.pdf
+
+	It's in slide presentation form, not a detailed technical document, but
+	it covers a lot of points, and all that Riviera stuff described in the
+	preso *is* present in our fw for real, hence it should be considered
+	relevant.
+
+GPF documentation:
+
+	http://scottn.us/downloads/peek/SW%20doc/frame_users_guide.pdf
+	http://scottn.us/downloads/peek/SW%20doc/vsipei_api.pdf
+
+	Very good reading, helped me understand GPF when I first reached this
+	part of firmware reintegration.
+
+TCS3.x/LoCosto fw architecture:
+
+	http://scottn.us/downloads/peek/SW%20doc/TCS2_1_to_3_2_Migration_v0_8.pdf
+	ftp://ftp.ifctf.org/pub/GSM/LoCosto/LoCosto_Software_Architecture_Specification_Document.pdf
+
+	These TI docs focus mostly on how they changed the fw architecture from
+	their TCS2.x program (Calypso) to their newer TCS3.x (LoCosto), but one
+	can still get a little insight into the "old" TCS211 architecture they
+	were moving away from, which is the architecture I've adopted for
+	FreeCalypso.
