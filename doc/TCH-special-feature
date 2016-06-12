@@ -1,0 +1,184 @@
+FreeCalypso Citrine firmware implements an optional special feature (needs to be
+explicitly enabled at compile time) which we call TCH rerouting.  When this
+feature is enabled, it applies the following special handling to GSM voice
+traffic channels (TCH):
+
+* All downlink TCH bits passing from the channel decoder to the vocoder block
+  (260 bits every 20 ms with the original FR codec) can be non-invasively
+  intercepted and forwarded to the external host connected to the RVTMUX serial
+  interface;
+
+* Using the same serial interface, the external host can supply substitute
+  uplink TCH bits which will be transmitted in the place of the built-in
+  vocoder output, i.e., the latter can be effectively suppressed.
+
+In order to use this feature, you need to compile our firmware in the voice+SMS
+pseudo-modem configuration, i.e., the configuration in which the fw expects to
+be controlled via AT commands wrapped in the RVTMUX binary packet serial
+interface.  You can use a target GSM device that has just one accessible serial
+port (Mot C1xx and Pirelli DP-L10) or one that has two Calypso UARTs (Openmoko
+GTA02 or our future FCDEV3B), but in the latter case you will be using only one
+UART - whichever one you have configured to be RVTMUX.
+
+Whatever system you are building that will act as the source and sink for TCH
+bits will need to interface to the FreeCalypso GSM device via a serial port in
+the RVTMUX binary packet format.  Your system will need to send RVTMUX packets
+with AT commands inside them in order to command the FC GSM device to register
+with the network and to dial and/or answer calls, and you will need to send
+RVTMUX packets of a different kind in order to supply the uplink TCH bits
+during calls.  In the other direction, your system will receive responses to
+the AT commands you send, asynchronous notifications of incoming calls and SMS,
+downlink TCH bits and various debug trace output from our FreeCalypso firmware.
+The last part (debug trace output) can be simply ignored and discarded if you
+wish, but we strongly recommend that you provide a way to view and/or log it
+for debugging purposes.
+
+Please see the RVTMUX document in the FreeCalypso host tools package for general
+background information regarding the RVTMUX binary packet interface; this
+document should be considered required reading for anyone interested in working
+with the TCH rerouting special feature.
+
+All packets transferred over the RVTMUX interface begin and end with 0x02.  If
+a payload byte within a packet equals 0x02 or 0x10, it needs to be prepended
+with 0x10 as a transparency escape; all other payload bytes are sent literally.
+The first byte within each RVTMUX packet after the opening 0x02 is the packet
+type; the two packet types you will need to handle (both generate and receive)
+are 0x1A for AT commands and 0x1C for TCH configuration commands.
+
+To send an AT command to the FreeCalypso GSM device, prepend the 0x1A packet
+type in front of the "AT" characters, wrap the packet with 0x02 bytes on both
+ends, and send it to the modem.  Responses to AT commands and asynchronous
+notification messages such as "RING" for incoming calls will be sent to the
+host as RVTMUX packets also beginning with the 0x1A packet type; they will be
+interspersed among other packet types, mostly debug trace output.  Your system
+will need to receive the RVTMUX serial byte stream continuously, parsing the
+packet structure and looking at the type of each packet (the first byte after
+the opening 0x02) in order to detect if the modem has sent something you may be
+interested in.
+
+If you wish to receive a copy of all downlink TCH bits on the serial channel,
+you will need to send the following 5-byte command packet to the modem:
+
+0x02: opening flag
+0x1C: RVTMUX packet type for TCH
+0x11: TCH_CONFIG_REQ command opcode
+0x01: payload byte indicating that the "forward downlink" state should be
+	set to enabled
+0x02: closing flag
+
+The modem will respond with a TCH_CONFIG_CONF confirmation message (opcode
+0x12), and then during all voice calls your external host will receive the
+following packet every 20 ms:
+
+0x02: opening flag
+0x1C: RVTMUX packet type for TCH
+0x15: TCH_DLBITS_IND opcode
+- 40 (decimal) bytes of payload -
+0x02: closing flag
+
+The 40 bytes of payload sent in every TCH_DLBITS_IND packet directly correspond
+to the 20 16-bit words provided by the Calypso DSP in its a_dd_0 buffer.  The
+first 3 words (6 bytes) contains the DSP's own status information (not fully
+understood by us yet, but we let you see what the DSP tells us without redacting
+anything out), and the remaining 17 words (34 bytes) are supposed to contain
+the TCH bits received from the GSM network in the FR codec format.  Each DSP
+API word is sent in the big-endian byte order, i.e., the most significant byte
+followed by the least significant byte.
+
+If you wish to send your own TCH uplink bits, replacing the output of the
+built-in vocoder with your own alternate uplink data, you will need to send
+your uplink TCH bits to the modem in packets of the following format:
+
+0x02: opening flag
+0x1C: RVTMUX packet type for TCH
+0x13: TCH_ULBITS_REQ opcode
+- 33 or 34 (decimal) bytes of payload -
+0x02: closing flag
+
+Sending 260 bits requires only 33 bytes, but the DSP operates in terms of
+16-bit words, hence 17 of those words are used.  The least significant byte of
+the last word (i.e., the very last byte with our big-endian transmission order)
+is not expected to be used, but if you send 34 bytes rather than 33, you will
+have control over every bit going into the DSP API RAM in this case.
+
+There is a queue inside the firmware in which these TCH uplink data blocks are
+stored; this queue is filled by the serial packet receiving handler and drained
+by the L1S (synchronous) code that executes at the right times in the GSM TDMA
+multiplex when uplink TCH transmission is expected.  Up to 4 blocks can be
+queued up; as each queued-up block is transmitted on the air (more precisely,
+as it is passed to the DSP for channel encoding and transmission), a
+TCH_ULBITS_CONF short packet (consisting of just the opcode and nothing more)
+is sent to the host.  These confirmation packets can be used to pace the sending
+of further TCH_ULBITS_REQs.
+
+Testing
+=======
+
+The just-described mechanism has been tested as follows:
+
+1. I placed a call to WWV (+1-303-499-7111), and after verifying with my ear
+   that the downlink audio was good, I recorded the downlink TCH bits on that
+   call into a file with the tch record command in fc-shell.
+
+2. I placed a call to another phone (running over a live commercial GSM network)
+   and played the saved recording from WWV into the call uplink with the
+   tch play command in fc-shell.
+
+3. The audio heard on the other end of the call in the previous step: the
+   recording from WWV was definitely recognizable, but it didn't sound perfect,
+   i.e., it was rather garbled.
+
+[NOTE: the experiment described above was performed with an older version of
+ the firmware which is now codenamed Citrine, namely, the version with L1-2014.
+ I have not played with the TCH rerouting feature again since the transition to
+ L1-2016.]
+
+Further debugging of this mechanism will require two things which I currently
+lack: (1) proper understanding of the workings of the GSM 06.10 FR codec and
+(2) a test GSM network (as in OpenBTS/OpenBSC/etc) that could be used instead
+of live commercial ones, so we could see exactly what the test MS is
+transmitting on the air and what the BTS transmits in the downlink.
+
+Host side reference implementation
+==================================
+
+If you are going to implement your own system for talking to FreeCalypso GSM
+pseudo-modems via the RVTMUX binary packet interface, we strongly recommend
+that you use our rvinterf and fc-shell Unix/Linux host utilities as your
+starting point.  You can find their source code in the freecalypso-tools Hg
+repository on Bitbucket.
+
+The following test commands have been added to fc-shell for exercising the
+experimental TCH rerouting mechanism:
+
+tch record <filename>
+
+	Sends a TCH_CONFIG_REQ packet to the target, commanding the firmware to
+	start forwarding TCH downlink bits to the external host, and starts
+	recording the bits it receives in the named file.  The file is written
+	with the same ordering of GSM 06.10 bits as used by the popular libgsm
+	implementation of this codec, i.e., the bits received from the GSM
+	device (ultimately coming from TI's DSP) are reordered before being
+	written into the file.  It is only a reordering of bits with no change
+	in the information content.
+
+	I was hoping that the resulting files could be played with the SoX play
+	command under Slackware Linux, but all I got was garbled audio, and my
+	audio-fu is not good enough to figure out what is wrong.
+
+tch record stop
+
+	Stops TCH downlink recording and closes the file into which the bytes
+	were being written; until the file is thus closed, it may not be
+	actually written out to the file system.
+
+tch play <filename>
+
+	Plays GSM 06.10 FR speech frames from the named file in libgsm format
+	(same as written by the tch record command) into the call uplink.
+
+tch play stop
+
+	Terminates the TCH UL play-from-file operation.  This command is
+	normally not needed, as the play session will end automatically when
+	the end of file is reached.

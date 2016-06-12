@@ -1,0 +1,237 @@
+FreeCalypso Citrine firmware on Mot C11x/12x and C139/140 families
+==================================================================
+
+NOTE: this write-up refers specifically to our work-in-progress Citrine fw.
+The tcs211-c139 hack which we have produced in late 2015 is an entirely
+different animal.
+
+Unlike tcs211-c139, Citrine can run equally "well" on both our preferred
+C139/140 platform and the more primitive C11x/12x, but this fw is currently
+much more limited:
+
+* tcs211-c139 includes TI's demo/prototype UI code and an LCD driver that works
+  with C139/140 LCD hardware; Citrine currently has no UI code at all,
+  expecting control via AT commands via the same serial cable you use for
+  flashing it.
+
+* TCS211 is TI's official production-quality firmware for the Calypso, whereas
+  our Citrine fw is only beginning to catch up to it - see the Current_Status
+  article for more information.
+
+The phones in this family have very little RAM: 256 KiB of Calypso on-chip RAM
+(IRAM) on all variants, plus another 256 KiB of board-level RAM (XRAM) on
+C11x/12x or 512 KiB of XRAM on C139/140.  The tcs211-c139 port uses almost all
+available IRAM and XRAM on the C139, hence porting it to C11x with even less
+RAM was completely out of the question.  Citrine currently has a lot less
+functionality integrated, which naturally translates to lower memory
+requirements - hence it is possible to build for the C11x.
+
+Because RAM is so precious on these feeble targets, running our own fw on them
+absolutely requires flashing - fc-xram is not an option.  Furthermore, we cannot
+use an FFS-in-RAM configuration like we do on large-XRAM targets, and Motorola's
+original FFS (flash file system) on these phones is not suitable for our needs -
+unlike the situation on Openmoko modems.  Therefore, we need to create and
+maintain our own aftermarket FFS in a region of the device's flash memory which
+we arbitrarily choose ourselves.
+
+If you are going to play with FreeCalypso firmwares on Mot C1xx targets, we
+recommend that you devote a phone specifically for FreeCalypso and have another
+phone to charge batteries.  The process of flashing our firmware and creating
+and maintaining the necessary aftermarket FFS on these targets is quite
+involved, hence flashing a given phone back and forth between FreeCalypso and
+Mot/Compal's official firmwares would be a total pita.  However, none of our
+firmwares (neither this one nor tcs211-c139) currently has working battery
+charging code, hence you will need to use another phone running one of the
+official fw versions to charge batteries.
+
+Compiling
+=========
+
+The starting configuration file for building Citrine for targets in this family
+is configs/c139-gsm-flash.  If your phone is a C139 or C140, this default
+config can be used as-is, although you are always welcome to edit it to taste.
+If your phone is C11x or C12x, change the target setting from c139 to c11x.
+
+The two numbers on the 'feature aftermarket-ffs' line select the region of
+flash where our aftermarket FFS will be placed.  The default configuration
+places our FFS in the region from 0x3C0000 through 0x3EFFFF.  This configuration
+is recommended because:
+
+* it does not conflict with the FFS maintained by Mot/Compal's fw (the two
+  locations are different), eliminating the possibility of one firmware trying
+  to use the FFS created by the other;
+
+* it is placed at the very end of the flash (or rather at the end of the main
+  flash zone with 64 KiB sectors), maximizing the room available for the
+  firmware code image.
+
+NOTE 1: our aftermarket FFS code cannot use 8 KiB flash sectors at the chip's
+highest addresses.  Therefore, the sectors with factory data (which we don't
+know how to grok) are safely left untouched by our fw.
+
+NOTE 2: if your phone is a C11x/12x variant with 2 MiB of flash (some have
+2 MiB, others have 4 MiB), directing the firmware to put its FFS at 0x3C0000
+will result in it being at 0x1C0000 in reality - the highest address bit does
+nothing when the flash chip only has 2 MiB.
+
+NOTE 3: if your phone is C139/140, keeping the aftermarket FFS at 0x3C0000 is
+doubly recommended as that is the location used by our tcs211-c139 build.
+
+Flashing
+========
+
+The flashing procedures can be divided into two parts: the steps which you need
+to perform only once when you first convert a given phone from Mot/Compal's fw
+to FreeCalypso vs. the steps which you need to perform each time you wish to
+flash another image you just compiled.
+
+If you are starting with a "virgin" phone that never ran FreeCalypso before,
+you will need to start by breaking in with fc-loadtool and possibly tfc139 -
+see the Compal-unlock article in the FreeCalypso host tools package for more
+details.  Once you are in with loadtool and have made a backup of your original
+flash content, your first step will be to reflash sector 0 (the dangerous one)
+with a version of the bootloader code that has been patched to transfer control
+to the main fw image in the way we need:
+
+loadtool> flash erase-program-boot compal-flash-boot-for-fc.bin
+
+The compal-flash-boot-for-fc.bin code image can be downloaded here:
+
+ftp://ftp.freecalypso.org/pub/GSM/FreeCalypso/compal-flash-boot-for-fc.bin
+
+It was made from one of Mot/Compal's original versions by applying a binary
+patch to it; the source for this patch can be found in the retired
+freecalypso-sw source repository on Bitbucket.
+
+This step of replacing the bootloader needs to be done only once - you don't
+need to reflash this dangerous sector again when you reflash the main fw image.
+The patched FreeCalypso bootloader is also the same for both the present Citrine
+fw and tcs211-c139.
+
+The next step is to flash the main firmware image which you have just compiled:
+
+loadtool> flash erase 0x10000 0x160000
+loadtool> flash program-bin 0x10000 finlink/flashImage.bin
+
+Note that the main fw image is flashed at 0x10000 on these targets.  It is
+flashed at 0 on sane targets with the Calypso boot ROM enabled in the hardware,
+but Compal phones have malicious wiring in their PCBs that makes them brickable
+and imposes the requirement of having working boot code in sector 0 at all
+times, with the main fw image pushed down to 0x10000.
+
+Finally, you should erase the flash region which you have allocated for the
+aftermarket FFS:
+
+loadtool> flash erase 0x3C0000 0x30000
+
+or if your phone only has 2 MiB of flash:
+
+loadtool> flash erase 0x1C0000 0x30000
+
+Now you can close your loadtool session with an exit command, and the phone
+will be cleanly powered off.
+
+The next time you need to reflash another FreeCalypso image, get in with
+loadtool like this:
+
+fc-loadtool -h compal /dev/ttyXXX
+
+There is no more need for tfc139 or for the inefficient -c 1003 option to
+fc-loadtool once you've replaced the bootloader with compal-flash-boot-for-fc.
+Once you are in loadtool, just reflash the main fw image, and leave the
+bootloader and FFS sectors alone.
+
+First boot of the firmware
+==========================
+
+Connect the serial cable, but instead of running fc-loadtool, run rvinterf.
+Press the red power button on the phone briefly just like you would for
+fc-loadtool entry.  Because there is no fc-loadtool running on the host end of
+the serial cable, the boot path will *not* be diverted in the bootloader, and
+the main fw image will run - and this time it will be the FreeCalypso firmware
+you have compiled and flashed.  The phone's LCD will remain dark as there is no
+LCD driver code in this firmware, but you will see trace output in the rvinterf
+window, telling you that the fw is running.
+
+Before you do anything else, you will need to run fc-fsio and initialize the
+aftermarket FFS for our firmware.  When running on Openmoko GTA0x and Pirelli
+DP-L10 targets, our fw can use the original factory-programmed IMEISV and RF
+calibration values (partial in the case of the Pirelli), but on Mot/Compal
+phones these factory data are stored in a format which we haven't been able to
+grok, hence we cannot make use of them.  Therefore, you will have to set your
+own IMEISV manually, and the radio will run uncalibrated.
+
+Initialize your aftermarket FFS as follows:
+
+fsio> format /
+fsio> mk-std-dirs
+fsio> set-imeisv fc XXXXXXXX-YYYYYY-ZZ (punctuation optional, place anywhere)
+fsio> set-rfcap dual-eu (if you have 900+1800 MHz hardware)
+or
+fsio> set-rfcap dual-us (if you have 850+1900 MHz hardware)
+
+After you've initialized your FFS as above, you can exit fc-fsio, run fc-shell
+and try some AT commands:
+
+AT+CMEE=2	-- enable verbose error responses
+AT+CFUN=1	-- enable radio and SIM interfaces
+AT+COPS=0	-- register to the default GSM network
+
+When you are done, you can power the phone off by sending a 'poweroff' command
+through fc-shell.  The only other way is to yank the battery, and doing the
+latter is recommended anyway: when a phone with the present hack-firmware
+flashed into it is powered off but still has the battery inserted, even a
+momentary accidental press of the power button will cause it to power on and
+boot, but there will be absolutely no visual indication, as the LCD stays dark.
+
+FreeCalypso GSM firmware on Mot C155/156
+========================================
+
+One major difference between Mot C155/156 and the other two subfamilies is that
+C155 and C156 have 2 MiB of XRAM, which is large enough to allow our small-ish
+experimental firmware to run entirely from RAM, without flashing, just like on
+the Pirelli DP-L10.
+
+If you are ready to play with our experimental GSM pseudo-modem fw on your
+C155/156, the steps are as follows:
+
+1. Build the firmware in the c155-gsm-ramonly configuration - see the
+   Compiling document for more details.
+
+2. Connect your serial or USB-serial cable as usual; the phone needs to be
+   powered off at this point.
+
+3. Run a command like the following:
+
+   fc-xram -h c155 /dev/ttyUSB0 finlink/ramImage.srec rvinterf
+
+   If you are using an official FreeCalypso USB-serial cable from UberWaves,
+   you can speed up the code download by switching the serial line to 812500
+   baud:
+
+   fc-xram -h c155 -B 812500 /dev/ttyUSB0 finlink/ramImage.srec rvinterf
+
+   Adjust the paths to your /dev/ttyUSBx or other serial device and your
+   ramImage.srec as appropriate, and add rvinterf logging or other options as
+   desired.  Specifying rvinterf on the fc-xram command line directs fc-xram to
+   exec rvinterf and pass the serial channel to it immediately as soon as the
+   code image has been loaded into target RAM and jumped to; this direct
+   passing of the serial channel from fc-xram to rvinterf is appropriate
+   because the loaded fw will immediately start emitting binary trace packets
+   in TI's RVTMUX format.
+
+4. Momentarily press the red power button on the phone.
+
+Once the phone executes its boot code with fc-xram running, the boot path will
+be diverted and our experimental firmware will be loaded into target device RAM
+and jumped to.  Our fw will now run, and the rvinterf process on the host will
+maintain communication with it.
+
+Just like on the lower Mot/Compal subfamilies, we don't know how to extract the
+factory-programmed IMEI and RF calibration data from Mot/Compal's proprietary
+flash data structures, therefore, when our RAM-based firmware boots, it has no
+IMEI and no RF calibration.  Because this RAM-only configuration leaves the
+flash completely alone and does not create a non-volatile FFS there, you will
+need to set the IMEISV and RFCAP with fc-fsio on each boot.  See the fc-fsio
+commands given earlier, but skip the format command as the RAM-based FFS is
+automatically formatted - but not otherwise initialized - upon firmware boot.

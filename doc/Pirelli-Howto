@@ -1,0 +1,66 @@
+How to play with FreeCalypso GSM firmware on a Pirelli DP-L10
+=============================================================
+
+One very useful special feature of the Pirelli DP-L10 is its very large RAM:
+8 MiB.  Having such large RAM allows us to run our experimental fw on this
+target entirely from RAM, without touching the flash.  When you compile a
+FreeCalypso Citrine fw image for the Pirelli target, by default a ramImage will
+be built instead of a flashImage.  It is possible to build a flashable image of
+the fw in the same configuration and program it into flash with fc-loadtool,
+but doing so is not recommended: our current fw has no battery management code,
+so the charging hardware circuit will never be enabled and the battery will
+discharge even with a USB power source connected; keeping Pirelli's original
+fw in flash will allow the phone to charge its battery and otherwise function
+normally when you are not in the middle of a FreeCalypso firmware experiment.
+
+If you are ready to play with our experimental GSM pseudo-modem fw on your
+Pirelli, the steps are as follows:
+
+1. Build the firmware in the pirelli-gsm-rvtat configuration - see the
+   Compiling document for more details.
+
+2. Connect a USB cable from your GNU/Linux PC/laptop to the phone.  If the
+   phone was off but the battery is present, it will go through a charger-plug
+   power-on event; if the flash contains Pirelli's original fw, it will boot in
+   the charging mode.  If the battery is not present, the Calypso won't power
+   on (it needs VBAT and can't run on VCHG power instead), but the /dev/ttyUSBx
+   device will still show up, as the CP2102 USB-serial chip inside the phone is
+   powered strictly from the USB side.
+
+3. Run a command like the following:
+
+   fc-xram -h pirelli /dev/ttyUSB0 finlink/ramImage.srec rvinterf
+
+   Adjust the paths to your /dev/ttyUSBx device and your ramImage.srec as
+   appropriate, and add rvinterf logging or other options as desired.
+   Specifying rvinterf on the fc-xram command line directs fc-xram to exec
+   rvinterf and pass the serial channel to it immediately as soon as the code
+   image has been loaded into target RAM and jumped to; this direct passing of
+   the serial channel from fc-xram to rvinterf is appropriate because the
+   loaded fw will immediately start emitting binary trace packets in TI's RVTMUX
+   format.
+
+4. Induce the phone to execute its Calypso boot path: if the battery was
+   removed, insert it now; if Pirelli's regular fw is running, execute its
+   power-off sequence.
+
+Once the Calypso chip in the Pirelli phone executes its boot path with fc-xram
+running, the boot path will be diverted and our experimental firmware will be
+loaded into target device RAM and jumped to.  Our fw will now run, and the
+rvinterf process on the host will maintain communication with it.
+
+To exercise our firmware further, you will need to open another terminal window
+on your driving PC/laptop and run fc-shell.  This program will connect to the
+already running rvinterf process via a local socket, and it will enable you to
+send various commands to the running fw on the target, the most important ones
+being standard AT commands.  Send the following sequence of AT commands to
+bring up GSM functionality:
+
+AT+CMEE=2	-- enable verbose error responses
+AT+CFUN=1	-- enable radio and SIM interfaces
+AT+COPS=0	-- register to the default GSM network
+
+When you are done playing with our experimental fw, you can either yank the
+battery and kill the host side rvinterf and fc-shell processes, or you can
+issue a 'tgtreset' command at the fc-shell prompt.  The latter will cause the
+target to reset and boot back into its regular firmware.

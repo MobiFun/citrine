@@ -1,0 +1,107 @@
+The goal of the Citrine firmware project is to replace the Windows-built
+firmwares which have been produced in other subprojects under the FreeCalypso
+umbrella - see leo2moko and tcs211-c139.  Our leo2moko project has produced a
+production quality modem fw image for the Openmoko GTA02, while a C139 reflashed
+with tcs211-c139 is the first dumbphone in history that can still function as an
+untethered phone after having had its fw replaced with an indie one that bears
+no relation to the manufacturer's original - but those TCS211-based
+Windows-built projects have severe limitations.  Much of the firmware code base
+in those versions is in the form of unmodifiable binary object libraries, and
+the Windows-based configuration and build system is incompatible with the
+long-term needs of FreeCalypso development.
+
+The present fw project (FreeCalypso Citrine) seeks to rectify the situation by
+replacing the blob-laden, Windows-built firmware with a version that is built
+from full source (no binary blobs) with gcc, with an entirely different
+configuration mechanism that actually suits our needs.  Because one of the key
+goals of this project is to build the firmware from *full source*, the binary
+object versions of L1 (GSM Layer 1) and G23M (layers 2&3 of the protocol stack)
+featured in our reference TCS211 fw could not be reused.  Instead this project
+uses versions of L1 and G23M (and some other pieces) that have been lifted from
+the firmware for TI's other chipset (LoCosto) and backported to Calypso.
+
+The current state of the project is that we have made remarkable progress, but
+what we have right now is still not a satisfactory replacement for TCS211.
+Specifically:
+
+* Only the bare minimal modem functionality for the voice+SMS subset has been
+  integrated so far.  "Modem" means our fw can only be controlled via AT
+  commands; no UI code (as in LCD+keypad) has been integrated at all.  But it
+  is not a true modem either as none of the data functions have been integrated
+  yet: no CSD, no fax, no GPRS.  Thus it is an AT-command-controlled voice+SMS
+  pseudo-modem.
+
+* The firmware can be built for the following targets:
+
+  Mot C11x/12x
+  Mot C139/140
+  Mot C155/156
+  Openmoko GTA01/02
+  Pirelli DP-L10
+
+  All configurations are built from the same source tree.  The firmware
+  functions identically on all supported targets.  Because there is no UI code
+  integrated yet, the LCD stays dark and the buttons do nothing on those target
+  devices that have such hardware.
+
+* Most of our supported target devices have only one practically accessible
+  serial port (UART).  Our firmware presents TI's RVTMUX interface on this
+  UART; the operator is expected to interface to it by running our rvinterf
+  tools on the host PC/laptop.  One of the utilities in the rvinterf suite is
+  fc-shell; this tool is used to send AT commands to the running firmware,
+  which is the only way to control its operation.
+
+* With a valid SIM card inserted and a valid IMEISV configured, a GSM device
+  running our firmware can successfully connect to live commercial GSM networks,
+  make and receive voice calls, and send and receive SMS.
+
+* In the case of voice calls, the call downlink audio is routed to the phone's
+  earpiece speaker and the phone's microphone serves as the source for the
+  uplink audio, i.e., even though the LCD and keypad are dead with our fw, the
+  earpiece and mic continue to function as in a conventional phone.  FR and EFR
+  codecs work correctly (EFR was broken until recently), but AMR does not work
+  with this fw for some not-yet-understood reason, hence by default our fw
+  currently advertises to the GSM network that the MS only supports FR, HR and
+  EFR codecs.
+
+  There is also a highly experimental and minimally tested alternative mode
+  of operation in which the traffic channel carrying FR codec bits (260 bits
+  every 20 ms; it is not known whether or not this feature will also work with
+  EFR) is rerouted away from the internal vocoder to the external host,
+  such that you can receive the downlink voice bits digitally instead of
+  listening to them in the earpiece speaker, and you can substitute your own
+  uplink bits instead of the microphone-fed internal vocoder output.  See the
+  TCH-special-feature write-up for more information.
+
+There are also two known bugs which manifest only intermittently, but the
+misbehaviour does occur often enough that you will likely encounter it:
+
+* Sometimes something gets messed up in the voice uplink path such that the
+  downlink audio sounds just fine in the earpiece speaker of the phone running
+  FC Citrine, but the far end of the call hears only silence.  Other times the
+  voice audio passes just fine in both directions.  It is not currently
+  understood what factors determine whether it will work or not.
+
+* Sometimes the L1A task in the firmware (see the Firmware_Architecture
+  write-up) appears to stop running; the externally visible behaviour is that
+  the debug trace output from L1 suddenly stops while the rest of the firmware
+  keeps running.  GSM firmware without working L1 is unusable, hence when the
+  fw gets into this state, the only remedy is a power cycle reboot.  It is not
+  currently understood exactly what happens and under what conditions.
+
+Going forward, the current plan is to wait until our FCDEV3B hardware gets built
+before any attempts will be made to go after the above-listed bugs.  I, the
+principal developer, am sick and tired of limping along with Compal, Pirelli
+and Openmoko hardware when we have a design for our own FreeCalypso development
+board which, when built, will be a much more convenient platform for firmware
+development.
+
+Target-specific usage instructions
+==================================
+
+If you would like to play with our work-in-progress firmware and check it out
+for yourself, see the following target-specific instructions:
+
+Mot C1xx (Compal)	Compal-Howto
+Openmoko GTA01/02	Freerunner-Howto
+Pirelli DP-L10		Pirelli-Howto
