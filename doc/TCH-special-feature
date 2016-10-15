@@ -4,9 +4,9 @@ feature is enabled, it applies the following special handling to GSM voice
 traffic channels (TCH):
 
 * All downlink TCH bits passing from the channel decoder to the vocoder block
-  (260 bits every 20 ms with the original FR codec) can be non-invasively
-  intercepted and forwarded to the external host connected to the RVTMUX serial
-  interface;
+  (260 bits every 20 ms; only FR and EFR codecs are supported) can be non-
+  invasively intercepted and forwarded to the external host connected to the
+  RVTMUX serial interface;
 
 * Using the same serial interface, the external host can supply substitute
   uplink TCH bits which will be transmitted in the place of the built-in
@@ -78,10 +78,11 @@ following packet every 20 ms:
 
 The 40 bytes of payload sent in every TCH_DLBITS_IND packet directly correspond
 to the 20 16-bit words provided by the Calypso DSP in its a_dd_0 buffer.  The
-first 3 words (6 bytes) contains the DSP's own status information (not fully
+first 3 words (6 bytes) contain the DSP's own status information (not fully
 understood by us yet, but we let you see what the DSP tells us without redacting
-anything out), and the remaining 17 words (34 bytes) are supposed to contain
-the TCH bits received from the GSM network in the FR codec format.  Each DSP
+anything out), and the remaining 17 words (34 bytes) contain the TCH bits
+received from the GSM network in the GSM 05.03 bit order - see TCH-bit-access
+write-up in the FreeCalypso host tools package for more information.  Each DSP
 API word is sent in the big-endian byte order, i.e., the most significant byte
 followed by the least significant byte.
 
@@ -114,30 +115,7 @@ of further TCH_ULBITS_REQs.
 Testing
 =======
 
-The just-described mechanism has been tested as follows:
-
-1. I placed a call to WWV (+1-303-499-7111), and after verifying with my ear
-   that the downlink audio was good, I recorded the downlink TCH bits on that
-   call into a file with the tch record command in fc-shell.
-
-2. I placed a call to another phone (running over a live commercial GSM network)
-   and played the saved recording from WWV into the call uplink with the
-   tch play command in fc-shell.
-
-3. The audio heard on the other end of the call in the previous step: the
-   recording from WWV was definitely recognizable, but it didn't sound perfect,
-   i.e., it was rather garbled.
-
-[NOTE: the experiment described above was performed with an older version of
- the firmware which is now codenamed Citrine, namely, the version with L1-2014.
- I have not played with the TCH rerouting feature again since the transition to
- L1-2016.]
-
-Further debugging of this mechanism will require two things which I currently
-lack: (1) proper understanding of the workings of the GSM 06.10 FR codec and
-(2) a test GSM network (as in OpenBTS/OpenBSC/etc) that could be used instead
-of live commercial ones, so we could see exactly what the test MS is
-transmitting on the air and what the BTS transmits in the downlink.
+See TCH-bit-access write-up in the freecalypso-tools Hg repository.
 
 Host side reference implementation
 ==================================
@@ -147,38 +125,3 @@ pseudo-modems via the RVTMUX binary packet interface, we strongly recommend
 that you use our rvinterf and fc-shell Unix/Linux host utilities as your
 starting point.  You can find their source code in the freecalypso-tools Hg
 repository on Bitbucket.
-
-The following test commands have been added to fc-shell for exercising the
-experimental TCH rerouting mechanism:
-
-tch record <filename>
-
-	Sends a TCH_CONFIG_REQ packet to the target, commanding the firmware to
-	start forwarding TCH downlink bits to the external host, and starts
-	recording the bits it receives in the named file.  The file is written
-	with the same ordering of GSM 06.10 bits as used by the popular libgsm
-	implementation of this codec, i.e., the bits received from the GSM
-	device (ultimately coming from TI's DSP) are reordered before being
-	written into the file.  It is only a reordering of bits with no change
-	in the information content.
-
-	I was hoping that the resulting files could be played with the SoX play
-	command under Slackware Linux, but all I got was garbled audio, and my
-	audio-fu is not good enough to figure out what is wrong.
-
-tch record stop
-
-	Stops TCH downlink recording and closes the file into which the bytes
-	were being written; until the file is thus closed, it may not be
-	actually written out to the file system.
-
-tch play <filename>
-
-	Plays GSM 06.10 FR speech frames from the named file in libgsm format
-	(same as written by the tch record command) into the call uplink.
-
-tch play stop
-
-	Terminates the TCH UL play-from-file operation.  This command is
-	normally not needed, as the play session will end automatically when
-	the end of file is reached.
