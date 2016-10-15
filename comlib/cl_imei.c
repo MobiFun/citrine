@@ -268,6 +268,7 @@ extern BYTE cl_get_imeisv(USHORT imeiBufSize, UBYTE *imeiBufPtr, UBYTE imeiType)
 #if CONFIG_TARGET_PIRELLI
   ret = pirelli_get_imeisv (imeiBufSize, imeiBufPtr);
   if (ret == CL_IMEI_OK) {
+    memcpy(stored_imei, imeiBufPtr, CL_IMEI_SIZE);
     imei_flag = 1;
     return ret;
   }
