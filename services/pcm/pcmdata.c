@@ -135,17 +135,16 @@ const UBYTE pcm_default_values[] =
    * Field MOBILE CAPABILITIES - MSCAP
    ********************************************************************/
   /*
-   * FreeCalypso: the change of L1 to the reconstructed TCS211 version
-   * has fixed the EFR codec, so we can re-enable it now, but AMR is
-   * still broken, hence we are going to advertise as non-AMR-capable
-   * despite running on AMR-capable silicon.
-   *
-   * If you would like to experiment with different codec
-   * configurations, you can do so without having to recompile
-   * and reflash the firmware each time: just write a /pcm/MSCAP
-   * file into FFS with whatever setting you wish to try.
+   * FreeCalypso: this Citrine firmware only runs on AMR-capable
+   * silicon, but we have a build configuration setting to allow or
+   * disallow AMR.  As far as we can tell, the AMR codec support
+   * in TI's TCS211 fw that serves as our reference depends on a
+   * dynamically downloaded DSP patch (L1_DYN_DSP_DWNLD), but we are
+   * having some reliability problems with the latter functionality,
+   * hence we have made AMR enabling a conditional feature to err
+   * on the side of safety.
    */
-  #if 0 //((DSP == 34) || (DSP == 35) || (DSP == 36)) // ROM Codes including AMR feature.
+  #if ALLOW_AMR_CODEC
     #if (STD == 1) // GSM 900
       #if defined (FAX_AND_DATA) 
         0xB1,   0xC7,   0x00,                     

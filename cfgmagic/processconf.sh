@@ -23,7 +23,8 @@ RVTMUX_UART_baud=115200
 FLASH_BOOT_VIA_BOOTROM=1
 FLASHIMAGE_BASE_ADDR=0x2000
 DWNLD=1
-L1_DYN_DSP_DWNLD=1
+L1_DYN_DSP_DWNLD=0
+ALLOW_AMR_CODEC=0
 
 # We always export CONFIG_INCLUDE_xxx to config.h and config.mk, whether
 # enabled or disabled.  This way enabling any of these components is
@@ -102,6 +103,10 @@ if [ "$CONFIG_INCLUDE_L1" = 1 ]
 then
 	export_to_c	L1_DYN_DSP_DWNLD DWNLD
 	export_to_mk	L1_DYN_DSP_DWNLD
+fi
+if [ "$CONFIG_INCLUDE_PCM" = 1 ]
+then
+	export_to_c	ALLOW_AMR_CODEC
 fi
 
 # The list of build components: we have some invariants that are always
