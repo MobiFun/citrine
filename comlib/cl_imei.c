@@ -193,13 +193,8 @@ LOCAL BYTE pirelli_get_imeisv (USHORT inBufSize, UBYTE *outBufPtr)
 */
 extern BYTE cl_get_imeisv(USHORT imeiBufSize, UBYTE *imeiBufPtr, UBYTE imeiType)
 {
-#if CONFIG_MOKOFFS
-  USHORT ret;
-  UBYTE version;
   UBYTE buf[SIZE_EF_IMEI];
-#else
   BYTE ret;
-#endif
 
   TRACE_FUNCTION("cl_get_imeisv()");
 
@@ -211,18 +206,21 @@ extern BYTE cl_get_imeisv(USHORT imeiBufSize, UBYTE *imeiBufPtr, UBYTE imeiType)
     memcpy(imeiBufPtr, stored_imei, CL_IMEI_SIZE);
     return CL_IMEI_OK;
   }
+
   /*
-   * The user has required a "secure" IMEI. How we get it depends on what
-   * platform we are running on.
+   * The user has required a "secure" IMEI.  Look in /etc/IMEISV first,
+   * then in /pcm/IMEI.  And if we are running on the Pirelli target,
+   * try their factory IMEI record last.
    */
 
-#if CONFIG_MOKOFFS
-  /*
-   * Running on Openmoko GTA0x and using the original FFS.
-   * Get the nibble-swapped IMEI record from PCM.
-   */
-  ret = pcm_ReadFile ((UBYTE *)EF_IMEI_ID, SIZE_EF_IMEI, buf, &version);
-  if(ret == PCM_OK){
+  if (ffs_file_read(CL_IMEI_FFS_PATH, imeiBufPtr, CL_IMEI_SIZE) >= EFFS_OK) {
+    TRACE_EVENT("CL IMEI INFO: return IMEI-SV number from ffs:/etc/IMEISV");
+    memcpy(stored_imei, imeiBufPtr, CL_IMEI_SIZE);
+    imei_flag = 1;
+    return CL_IMEI_OK;
+  }
+
+  if (ffs_file_read("/pcm/IMEI", buf, CL_IMEI_SIZE) >= EFFS_OK) {
     TRACE_EVENT("CL IMEI INFO: return IMEI-SV number from ffs:/pcm/IMEI");
     /*
      * swap digits
@@ -238,33 +236,9 @@ extern BYTE cl_get_imeisv(USHORT imeiBufSize, UBYTE *imeiBufPtr, UBYTE imeiType)
     /* store IMEI */
     memcpy(stored_imei, imeiBufPtr, CL_IMEI_SIZE);
     imei_flag = 1;
-  }else{
-    /*
-     * pcm_ReadFile() can't really fail, as it merely reads out of a
-     * RAM buffer that was filled earlier, either from FFS or from
-     * compiled-in defaults.  But TI's original code had the following
-     * error handling clause, so I kept it.
-     */
-    TRACE_EVENT("CL IMEI INFO: return default IMEI-SV number");
-    memcpy(imeiBufPtr, C_DEFAULT_IMEISV_DSAMPLE, CL_IMEI_SIZE);
-  }
-  return CL_IMEI_OK;
-#else
-
-  /*
-   * Regular FreeCalypso configuration, not MokoFFS.
-   * We try to get the IMEISV from the following sources, in this order:
-   *
-   * /etc/IMEISV (sensible nibble order, not encrypted)
-   * Pirelli's encrypted IMEI record (Pirelli target only)
-   * hard-coded fallback and error indication
-   */
-
-  if (ffs_file_read(CL_IMEI_FFS_PATH, imeiBufPtr, CL_IMEI_SIZE) >= EFFS_OK) {
-    memcpy(stored_imei, imeiBufPtr, CL_IMEI_SIZE);
-    imei_flag = 1;
     return CL_IMEI_OK;
   }
+
 #if CONFIG_TARGET_PIRELLI
   ret = pirelli_get_imeisv (imeiBufSize, imeiBufPtr);
   if (ret == CL_IMEI_OK) {
@@ -278,7 +252,6 @@ extern BYTE cl_get_imeisv(USHORT imeiBufSize, UBYTE *imeiBufPtr, UBYTE imeiType)
   TRACE_ERROR("CL IMEI FATAL ERROR: IMEI not available!");
   memcpy(imeiBufPtr, C_DEFAULT_IMEISV_DSAMPLE, CL_IMEI_SIZE);
   return ret;
-#endif	/* CONFIG_MOKOFFS */
 }
 
 #endif /* CL_IMEI_C */
