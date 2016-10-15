@@ -923,7 +923,7 @@ LOCAL void dedi_chan_ass (T_MPH_DEDICATED_REQ *dedicated_req)
   }
   chan_ass->cipher_mode = dedicated_req->ciph.stat;
   chan_ass->a5_algorithm = dedicated_req->ciph.algo;
-  memcpy (&chan_ass->cipher_key, dedicated_req->ciph.kc, KC_STRING_SIZE);
+  memcpy (&chan_ass->cipher_key, dedicated_req->ciph.kc, sizeof(T_cipher_key));
   #ifdef FF_L23_A5_3
   dedi_cyclically_repeat_kc ((UBYTE *)&chan_ass->cipher_key, (UBYTE *)dedicated_req->ciph.kc, KLEN);
   #endif
@@ -1125,7 +1125,7 @@ LOCAL void dedi_async_handover (T_MPH_DEDICATED_REQ * dedicated_req)
   }
   async->handover_command.cipher_mode = dedicated_req->ciph.stat;
   async->handover_command.a5_algorithm = dedicated_req->ciph.algo;
-  memcpy (&async->cipher_key, dedicated_req->ciph.kc, KC_STRING_SIZE);
+  memcpy (&async->cipher_key, dedicated_req->ciph.kc, sizeof(T_cipher_key));
   #ifdef FF_L23_A5_3
   dedi_cyclically_repeat_kc ((UBYTE *)&async->cipher_key, (UBYTE *)dedicated_req->ciph.kc, KLEN);
   #endif
@@ -1277,7 +1277,7 @@ LOCAL void dedi_sync_handover (T_MPH_DEDICATED_REQ *dedicated_req)
                        (T_frequency_list *)&sync->handover_command.frequency_list_bef_sti);
   sync->handover_command.cipher_mode = dedicated_req->ciph.stat;
   sync->handover_command.a5_algorithm = dedicated_req->ciph.algo;
-  memcpy (&sync->cipher_key, dedicated_req->ciph.kc, KC_STRING_SIZE);
+  memcpy (&sync->cipher_key, dedicated_req->ciph.kc, sizeof(T_cipher_key));
   #ifdef FF_L23_A5_3
   dedi_cyclically_repeat_kc ((UBYTE *)&sync->cipher_key, (UBYTE *)dedicated_req->ciph.kc, KLEN);
   #endif
@@ -1402,7 +1402,7 @@ LOCAL void dedi_pre_sync_handover (T_MPH_DEDICATED_REQ *dedicated_req)
                        (T_frequency_list *)&presync->handover_command.frequency_list_bef_sti);
   presync->handover_command.cipher_mode = dedicated_req->ciph.stat;
   presync->handover_command.a5_algorithm = dedicated_req->ciph.algo;
-  memcpy (&presync->cipher_key, dedicated_req->ciph.kc, KC_STRING_SIZE);
+  memcpy (&presync->cipher_key, dedicated_req->ciph.kc, sizeof(T_cipher_key));
   #ifdef FF_L23_A5_3
   dedi_cyclically_repeat_kc ((UBYTE *)&presync->cipher_key, (UBYTE *)dedicated_req->ciph.kc, KLEN);
   #endif
@@ -1603,7 +1603,7 @@ GLOBAL void dedi_ciph_req (T_MPH_CIPHERING_REQ *ciph_req)
    */
   set_ciph->cipher_mode = ciph_req->ciph.stat;
   set_ciph->a5_algorithm = ciph_req->ciph.algo;
-  memcpy (set_ciph->new_ciph_param.A, ciph_req->ciph.kc, KC_STRING_SIZE);
+  memcpy (set_ciph->new_ciph_param.A, ciph_req->ciph.kc, sizeof(T_cipher_key));
   #ifdef FF_L23_A5_3
   dedi_cyclically_repeat_kc ((UBYTE *)set_ciph->new_ciph_param.A, (UBYTE *)ciph_req->ciph.kc, KLEN);  
   #endif
@@ -1611,7 +1611,7 @@ GLOBAL void dedi_ciph_req (T_MPH_CIPHERING_REQ *ciph_req)
   alr_data->dedi_data.act_cipher_mode = set_ciph->cipher_mode;
   alr_data->dedi_data.act_a5_algorithm = set_ciph->a5_algorithm;
   memcpy (&alr_data->dedi_data.act_cipher_key,
-          &set_ciph->new_ciph_param, KC_STRING_SIZE);
+          &set_ciph->new_ciph_param, sizeof(T_cipher_key));
   #ifdef FF_L23_A5_3
   dedi_cyclically_repeat_kc ((UBYTE *)&alr_data->dedi_data.act_cipher_key,
           (UBYTE *)&set_ciph->new_ciph_param, KLEN);
